@@ -6,6 +6,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.stereowalker.survive.client.events.TooltipEvents;
+import com.stereowalker.survive.client.gui.screens.inventory.SaltBoxScreen;
 import com.stereowalker.survive.client.particle.HygieneParticle;
 import com.stereowalker.survive.core.TempDisplayMode;
 import com.stereowalker.survive.core.particles.SParticleTypes;
@@ -14,6 +15,7 @@ import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.IRoastedEntity;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
+import com.stereowalker.survive.world.inventory.SMenuType;
 import com.stereowalker.survive.world.item.HygieneItems;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.TemperatureRegulatorPlateItem;
@@ -27,6 +29,7 @@ import com.stereowalker.survive.world.level.block.entity.DryingCauldronBlockEnti
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.unionlib.api.collectors.ColorOverrideCollector;
 import com.stereowalker.unionlib.api.collectors.InsertCollector;
+import com.stereowalker.unionlib.api.collectors.MenuCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector.Order;
 import com.stereowalker.unionlib.api.collectors.ParticleCollector;
@@ -108,12 +111,7 @@ public class SurviveClientSegment extends ClientSegment {
 				return new Color(1f, 0, 0).brighter(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
 			}
 //			if (displayReader.getBlockEntity(blockPos) instanceof DryingCauldronBlockEntity dbe) {
-//				if (dbe.getResult().getItem() == HygieneItems.POTASH) {
-//				}
-//				else {
-//				}
 //			}
-//			return 0x483c35;
 		}, SBlocks.DRYING_CAULDRON);
 		collector.overrideBlocks((state, displayReader, blockPos, tintIndex) -> {
 			return PlatedTemperatureRegulatorBlock.getColor(state).toIntRGB();
@@ -441,6 +439,11 @@ public class SurviveClientSegment extends ClientSegment {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 		Minecraft.getInstance().getProfiler().pop();
+	}
+	
+	@Override
+	public void setupMenus(MenuCollector collector) {
+		collector.addMenu(SMenuType.SALT_BOX, SaltBoxScreen::new);
 	}
 
 }

@@ -1,0 +1,56 @@
+{
+  "variants": {
+    "facing=down,open=false": {
+      "model": "survive:block/salt_box",
+      "x": 180
+    },
+    "facing=down,open=true": {
+      "model": "survive:block/salt_box_open",
+      "x": 180
+    },
+    "facing=east,open=false": {
+      "model": "survive:block/salt_box",
+      "x": 90,
+      "y": 90
+    },
+    "facing=east,open=true": {
+      "model": "survive:block/salt_box_open",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north,open=false": {
+      "model": "survive:block/salt_box",
+      "x": 90
+    },
+    "facing=north,open=true": {
+      "model": "survive:block/salt_box_open",
+      "x": 90
+    },
+    "facing=south,open=false": {
+      "model": "survive:block/salt_box",
+      "x": 90,
+      "y": 180
+    },
+    "facing=south,open=true": {
+      "model": "survive:block/salt_box_open",
+      "x": 90,
+      "y": 180
+    },
+    "facing=up,open=false": {
+      "model": "survive:block/salt_box"
+    },
+    "facing=up,open=true": {
+      "model": "survive:block/salt_box_open"
+    },
+    "facing=west,open=false": {
+      "model": "survive:block/salt_box",
+      "x": 90,
+      "y": 270
+    },
+    "facing=west,open=true": {
+      "model": "survive:block/salt_box_open",
+      "x": 90,
+      "y": 270
+    }
+  }
+}
