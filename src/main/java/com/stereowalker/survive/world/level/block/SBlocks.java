@@ -7,12 +7,14 @@ import com.stereowalker.unionlib.core.registries.RegistryHolder;
 import com.stereowalker.unionlib.core.registries.RegistryObject;
 
 import net.minecraft.world.level.biome.Biome.Precipitation;
+import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
@@ -34,5 +36,9 @@ public class SBlocks {
 	public static final Block PLATED_TEMPERATURE_REGULATOR = new PlatedTemperatureRegulatorBlock(BlockBehaviour.Properties.ofLegacyCopy(TEMPERATURE_REGULATOR).lightLevel((state) -> {
 		return state.getValue(PlatedTemperatureRegulatorBlock.POWERED) ? state.getValue(PlatedTemperatureRegulatorBlock.PLATE_COUNT) : 0;
 	}));
+	@RegistryObject("salt_box")
+	public static final Block SALT_BOX = new SaltBoxBlock(
+	            BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).strength(2.5F).sound(SoundType.WOOD).ignitedByLava()
+	        );
 }
 

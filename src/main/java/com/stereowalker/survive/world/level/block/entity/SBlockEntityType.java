@@ -20,6 +20,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 public class SBlockEntityType {
 	private static final Map<ResourceLocation,BlockEntityType<?>> TILE_ENTITY_TYPES = new HashMap<ResourceLocation,BlockEntityType<?>>();
 
+	@RegistryObject("salt_box")
+	public static final BlockEntityType<SaltBoxBlockEntity> SALT_BOX = register("salt_box", BlockEntityType.Builder.of(SaltBoxBlockEntity::new, SBlocks.SALT_BOX)
+	.build(Util.fetchChoiceType(References.BLOCK_ENTITY, "salt_box")));
+	
 	@RegistryObject("drying_cauldron")
 	public static final BlockEntityType<DryingCauldronBlockEntity> DRYING_CAULDRON = register("drying_cauldron", BlockEntityType.Builder.of(DryingCauldronBlockEntity::new, SBlocks.DRYING_CAULDRON)
 	.build(Util.fetchChoiceType(References.BLOCK_ENTITY, "drying_cauldron")));
