@@ -96,7 +96,7 @@ public class TempEvents {
 		float temp = calc.apply(quick);
 		if (GLOBAL_BLOCK_TEMPS.containsKey(chunk) && GLOBAL_BLOCK_TEMPS.get(chunk).containsKey(local(chunk, block))) {
 			temp = GLOBAL_BLOCK_TEMPS.get(chunk).get(local(chunk, block));
-			log("Pulled Cache at"+block+" "+chunk+" "+local(chunk, block)+" "+temp);
+//			log("Pulled Cache at"+block+" "+chunk+" "+local(chunk, block)+" "+temp);
 			return temp;
 		}
 		else {
@@ -110,7 +110,7 @@ public class TempEvents {
 					long start = System.nanoTime();
 					cacheTemp(block, ((Function<T, Float>) TO_PROCESS.remove()).apply(full));
 					long end = System.nanoTime();
-					log("Cachine "+block+" "+((end - start) / 1000000.0D)+"ms");	
+//					log("Cachine "+block+" "+((end - start) / 1000000.0D)+"ms");	
 				}
 				});
 			return temp;
