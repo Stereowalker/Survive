@@ -66,6 +66,7 @@ import com.stereowalker.survive.tags.ItemSTags;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
+import com.stereowalker.survive.world.inventory.SMenuType;
 import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.HygieneItems;
 import com.stereowalker.survive.world.item.SArmorMaterials;
@@ -316,6 +317,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		if (Survive.TEMPERATURE_CONFIG.enabled) {
 			collector.addRegistryHolder(Registries.ENCHANTMENT, TemperatureEnchantments.class);
 		}
+		collector.addRegistryHolder(Registries.MENU, SMenuType.class);
 		collector.addRegistry(SurviveRegistries.CONDITION, SurviveRegistries.Keys.CONDITION, true);
 		collector.addRegistry(SurviveRegistries.SEASON, SurviveRegistries.Keys.SEASON, true);
 		collector.addCustom(SurviveRegistries.Keys.CONDITION, TemperatureChangeConditions::registerAll);
@@ -516,6 +518,8 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			populator.addItems(SItems.USED_CHARCOAL_FILTER);
 			populator.addItems(SItems.PURIFIED_WATER_BUCKET);
 			populator.addItems(SItems.MAGMA_PASTE);
+			populator.addItems(SItems.SEA_SALT);
+			populator.addItems(SItems.SALT_BOX);
 			populator.addItems(SItems.CANTEEN);
 			populator.getParams().holders().lookup(Registries.POTION).ifPresent(p_327138_ -> {
 				generatePotionEffectTypes(populator.getOutput(), p_327138_, SItems.FILLED_CANTEEN, THIRST_CONFIG.canteen_fill_amount, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

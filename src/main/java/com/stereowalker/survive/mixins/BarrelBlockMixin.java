@@ -29,7 +29,7 @@ public abstract class BarrelBlockMixin extends BaseEntityBlock {
 	}
 
 	@Inject(method = "tick", at = @At("TAIL"))
-	private void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom, CallbackInfo ci) {
+	private void tick_insert(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom, CallbackInfo ci) {
 		if (pLevel.getBlockEntity(pPos) instanceof BarrelBlockEntity pBlockEntity) {
 			((ColdStorage)pBlockEntity).coldTick(pLevel);;
 		}

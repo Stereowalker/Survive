@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "survive:block/salt_box_bottom",
+    "side": "survive:block/salt_box_side",
+    "top": "survive:block/salt_box_top_open"
+  }
+}

@@ -57,6 +57,7 @@
 	"_comment01_": "///////////////////////////////////////////////////////////[BLOCKS]///////////////////////////////////////////////////////////",
 	"block.survive.potash_cauldron": "Potash Cauldron",
 	"block.survive.temperature_regulator": "Temperature Regulator",
+	"block.survive.salt_box": "Salt Box",
 	"_comment02_": "///////////////////////////////////////////////////////////[TEMPERATURE_CONDITIONS]///////////////////////////////////////////////////////////",
 	"temperature_context.biome": "when in %1$s",
 	"temperature_context.not_biome": "when not in %1$s",
