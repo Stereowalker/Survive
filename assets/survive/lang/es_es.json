@@ -34,6 +34,8 @@
 	"effect.survive.tiredness": "Cansansio",
 	"effect.survive.hypothermia": "Hipotermia",
 	"effect.survive.hyperthermia": "Hipertermia",
+	"effect.survive.heated": "Calentado",
+	"effect.survive.chilled": "Enfriado",	
 	"effect.survive.heat_resistance": "Resistente al calor",
 	"item.minecraft.tipped_arrow.effect.heat_resistance": "Flecha de resistencia al calor",
 	"item.minecraft.potion.effect.heat_resistance": "Poción de resistencia al calor",
@@ -85,6 +87,9 @@
 	"survive.config.title": "Configuración de sobrevivir",
 	"survive.Enable Temperature": "Habilitar temperatura",
 	"survive.Enable Thirst": "Habilitar sed",
+	"survive.Enable Sleep": "Habilitar sueño",
+	"survive.Enable Stamina": "Habilitar aguante",
+	"survive.Temperature Display Mode": "Pantalla de temperatura",	
 ///////////////////////////////////////////////////////////[CURIOS_IDENTIFIERS]///////////////////////////////////////////////////////////
 	"curios.identifier.spellbook": "Libro de hechizos"
 }
