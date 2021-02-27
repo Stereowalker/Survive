@@ -408,10 +408,17 @@ public class RenderOverlayEvents {
 			displayTemp = MathHelper.clamp(div, -1.0D-(28.0D/63.0D), 0);
 		}
 		if (Config.tempDisplayMode.equals(TempDisplayMode.BAR)) {
-			if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y, 0, 64, 132, 5);
-			if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y, 0, 69, 132, 5);
+			if (Config.tempEffects && displayTemp >= 1) {//Hyperthermia override
+				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y-3, 0, 79, 132, 9);
+			} else if (Config.tempEffects && displayTemp <= -1) {//Hypothermia override
+				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y-3, 0, 90, 132, 9);
+			} else {
+				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y, 0, 64, 132, 5);
+				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y, 0, 69, 132, 5);
+			}
 			if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x+MathHelper.floor(displayTemp*44)+63+(displayTemp>0?1:0), y, 0, 74, 5, 5);
 		}
+		
 		int temp = (int) (rawTemperature*100);
 		double temperaure = ((double)temp) / 100.0D;
 		String s = temperaure+" °C";

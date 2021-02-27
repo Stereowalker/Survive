@@ -30,6 +30,10 @@ public class Config {
 	@UnionConfig.Comment(comment = {"The y offset from the center of the screen where the temperature should render"})
 	public static int tempYLoc = 5;
 	
+	@UnionConfig.Entry(group = "Temperature" , name = "Hypo/Hyperthermia Effects", type = Type.CLIENT)
+	@UnionConfig.Comment(comment = {"Change the texture of the temperature bar when you have hypothermia or hyperthermia"})
+	public static boolean tempEffects = true;
+	
 	@UnionConfig.Entry(group = "Temperature" , name = "Temperature Mode", type = Type.COMMON)
 	@UnionConfig.Comment(comment = {"This determines the mode used when deciding the temperature","NORMAL Mode: calculates the average temperature of each block around the player","BLEND Mode: calculates the average temperature similar to that of NORMAL, but blends the temperature of the target positions with the player's. The blend ratio is determined by your distance from the block"})
 	public static TempMode tempMode = TempMode.BLEND;
