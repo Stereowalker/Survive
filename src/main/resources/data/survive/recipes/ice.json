@@ -1,0 +1,16 @@
+{
+  "type": "crafting_shaped",
+  "pattern": [
+    "XXX",
+    "XXX",
+    "XXX"
+  ],
+  "key": {
+    "X": {
+      "item": "survive:ice_cube"
+    }
+  },
+  "result": {
+    "item": "minecraft:ice"
+  }
+}

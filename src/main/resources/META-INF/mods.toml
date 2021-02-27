@@ -1,0 +1,59 @@
+
+modLoader="javafml"
+loaderVersion="[35,)"
+license="All Rights Reserved"
+issueTrackerURL="https://github.com/Stereowalker/Survive/issues"
+logoFile="logo.png"
+[[mods]]
+modId="survive"
+version="${version}"
+displayName="Survive"
+updateJSONURL="https://raw.githubusercontent.com/Stereowalker/Survive/master/update.json"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/survive"
+credits="Obviously you for downloading this mod and ChainmailPickaxe for making the textures look nice"
+authors="Stereowalker"
+description='''
+Adds new survival mechanics like thirst, body temperature, sleep management and stamina
+'''
+# A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
+[[dependencies.survive]] #optional
+    # the modid of the dependency
+    modId="forge" #mandatory
+    # Does this dependency have to exist - if not, ordering below must be specified
+    mandatory=true #mandatory
+    # The version range of the dependency
+    versionRange="[35.1.13,)" #mandatory
+    # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
+    ordering="NONE"
+    # Side this dependency is applied on - BOTH, CLIENT or SERVER
+    side="BOTH"
+# Here's another dependency
+[[dependencies.survive]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.3,)"
+    ordering="NONE"
+    side="BOTH"
+	
+[[dependencies.survive]]
+    modId="unionlib"
+    mandatory=true
+    versionRange="[3.2.3,)"
+    ordering="NONE"
+    side="BOTH"
+	
+[[dependencies.survive]]
+    modId="combat"
+    mandatory=false
+    versionRange="[7.1.0,)"
+    ordering="NONE"
+    side="BOTH"
+	
+[[dependencies.survive]]
+    modId="sereneseasons"
+    mandatory=false
+    versionRange="[4.0.0.80,)"
+    ordering="NONE"
+    side="BOTH"
+	
+
