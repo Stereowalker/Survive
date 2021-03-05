@@ -14,6 +14,7 @@ import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.Item;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
@@ -70,7 +71,7 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
    @Override
    protected void beforeReplacingBlock(IWorld worldIn, BlockPos pos, BlockState state) {
       TileEntity tileentity = state.hasTileEntity() ? worldIn.getTileEntity(pos) : null;
-      Block.spawnDrops(state, worldIn, pos, tileentity);
+      Block.spawnDrops(state, worldIn.getWorld(), pos, tileentity);
    }
 
    public int getSlopeFindDistance(IWorldReader worldIn) {
@@ -90,7 +91,7 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
                .build(this);
 	}
 
-   public BlockState getBlockState(FluidState state) {
+   public BlockState getBlockState(IFluidState state) {
       return SBlocks.PURIFIED_WATER.getDefaultState().with(FlowingFluidBlock.LEVEL, Integer.valueOf(getLevelFromState(state)));
    }
 
@@ -106,7 +107,7 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
       return 5;
    }
 
-   public boolean canDisplace(FluidState fluidState, IBlockReader blockReader, BlockPos pos, Fluid fluid, Direction direction) {
+   public boolean canDisplace(IFluidState fluidState, IBlockReader blockReader, BlockPos pos, Fluid fluid, Direction direction) {
 	   //TODO: Change This when you figure out tags
       return direction == Direction.DOWN && !fluid.isIn(FluidTags.WATER);
    }
@@ -116,26 +117,26 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
    }
 
    public static class Flowing extends PurifiedWaterFluid {
-      protected void fillStateContainer(StateContainer.Builder<Fluid, FluidState> builder) {
+      protected void fillStateContainer(StateContainer.Builder<Fluid, IFluidState> builder) {
          super.fillStateContainer(builder);
          builder.add(LEVEL_1_8);
       }
 
-      public int getLevel(FluidState p_207192_1_) {
+      public int getLevel(IFluidState p_207192_1_) {
          return p_207192_1_.get(LEVEL_1_8);
       }
 
-      public boolean isSource(FluidState state) {
+      public boolean isSource(IFluidState state) {
          return false;
       }
    }
 
    public static class Source extends PurifiedWaterFluid {
-      public int getLevel(FluidState p_207192_1_) {
+      public int getLevel(IFluidState p_207192_1_) {
          return 8;
       }
 
-      public boolean isSource(FluidState state) {
+      public boolean isSource(IFluidState state) {
          return true;
       }
    }

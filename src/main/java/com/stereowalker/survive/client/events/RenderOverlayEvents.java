@@ -4,7 +4,6 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.stereowalker.survive.Survive;
@@ -25,8 +24,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.AttackIndicatorStatus;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effects;
@@ -61,14 +60,13 @@ public class RenderOverlayEvents {
 	public static void renderGameOverlay2(RenderGameOverlayEvent.Pre event) {
 		if (Config.enable_temperature && event.getType().equals(ElementType.HOTBAR) && Config.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
 			if (!mc.playerController.isSpectatorMode()) {
-				renderHotbar(event.getPartialTicks(), event.getMatrixStack());
+				renderHotbar(event.getPartialTicks());
 				event.setCanceled(true);
 			}
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	protected static void renderHotbar(float partialTicks, MatrixStack matrixStack) {
+	protected static void renderHotbar(float partialTicks) {
 		//TODO: Access transform this
 		ResourceLocation WIDGETS_TEX_PATH = new ResourceLocation("textures/gui/widgets.png");
 		PlayerEntity playerentity = gui().getRenderViewPlayer();
@@ -79,7 +77,7 @@ public class RenderOverlayEvents {
 		if (tempLocation > 0) {
 			double maxTemp = 0.0D;
 			if (playerentity.getAttribute(SAttributes.HEAT_RESISTANCE) != null) {
-				maxTemp = playerentity.getAttributeValue(SAttributes.HEAT_RESISTANCE);
+				maxTemp = playerentity.getAttribute(SAttributes.HEAT_RESISTANCE).getValue();
 			} else {
 				maxTemp = SAttributes.HEAT_RESISTANCE.getDefaultValue();
 			}
@@ -89,7 +87,7 @@ public class RenderOverlayEvents {
 		if (tempLocation < 0) {
 			double maxTemp = 0.0D;
 			if (playerentity.getAttribute(SAttributes.COLD_RESISTANCE) != null) {
-				maxTemp = playerentity.getAttributeValue(SAttributes.COLD_RESISTANCE);
+				maxTemp = playerentity.getAttribute(SAttributes.COLD_RESISTANCE).getValue();
 			} else {
 				maxTemp = SAttributes.COLD_RESISTANCE.getDefaultValue();
 			}
@@ -108,13 +106,13 @@ public class RenderOverlayEvents {
 			int i =  gui().scaledWidth / 2;
 			int j = gui().getBlitOffset();
 			gui().setBlitOffset(-90);
-			gui().blit(matrixStack, i - 91,  gui().scaledHeight - 22, 0, 0, 182, 22);
-			gui().blit(matrixStack, i - 91 - 1 + playerentity.inventory.currentItem * 20,  gui().scaledHeight - 22 - 1, 0, 22, 24, 22);
+			gui().blit(i - 91,  gui().scaledHeight - 22, 0, 0, 182, 22);
+			gui().blit(i - 91 - 1 + playerentity.inventory.currentItem * 20,  gui().scaledHeight - 22 - 1, 0, 22, 24, 22);
 			if (!itemstack.isEmpty()) {
 				if (handside == HandSide.LEFT) {
-					gui().blit(matrixStack, i - 91 - 29,  gui().scaledHeight - 23, 24, 22, 29, 24);
+					gui().blit(i - 91 - 29,  gui().scaledHeight - 23, 24, 22, 29, 24);
 				} else {
-					gui().blit(matrixStack, i + 91,  gui().scaledHeight - 23, 53, 22, 29, 24);
+					gui().blit(i + 91,  gui().scaledHeight - 23, 53, 22, 29, 24);
 				}
 			}
 
@@ -150,8 +148,8 @@ public class RenderOverlayEvents {
 					mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
 					int l1 = (int)(f * 19.0F);
 					RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-					gui().blit(matrixStack, k2, j2, 0, 94, 18, 18);
-					gui().blit(matrixStack, k2, j2 + 18 - l1, 18, 112 - l1, 18, l1);
+					gui().blit(k2, j2, 0, 94, 18, 18);
+					gui().blit(k2, j2 + 18 - l1, 18, 112 - l1, 18, l1);
 				}
 			}
 
@@ -160,7 +158,6 @@ public class RenderOverlayEvents {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@SubscribeEvent
 	public static void renderGameOverlay(RenderGameOverlayEvent event) {
 		Random rand = new Random();
@@ -180,7 +177,7 @@ public class RenderOverlayEvents {
 		}
 		//
 		living = null;
-		ModifiableAttributeInstance iattributemaxHealth = playerentity.getAttribute(Attributes.MAX_HEALTH);
+		IAttributeInstance iattributemaxHealth = playerentity.getAttribute(SharedMonsterAttributes.MAX_HEALTH);
 		int i1 = gui().scaledWidth / 2 - 91;
 		int j1 = gui().scaledWidth / 2 + 91;
 		int k1 = gui().scaledHeight - 39;
@@ -204,7 +201,7 @@ public class RenderOverlayEvents {
 			}
 		}
 		if (Config.enable_temperature && !Config.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
-			renderTemperature(ScreenOffset.TOP, playerentity, event.getMatrixStack());
+			renderTemperature(ScreenOffset.TOP, playerentity);
 		}
 
 
@@ -267,32 +264,32 @@ public class RenderOverlayEvents {
 				}
 				if (playerentity.isPotionActive(SEffects.HYPERTHERMIA) || playerentity.isPotionActive(SEffects.HYPOTHERMIA)) {
 					mc.getTextureManager().bindTexture(GUI_ICONS);
-					gui().blit(event.getMatrixStack(), l4, i5, 16 + j4 * 9, 9 * j5, 9, 9);
+					gui().blit(l4, i5, 16 + j4 * 9, 9 * j5, 9, 9);
 					if (flag) {
 						if (l5 * 2 + 1 < k) {
-							gui().blit(event.getMatrixStack(), l4, i5, i6 + 54, 9 * j5, 9, 9);
+							gui().blit(l4, i5, i6 + 54, 9 * j5, 9, 9);
 						}
 
 						if (l5 * 2 + 1 == k) {
-							gui().blit(event.getMatrixStack(), l4, i5, i6 + 63, 9 * j5, 9, 9);
+							gui().blit(l4, i5, i6 + 63, 9 * j5, 9, 9);
 						}
 					}
 
 					if (i3 > 0) {
 						if (i3 == l1 && l1 % 2 == 1) {
-							gui().blit(event.getMatrixStack(), l4, i5, i6 + 153, 9 * j5, 9, 9);
+							gui().blit(l4, i5, i6 + 153, 9 * j5, 9, 9);
 							--i3;
 						} else {
-							gui().blit(event.getMatrixStack(), l4, i5, i6 + 144, 9 * j5, 9, 9);
+							gui().blit(l4, i5, i6 + 144, 9 * j5, 9, 9);
 							i3 -= 2;
 						}
 					} else {
 						if (l5 * 2 + 1 < i) {
-							gui().blit(event.getMatrixStack(), l4, i5, i6 + 36, 9 * j5, 9, 9);
+							gui().blit(l4, i5, i6 + 36, 9 * j5, 9, 9);
 						}
 
 						if (l5 * 2 + 1 == i) {
-							gui().blit(event.getMatrixStack(), l4, i5, i6 + 45, 9 * j5, 9, 9);
+							gui().blit(l4, i5, i6 + 45, 9 * j5, 9, 9);
 						}
 					}
 				}
@@ -323,13 +320,13 @@ public class RenderOverlayEvents {
 						}
 
 						int k8 = j1 - k6 * 8 - 9;
-						gui().blit(event.getMatrixStack(), k8, i7 - 10 + moveUp, 16 + i8 * 9, 54, 9, 9);
+						gui().blit(k8, i7 - 10 + moveUp, 16 + i8 * 9, 54, 9, 9);
 						if (k6 * 2 + 1 < l) {
-							gui().blit(event.getMatrixStack(), k8, i7 - 10 + moveUp, k7 + 36, 54, 9, 9);
+							gui().blit(k8, i7 - 10 + moveUp, k7 + 36, 54, 9, 9);
 						}
 
 						if (k6 * 2 + 1 == l) {
-							gui().blit(event.getMatrixStack(), k8, i7 - 10 + moveUp, k7 + 45, 54, 9, 9);
+							gui().blit(k8, i7 - 10 + moveUp, k7 + 45, 54, 9, 9);
 						}
 					}
 					mc.getProfiler().endSection();
@@ -338,7 +335,7 @@ public class RenderOverlayEvents {
 			}
 			//Energy
 			if (Config.enable_stamina) {
-				renderEnergyBars(event.getMatrixStack(), playerentity, needsAir, j1, k1, living);
+				renderEnergyBars(playerentity, needsAir, j1, k1, living);
 			}
 		}
 		if (event.getType() == RenderGameOverlayEvent.ElementType.VIGNETTE) {
@@ -359,7 +356,6 @@ public class RenderOverlayEvents {
 		RenderSystem.disableAlphaTest();
 	}
 	
-	@SuppressWarnings("deprecation")
 	protected static void renderTiredOverlay(int amp) {
 		int scaledWidth = mc.getMainWindow().getScaledWidth();
 		int scaledHeight = mc.getMainWindow().getScaledHeight();
@@ -383,7 +379,7 @@ public class RenderOverlayEvents {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
-	public static void renderTemperature(ScreenOffset position, PlayerEntity playerentity, MatrixStack matrixStack) {
+	public static void renderTemperature(ScreenOffset position, PlayerEntity playerentity) {
 		int x = ScreenHelper.getXOffset(position) + Config.tempXLoc;
 		int y = ScreenHelper.getYOffset(position) + Config.tempYLoc;
 		mc.getProfiler().startSection("temperature");
@@ -394,7 +390,7 @@ public class RenderOverlayEvents {
 		if (tempLocation > 0) {
 			double maxTemp = 0.0D;
 			if (playerentity.getAttribute(SAttributes.HEAT_RESISTANCE) != null) {
-				maxTemp = playerentity.getAttributeValue(SAttributes.HEAT_RESISTANCE);
+				maxTemp = playerentity.getAttribute(SAttributes.HEAT_RESISTANCE).getValue();
 			}
 			double div = tempLocation / maxTemp;
 			displayTemp = MathHelper.clamp(div, 0, 1.0D+(28.0D/63.0D));
@@ -402,23 +398,16 @@ public class RenderOverlayEvents {
 		if (tempLocation < 0) {
 			double maxTemp = 0.0D;
 			if (playerentity.getAttribute(SAttributes.COLD_RESISTANCE) != null) {
-				maxTemp = playerentity.getAttributeValue(SAttributes.COLD_RESISTANCE);
+				maxTemp = playerentity.getAttribute(SAttributes.COLD_RESISTANCE).getValue();
 			}
 			double div = tempLocation / maxTemp;
 			displayTemp = MathHelper.clamp(div, -1.0D-(28.0D/63.0D), 0);
 		}
 		if (Config.tempDisplayMode.equals(TempDisplayMode.BAR)) {
-			if (Config.tempEffects && displayTemp >= 1) {//Hyperthermia override
-				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y-3, 0, 79, 132, 9);
-			} else if (Config.tempEffects && displayTemp <= -1) {//Hypothermia override
-				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y-3, 0, 90, 132, 9);
-			} else {
-				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y, 0, 64, 132, 5);
-				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y, 0, 69, 132, 5);
-			}
-			if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x+MathHelper.floor(displayTemp*44)+63+(displayTemp>0?1:0), y, 0, 74, 5, 5);
+			if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(x, y, 0, 64, 132, 5);
+			if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(x, y, 0, 69, 132, 5);
+			if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(x+MathHelper.floor(displayTemp*44)+63+(displayTemp>0?1:0), y, 0, 74, 5, 5);
 		}
-		
 		int temp = (int) (rawTemperature*100);
 		double temperaure = ((double)temp) / 100.0D;
 		String s = temperaure+" °C";
@@ -429,7 +418,7 @@ public class RenderOverlayEvents {
 			s = fTemperaure+" °F";
 		}
 		if(Minecraft.isGuiEnabled() && !mc.playerController.isSpectatorMode() && Config.tempDisplayMode.equals(TempDisplayMode.NUMBERS)) {
-			mc.fontRenderer.drawStringWithShadow(matrixStack, s, x, y, TextFormatting.BLUE.getColor());
+			mc.fontRenderer.drawStringWithShadow(s, x, y, TextFormatting.BLUE.getColor());
 		}
 		mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
 		mc.getProfiler().endSection();
@@ -440,7 +429,7 @@ public class RenderOverlayEvents {
 		RenderSystem.disableAlphaTest();
 	}
 
-	public static void renderEnergyBars(MatrixStack matrixStack, PlayerEntity playerentity, boolean needsAir, int j1, int k1, LivingEntity living) {
+	public static void renderEnergyBars(PlayerEntity playerentity, boolean needsAir, int j1, int k1, LivingEntity living) {
 		Random rand = new Random();
 		LivingEntity livingentity = living;
 		int moveUp = needsAir ? -10 : 0;
@@ -466,13 +455,13 @@ public class RenderOverlayEvents {
 				}
 
 				int k8 = j1 - k6 * 8 - 9;
-				gui().blit(matrixStack, k8, i7 - 10 + moveUp + thirstEnabled, 16 + i8 * 9, 36, 9, 9);
+				gui().blit(k8, i7 - 10 + moveUp + thirstEnabled, 16 + i8 * 9, 36, 9, 9);
 				if (k6 * 2 + 1 < l) {
-					gui().blit(matrixStack, k8, i7 - 10 + moveUp + thirstEnabled, k7 + 36, 36, 9, 9);
+					gui().blit(k8, i7 - 10 + moveUp + thirstEnabled, k7 + 36, 36, 9, 9);
 				}
 
 				if (k6 * 2 + 1 == l) {
-					gui().blit(matrixStack, k8, i7 - 10 + moveUp + thirstEnabled, k7 + 45, 36, 9, 9);
+					gui().blit(k8, i7 - 10 + moveUp + thirstEnabled, k7 + 45, 36, 9, 9);
 				}
 			}
 			mc.getProfiler().endSection();

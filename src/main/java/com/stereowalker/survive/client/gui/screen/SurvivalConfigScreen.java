@@ -1,16 +1,14 @@
 package com.stereowalker.survive.client.gui.screen;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.config.Config;
-import com.stereowalker.survive.entity.TempDisplayMode;
 import com.stereowalker.unionlib.config.ConfigBuilder;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractSlider;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -48,7 +46,7 @@ public class SurvivalConfigScreen extends Screen {
 	}
 	
 	public <T extends Enum<T>> void addEnumOption(String trans, T config, T[] values, int xMod, int yMod) {
-		this.addButton(new Button(this.width / 2 + xMod, this.height / 6 + yMod, 150, 20, new TranslationTextComponent(Survive.MOD_ID+"."+trans).appendString(" : "+config), (p_212984_1_) -> {
+		this.addButton(new Button(this.width / 2 + xMod, this.height / 6 + yMod, 150, 20, I18n.format(Survive.MOD_ID+"."+trans)+(" : "+config), (p_212984_1_) -> {
 			rotateEnum(config, values, true);
 			this.minecraft.displayGuiScreen(this);
 		}));
@@ -86,7 +84,7 @@ public class SurvivalConfigScreen extends Screen {
 		String toggle;
 		if (config.get()) toggle = "options.on";
 		else toggle = "options.off";
-		this.addButton(new Button(this.width / 2 + xMod, this.height / 6 + yMod, 150, 20, new TranslationTextComponent(Survive.MOD_ID+"."+config.getPath().get(1)).appendString(" : ").append(new TranslationTextComponent(toggle)), (onPress) -> {
+		this.addButton(new Button(this.width / 2 + xMod, this.height / 6 + yMod, 150, 20, I18n.format(Survive.MOD_ID+"."+config.getPath().get(1))+(" : ")+(I18n.format(toggle)), (onPress) -> {
 			config.set(!config.get());
 			this.minecraft.displayGuiScreen(this);
 		}));
@@ -95,14 +93,14 @@ public class SurvivalConfigScreen extends Screen {
 	public void addSliderOption(IntValue config, int xMod, int yMod, float maxValue) {
 		this.addButton(new Slider(this, this.width / 2 + xMod, this.height / 6 + yMod, 150, (float)(config.get()/maxValue)) {
 			@Override
-			protected void /*updateMessage*/func_230979_b_() {
-				String s = (int)((float)this.sliderValue * maxValue) + "";
-				this.setMessage(new TranslationTextComponent(Survive.MOD_ID+"."+config.getPath().get(1)).appendString(": " + s));
+			protected void updateMessage() {
+				String s = (int)((float)this.value * maxValue) + "";
+				this.setMessage(I18n.format(Survive.MOD_ID+"."+config.getPath().get(1))+(": " + s));
 			}
 
 			@Override
-			protected void /*applyValue*/func_230972_a_() {
-				config.set((int)((float)this.sliderValue * maxValue));
+			protected void applyValue() {
+				config.set((int)((float)this.value * maxValue));
 			}
 		});
 	}
@@ -114,10 +112,10 @@ public class SurvivalConfigScreen extends Screen {
 	}
 
 	@Override
-	public void render(MatrixStack matrixStack, int p_render_1_, int p_render_2_, float p_render_3_) {
-		this.renderBackground(matrixStack);
-		AbstractGui.drawCenteredString(matrixStack, this.font, this.title, this.width / 2, 20, 16777215);
-		super.render(matrixStack, p_render_1_, p_render_2_, p_render_3_);
+	public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
+		this.renderBackground();
+		this.drawCenteredString(this.font, this.title.getFormattedText(), this.width / 2, 20, 16777215);
+		super.render(p_render_1_, p_render_2_, p_render_3_);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -125,8 +123,8 @@ public class SurvivalConfigScreen extends Screen {
 		SurvivalConfigScreen screen;
 
 		public Slider(SurvivalConfigScreen screen, int x, int y, int width, double value) {
-			super(x, y, width, 20, new TranslationTextComponent(""), value);
-			this./*updateMessage*/func_230979_b_();
+			super(x, y, width, 20, value);
+			this.updateMessage();
 			this.screen = screen;
 		}
 	}

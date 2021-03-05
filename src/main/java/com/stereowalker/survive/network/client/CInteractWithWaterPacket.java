@@ -16,7 +16,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.CauldronBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.fluid.WaterFluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -61,14 +61,14 @@ public class CInteractWithWaterPacket {
 		return new CInteractWithWaterPacket(packetBuffer.readBlockPos(), packetBuffer.readBoolean(), packetBuffer.readDouble(), packetBuffer.readDouble(), packetBuffer.readEnumValue(Hand.class), new UUID(packetBuffer.readLong(), packetBuffer.readLong()));
 	}
 	
-	public static boolean canDrinkThis(FluidState fluid, boolean canDrinkFlowingIfInfinite) {
+	public static boolean canDrinkThis(IFluidState fluid, boolean canDrinkFlowingIfInfinite) {
 		if (fluid.isSource())
 			return true; /* FlowingFluid.canSourcesMultiply */
 		else if (fluid.getFluid() instanceof WaterFluid && canDrinkFlowingIfInfinite) return true;
 		return false;
 	}
 	
-	public static boolean shouldRemoveSource(FluidState fluid) {
+	public static boolean shouldRemoveSource(IFluidState fluid) {
 		if ((!(fluid.getFluid() instanceof WaterFluid) || Config.shouldRemoveSourceWaterBlock) && fluid.isSource()) return true;
 		return false;
 	}
@@ -86,7 +86,7 @@ public class CInteractWithWaterPacket {
 			final double waterAmount = msg.waterAmount;
 			final double hydrationAmount = msg.hydrationAmount;
 			BlockState block = sender.world.getBlockState(pos);
-			FluidState fluid = sender.world.getFluidState(pos);
+			IFluidState fluid = sender.world.getFluidState(pos);
 			final UUID uuid = msg.uuid;
 			if (uuid.equals(PlayerEntity.getUUID(sender.getGameProfile()))) {
 				if (Config.enable_thirst) {

@@ -5,6 +5,7 @@ import com.stereowalker.survive.compat.SereneSeasonsCompat;
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.enchantment.SEnchantmentHelper;
 import com.stereowalker.survive.entity.SurviveEntityStats;
+import com.stereowalker.survive.entity.ai.SAttributes;
 import com.stereowalker.survive.fluid.SFluids;
 import com.stereowalker.survive.item.SItems;
 import com.stereowalker.survive.network.client.CInteractWithWaterPacket;
@@ -43,13 +44,12 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.Heightmap;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -66,7 +66,14 @@ public class SurviveEvents {
 	public static final Object2FloatMap<Fluid> FLUID_HYDRATION_MAP = new Object2FloatOpenHashMap<Fluid>();
 	public static final Object2BooleanMap<Fluid> FLUID_THIRSTY_MAP = new Object2BooleanOpenHashMap<Fluid>();
 
-
+	@SubscribeEvent
+	public static void registerAttributes(EntityConstructing event) {
+		if (event.getEntity() instanceof PlayerEntity) {
+			((PlayerEntity)event.getEntity()).getAttributes().registerAttribute(SAttributes.COLD_RESISTANCE);
+			((PlayerEntity)event.getEntity()).getAttributes().registerAttribute(SAttributes.HEAT_RESISTANCE);
+		}
+	}
+	
 	public static void registerHeatMap() {
 		registerFluidDrinkStats(Fluids.WATER, 4, 1.0F, true);
 		registerFluidDrinkStats(SFluids.PURIFIED_WATER, 6, 3.0F, true);
@@ -91,7 +98,7 @@ public class SurviveEvents {
 		FLUID_HYDRATION_MAP.put(fluid, hydration);
 		FLUID_THIRSTY_MAP.put(fluid, shouldGiveThirst);
 	}
-
+	
 	public static float getTotalArmorWeight(LivingEntity player) {
 		float totalWeight = 0.124F;
 		for (EquipmentSlotType slot : EquipmentSlotType.values()) {
@@ -120,7 +127,7 @@ public class SurviveEvents {
 				ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
 				if (player.isSleeping())
 					SurviveEntityStats.addAwakeTime(player, -player.getSleepTimer());
-				else if (player.getServerWorld().getDimensionType().doesBedWork())
+				else /* if (player.getServerWorld().getDimensionType().doesBedWork()) */ //TODO 1.15.2 Find a way to confirm that we can sleep in this dimension
 					SurviveEntityStats.addAwakeTime(player, 1);
 				if (player.ticksExisted % 20 == 0) {
 					addTiredEffect(player);
@@ -259,6 +266,7 @@ public class SurviveEvents {
 			ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
 			TemperatureStats stats = SurviveEntityStats.getTemperatureStats(player);
 			double wetness = (double)(SurviveEntityStats.getWetTime(player)) / -1800.0D;
+			//			stats.getOrCreateModifier(new ResourceLocation("survive:wetness")).setMod(wetness);
 			TemperatureStats.setTemperatureModifier(player, "survive:wetness", wetness);
 
 			double coolingMod = 0.0D;
@@ -266,6 +274,7 @@ public class SurviveEvents {
 			coolingMod -= 0.16D * (float)SEnchantmentHelper.getCoolingModifier(player.getItemStackFromSlot(EquipmentSlotType.CHEST));
 			coolingMod -= 0.13D * (float)SEnchantmentHelper.getCoolingModifier(player.getItemStackFromSlot(EquipmentSlotType.LEGS));
 			coolingMod -= 0.06D * (float)SEnchantmentHelper.getCoolingModifier(player.getItemStackFromSlot(EquipmentSlotType.FEET));
+			//			stats.getOrCreateModifier(new ResourceLocation("survive:cooling_enchantment")).setMod(coolingMod);
 			TemperatureStats.setTemperatureModifier(player, "survive:cooling_enchantment", coolingMod);
 
 			double warmingMod = 0.0D;
@@ -273,6 +282,7 @@ public class SurviveEvents {
 			warmingMod += 0.16D * (float)SEnchantmentHelper.getWarmingModifier(player.getItemStackFromSlot(EquipmentSlotType.CHEST));
 			warmingMod += 0.13D * (float)SEnchantmentHelper.getWarmingModifier(player.getItemStackFromSlot(EquipmentSlotType.LEGS));
 			warmingMod += 0.06D * (float)SEnchantmentHelper.getWarmingModifier(player.getItemStackFromSlot(EquipmentSlotType.FEET));
+			//			stats.getOrCreateModifier(new ResourceLocation("survive:warming_enchantment")).setMod(warmingMod);
 			TemperatureStats.setTemperatureModifier(player, "survive:warming_enchantment", warmingMod);
 
 			boolean shouldCool = false;
@@ -283,6 +293,7 @@ public class SurviveEvents {
 					}
 				}
 			}
+			//			stats.getOrCreateModifier(new ResourceLocation("survive:adjusted_cooling_enchantment")).setMod(shouldCool?-2.0D:0.0D);
 			TemperatureStats.setTemperatureModifier(player, "survive:adjusted_cooling_enchantment", shouldCool?-2.0D:0.0D);
 
 			boolean shouldWarm = false;
@@ -293,6 +304,7 @@ public class SurviveEvents {
 					}
 				}
 			}
+			//			stats.getOrCreateModifier(new ResourceLocation("survive:adjusted_warming_enchantment")).setMod(shouldWarm?2.0D:0.0D);
 			TemperatureStats.setTemperatureModifier(player, "survive:adjusted_warming_enchantment", shouldWarm?2.0D:0.0D);
 
 
@@ -307,12 +319,14 @@ public class SurviveEvents {
 					}
 				}
 			}
+			//			stats.getOrCreateModifier(new ResourceLocation("survive:armor")).setMod(armorMod);
 			TemperatureStats.setTemperatureModifier(player, "survive:armor", armorMod);
 
 			double snow = 0.0D;
 			if (isSnowingAt(player.getServerWorld(), player.getPosition())) {
 				snow = -2.0D;
 			}
+			//			stats.getOrCreateModifier(new ResourceLocation("survive:snow")).setMod(snow);
 			TemperatureStats.setTemperatureModifier(player, "survive:snow", snow);
 
 			if (ModHelper.isSereneSeasonsLoaded()) {
@@ -320,8 +334,10 @@ public class SurviveEvents {
 				if (ModHelper.isPrimalWinterLoaded()) {
 					seasonMod = -1.0F;
 				}
+				//				stats.getOrCreateModifier(new ResourceLocation("survive:season")).setMod(seasonMod);
 				TemperatureStats.setTemperatureModifier(player, "survive:season", seasonMod);
 			}
+			//			SurviveEntityStats.setTemperatureStats(player, stats);
 		}
 	}
 
@@ -346,7 +362,7 @@ public class SurviveEvents {
 				} else {
 					temperature = getAverageTemperature(player.world, player.getPosition(), type, 5, Config.tempMode);
 				}
-				//				System.out.println(type+" "+temperature);
+//				System.out.println(type+" "+temperature);
 				double modifier = (temperature)/type.getReductionAmount();
 				//				System.out.println(type.getReductionAmount());
 				int modInt = (int) (modifier*1000);
@@ -379,7 +395,7 @@ public class SurviveEvents {
 			for (String dimensionList : Config.dimensionModifiers) {
 				String[] dimension = dimensionList.split(",");
 				ResourceLocation loc = new ResourceLocation(dimension[0]);
-				if (RegistryHelper.matchesRegistryKey(loc, world.getDimensionKey())) {
+				if (RegistryHelper.matchesRegisteredEntry(loc.toString(), world.getDimension().getType())) {
 					dimensionMod = Float.parseFloat(dimension[1]);
 				}
 			}
@@ -403,24 +419,24 @@ public class SurviveEvents {
 								BlockTemperatureData blockTemperatureData = Survive.blockTemperatureMap.get(heatState.getBlock().getRegistryName());
 								if (blockTemperatureData.usesLitOrActiveProperty()) {
 									boolean litOrActive = false;
-									if (heatState.hasProperty(BlockStateProperties.LIT) && heatState.get(BlockStateProperties.LIT)) litOrActive = true;
-									if (heatState.hasProperty(UBlockStateProperties.ACTIVE) && heatState.get(UBlockStateProperties.ACTIVE)) litOrActive = true;
+									if (heatState.has(BlockStateProperties.LIT) && heatState.get(BlockStateProperties.LIT)) litOrActive = true;
+									if (heatState.has(UBlockStateProperties.ACTIVE) && heatState.get(UBlockStateProperties.ACTIVE)) litOrActive = true;
 									if (litOrActive) blockTemp += blockTemperatureData.getTemperatureModifier();
 								}
 								else
 									blockTemp += blockTemperatureData.getTemperatureModifier();
-
+								
 								if (blockTemperatureData.usesLevelProperty()) {
-									if (heatState.hasProperty(BlockStateProperties.LEVEL_0_15)) {
+									if (heatState.has(BlockStateProperties.LEVEL_0_15)) {
 										blockTemp*=(heatState.get(BlockStateProperties.LEVEL_0_15)+1)/16;
 									}
-									else if (heatState.hasProperty(BlockStateProperties.LEVEL_0_8)) {
+									else if (heatState.has(BlockStateProperties.LEVEL_0_8)) {
 										blockTemp*=(heatState.get(BlockStateProperties.LEVEL_0_8)+1)/9;
 									}
-									else if (heatState.hasProperty(BlockStateProperties.LEVEL_1_8)) {
+									else if (heatState.has(BlockStateProperties.LEVEL_1_8)) {
 										blockTemp*=(heatState.get(BlockStateProperties.LEVEL_1_8))/8;
 									}
-									else if (heatState.hasProperty(BlockStateProperties.LEVEL_0_3)) {
+									else if (heatState.has(BlockStateProperties.LEVEL_0_3)) {
 										blockTemp*=(heatState.get(BlockStateProperties.LEVEL_0_3)+1)/4;
 									}
 								}
@@ -546,15 +562,15 @@ public class SurviveEvents {
 	protected static RayTraceResult rayTrace(World worldIn, LivingEntity player, RayTraceContext.FluidMode fluidMode) {
 		float f = player.rotationPitch;
 		float f1 = player.rotationYaw;
-		Vector3d vec3d = player.getEyePosition(1.0F);
+		Vec3d vec3d = player.getEyePosition(1.0F);
 		float f2 = MathHelper.cos(-f1 * ((float)Math.PI / 180F) - (float)Math.PI);
 		float f3 = MathHelper.sin(-f1 * ((float)Math.PI / 180F) - (float)Math.PI);
 		float f4 = -MathHelper.cos(-f * ((float)Math.PI / 180F));
 		float f5 = MathHelper.sin(-f * ((float)Math.PI / 180F));
 		float f6 = f3 * f4;
 		float f7 = f2 * f4;
-		double d0 = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
-		Vector3d vec3d1 = vec3d.add((double)f6 * d0, (double)f5 * d0, (double)f7 * d0);
+		double d0 = player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+		Vec3d vec3d1 = vec3d.add((double)f6 * d0, (double)f5 * d0, (double)f7 * d0);
 		return worldIn.rayTraceBlocks(new RayTraceContext(vec3d, vec3d1, RayTraceContext.BlockMode.OUTLINE, fluidMode, player));
 	}
 
@@ -570,11 +586,11 @@ public class SurviveEvents {
 		}
 	}
 
-	@SubscribeEvent
-	public static void addReload(AddReloadListenerEvent event) {
-		event.addListener(Survive.thirstReloader);
-		event.addListener(Survive.potionReloader);
-		event.addListener(Survive.armorReloader);
-		event.addListener(Survive.blockReloader);
-	}
+//	@SubscribeEvent
+//	public static void addReload(AddReloadListenerEvent event) {
+//		event.addListener(Survive.thirstReloader);
+//		event.addListener(Survive.potionReloader);
+//		event.addListener(Survive.armorReloader);
+//		event.addListener(Survive.blockReloader);
+//	}
 }

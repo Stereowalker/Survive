@@ -22,7 +22,6 @@ public enum SArmorMaterial implements IArmorMaterial
 	private Item repairItem;
 	private int[] damageReductionAmounts;
 	private float toughness;
-	private float knockbackResistance;
 	
 	private SArmorMaterial(String name, int durability, int[] damageReductionAmounts, int enchantability, SoundEvent equipSound, float toughness, float knockbackResistance, Item repairItem) 
 	{
@@ -32,7 +31,6 @@ public enum SArmorMaterial implements IArmorMaterial
 		this.equipSound = equipSound;
 		this.name = name;
 		this.repairItem = repairItem;
-		this.knockbackResistance = knockbackResistance;
 		this.toughness = toughness;
 	}
 
@@ -76,11 +74,6 @@ public enum SArmorMaterial implements IArmorMaterial
 	public float getToughness() 
 	{
 		return this.toughness;
-	}
-
-	@Override
-	public float getKnockbackResistance() {
-		return knockbackResistance;
 	}
 
 }

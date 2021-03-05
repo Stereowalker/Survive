@@ -6,7 +6,6 @@ import java.util.List;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.fluid.SFluids;
 
-import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
@@ -18,7 +17,7 @@ public class SBlocks {
 	public static final List<ItemGroup> ITEMGROUPS = new ArrayList<ItemGroup>();
 	public static final List<Block> BLOCKITEMS = new ArrayList<Block>();
 	//-Fluids-\\
-	public static final Block PURIFIED_WATER = register("purified_water", new FlowingFluidBlock(() -> SFluids.PURIFIED_WATER, AbstractBlock.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()));
+	public static final Block PURIFIED_WATER = register("purified_water", new FlowingFluidBlock(() -> SFluids.PURIFIED_WATER, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()));
 
 	public static Block register(String name, Block block) {
 		block.setRegistryName(Survive.location(name));

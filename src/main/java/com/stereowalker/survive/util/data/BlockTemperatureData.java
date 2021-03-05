@@ -76,16 +76,16 @@ public class BlockTemperatureData {
 			rangeIn = 0;
 		}
 		
-		if (usesLitOrActivePropertyIn && ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().hasProperty(BlockStateProperties.LIT) && ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().hasProperty(UBlockStateProperties.ACTIVE)) {
+		if (usesLitOrActivePropertyIn && ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().has(BlockStateProperties.LIT) && ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().has(UBlockStateProperties.ACTIVE)) {
 			Survive.LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: This block has neither the lit property nor the active property, please set this to false", blockID);
 			usesLitOrActivePropertyIn = false;
 		}
 		
 		if (usesLevelPropertyIn 
-				&& ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().hasProperty(BlockStateProperties.LEVEL_0_15) 
-				&& ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().hasProperty(BlockStateProperties.LEVEL_0_3)
-				&& ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().hasProperty(BlockStateProperties.LEVEL_0_8)
-				&& ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().hasProperty(BlockStateProperties.LEVEL_1_8)) {
+				&& ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().has(BlockStateProperties.LEVEL_0_15) 
+				&& ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().has(BlockStateProperties.LEVEL_0_3)
+				&& ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().has(BlockStateProperties.LEVEL_0_8)
+				&& ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().has(BlockStateProperties.LEVEL_1_8)) {
 			Survive.LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: This block does not have the level property, please set this to false", blockID);
 			usesLitOrActivePropertyIn = false;
 		}

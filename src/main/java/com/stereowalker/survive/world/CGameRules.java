@@ -6,6 +6,6 @@ public class CGameRules {
 	public static GameRules.RuleKey<GameRules.BooleanValue> DO_THIRST_REDUCTION;
 
 	public static void init(){
-		CGameRules.DO_THIRST_REDUCTION = GameRules.register("doThirstReduction", GameRules.Category.UPDATES, GameRules.BooleanValue.create(true));
+		CGameRules.DO_THIRST_REDUCTION = GameRules.register("doThirstReduction", GameRules.BooleanValue.create(true));
 	}
 }

@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.Maps;
 import com.stereowalker.survive.client.gui.screen.SurvivalConfigScreen;
 import com.stereowalker.survive.config.Config;
-import com.stereowalker.survive.entity.ai.SAttributes;
 import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.fluid.SFluids;
 import com.stereowalker.survive.network.NetRegistry;
@@ -27,13 +26,11 @@ import com.stereowalker.survive.util.data.ConsummableData;
 import com.stereowalker.survive.world.CGameRules;
 import com.stereowalker.unionlib.config.ConfigBuilder;
 import com.stereowalker.unionlib.mod.UnionMod;
-import com.stereowalker.unionlib.util.EntityHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.entity.EntityType;
 import net.minecraft.item.Food;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -47,6 +44,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -80,6 +78,7 @@ public class Survive extends UnionMod {
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::clientRegistries);
+		modEventBus.addListener(this::serverRegistries);
 		MinecraftForge.EVENT_BUS.register(this);
 		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> SurvivalConfigScreen::new);
 		NetRegistry.registerMessages();
@@ -122,10 +121,10 @@ public class Survive extends UnionMod {
 
 	private void setup(final FMLCommonSetupEvent event)
 	{
-		EntityHelper.registerAttributes(EntityType.PLAYER, builder -> {
-			builder.createMutableAttribute(SAttributes.COLD_RESISTANCE);
-			builder.createMutableAttribute(SAttributes.HEAT_RESISTANCE);
-		});
+//		EntityHelper.registerAttributes(EntityType.PLAYER, builder -> {
+//			builder.createMutableAttribute(SAttributes.COLD_RESISTANCE);
+//			builder.createMutableAttribute(SAttributes.HEAT_RESISTANCE);
+//		});
 		
 		BrewingRecipes.addBrewingRecipes();
 		CGameRules.init();
@@ -142,6 +141,14 @@ public class Survive extends UnionMod {
 		RenderType frendertype = RenderType.getTranslucent();
 		RenderTypeLookup.setRenderLayer(SFluids.PURIFIED_WATER, frendertype);
 		RenderTypeLookup.setRenderLayer(SFluids.FLOWING_PURIFIED_WATER, frendertype);
+	}
+	
+	public void serverRegistries(final FMLServerAboutToStartEvent event)
+	{
+		event.getServer().getResourceManager().addReloadListener(armorReloader);
+		event.getServer().getResourceManager().addReloadListener(blockReloader);
+		event.getServer().getResourceManager().addReloadListener(potionReloader);
+		event.getServer().getResourceManager().addReloadListener(thirstReloader);
 	}
 
 	public static ResourceLocation location(String name)

@@ -2,7 +2,6 @@ package com.stereowalker.survive.compat;
 
 import com.stereowalker.survive.util.TemperatureUtil;
 
-import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -14,16 +13,14 @@ import sereneseasons.config.BiomeConfig;
 public class SereneSeasonsCompat {
 
 	public static boolean snowsHere(World world, BlockPos pos) {
-		if (world.func_242406_i(pos).isPresent() && !sereneseasons.config.BiomeConfig.usesTropicalSeasons(world.func_242406_i(pos).get())) {
+		if (!sereneseasons.config.BiomeConfig.usesTropicalSeasons(world.getBiome(pos))) {
 			return SeasonHelper.getSeasonState(world).getSeason() == Season.WINTER;
 		}
 		return false;
 	}
 
 	public static float modifyTemperatureBySeason(World world, BlockPos pos) {
-		if (world.func_242406_i(pos) != null &&
-				world.func_242406_i(pos).isPresent() && 
-				sereneseasons.config.BiomeConfig.usesTropicalSeasons(world.func_242406_i(pos).get())) {
+		if (sereneseasons.config.BiomeConfig.usesTropicalSeasons(world.getBiome(pos))) {
 			switch (SeasonHelper.getSeasonState(world).getTropicalSeason()) {
 			case EARLY_DRY: return 0.1F;
 			case MID_DRY: return 0.2F;
@@ -68,11 +65,11 @@ public class SereneSeasonsCompat {
      * @param pos
      * @return
      */
-    public static float getBiomeTemperatureInSeason(Season.SubSeason subSeason, Biome biome, RegistryKey<Biome> key, BlockPos pos)
+    public static float getBiomeTemperatureInSeason(Season.SubSeason subSeason, Biome biome, Biome key, BlockPos pos)
     {
         boolean tropicalBiome = BiomeConfig.usesTropicalSeasons(key);
         float biomeTemp = TemperatureUtil.getTemperature(biome, pos);
-        if (!tropicalBiome && biome.getTemperature() <= 0.8F && BiomeConfig.enablesSeasonalEffects(key))
+        if (!tropicalBiome && biome.getDefaultTemperature() <= 0.8F && BiomeConfig.enablesSeasonalEffects(key))
         {
             switch (subSeason)
             {

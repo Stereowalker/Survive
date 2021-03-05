@@ -141,7 +141,7 @@ public class TemperatureStats {
 		if (tempLocation > 0) {
 			double maxTemp = 0.0D;
 			if (player.getAttribute(SAttributes.HEAT_RESISTANCE) != null) {
-				maxTemp = player.getAttributeValue(SAttributes.HEAT_RESISTANCE);
+				maxTemp = player.getAttribute(SAttributes.HEAT_RESISTANCE).getValue();
 			}
 			double div = tempLocation / maxTemp;
 			this.displayTemperature = MathHelper.clamp(div, 0, 1.0D+(28.0D/63.0D));
@@ -149,7 +149,7 @@ public class TemperatureStats {
 		if (tempLocation < 0) {
 			double maxTemp = 0.0D;
 			if (player.getAttribute(SAttributes.COLD_RESISTANCE) != null) {
-				maxTemp = player.getAttributeValue(SAttributes.COLD_RESISTANCE);
+				maxTemp = player.getAttribute(SAttributes.COLD_RESISTANCE).getValue();
 			}
 			double div = tempLocation / maxTemp;
 			this.displayTemperature = MathHelper.clamp(div, -1.0D-(28.0D/63.0D), 0);

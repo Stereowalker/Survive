@@ -2,7 +2,6 @@ package com.stereowalker.survive.registries;
 
 import com.stereowalker.survive.blocks.SBlocks;
 import com.stereowalker.survive.enchantment.SEnchantments;
-import com.stereowalker.survive.entity.ai.SAttributes;
 import com.stereowalker.survive.fluid.SFluids;
 import com.stereowalker.survive.item.SItems;
 import com.stereowalker.survive.item.crafting.SRecipeSerializer;
@@ -11,7 +10,6 @@ import com.stereowalker.survive.potion.SPotions;
 
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -46,11 +44,6 @@ public class SurviveRegistryEvents
 		event.getBlockColors().register((state, displayReader, blockPos, tintIndex) -> {
 			return displayReader != null && blockPos != null ? BiomeColors.getWaterColor(displayReader, blockPos) : -1;
 		}, SBlocks.PURIFIED_WATER);
-	}
-
-	@SubscribeEvent
-	public static void registerAttributes(final RegistryEvent.Register<Attribute> event) {
-		SAttributes.registerAll(event.getRegistry());
 	}
 
 	@SubscribeEvent

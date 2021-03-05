@@ -7,9 +7,10 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.util.data.ConsummableData;
 
@@ -56,13 +57,13 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 								Pair<EffectInstance, Float> defaultEffect = null;
 								Pair<EffectInstance, Float> itemEffect = null;
 								for (Pair<EffectInstance, Float> effect : ForgeRegistries.ITEMS.getValue(drinkId).food.getEffects()) {
-									if (effect.getFirst().getPotion() == Effects.HUNGER) {
+									if (effect.getLeft().getPotion() == Effects.HUNGER) {
 										itemEffect = effect;
 									}
 								}
 
 								for (Pair<EffectInstance, Float> effect : Survive.defaultFoodMap.get(drinkId).getEffects()) {
-									if (effect.getFirst().getPotion() == Effects.HUNGER) {
+									if (effect.getLeft().getPotion() == Effects.HUNGER) {
 										defaultEffect = effect;
 									}
 								}

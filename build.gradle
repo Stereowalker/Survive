@@ -120,16 +120,11 @@ dependencies {
 	compile fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
 	
 	
-	compile fg.deobf("curse.maven:combat-api-320729:"+combatAPIID)
+	//compile fg.deobf("curse.maven:combat-api-320729:"+combatAPIID)
 	
-	//compileOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+":api")
+	compileOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+":api")
 	
-	//runtimeOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+"")
-	
-	
-	compileOnly fg.deobf("mezz.jei:jei-"+"1.16.4"+":"+jeiVersion+":api")
-	
-	runtimeOnly fg.deobf("mezz.jei:jei-"+"1.16.4"+":"+jeiVersion+"")
+	runtimeOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+"")
 }
 // Process resources on build
 processResources {
@@ -164,12 +159,8 @@ jar {
 }
 
 task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    from (sourceSets.main.output) {
-        include 'LICENSE.txt'
-    }
-
     classifier = 'sources'
+    from sourceSets.main.allJava
 }
 
 task deobfJar(type: Jar) {
