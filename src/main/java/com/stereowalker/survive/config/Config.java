@@ -137,7 +137,7 @@ public class Config {
 	
 	//
 	//Hygiene
-	@UnionConfig.Entry(group = "Hygiene" , name = "Enable Hygiene", type = Type.COMMON)
+	@UnionConfig.Entry(group = "Hygiene" , name = "Enable Hygiene (Beta)", type = Type.COMMON)
 	@UnionConfig.Comment(comment = {"Disabling this will disable this mods hygiene system","The hygiene system might be pretty buggy, so proceed with caution"})
 	public static boolean enable_Hygiene = false;
 	
