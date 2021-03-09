@@ -28,7 +28,7 @@ public class SEnchantments {
 	}
 	
 	public static Enchantment register(String name, Enchantment enchantment) {
-		enchantment.setRegistryName(Survive.location(name));
+		enchantment.setRegistryName(Survive.getInstance().location(name));
 		ENCHANTMENTS.add(enchantment);
 		return enchantment;
 	}
@@ -36,8 +36,8 @@ public class SEnchantments {
 	public static void registerAll(IForgeRegistry<Enchantment> registry) {
 		for(Enchantment enchantment : ENCHANTMENTS) {
 			registry.register(enchantment);
-			Survive.debug("Enchantment: \""+enchantment.getRegistryName().toString()+"\" registered");
+			Survive.getInstance().debug("Enchantment: \""+enchantment.getRegistryName().toString()+"\" registered");
 		}
-		Survive.debug("All Enchantments Registered");
+		Survive.getInstance().debug("All Enchantments Registered");
 	}
 }

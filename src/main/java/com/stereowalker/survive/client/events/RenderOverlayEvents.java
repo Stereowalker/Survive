@@ -368,7 +368,7 @@ public class RenderOverlayEvents {
 		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.disableAlphaTest();
-		mc.getTextureManager().bindTexture(Survive.location("textures/misc/sleep_overlay_"+(amp)+".png"));
+		mc.getTextureManager().bindTexture(Survive.getInstance().location("textures/misc/sleep_overlay_"+(amp)+".png"));
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 		bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);

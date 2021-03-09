@@ -60,24 +60,24 @@ public class BlockTemperatureData {
 					workingOn = NOTHING;
 				}
 			} catch (ClassCastException e) {
-				Survive.LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was wrong type!", e, blockID, workingOn);
+				Survive.getInstance().LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was wrong type!", e, blockID, workingOn);
 			} catch (NumberFormatException e) {
-				Survive.LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was an invalid number!", e, blockID, workingOn);
+				Survive.getInstance().LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was an invalid number!", e, blockID, workingOn);
 			}
 		}
 		
 		if (rangeIn > 5) {
-			Survive.LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Range should not be greater that 5", blockID);
+			Survive.getInstance().LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Range should not be greater that 5", blockID);
 			rangeIn = 5;
 		}
 		
 		if (rangeIn < 0) {
-			Survive.LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Range should not be less than 0", blockID);
+			Survive.getInstance().LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Range should not be less than 0", blockID);
 			rangeIn = 0;
 		}
 		
 		if (usesLitOrActivePropertyIn && ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().hasProperty(BlockStateProperties.LIT) && ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().hasProperty(UBlockStateProperties.ACTIVE)) {
-			Survive.LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: This block has neither the lit property nor the active property, please set this to false", blockID);
+			Survive.getInstance().LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: This block has neither the lit property nor the active property, please set this to false", blockID);
 			usesLitOrActivePropertyIn = false;
 		}
 		
@@ -86,7 +86,7 @@ public class BlockTemperatureData {
 				&& ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().hasProperty(BlockStateProperties.LEVEL_0_3)
 				&& ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().hasProperty(BlockStateProperties.LEVEL_0_8)
 				&& ForgeRegistries.BLOCKS.getValue(blockID).getDefaultState().hasProperty(BlockStateProperties.LEVEL_1_8)) {
-			Survive.LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: This block does not have the level property, please set this to false", blockID);
+			Survive.getInstance().LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: This block does not have the level property, please set this to false", blockID);
 			usesLitOrActivePropertyIn = false;
 		}
 		

@@ -17,7 +17,7 @@ public class SFluids {
 
 	
 	public static <T extends Fluid> T register(String name, T fluid) {
-		fluid.setRegistryName(Survive.location(name));
+		fluid.setRegistryName(Survive.getInstance().location(name));
 		FLUIDS.add(fluid);
 		return fluid;
 	}
@@ -25,8 +25,8 @@ public class SFluids {
 	public static void registerAll(IForgeRegistry<Fluid> registry) {
 		for(Fluid fluid: FLUIDS) {
 			registry.register(fluid);
-			Survive.debug("Fluid: \""+fluid.getRegistryName().toString()+"\" registered");
+			Survive.getInstance().debug("Fluid: \""+fluid.getRegistryName().toString()+"\" registered");
 		}
-		Survive.debug("All Fluids Registered");
+		Survive.getInstance().debug("All Fluids Registered");
 	}
 }

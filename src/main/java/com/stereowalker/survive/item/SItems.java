@@ -37,6 +37,7 @@ public class SItems {
 	public static final Item STIFFENED_HONEY_CHESTPLATE = register("stiffened_honey_chestplate", new ArmorItem(SArmorMaterial.STIFFENED_HONEY, EquipmentSlotType.CHEST, new Item.Properties().group(SItemGroup.MAIN)));
 	public static final Item STIFFENED_HONEY_LEGGINGS = register("stiffened_honey_leggings", new ArmorItem(SArmorMaterial.STIFFENED_HONEY, EquipmentSlotType.LEGS, new Item.Properties().group(SItemGroup.MAIN)));
 	public static final Item STIFFENED_HONEY_BOOTS = register("stiffened_honey_boots", new ArmorItem(SArmorMaterial.STIFFENED_HONEY, EquipmentSlotType.FEET, new Item.Properties().group(SItemGroup.MAIN)));
+	public static final Item BATH_SPONGE = register("bath_sponge", new SpongeItem(new Item.Properties().group(SItemGroup.MAIN).maxDamage(200)));
 	
 	
 	//	private static Item register(Block block) {
@@ -56,7 +57,7 @@ public class SItems {
 	}
 
 	private static Item register(String name, Item item) {
-		item.setRegistryName(Survive.location(name));
+		item.setRegistryName(Survive.getInstance().location(name));
 		SItems.ITEMS.add(item);
 		return item;
 	}
@@ -64,8 +65,8 @@ public class SItems {
 	public static void registerAll(IForgeRegistry<Item> registry) {
 		for(Item item : ITEMS) {
 			registry.register(item);
-			Survive.debug("Item: \""+item.getRegistryName().toString()+"\" registered");
+			Survive.getInstance().debug("Item: \""+item.getRegistryName().toString()+"\" registered");
 		}
-		Survive.debug("All Items Registered");
+		Survive.getInstance().debug("All Items Registered");
 	}
 }

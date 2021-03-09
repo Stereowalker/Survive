@@ -211,7 +211,7 @@ public class EnergyStats {
 	public static void rightClickEmpty(PlayerInteractEvent.RightClickEmpty clickItem) {
 		if(!clickItem.isCanceled() && clickItem.getPlayer() instanceof ClientPlayerEntity && clickItem.getCancellationResult().isSuccessOrConsume()) {
 			ClientPlayerEntity player = (ClientPlayerEntity)clickItem.getPlayer();
-			Survive.CHANNEL.sendTo(new CEnergyTaxPacket(0.125F, player.getUniqueID()), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
+			Survive.getInstance().CHANNEL.sendTo(new CEnergyTaxPacket(0.125F, player.getUniqueID()), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
 		}
 	}
 	
@@ -219,7 +219,7 @@ public class EnergyStats {
 	public static void leftClickEmpty(PlayerInteractEvent.LeftClickEmpty clickItem) {
 		if(!clickItem.isCanceled() && clickItem.getPlayer() instanceof ClientPlayerEntity && clickItem.getCancellationResult().isSuccessOrConsume()) {
 			ClientPlayerEntity player = (ClientPlayerEntity)clickItem.getPlayer();
-			Survive.CHANNEL.sendTo(new CEnergyTaxPacket(0.125F, player.getUniqueID()), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
+			Survive.getInstance().CHANNEL.sendTo(new CEnergyTaxPacket(0.125F, player.getUniqueID()), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
 		}
 	}
 	

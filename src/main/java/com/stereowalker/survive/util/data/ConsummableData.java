@@ -117,9 +117,9 @@ public class ConsummableData {
 				}
 				
 			} catch (ClassCastException e) {
-				Survive.LOGGER.warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was wrong type!", e, itemID, workingOn);
+				Survive.getInstance().LOGGER.warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was wrong type!", e, itemID, workingOn);
 			} catch (NumberFormatException e) {
-				Survive.LOGGER.warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was an invalid number!", e, itemID, workingOn);
+				Survive.getInstance().LOGGER.warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was an invalid number!", e, itemID, workingOn);
 			}
 		}
 	}

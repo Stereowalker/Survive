@@ -25,7 +25,7 @@ public class SAttributes {
 	}
 	
 	public static Attribute register(String name, Attribute attribute) {
-		attribute.setRegistryName(Survive.location(name));
+		attribute.setRegistryName(Survive.getInstance().location(name));
 		ATTRIBUTE.add(attribute);
 		return attribute;
 	}
@@ -33,9 +33,9 @@ public class SAttributes {
 	public static void registerAll(IForgeRegistry<Attribute> registry) {
 		for(Attribute attribute : ATTRIBUTE) {
 			registry.register(attribute);
-			Survive.debug("Attribute: \""+attribute.getRegistryName().toString()+"\" registered");
+			Survive.getInstance().debug("Attribute: \""+attribute.getRegistryName().toString()+"\" registered");
 		}
-		Survive.debug("All Attributes Registered");
+		Survive.getInstance().debug("All Attributes Registered");
 	}
 	
 }

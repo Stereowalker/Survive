@@ -3,7 +3,6 @@ package com.stereowalker.survive.util;
 import com.google.common.collect.ImmutableList;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.entity.ai.SAttributes;
-import com.stereowalker.unionlib.util.EntityHelper;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SharedSeedRandom;
@@ -13,27 +12,27 @@ import net.minecraft.world.gen.PerlinNoiseGenerator;
 
 public class TemperatureUtil {
 	public static double firstHeat(PlayerEntity player) {
-		return Survive.DEFAULT_TEMP + (EntityHelper.getAttributeValue(player, SAttributes.HEAT_RESISTANCE) * 1.0D);
+		return Survive.DEFAULT_TEMP + (player.getAttributeValue(SAttributes.HEAT_RESISTANCE) * 1.0D);
 	}
 
 	public static double secondHeat(PlayerEntity player) {
-		return Survive.DEFAULT_TEMP + (EntityHelper.getAttributeValue(player, SAttributes.HEAT_RESISTANCE) * 1.0D+(21.0D/63.0D));
+		return Survive.DEFAULT_TEMP + (player.getAttributeValue(SAttributes.HEAT_RESISTANCE) * 1.0D+(21.0D/63.0D));
 	}
 
 	public static double maxHeat(PlayerEntity player) {
-		return Survive.DEFAULT_TEMP + (EntityHelper.getAttributeValue(player, SAttributes.HEAT_RESISTANCE) * 1.0D+(28.0D/63.0D));
+		return Survive.DEFAULT_TEMP + (player.getAttributeValue(SAttributes.HEAT_RESISTANCE) * 1.0D+(28.0D/63.0D));
 	}
 	
 	public static double firstCold(PlayerEntity player) {
-		return Survive.DEFAULT_TEMP - (EntityHelper.getAttributeValue(player, SAttributes.COLD_RESISTANCE) * 1.0D);
+		return Survive.DEFAULT_TEMP - (player.getAttributeValue(SAttributes.COLD_RESISTANCE) * 1.0D);
 	}
 	
 	public static double secondCold(PlayerEntity player) {
-		return Survive.DEFAULT_TEMP - (EntityHelper.getAttributeValue(player, SAttributes.COLD_RESISTANCE) * 1.0D+(21.0D/63.0D));
+		return Survive.DEFAULT_TEMP - (player.getAttributeValue(SAttributes.COLD_RESISTANCE) * 1.0D+(21.0D/63.0D));
 	}
 
 	public static double maxCold(PlayerEntity player) {
-		return Survive.DEFAULT_TEMP - (EntityHelper.getAttributeValue(player, SAttributes.COLD_RESISTANCE) * 1.0D+(28.0D/63.0D));
+		return Survive.DEFAULT_TEMP - (player.getAttributeValue(SAttributes.COLD_RESISTANCE) * 1.0D+(28.0D/63.0D));
 	}
 
 

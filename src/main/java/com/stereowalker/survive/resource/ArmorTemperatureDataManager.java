@@ -44,15 +44,15 @@ public class ArmorTemperatureDataManager implements IResourceReloadListener<Map<
 							
 							JsonObject object = parser.parse(reader).getAsJsonObject();
 							ArmorData drinkData = new ArmorData(drinkId, object);
-							Survive.LOGGER.info("Found armor temperature modifier for the item "+drinkId);
+							Survive.getInstance().LOGGER.info("Found armor temperature modifier for the item "+drinkId);
 							
 							drinkMap.put(drinkId, drinkData);
 						}
 					} catch (Exception e) {
-						Survive.LOGGER.warn("Error reading the armor temperature modifier for the item " + drinkId + "!", e);
+						Survive.getInstance().LOGGER.warn("Error reading the armor temperature modifier for the item " + drinkId + "!", e);
 					}
 				} else {
-					Survive.LOGGER.warn("No such armor exists with the item id " + drinkId + "!");
+					Survive.getInstance().LOGGER.warn("No such armor exists with the item id " + drinkId + "!");
 				}
 			}
 

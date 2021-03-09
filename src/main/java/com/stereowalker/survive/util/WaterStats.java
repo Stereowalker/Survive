@@ -208,7 +208,7 @@ public class WaterStats {
 			ClientPlayerEntity player = (ClientPlayerEntity)event.getEntityLiving();
 			if (player.ticksExisted%290 == 288) {
 				if (player.world.getDifficulty() != Difficulty.PEACEFUL) {
-					Survive.CHANNEL.sendTo(new CThirstMovementPacket(player.movementInput.moveForward, player.movementInput.moveStrafe, player.movementInput.jump, player.getUniqueID()), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
+					Survive.getInstance().CHANNEL.sendTo(new CThirstMovementPacket(player.movementInput.moveForward, player.movementInput.moveStrafe, player.movementInput.jump, player.getUniqueID()), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
 				}
 			}
 		}

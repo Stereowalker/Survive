@@ -18,13 +18,13 @@ public class SRecipeSerializer {
 	public static void registerAll(IForgeRegistry<IRecipeSerializer<?>> registry) {
 		for(IRecipeSerializer<?> effect : RECIPES) {
 			registry.register(effect);
-			Survive.debug("Recipe Serializer: \""+effect.getRegistryName().toString()+"\" registered");
+			Survive.getInstance().debug("Recipe Serializer: \""+effect.getRegistryName().toString()+"\" registered");
 		}
-		Survive.debug("All Recipe Serializers Registered");
+		Survive.getInstance().debug("All Recipe Serializers Registered");
 	}
 
 	public static <S extends IRecipeSerializer<T>, T extends IRecipe<?>> S register(String name, S recipeSerializer) {
-		recipeSerializer.setRegistryName(Survive.location(name));
+		recipeSerializer.setRegistryName(Survive.getInstance().location(name));
 		RECIPES.add(recipeSerializer);
 		return recipeSerializer;
 	}

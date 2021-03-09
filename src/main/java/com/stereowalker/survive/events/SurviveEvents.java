@@ -96,7 +96,7 @@ public class SurviveEvents {
 		float totalWeight = 0.124F;
 		for (EquipmentSlotType slot : EquipmentSlotType.values()) {
 			if (slot.getSlotType() == Group.ARMOR) {
-				if (!player.getItemStackFromSlot(slot).isEmpty()) {
+				if (!player.getItemStackFromSlot(slot).isEmpty() && Config.enable_weights) {
 					Item armor = player.getItemStackFromSlot(slot).getItem();
 					if (Survive.armorModifierMap.containsKey(armor.getRegistryName())) totalWeight += Survive.armorModifierMap.get(armor.getRegistryName()).getWeightModifier();
 				}
@@ -167,7 +167,7 @@ public class SurviveEvents {
 	public static void sendToClient(LivingUpdateEvent event) {
 		if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
 			ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
-			Survive.CHANNEL.sendTo(new SSurvivalStatsPacket(player), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+			Survive.getInstance().CHANNEL.sendTo(new SSurvivalStatsPacket(player), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
 		}
 	}
 
@@ -502,11 +502,11 @@ public class SurviveEvents {
 			//Source Block Of Water
 			Fluid fluid = event.getWorld().getFluidState(blockpos).getFluid();
 			if (FLUID_THIRST_MAP.containsKey(fluid) && FLUID_THIRSTY_MAP.containsKey(fluid) && FLUID_HYDRATION_MAP.containsKey(fluid)) {
-				Survive.CHANNEL.sendTo(new CInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand(), event.getPlayer().getUniqueID()), ((ClientPlayerEntity)event.getPlayer()).connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
+				Survive.getInstance().CHANNEL.sendTo(new CInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand(), event.getPlayer().getUniqueID()), ((ClientPlayerEntity)event.getPlayer()).connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
 			}
 			//Air Block
 			if (event.getWorld().isRainingAt(blockpos)) {
-				Survive.CHANNEL.sendTo(new CInteractWithWaterPacket(event.getPos(), false, 1.0D, 0.5D, event.getHand(), event.getPlayer().getUniqueID()), ((ClientPlayerEntity)event.getPlayer()).connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
+				Survive.getInstance().CHANNEL.sendTo(new CInteractWithWaterPacket(event.getPos(), false, 1.0D, 0.5D, event.getHand(), event.getPlayer().getUniqueID()), ((ClientPlayerEntity)event.getPlayer()).connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
 			}
 		}
 	}
@@ -524,7 +524,7 @@ public class SurviveEvents {
 			if (FLUID_THIRST_MAP.containsKey(fluid) && FLUID_THIRSTY_MAP.containsKey(fluid) && FLUID_HYDRATION_MAP.containsKey(fluid)) {
 				event.setCanceled(true);
 				event.setCancellationResult(ActionResultType.SUCCESS);
-				Survive.CHANNEL.sendTo(new CInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand(), event.getPlayer().getUniqueID()), ((ClientPlayerEntity)event.getPlayer()).connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
+				Survive.getInstance().CHANNEL.sendTo(new CInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand(), event.getPlayer().getUniqueID()), ((ClientPlayerEntity)event.getPlayer()).connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
 			}
 			//Cauldron
 			if (state.getBlock() == Blocks.CAULDRON) {
@@ -533,10 +533,10 @@ public class SurviveEvents {
 					event.setCanceled(true);
 					event.setCancellationResult(ActionResultType.SUCCESS);
 					if (stateUnder.getBlock() == Blocks.CAMPFIRE && stateUnder.get(BlockStateProperties.LIT)) {
-						Survive.CHANNEL.sendTo(new CInteractWithWaterPacket(event.getPos(), false, 4.0D, event.getHand(), event.getPlayer().getUniqueID()), ((ClientPlayerEntity)event.getPlayer()).connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
+						Survive.getInstance().CHANNEL.sendTo(new CInteractWithWaterPacket(event.getPos(), false, 4.0D, event.getHand(), event.getPlayer().getUniqueID()), ((ClientPlayerEntity)event.getPlayer()).connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
 					}
 					else {
-						Survive.CHANNEL.sendTo(new CInteractWithWaterPacket(event.getPos(), true, 4.0D, event.getHand(), event.getPlayer().getUniqueID()), ((ClientPlayerEntity)event.getPlayer()).connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
+						Survive.getInstance().CHANNEL.sendTo(new CInteractWithWaterPacket(event.getPos(), true, 4.0D, event.getHand(), event.getPlayer().getUniqueID()), ((ClientPlayerEntity)event.getPlayer()).connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
 					}
 				}
 			}
