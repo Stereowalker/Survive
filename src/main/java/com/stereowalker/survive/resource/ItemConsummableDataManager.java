@@ -84,15 +84,15 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 							if (!Survive.defaultFoodMap.containsKey(drinkId) && !drinkData.overwritesDefaultFood() && ForgeRegistries.ITEMS.getValue(drinkId).food != null) {
 								ForgeRegistries.ITEMS.getValue(drinkId).food = null;
 							}
-							Survive.LOGGER.info("Found item consummable data for "+drinkId);
+							Survive.getInstance().LOGGER.info("Found item consummable data for "+drinkId);
 							
 							drinkMap.put(drinkId, drinkData);
 						}
 					} catch (Exception e) {
-						Survive.LOGGER.warn("Error reading item drink data " + drinkId + "!", e);
+						Survive.getInstance().LOGGER.warn("Error reading item drink data " + drinkId + "!", e);
 					}
 				} else {
-					Survive.LOGGER.warn("No such item exists with the id " + drinkId + "!");
+					Survive.getInstance().LOGGER.warn("No such item exists with the id " + drinkId + "!");
 				}
 			}
 

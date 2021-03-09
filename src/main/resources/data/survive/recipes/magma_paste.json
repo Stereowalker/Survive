@@ -1,19 +1,14 @@
 {
-  "type": "crafting_shaped",
-  "pattern": [
-    "X",
-    "O"
-  ],
-  "key": {
-    "X": {
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
       "item": "minecraft:magma_cream"
     },
-    "O": {
+    {
       "item": "minecraft:glowstone_dust"
     }
-  },
+  ],
   "result": {
-    "item": "survive:magma_paste",
-    "count": 2
+    "item": "survive:magma_paste"
   }
 }

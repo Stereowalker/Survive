@@ -40,14 +40,14 @@ public class ArmorData {
 					workingOn = NOTHING;
 				}
 			} catch (ClassCastException e) {
-				Survive.LOGGER.warn(ARMOR_DATA, "Loading armor temperature data $s from JSON: Parsing element %s: element was wrong type!", itemID, workingOn);
+				Survive.getInstance().LOGGER.warn(ARMOR_DATA, "Loading armor temperature data $s from JSON: Parsing element %s: element was wrong type!", itemID, workingOn);
 			} catch (NumberFormatException e) {
-				Survive.LOGGER.warn(ARMOR_DATA, "Loading armor temperature data $s from JSON: Parsing element %s: element was an invalid number!", itemID, workingOn);
+				Survive.getInstance().LOGGER.warn(ARMOR_DATA, "Loading armor temperature data $s from JSON: Parsing element %s: element was an invalid number!", itemID, workingOn);
 			}
 		}
 		
 		if (weightModifierIn < 0) {
-			Survive.LOGGER.warn(ARMOR_DATA, "Loading armor temperature data $s from JSON: Parsing element %s: weight is less than zero!", itemID, WEIGHT_MODIFIER);
+			Survive.getInstance().LOGGER.warn(ARMOR_DATA, "Loading armor temperature data $s from JSON: Parsing element %s: weight is less than zero!", itemID, WEIGHT_MODIFIER);
 			weightModifierIn = 0;
 		}
 		

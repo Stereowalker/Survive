@@ -3,6 +3,7 @@ package com.stereowalker.survive.entity;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.util.EnergyStats;
+import com.stereowalker.survive.util.HygieneStats;
 import com.stereowalker.survive.util.TemperatureStats;
 import com.stereowalker.survive.util.WaterStats;
 
@@ -16,6 +17,7 @@ public class SurviveEntityStats {
 	public static String waterStatsID = "WaterStats";
 	public static String temperatureStatsID = "TemperatureStats";
 	public static String energyStatsID = "EnergyStats";
+	public static String hygieneStatsID = "HygieneStats";
 	//Getters
 
 	public static WaterStats getWaterStats(LivingEntity entity) {
@@ -45,6 +47,17 @@ public class SurviveEntityStats {
 		if(entity != null) {
 			if (getModNBT(entity) != null && getModNBT(entity).contains(temperatureStatsID, 10)) {
 				stats.read(getModNBT(entity).getCompound(temperatureStatsID));
+				return stats;
+			}
+		}
+		return stats;
+	}
+	
+	public static HygieneStats getHygieneStats(LivingEntity entity) {
+		HygieneStats stats = new HygieneStats();
+		if(entity != null) {
+			if (getModNBT(entity) != null && getModNBT(entity).contains(hygieneStatsID, 10)) {
+				stats.read(getModNBT(entity).getCompound(hygieneStatsID));
 				return stats;
 			}
 		}
@@ -83,6 +96,12 @@ public class SurviveEntityStats {
 		CompoundNBT compound2 = new CompoundNBT();
 		temperatureStats.write(compound2);
 		getModNBT(entity).put(temperatureStatsID, compound2);
+	}
+	
+	public static void setHygieneStats(LivingEntity entity, HygieneStats hygieneStats) {
+		CompoundNBT compound2 = new CompoundNBT();
+		hygieneStats.write(compound2);
+		getModNBT(entity).put(hygieneStatsID, compound2);
 	}
 
 	public static void setAwakeTime(LivingEntity entity, int awakeTime) {
@@ -138,22 +157,22 @@ public class SurviveEntityStats {
 				}
 				if (!compound.contains(append("AwakeTime"))) {
 					setAwakeTime(player, 0);
-					Survive.debug("Set " + name + "'s awake time to " + getAwakeTime(player));
+					Survive.getInstance().debug("Set " + name + "'s awake time to " + getAwakeTime(player));
 				}
 				if (!compound.contains(append("WetTime"))) {
 					setWetTime(player, 0);
-					Survive.debug("Set " + name + "'s wet time to " + getWetTime(player));
+					Survive.getInstance().debug("Set " + name + "'s wet time to " + getWetTime(player));
 				}
 			}
 		}
 	}
 
 	private static String append(String string) {
-		return Survive.MOD_ID+":"+string;
+		return Survive.getInstance().locationString(string);
 	}
 
 	public static String getModDataString() {
-		return Survive.MOD_ID+":PlayerData";
+		return Survive.getInstance().locationString(":PlayerData");
 	}
 
 	public static CompoundNBT getModNBT(Entity entity) {

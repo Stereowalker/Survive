@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.common.collect.Maps;
 import com.stereowalker.survive.client.gui.screen.SurvivalConfigScreen;
 import com.stereowalker.survive.config.Config;
@@ -38,25 +35,19 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(value = "survive")
 public class Survive extends UnionMod {
 
-	public static Survive instance;
-//	public static boolean debugMode;
+	private static Survive instance;
 	public static final float DEFAULT_TEMP = 37.0F;
-	public static final String MOD_ID = "survive";
 	public static boolean isSereneSeasonsLoaded;
 	public static boolean isPrimalWinterLoaded;
 	public static final ItemConsummableDataManager thirstReloader = new ItemConsummableDataManager();
@@ -66,21 +57,17 @@ public class Survive extends UnionMod {
 	public static boolean isCombatLoaded() {
 		return ModList.get().isLoaded("combat");
 	}
-	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
-	private static final String NETWORK_PROTOCOL_VERSION = "1";
-	public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(location("main"), () -> NETWORK_PROTOCOL_VERSION, NETWORK_PROTOCOL_VERSION::equals, NETWORK_PROTOCOL_VERSION::equals);
-	//
+
 	public Survive() 
 	{
-		super("survive", location("textures/icon.png"), LoadType.BOTH);
+		super("survive", new ResourceLocation("survive", "textures/icon.png"), LoadType.BOTH);
 		instance = this;
 		ConfigBuilder.registerConfig(Config.class);
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::clientRegistries);
 		modEventBus.addListener(this::serverRegistries);
-		MinecraftForge.EVENT_BUS.register(this);
-		ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> SurvivalConfigScreen::new);
+//		MinecraftForge.EVENT_BUS.register(this);
 		NetRegistry.registerMessages();
 		isSereneSeasonsLoaded = ModList.get().isLoaded("sereneseasons");
 		isPrimalWinterLoaded = ModList.get().isLoaded("primalwinter");
@@ -115,7 +102,7 @@ public class Survive extends UnionMod {
 		return new SurvivalConfigScreen(mc, previousScreen);
 	}
 
-	public static void debug(Object message) {
+	public void debug(Object message) {
 		if (Config.debugMode)LOGGER.debug(message);
 	}
 
@@ -149,11 +136,6 @@ public class Survive extends UnionMod {
 		event.getServer().getResourceManager().addReloadListener(blockReloader);
 		event.getServer().getResourceManager().addReloadListener(potionReloader);
 		event.getServer().getResourceManager().addReloadListener(thirstReloader);
-	}
-
-	public static ResourceLocation location(String name)
-	{
-		return new ResourceLocation(MOD_ID, name);
 	}
 
 	public static List<String> defaultDimensionMods() {
@@ -251,5 +233,9 @@ public class Survive extends UnionMod {
 		heated.add("farmersdelight:squid_ink_pasta,0");
 		heated.add("farmersdelight:grilled_salmon,0");
 		return heated;
+	}
+	
+	public static Survive getInstance() {
+		return instance;
 	}
 }

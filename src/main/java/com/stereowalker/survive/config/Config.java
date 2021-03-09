@@ -127,11 +127,15 @@ public class Config {
 	@UnionConfig.Comment(comment = {"Disabling this will disable this mods stamina system and energy management system"})
 	public static boolean enable_stamina = true;
 	
+	@UnionConfig.Entry(group = "Stamina" , name = "Enable Armor Weights", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"Disabling this will allow the weight of certain armor pieces to affect your stamina"})
+	public static boolean enable_weights = true;
+	
 	//
 	//Hygiene
-	@UnionConfig.Entry(group = "Hygiene" , name = "Temperature Update Speed", type = Type.COMMON)
-	@UnionConfig.Comment(comment = {"Disabling this will disable this mods hygiene system","This doesnt really do anything as there isn't really a hygiene system yet"})
-	public static boolean enableHygiene = true;
+	@UnionConfig.Entry(group = "Hygiene" , name = "Enable Hygiene", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"Disabling this will disable this mods hygiene system","The hygiene system might be pretty buggy, so proceed with caution"})
+	public static boolean enable_Hygiene = false;
 	
 	
 	//

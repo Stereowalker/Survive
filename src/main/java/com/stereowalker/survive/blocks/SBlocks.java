@@ -20,7 +20,7 @@ public class SBlocks {
 	public static final Block PURIFIED_WATER = register("purified_water", new FlowingFluidBlock(() -> SFluids.PURIFIED_WATER, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()));
 
 	public static Block register(String name, Block block) {
-		block.setRegistryName(Survive.location(name));
+		block.setRegistryName(Survive.getInstance().location(name));
 		SBlocks.BLOCKS.add(block);
 		return block;
 	}
@@ -38,9 +38,9 @@ public class SBlocks {
 	public static void registerAll(IForgeRegistry<Block> registry) {
 		for(Block block: BLOCKS) {
 			registry.register(block);
-			Survive.debug("Block: \""+block.getRegistryName().toString()+"\" registered");
+			Survive.getInstance().debug("Block: \""+block.getRegistryName().toString()+"\" registered");
 		}
-		Survive.debug("All Blocks Registered");
+		Survive.getInstance().debug("All Blocks Registered");
 	}
 
 }

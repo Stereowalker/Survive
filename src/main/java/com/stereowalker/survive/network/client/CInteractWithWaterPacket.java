@@ -112,7 +112,7 @@ public class CInteractWithWaterPacket {
 								if (flag) {
 									waterStats.addStats((int) waterAmount, (float) hydrationAmount);
 								}
-								Survive.CHANNEL.sendTo(new SDrinkSoundPacket(pos, sender.getUniqueID()), sender.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+								Survive.getInstance().CHANNEL.sendTo(new SDrinkSoundPacket(pos, sender.getUniqueID()), sender.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
 							}
 							SurviveEntityStats.setWaterStats(sender, waterStats);
 						}

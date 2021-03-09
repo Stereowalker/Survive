@@ -20,7 +20,7 @@ public class SurvivalConfigScreen extends Screen {
 	private final Screen previousScreen;
 
 	public SurvivalConfigScreen(Minecraft mc, Screen previousScreen) {
-		super(new TranslationTextComponent(Survive.MOD_ID+".config.title"));
+		super(new TranslationTextComponent(Survive.getInstance().getModid()+".config.title"));
 		this.previousScreen = previousScreen;
 		this.minecraft = mc;
 	}
@@ -46,7 +46,7 @@ public class SurvivalConfigScreen extends Screen {
 	}
 	
 	public <T extends Enum<T>> void addEnumOption(String trans, T config, T[] values, int xMod, int yMod) {
-		this.addButton(new Button(this.width / 2 + xMod, this.height / 6 + yMod, 150, 20, I18n.format(Survive.MOD_ID+"."+trans)+(" : "+config), (p_212984_1_) -> {
+		this.addButton(new Button(this.width / 2 + xMod, this.height / 6 + yMod, 150, 20, I18n.format(Survive.getInstance().getModid()+"."+trans)+(" : "+config), (p_212984_1_) -> {
 			rotateEnum(config, values, true);
 			this.minecraft.displayGuiScreen(this);
 		}));
@@ -84,7 +84,7 @@ public class SurvivalConfigScreen extends Screen {
 		String toggle;
 		if (config.get()) toggle = "options.on";
 		else toggle = "options.off";
-		this.addButton(new Button(this.width / 2 + xMod, this.height / 6 + yMod, 150, 20, I18n.format(Survive.MOD_ID+"."+config.getPath().get(1))+(" : ")+(I18n.format(toggle)), (onPress) -> {
+		this.addButton(new Button(this.width / 2 + xMod, this.height / 6 + yMod, 150, 20, I18n.format(Survive.getInstance().getModid()+"."+config.getPath().get(1))+(" : ")+(I18n.format(toggle)), (onPress) -> {
 			config.set(!config.get());
 			this.minecraft.displayGuiScreen(this);
 		}));
@@ -95,7 +95,7 @@ public class SurvivalConfigScreen extends Screen {
 			@Override
 			protected void updateMessage() {
 				String s = (int)((float)this.value * maxValue) + "";
-				this.setMessage(I18n.format(Survive.MOD_ID+"."+config.getPath().get(1))+(": " + s));
+				this.setMessage(I18n.format(Survive.getInstance().getModid()+"."+config.getPath().get(1))+(": " + s));
 			}
 
 			@Override

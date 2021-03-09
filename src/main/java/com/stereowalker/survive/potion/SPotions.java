@@ -20,7 +20,7 @@ public class SPotions {
 	public static final Potion STRONG_COLD_RESISTANCE = register("strong_cold_resistance", new Potion("cold_resistance", new EffectInstance(SEffects.COLD_RESISTANCE, 1800, 1)));
 	
 	public static Potion register(String name, Potion potion) {
-		potion.setRegistryName(Survive.location(name));
+		potion.setRegistryName(Survive.getInstance().location(name));
 		POTIONS.add(potion);
 		return potion;
 	}
@@ -28,9 +28,9 @@ public class SPotions {
 	public static void registerAll(IForgeRegistry<Potion> registry) {
 		for(Potion potion : POTIONS) {
 			registry.register(potion);
-			Survive.debug("Potion: \""+potion.getRegistryName().toString()+"\" registered");
+			Survive.getInstance().debug("Potion: \""+potion.getRegistryName().toString()+"\" registered");
 		}
-		Survive.debug("All Potions Registered");
+		Survive.getInstance().debug("All Potions Registered");
 	}
 
 }

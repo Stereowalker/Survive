@@ -81,9 +81,9 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
 	@Override
 	protected FluidAttributes createAttributes() {
 		return net.minecraftforge.fluids.FluidAttributes.Water.builder(
-				Survive.location("block/purified_water_still"),
-				Survive.location("block/purified_water_flow"))
-               .overlay(Survive.location("block/purified_water_overlay"))
+				Survive.getInstance().location("block/purified_water_still"),
+				Survive.getInstance().location("block/purified_water_flow"))
+               .overlay(Survive.getInstance().location("block/purified_water_overlay"))
                .translationKey("block.survive.purified_water")
                .density(10)
                .viscosity(10)

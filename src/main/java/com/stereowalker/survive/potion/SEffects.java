@@ -33,13 +33,13 @@ public class SEffects {
 	public static void registerAll(IForgeRegistry<Effect> registry) {
 		for(Effect effect : EFFECT) {
 			registry.register(effect);
-			Survive.debug("Effect: \""+effect.getRegistryName().toString()+"\" registered");
+			Survive.getInstance().debug("Effect: \""+effect.getRegistryName().toString()+"\" registered");
 		}
-		Survive.debug("All Effects Registered");
+		Survive.getInstance().debug("All Effects Registered");
 	}
 	
 	public static Effect register(String name, Effect effect) {
-		effect.setRegistryName(Survive.location(name));
+		effect.setRegistryName(Survive.getInstance().location(name));
 		EFFECT.add(effect);
 		return effect;
 	}

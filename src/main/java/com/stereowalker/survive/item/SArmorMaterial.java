@@ -55,7 +55,7 @@ public enum SArmorMaterial implements IArmorMaterial
 	@Override
 	public String getName() 
 	{
-		return Survive.MOD_ID + ":" + this.name;
+		return Survive.getInstance().locationString(this.name);
 	}
 
 	@Override
