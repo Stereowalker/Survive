@@ -31,11 +31,9 @@ println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getPro
 println('Mod Name: ' + modFilename + ', Mod Version: ' + modVersion + ', Minecraft Version: ' + modMinecraftVersion + ', Forge Version: ' + modForgeVersion)
 
 repositories {
-	maven {
-		// location of the maven that hosts JEI files
-		name = "Progwml6 maven"
+	maven {name = "Progwml6 maven"
 		url = "https://dvs1.progwml6.com/files/maven/"
-	}
+	}// location of the maven that hosts JEI files
 	maven {
 		// location of a maven mirror for JEI files, as a fallback
 		name = "ModMaven"
