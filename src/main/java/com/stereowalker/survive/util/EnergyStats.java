@@ -16,12 +16,11 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -88,8 +87,8 @@ public class EnergyStats {
 			++this.energyTimer;
 			if (this.energyTimer >= 20) {
 				player.attackEntityFrom(SDamageSource.OVERWORK, 3.0F);
-//				if (player.getHealth() > 10.0F || difficulty == Difficulty.HARD || player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL) {
-//				}
+				//				if (player.getHealth() > 10.0F || difficulty == Difficulty.HARD || player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL) {
+				//				}
 
 				this.energyTimer = 0;
 			}
@@ -174,21 +173,20 @@ public class EnergyStats {
 	public void setEnergyReserveLevel(int energyReserveLevelIn) {
 		this.energyReserveLevel = energyReserveLevelIn;
 	}
-	
+
 	/////-----------EVENTS-----------/////
+
 	@SubscribeEvent
-	public static void breakBlock(BlockEvent.BreakEvent breakEvent) {
-		if(!breakEvent.isCanceled()) {
-			EnergyStats energyStats = SurviveEntityStats.getEnergyStats(breakEvent.getPlayer());
-			if (!ForgeHooks.canHarvestBlock(breakEvent.getState(), breakEvent.getPlayer(), breakEvent.getWorld(), breakEvent.getPos())) {
-				energyStats.addExhaustion(breakEvent.getPlayer(), 5.0F);
-			} else {
-				energyStats.addExhaustion(breakEvent.getPlayer(), 0.5F);
-			}
-			SurviveEntityStats.setEnergyStats(breakEvent.getPlayer(), energyStats);
+	public static void breakBlock(PlayerEvent.HarvestCheck harvestEvent) {
+		EnergyStats energyStats = SurviveEntityStats.getEnergyStats(harvestEvent.getPlayer());
+		if (!harvestEvent.canHarvest()) {
+			energyStats.addExhaustion(harvestEvent.getPlayer(), 5.0F);
+		} else {
+			energyStats.addExhaustion(harvestEvent.getPlayer(), 0.5F);
 		}
+		SurviveEntityStats.setEnergyStats(harvestEvent.getPlayer(), energyStats);
 	}
-	
+
 	@SubscribeEvent
 	public static void clickBlock(PlayerInteractEvent.RightClickBlock clickBlock) {
 		if(!clickBlock.isCanceled() && clickBlock.getPlayer() instanceof PlayerEntity && clickBlock.getCancellationResult().isSuccessOrConsume()) {
@@ -197,7 +195,7 @@ public class EnergyStats {
 			SurviveEntityStats.setEnergyStats(clickBlock.getPlayer(), energyStats);
 		}
 	}
-	
+
 	@SubscribeEvent
 	public static void clickItem(PlayerInteractEvent.RightClickItem clickItem) {
 		if(!clickItem.isCanceled() && clickItem.getPlayer() instanceof PlayerEntity && clickItem.getCancellationResult().isSuccessOrConsume()) {
@@ -206,23 +204,23 @@ public class EnergyStats {
 			SurviveEntityStats.setEnergyStats(clickItem.getPlayer(), energyStats);
 		}
 	}
-	
+
 	@SubscribeEvent
 	public static void rightClickEmpty(PlayerInteractEvent.RightClickEmpty clickItem) {
 		if(!clickItem.isCanceled() && clickItem.getPlayer() instanceof ClientPlayerEntity && clickItem.getCancellationResult().isSuccessOrConsume()) {
 			ClientPlayerEntity player = (ClientPlayerEntity)clickItem.getPlayer();
-			Survive.getInstance().CHANNEL.sendTo(new CEnergyTaxPacket(0.125F, player.getUniqueID()), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
+			Survive.getInstance().channel.sendTo(new CEnergyTaxPacket(0.125F, player.getUniqueID()), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
 		}
 	}
-	
+
 	@SubscribeEvent
 	public static void leftClickEmpty(PlayerInteractEvent.LeftClickEmpty clickItem) {
 		if(!clickItem.isCanceled() && clickItem.getPlayer() instanceof ClientPlayerEntity && clickItem.getCancellationResult().isSuccessOrConsume()) {
 			ClientPlayerEntity player = (ClientPlayerEntity)clickItem.getPlayer();
-			Survive.getInstance().CHANNEL.sendTo(new CEnergyTaxPacket(0.125F, player.getUniqueID()), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
+			Survive.getInstance().channel.sendTo(new CEnergyTaxPacket(0.125F, player.getUniqueID()), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
 		}
 	}
-	
+
 	@SubscribeEvent
 	public static void attackEntity(AttackEntityEvent entityEvent) {
 		if(!entityEvent.isCanceled()) {
@@ -231,7 +229,7 @@ public class EnergyStats {
 			SurviveEntityStats.setEnergyStats(entityEvent.getPlayer(), energyStats);
 		}
 	}
-	
+
 	@SubscribeEvent
 	public static void passivelyIncreaseEnergy(LivingUpdateEvent event) {
 		if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
@@ -263,7 +261,7 @@ public class EnergyStats {
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public static void replenishEnergyOnSleep(SleepFinishedTimeEvent event) {
 		for (PlayerEntity player : event.getWorld().getPlayers()) {
@@ -272,7 +270,7 @@ public class EnergyStats {
 			SurviveEntityStats.setEnergyStats(player, energyStats);
 		}
 	}
-	
+
 	@SubscribeEvent
 	public static void eatFood(LivingEntityUseItemEvent.Finish event) {
 		if (event.getResultStack().isFood() && Survive.consummableItemMap.containsKey(event.getItem().getItem().getRegistryName())) {

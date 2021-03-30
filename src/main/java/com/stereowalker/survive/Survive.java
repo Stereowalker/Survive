@@ -5,12 +5,16 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
-import com.stereowalker.survive.client.gui.screen.SurvivalConfigScreen;
 import com.stereowalker.survive.config.Config;
-import com.stereowalker.survive.entity.ai.SAttributes;
+import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.fluid.SFluids;
-import com.stereowalker.survive.network.NetRegistry;
+import com.stereowalker.survive.network.client.CEnergyMovementPacket;
+import com.stereowalker.survive.network.client.CEnergyTaxPacket;
+import com.stereowalker.survive.network.client.CInteractWithWaterPacket;
+import com.stereowalker.survive.network.client.CThirstMovementPacket;
+import com.stereowalker.survive.network.server.SDrinkSoundPacket;
+import com.stereowalker.survive.network.server.SSurvivalStatsPacket;
 import com.stereowalker.survive.potion.BrewingRecipes;
 import com.stereowalker.survive.resource.ArmorTemperatureDataManager;
 import com.stereowalker.survive.resource.BlockTemperatureDataManager;
@@ -22,27 +26,28 @@ import com.stereowalker.survive.util.data.ArmorData;
 import com.stereowalker.survive.util.data.BlockTemperatureData;
 import com.stereowalker.survive.util.data.ConsummableData;
 import com.stereowalker.survive.world.CGameRules;
+import com.stereowalker.unionlib.client.gui.screen.ConfigScreen;
 import com.stereowalker.unionlib.config.ConfigBuilder;
 import com.stereowalker.unionlib.mod.UnionMod;
-import com.stereowalker.unionlib.util.EntityHelper;
+import com.stereowalker.unionlib.network.PacketRegistry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.entity.EntityType;
 import net.minecraft.item.Food;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(value = "survive")
@@ -66,16 +71,27 @@ public class Survive extends UnionMod {
 		super("survive", new ResourceLocation(MOD_ID, "textures/icon.png"), LoadType.BOTH);
 		instance = this;
 		ConfigBuilder.registerConfig(Config.class);
+		ConfigBuilder.registerConfig(ServerConfig.class);
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::clientRegistries);
 //		MinecraftForge.EVENT_BUS.register(this);
-		NetRegistry.registerMessages();
 		isPrimalWinterLoaded = ModList.get().isLoaded("primalwinter");
 		if (isCombatLoaded()) {
 			SSpells.registerAll(modEventBus);
 			SStats.registerAll(modEventBus);
 		}
+	}
+	
+	@Override
+	public void registerMessages(SimpleChannel channel) {
+		int netID = -1;
+		PacketRegistry.registerMessage(channel, netID++, CEnergyMovementPacket.class, (packetBuffer) -> {return new CEnergyMovementPacket(packetBuffer);});
+		channel.registerMessage(netID++, SSurvivalStatsPacket.class, SSurvivalStatsPacket::encode, SSurvivalStatsPacket::decode, SSurvivalStatsPacket::handle);
+		channel.registerMessage(netID++, CThirstMovementPacket.class, CThirstMovementPacket::encode, CThirstMovementPacket::decode, CThirstMovementPacket::handle);
+		channel.registerMessage(netID++, CInteractWithWaterPacket.class, CInteractWithWaterPacket::encode, CInteractWithWaterPacket::decode, CInteractWithWaterPacket::handle);
+		channel.registerMessage(netID++, SDrinkSoundPacket.class, SDrinkSoundPacket::encode, SDrinkSoundPacket::decode, SDrinkSoundPacket::handle);
+		channel.registerMessage(netID++, CEnergyTaxPacket.class, CEnergyTaxPacket::encode, CEnergyTaxPacket::decode, CEnergyTaxPacket::handle);
 	}
 	
 	//TODO: FInd Somewhere to put all these
@@ -100,7 +116,7 @@ public class Survive extends UnionMod {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public Screen getConfigScreen(Minecraft mc, Screen previousScreen) {
-		return new SurvivalConfigScreen(mc, previousScreen);
+		return new ConfigScreen(previousScreen, Config.class, new TranslationTextComponent("gui.survive.config.title"));
 	}
 
 	public void debug(Object message) {
@@ -109,11 +125,6 @@ public class Survive extends UnionMod {
 
 	private void setup(final FMLCommonSetupEvent event)
 	{
-		EntityHelper.registerAttributes(EntityType.PLAYER, builder -> {
-			builder.createMutableAttribute(SAttributes.COLD_RESISTANCE);
-			builder.createMutableAttribute(SAttributes.HEAT_RESISTANCE);
-		});
-		
 		BrewingRecipes.addBrewingRecipes();
 		CGameRules.init();
 		SurviveEvents.registerHeatMap();

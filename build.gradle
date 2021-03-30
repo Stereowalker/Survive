@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
-		maven { url = 'https://dist.creeper.host/Sponge/maven' }
+		maven { url = 'https://repo.spongepowered.org/maven' }
         jcenter()
         mavenCentral()
     }
@@ -113,7 +113,8 @@ dependencies {
 	minecraft 'net.minecraftforge:forge:' + modMinecraftVersion + '-' + modForgeVersion
 	compile 'org.spongepowered:mixin:0.8'
 	compile fileTree(include: ['*.jar'], dir: 'libs')
-	compile fg.deobf("curse.maven:unionlib-367806:"+unionLibID)
+	//compile fg.deobf("curse.maven:unionlib-367806:"+unionLibID)
+	compile "curse.maven:unionlib-367806:"+unionLibID
 	compile fg.deobf("curse.maven:biomes-o-plenty-220318:"+bopID)
 	compile fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
 	

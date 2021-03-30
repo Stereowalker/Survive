@@ -14,13 +14,23 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class SEnchantments {
 	public static List<Enchantment> ENCHANTMENTS = new ArrayList<Enchantment>();
 	
-	public static final Enchantment WARMING = registerTemp("warming", new TempControlEnchantment(Rarity.UNCOMMON, new EquipmentSlotType[] {EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET}));
-	public static final Enchantment COOLING = registerTemp("cooling", new TempControlEnchantment(Rarity.UNCOMMON, new EquipmentSlotType[] {EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET}));
-	public static final Enchantment ADJUSTED_WARMING = registerTemp("adjusted_warming", new AutoTempControlEnchantment(Rarity.VERY_RARE, new EquipmentSlotType[] {EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET}));
-	public static final Enchantment ADJUSTED_COOLING = registerTemp("adjusted_cooling", new AutoTempControlEnchantment(Rarity.VERY_RARE, new EquipmentSlotType[] {EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET}));
+	public static final Enchantment WARMING = registerTempe("warming", new TempControlEnchantment(Rarity.UNCOMMON, new EquipmentSlotType[] {EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET}));
+	public static final Enchantment COOLING = registerTempe("cooling", new TempControlEnchantment(Rarity.UNCOMMON, new EquipmentSlotType[] {EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET}));
+	public static final Enchantment ADJUSTED_WARMING = registerTempe("adjusted_warming", new AutoTempControlEnchantment(Rarity.VERY_RARE, new EquipmentSlotType[] {EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET}));
+	public static final Enchantment ADJUSTED_COOLING = registerTempe("adjusted_cooling", new AutoTempControlEnchantment(Rarity.VERY_RARE, new EquipmentSlotType[] {EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET}));
+	public static final Enchantment FEATHERWEIGHT = registerStami("featherweight", new FeatherweightEnchantment(Rarity.UNCOMMON, new EquipmentSlotType[] {EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET}));
+	public static final Enchantment WEIGHTLESS = registerStami("weightless", new WeightlessEnchantment(Rarity.VERY_RARE, new EquipmentSlotType[] {EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET}));
 	
-	public static Enchantment registerTemp(String name, Enchantment enchantment) {
+	public static Enchantment registerTempe(String name, Enchantment enchantment) {
 		if (Config.enable_temperature) {
+			return register(name, enchantment);
+		} else {
+			return enchantment;
+		}
+	}
+	
+	public static Enchantment registerStami(String name, Enchantment enchantment) {
+		if (Config.enable_stamina) {
 			return register(name, enchantment);
 		} else {
 			return enchantment;

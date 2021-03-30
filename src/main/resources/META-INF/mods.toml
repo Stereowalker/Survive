@@ -10,7 +10,7 @@ version="${version}"
 displayName="Survive"
 updateJSONURL="https://raw.githubusercontent.com/Stereowalker/Survive/master/update.json"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/survive"
-credits="Obviously you for downloading this mod and ChainmailPickaxe for making the textures look nice"
+credits="I'd like to thank my Obsidian Patreon, Komorebi, ChainmailPickaxe for making the textures look nice and you for downloading this mod"
 authors="Stereowalker"
 description='''
 Adds new survival mechanics like thirst, body temperature, sleep management and stamina
@@ -38,7 +38,7 @@ Adds new survival mechanics like thirst, body temperature, sleep management and 
 [[dependencies.survive]]
     modId="unionlib"
     mandatory=true
-    versionRange="[3.2.3,)"
+    versionRange="[3.3]"
     ordering="NONE"
     side="BOTH"
 	

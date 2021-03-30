@@ -11,6 +11,7 @@ import com.stereowalker.survive.potion.SPotions;
 
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -22,6 +23,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -51,6 +53,12 @@ public class SurviveRegistryEvents
 	@SubscribeEvent
 	public static void registerAttributes(final RegistryEvent.Register<Attribute> event) {
 		SAttributes.registerAll(event.getRegistry());
+	}
+	
+	@SubscribeEvent
+	public static void registerAttributes(EntityAttributeModificationEvent event) {
+		event.add(EntityType.PLAYER, SAttributes.COLD_RESISTANCE);
+		event.add(EntityType.PLAYER, SAttributes.HEAT_RESISTANCE);
 	}
 
 	@SubscribeEvent

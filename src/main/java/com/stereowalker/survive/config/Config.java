@@ -1,8 +1,5 @@
 package com.stereowalker.survive.config;
 
-import java.util.List;
-
-import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.entity.TempDisplayMode;
 import com.stereowalker.survive.events.SurviveEvents.TempMode;
 import com.stereowalker.unionlib.config.UnionConfig;
@@ -45,10 +42,6 @@ public class Config {
 	@UnionConfig.Entry(group = "Temperature" , name = "Display Temperature in Fahrenheit", type = Type.CLIENT)
 	@UnionConfig.Comment(comment = {"If Enabled, temperature will be displayed in fahrenheit if the display mode is set to NUMBERS"})
 	public static boolean displayTempInFahrenheit = false;
-	
-	@UnionConfig.Entry(group = "Temperature" , name = "Dimensional Temperature Modifier", type = Type.SERVER)
-	@UnionConfig.Comment(comment = {"This list defines dimensional temperature modifiers","Dimensions in this list will multiply the tempeatures of their biomes by this value"})
-	public static List<String> dimensionModifiers = Survive.defaultDimensionMods();
 	
 //	@UnionConfig.Entry(group = "Temperature" , name = "Temperature Calculation Range", type = Type.COMMON)
 //	@UnionConfig.Comment(comment = {"The range in blocks which temperature is calculated. It can also be interpreted as the range you have to be for a block for it to factor in your temperature"})

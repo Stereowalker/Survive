@@ -18,14 +18,14 @@ public class CEnergyMovementPacket extends CUnionPacket {
 	private boolean jump;
 
 	public CEnergyMovementPacket(final float moveF, final float moveS, final boolean jump) {
-		super(Survive.getInstance().CHANNEL);
+		super(Survive.getInstance().channel);
 		this.moveF = moveF;
 		this.moveS = moveS;
 		this.jump = jump;
 	}
 
 	public CEnergyMovementPacket(PacketBuffer packetBuffer) {
-		super(packetBuffer, Survive.getInstance().CHANNEL);
+		super(packetBuffer, Survive.getInstance().channel);
 		this.moveF = packetBuffer.readFloat();
 		this.moveS = packetBuffer.readFloat();
 		this.jump = packetBuffer.readBoolean();

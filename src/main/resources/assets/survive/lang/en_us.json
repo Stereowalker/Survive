@@ -58,6 +58,10 @@
 	"enchantment.survive.warming.desc": "Raises your temperature when wearing this armor",
 	"enchantment.survive.adjusted_warming": "Adjusted Warming",
 	"enchantment.survive.adjusted_warming.desc": "Automatically increases your temperature whenever it is cold",
+	"enchantment.survive.featherweight": "Featherweight",
+	"enchantment.survive.featherweight.desc": "Reduces the weight of the armor piece by 18% per level",
+	"enchantment.survive.weightless": "Weightless",
+	"enchantment.survive.weightless.desc": "Makes the armor piece feel weightless to the wearer",
 ///////////////////////////////////////////////////////////[DEATH_MESSAGES]///////////////////////////////////////////////////////////
 	"death.attack.hypothermia": "%1$s froze up",
 	"death.attack.hypothermia.player": "%1$s froze to death whilst trying to escape %2$s",
@@ -78,7 +82,7 @@
 	"attribute.name.survive.coldResistance": "Cold Resistance",
 	"attribute.name.survive.heatResistance": "Heat Resistance",
 ///////////////////////////////////////////////////////////[GUI]///////////////////////////////////////////////////////////
-	"survive.config.title": "Survive Config",
+	"gui.survive.config.title": "Survive Config",
 	"survive.Enable Temperature": "Enable Temperature",
 	"survive.Enable Thirst": "Enable Thirst",
 	"survive.Enable Sleep": "Enable Sleep",
