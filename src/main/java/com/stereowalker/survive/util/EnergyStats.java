@@ -180,9 +180,9 @@ public class EnergyStats {
 	public static void breakBlock(PlayerEvent.HarvestCheck harvestEvent) {
 		EnergyStats energyStats = SurviveEntityStats.getEnergyStats(harvestEvent.getPlayer());
 		if (!harvestEvent.canHarvest()) {
-			energyStats.addExhaustion(harvestEvent.getPlayer(), 5.0F);
+			energyStats.addExhaustion(harvestEvent.getPlayer(), 0.25F);
 		} else {
-			energyStats.addExhaustion(harvestEvent.getPlayer(), 0.5F);
+			energyStats.addExhaustion(harvestEvent.getPlayer(), 0.025F);
 		}
 		SurviveEntityStats.setEnergyStats(harvestEvent.getPlayer(), energyStats);
 	}
