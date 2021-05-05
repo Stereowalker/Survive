@@ -235,7 +235,7 @@ public class RenderOverlayEvents {
 			k3 = gui().getTicks() % MathHelper.ceil(f + 5.0F);
 		}
 
-		if (event.getType() == RenderGameOverlayEvent.ElementType.HEALTH) {
+		if (event.getType() == RenderGameOverlayEvent.ElementType.HEALTH && (Config.tempDisplayMode.equals(TempDisplayMode.HOTBAR) || !Config.tempEffects)) {
 			mc.getProfiler().startSection("health");
 			for(int l5 = MathHelper.ceil((f + (float)l1) / 2.0F) - 1; l5 >= 0; --l5) {
 				int i6 = 16;
@@ -358,7 +358,7 @@ public class RenderOverlayEvents {
 		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 		RenderSystem.disableAlphaTest();
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	protected static void renderTiredOverlay(int amp) {
 		int scaledWidth = mc.getMainWindow().getScaledWidth();
@@ -383,6 +383,7 @@ public class RenderOverlayEvents {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void renderTemperature(ScreenOffset position, PlayerEntity playerentity, MatrixStack matrixStack) {
 		int x = ScreenHelper.getXOffset(position) + Config.tempXLoc;
 		int y = ScreenHelper.getYOffset(position) + Config.tempYLoc;
@@ -407,33 +408,50 @@ public class RenderOverlayEvents {
 			double div = tempLocation / maxTemp;
 			displayTemp = MathHelper.clamp(div, -1.0D-(28.0D/63.0D), 0);
 		}
-		if (Config.tempDisplayMode.equals(TempDisplayMode.BAR)) {
+		if (Config.tempDisplayMode.equals(TempDisplayMode.HORIZONTAL_BAR)) {
 			if (Config.tempEffects && displayTemp >= 1) {//Hyperthermia override
-				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y-3, 0, 79, 132, 9);
+				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x-3, y-3, 0, 79, 138, 11);
 			} else if (Config.tempEffects && displayTemp <= -1) {//Hypothermia override
-				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y-3, 0, 90, 132, 9);
+				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x-3, y-3, 0, 90, 138, 11);
 			} else {
-				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y, 0, 64, 132, 5);
-				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y, 0, 69, 132, 5);
+				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y, 3, 64, 132, 5);
+				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y, 3, 69, 132, 5);
 			}
-			if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x+MathHelper.floor(displayTemp*44)+63+(displayTemp>0?1:0), y, 0, 74, 5, 5);
+			if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x+MathHelper.floor(displayTemp*44)+63+(displayTemp>0?1:0), y, 3, 74, 5, 5);
 		}
-		
+		if (Config.tempDisplayMode.equals(TempDisplayMode.VERTICAL_BAR)) {
+			if (Config.tempEffects && displayTemp >= 1) {//Hyperthermia override
+				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x-3, y-3, 11, 101, 11, 138);
+			} else if (Config.tempEffects && displayTemp <= -1) {//Hypothermia override
+				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x-3, y-3, 00, 101, 11, 138);
+			} else {
+				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y, 32, 104, 5, 132);
+				if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y, 27, 104, 5, 132);
+			}
+			if(Minecraft.isGuiEnabled() && mc.playerController.gameIsSurvivalOrAdventure())gui().blit(matrixStack, x, y-MathHelper.floor(displayTemp*44)+63-(displayTemp>0?1:0), 22, 104, 5, 5);
+		}
+
 		int temp = (int) (rawTemperature*100);
 		double temperaure = ((double)temp) / 100.0D;
 		String s = temperaure+" °C";
-		if (Config.displayTempInFahrenheit) {
-			double rawFTemp = (temperaure * (9/5)) + 32.0D;
-			int fTemp = (int) (rawFTemp*100);
-			double fTemperaure = ((double)fTemp) / 100.0D;
-			s = fTemperaure+" °F";
-		}
 		if(Minecraft.isGuiEnabled() && !mc.playerController.isSpectatorMode() && Config.tempDisplayMode.equals(TempDisplayMode.NUMBERS)) {
-			mc.fontRenderer.drawStringWithShadow(matrixStack, s, x, y, TextFormatting.BLUE.getColor());
+			if (Config.displayTempInFahrenheit) {
+				double rawFTemp = (temperaure * (9/5)) + 32.0D;
+				int fTemp = (int) (rawFTemp*100);
+				double fTemperaure = ((double)fTemp) / 100.0D;
+				s = fTemperaure+" °F";
+			}
+			if (displayTemp >= 1) {
+				mc.fontRenderer.drawStringWithShadow(matrixStack, s, x, y, TextFormatting.GOLD.getColor());
+			} else if (displayTemp <= -1) {
+				mc.fontRenderer.drawStringWithShadow(matrixStack, s, x, y, TextFormatting.BLUE.getColor());
+			} else {
+				mc.fontRenderer.drawStringWithShadow(matrixStack, s, x, y, TextFormatting.GRAY.getColor());
+			}
 		}
 		mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
 		mc.getProfiler().endSection();
-		
+
 
 		RenderSystem.enableBlend();
 		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);

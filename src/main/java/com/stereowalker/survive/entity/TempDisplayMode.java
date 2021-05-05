@@ -15,10 +15,16 @@ public enum TempDisplayMode implements CommentedEnum<TempDisplayMode> {
 			return "Temperature is drawn as number values on your screen";
 		}
 	},
-	BAR {
+	HORIZONTAL_BAR {
 		@Override
 		public String getComment() {
 			return "Temperature is drawn as a horizontal bar on your screen";
+		}
+	},
+	VERTICAL_BAR {
+		@Override
+		public String getComment() {
+			return "Temperature is drawn as a vertical bar on your screen";
 		}
 	};
 
