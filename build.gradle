@@ -1,13 +1,12 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = 'https://maven.minecraftforge.net' }
 		maven { url = 'https://repo.spongepowered.org/maven' }
-        jcenter()
         mavenCentral()
     }
 	
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
 		classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
@@ -25,7 +24,7 @@ version = modMinecraftVersion + "-" +modVersion
 group = modGroup // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = modFilename
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 println('Mod Name: ' + modFilename + ', Mod Version: ' + modVersion + ', Minecraft Version: ' + modMinecraftVersion + ', Forge Version: ' + modForgeVersion)
@@ -58,7 +57,6 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run/client')
-
             // Recommended logging data for a userdev environment
             // The markers can be changed as needed. 
             // "SCAN": For mods scan.
@@ -66,13 +64,10 @@ minecraft {
             // "REGISTRYDUMP": For getting the contents of all registries.
             property 'forge.logging.markers', 'REGISTRIES'
 			arg "-mixin.config="+modId+".mixins.json"
-
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
-			
-			
-            property 'mixin.env.disableRefMap', 'true'
-			
+            property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 			args '--username', 'CodeHexIO', '--uuid', 'c5751ce1d50e4d47ca120e1ea1c75542'
 
             mods {
@@ -84,7 +79,6 @@ minecraft {
 
         server {
             workingDirectory project.file('run/server')
-
             // Recommended logging data for a userdev environment
             // The markers can be changed as needed. 
             // "SCAN": For mods scan.
@@ -92,14 +86,10 @@ minecraft {
             // "REGISTRYDUMP": For getting the contents of all registries.
             property 'forge.logging.markers', 'REGISTRIES'
 			arg "-mixin.config="+modId+".mixins.json"
-
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
-			
-			
             property 'mixin.env.disableRefMap', 'true'
 			
-
             mods {
                 modId {
                     source sourceSets.main
@@ -111,24 +101,18 @@ minecraft {
 
 dependencies {
 	minecraft 'net.minecraftforge:forge:' + modMinecraftVersion + '-' + modForgeVersion
+	annotationProcessor 'org.spongepowered:mixin:0.8:processor'
 	compile 'org.spongepowered:mixin:0.8'
 	compile fileTree(include: ['*.jar'], dir: 'libs')
-	//compile fg.deobf("curse.maven:unionlib-367806:"+unionLibID)
-	compile "curse.maven:unionlib-367806:"+unionLibID
+	compile fg.deobf("curse.maven:unionlib-367806:"+unionLibID)
 	compile fg.deobf("curse.maven:biomes-o-plenty-220318:"+bopID)
 	compile fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
 	
-	
 	compile fg.deobf("curse.maven:combat-api-320729:"+combatAPIID)
 	
-	//compileOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+":api")
+	compileOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+":api")
 	
-	//runtimeOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+"")
-	
-	
-	compileOnly fg.deobf("mezz.jei:jei-"+"1.16.4"+":"+jeiVersion+":api")
-	
-	runtimeOnly fg.deobf("mezz.jei:jei-"+"1.16.4"+":"+jeiVersion+"")
+	runtimeOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+"")
 }
 // Process resources on build
 processResources {
