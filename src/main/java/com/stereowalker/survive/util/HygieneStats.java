@@ -113,7 +113,7 @@ public class HygieneStats {
 	}
 
 	/**
-	 * Get whether the player must drink water.
+	 * Get whether the player should take a shower.
 	 */
 	public boolean needsABath() {
 		return this.uncleanLevel > 25;

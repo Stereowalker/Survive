@@ -11,10 +11,12 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
-public class SpongeItem extends Item {
+public class BodyCleaningItem extends Item {
+	private int cleanValue;
 
-	public SpongeItem(Properties properties) {
+	public BodyCleaningItem(int cleanValueIn, Properties properties) {
 		super(properties);
+		this.cleanValue = cleanValueIn;
 	}
 	
 	@Override
@@ -22,7 +24,7 @@ public class SpongeItem extends Item {
 		
 		HygieneStats stats = SurviveEntityStats.getHygieneStats(playerIn);
 		if (playerIn.isWet()) {
-			stats.clean(10);
+			stats.clean(this.cleanValue);
 			playerIn.getHeldItem(handIn).damageItem(1, playerIn, (anim) ->{
 				anim.sendBreakAnimation(EquipmentSlotType.MAINHAND);
 			});

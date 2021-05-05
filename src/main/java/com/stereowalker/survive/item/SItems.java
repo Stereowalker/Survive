@@ -37,7 +37,23 @@ public class SItems {
 	public static final Item STIFFENED_HONEY_CHESTPLATE = register("stiffened_honey_chestplate", new ArmorItem(SArmorMaterial.STIFFENED_HONEY, EquipmentSlotType.CHEST, new Item.Properties().group(SItemGroup.MAIN)));
 	public static final Item STIFFENED_HONEY_LEGGINGS = register("stiffened_honey_leggings", new ArmorItem(SArmorMaterial.STIFFENED_HONEY, EquipmentSlotType.LEGS, new Item.Properties().group(SItemGroup.MAIN)));
 	public static final Item STIFFENED_HONEY_BOOTS = register("stiffened_honey_boots", new ArmorItem(SArmorMaterial.STIFFENED_HONEY, EquipmentSlotType.FEET, new Item.Properties().group(SItemGroup.MAIN)));
-	public static final Item BATH_SPONGE = register("bath_sponge", new SpongeItem(new Item.Properties().group(SItemGroup.MAIN).maxDamage(200)));
+	public static final Item BATH_SPONGE = register("bath_sponge", new BodyCleaningItem(10, new Item.Properties().group(SItemGroup.MAIN).maxDamage(200)));
+	public static final Item WHITE_WASHCLOTH = register("white_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item ORANGE_WASHCLOTH = register("orange_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item MAGENTA_WASHCLOTH = register("magenta_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item LIGHT_BLUE_WASHCLOTH = register("light_blue_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item YELLOW_WASHCLOTH = register("yellow_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item LIME_WASHCLOTH = register("lime_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item PINK_WASHCLOTH = register("pink_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item GRAY_WASHCLOTH = register("gray_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item LIGHT_GRAY_WASHCLOTH = register("light_gray_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item CYAN_WASHCLOTH = register("cyan_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item PURPLE_WASHCLOTH = register("purple_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item BLUE_WASHCLOTH = register("blue_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item BROWN_WASHCLOTH = register("brown_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item GREEN_WASHCLOTH = register("green_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item RED_WASHCLOTH = register("red_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
+	public static final Item BLACK_WASHCLOTH = register("black_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
 	
 	
 	//	private static Item register(Block block) {
