@@ -315,7 +315,6 @@ public class SurviveEvents {
 							List<TemperatureChangeInstance> instances = Survive.armorModifierMap.get(armor.getRegistryName()).getTemperatureModifier();
 							for (TemperatureChangeInstance instance : instances) {
 								if (instance.shouldChangeTemperature(player)) {
-									System.out.println(instance.getTemperature());
 									modifier = instance.getTemperature();
 									break;
 								}

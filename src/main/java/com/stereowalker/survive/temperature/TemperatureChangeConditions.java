@@ -11,6 +11,7 @@ public class TemperatureChangeConditions {
 	public static final List<TemperatureChangeCondition<?>> CONDITION_LIST = new ArrayList<TemperatureChangeCondition<?>>();
 
 	public static final TemperatureChangeCondition<?> DEFAULT = register("default", new DefaultCondition());
+	public static final TemperatureChangeCondition<?> UNDERWATER = register("underwater", new UnderwaterCondition());
 	
 	public static TemperatureChangeCondition<?> register(String name, TemperatureChangeCondition<?> condition) {
 		condition.setRegistryName(Survive.getInstance().location(name));
