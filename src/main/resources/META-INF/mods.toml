@@ -45,7 +45,7 @@ Adds new survival mechanics like thirst, body temperature, sleep management and 
 [[dependencies.survive]]
     modId="combat"
     mandatory=false
-    versionRange="[7.1.0,)"
+    versionRange="[1.16.5-7.1.0,)"
     ordering="NONE"
     side="BOTH"
 	
