@@ -77,6 +77,11 @@ public class Config {
 	@UnionConfig.Range(min = -1, max = 1000)
 	public static int idle_thirst_tick_rate = 100;
 	
+	@UnionConfig.Entry(group = "Thirst" , name = "Canteen Fill Amount", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"The amount of times we can drink water from a canteen before it's empty"})
+	@UnionConfig.Range(min = 1, max = 10)
+	public static int canteen_fill_amount = 3;
+	
 	//
 	//Hunger
 	@UnionConfig.Entry(group = "Hunger" , name = "Idle Hunger Exhaustion", type = Type.COMMON)

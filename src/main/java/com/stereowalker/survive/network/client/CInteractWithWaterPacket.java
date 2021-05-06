@@ -118,7 +118,7 @@ public class CInteractWithWaterPacket {
 						}
 					} else if (heldItem.getItem() == SItems.CANTEEN) {
 						if (isValidContainerSource(waterAmount)) {
-							int i = 3;
+							int i = Config.canteen_fill_amount;
 							heldItem.shrink(1);
 							if (block.getBlock() == Blocks.CAULDRON) {
 								CauldronBlock cauldron = (CauldronBlock) block.getBlock();

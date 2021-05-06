@@ -2,6 +2,8 @@ package com.stereowalker.survive.item;
 
 import java.util.List;
 
+import com.stereowalker.survive.config.Config;
+
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -48,7 +50,7 @@ public class CanteenItem extends Item {
 
 	@OnlyIn(Dist.CLIENT)
 	public ItemStack getDefaultInstance() {
-		return addPropertiesToCanteen(new ItemStack(this), 3);
+		return addPropertiesToCanteen(new ItemStack(this), Config.canteen_fill_amount);
 	}
 	
 	public int getDrinksLeft(ItemStack stack) {
@@ -56,7 +58,7 @@ public class CanteenItem extends Item {
 	}
 	
 	public void setDrinksLeft(ItemStack stack, int drinks) {
-		stack.getOrCreateTag().putInt("DrinksLeft", MathHelper.clamp(drinks, 0, 3));
+		stack.getOrCreateTag().putInt("DrinksLeft", MathHelper.clamp(drinks, 0, Config.canteen_fill_amount));
 	}
 	
 	public void decrementDrinks(ItemStack stack) {
@@ -70,16 +72,17 @@ public class CanteenItem extends Item {
 	@Override
 	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving) {
 		PlayerEntity entityplayer = entityLiving instanceof PlayerEntity ? (PlayerEntity)entityLiving : null;
+		if (entityplayer instanceof ServerPlayerEntity) {
+			CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayerEntity)entityplayer, stack);
+		}
+		
+		if (entityplayer != null) {
+			entityplayer.addStat(Stats.ITEM_USED.get(this));
+		}
+		
 		if (getDrinksLeft(stack) <= 1) {
 			if (entityplayer == null || !entityplayer.abilities.isCreativeMode) {
 				stack.shrink(1);
-			}
-			if (entityplayer instanceof ServerPlayerEntity) {
-				CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayerEntity)entityplayer, stack);
-			}
-
-			if (entityplayer != null) {
-				entityplayer.addStat(Stats.ITEM_USED.get(this));
 			}
 
 			if (entityplayer == null || !entityplayer.abilities.isCreativeMode) {
@@ -92,16 +95,10 @@ public class CanteenItem extends Item {
 				}
 			}
 		}
+		
 		if (getDrinksLeft(stack) > 1) {
 			if (entityplayer == null || !entityplayer.abilities.isCreativeMode) {
 				decrementDrinks(stack);
-			}
-			if (entityplayer instanceof ServerPlayerEntity) {
-				CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayerEntity)entityplayer, stack);
-			}
-
-			if (entityplayer != null) {
-				entityplayer.addStat(Stats.ITEM_USED.get(this));
 			}
 		}
 
@@ -131,11 +128,11 @@ public class CanteenItem extends Item {
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
 		ItemStack stack = playerIn.getHeldItem(handIn);
-		if (getDrinksLeft(stack) < 3) {
+		if (getDrinksLeft(stack) < Config.canteen_fill_amount) {
 			RayTraceResult raytraceresult = rayTrace(worldIn, playerIn, RayTraceContext.FluidMode.SOURCE_ONLY);
 			BlockPos blockpos = ((BlockRayTraceResult)raytraceresult).getPos();
 			if (worldIn.getFluidState(blockpos).isTagged(FluidTags.WATER)) {
-				setDrinksLeft(stack, 3);
+				setDrinksLeft(stack, Config.canteen_fill_amount);
 			}
 		}
 		playerIn.setActiveHand(handIn);

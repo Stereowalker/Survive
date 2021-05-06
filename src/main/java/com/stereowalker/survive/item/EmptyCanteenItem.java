@@ -1,5 +1,7 @@
 package com.stereowalker.survive.item;
 
+import com.stereowalker.survive.config.Config;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,7 +25,7 @@ public class EmptyCanteenItem extends Item{
 		RayTraceResult raytraceresult = rayTrace(worldIn, playerIn, RayTraceContext.FluidMode.SOURCE_ONLY);
 		BlockPos blockpos = ((BlockRayTraceResult)raytraceresult).getPos();
 		if (worldIn.getFluidState(blockpos).isTagged(FluidTags.WATER)) {
-			playerIn.setHeldItem(handIn, CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.WATER_CANTEEN), 3));
+			playerIn.setHeldItem(handIn, CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.WATER_CANTEEN), Config.canteen_fill_amount));
 		}
 		return super.onItemRightClick(worldIn, playerIn, handIn);
 	}
