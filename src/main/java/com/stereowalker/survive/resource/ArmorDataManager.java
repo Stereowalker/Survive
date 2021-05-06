@@ -22,7 +22,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  * Maps marker type to texture.
  * @author Stereowalker
  */
-public class ArmorTemperatureDataManager implements IResourceReloadListener<Map<ResourceLocation, ArmorData>> {
+public class ArmorDataManager implements IResourceReloadListener<Map<ResourceLocation, ArmorData>> {
 	private static final JsonParser parser = new JsonParser();
 
 	@Override
@@ -44,15 +44,15 @@ public class ArmorTemperatureDataManager implements IResourceReloadListener<Map<
 							
 							JsonObject object = parser.parse(reader).getAsJsonObject();
 							ArmorData drinkData = new ArmorData(drinkId, object);
-							Survive.getInstance().LOGGER.info("Found armor temperature modifier for the item "+drinkId);
+							Survive.getInstance().LOGGER.info("Found armor modifier for the item {}", drinkId);
 							
 							drinkMap.put(drinkId, drinkData);
 						}
 					} catch (Exception e) {
-						Survive.getInstance().LOGGER.warn("Error reading the armor temperature modifier for the item " + drinkId + "!", e);
+						Survive.getInstance().LOGGER.warn("Error reading the armor modifier for the item {}!", drinkId, e);
 					}
 				} else {
-					Survive.getInstance().LOGGER.warn("No such armor exists with the item id " + drinkId + "!");
+					Survive.getInstance().LOGGER.warn("No such armor exists with the item id {}!", drinkId);
 				}
 			}
 

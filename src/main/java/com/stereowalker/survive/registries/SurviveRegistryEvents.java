@@ -1,5 +1,6 @@
 package com.stereowalker.survive.registries;
 
+import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.blocks.SBlocks;
 import com.stereowalker.survive.enchantment.SEnchantments;
 import com.stereowalker.survive.entity.ai.SAttributes;
@@ -8,6 +9,8 @@ import com.stereowalker.survive.item.SItems;
 import com.stereowalker.survive.item.crafting.SRecipeSerializer;
 import com.stereowalker.survive.potion.SEffects;
 import com.stereowalker.survive.potion.SPotions;
+import com.stereowalker.survive.temperature.TemperatureChangeCondition;
+import com.stereowalker.survive.temperature.TemperatureChangeConditions;
 
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
@@ -26,10 +29,12 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.RegistryBuilder;
 
 @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class SurviveRegistryEvents
 {
+	private static final int MAX_VARINT = Integer.MAX_VALUE - 1;
 	//Game Object Registries
 	@SubscribeEvent
 	public static void registerBlocks(final RegistryEvent.Register<Block> event) 
@@ -84,4 +89,18 @@ public class SurviveRegistryEvents
 	public static void registerRecipeSerializers(final RegistryEvent.Register<IRecipeSerializer<?>> event) {
 		SRecipeSerializer.registerAll(event.getRegistry());
 	}
+	
+	@SubscribeEvent
+	public static void registerCombatRegistries(final RegistryEvent.NewRegistry event) {
+		new RegistryBuilder<TemperatureChangeCondition<?>>().setName(Survive.getInstance().location("temperature_change_condition")).setType(c(TemperatureChangeCondition.class)).setMaxID(MAX_VARINT).create();
+	}
+
+	//Custom Survive Registries
+	@SubscribeEvent
+	public static void registerSpells(final RegistryEvent.Register<TemperatureChangeCondition<?>> event) {
+		TemperatureChangeConditions.registerAll(event.getRegistry());
+	}
+	
+	@SuppressWarnings("unchecked") //Ugly hack to let us pass in a typed Class object. Remove when we remove type specific references.
+    private static <T> Class<T> c(Class<?> cls) { return (Class<T>)cls; }
 }

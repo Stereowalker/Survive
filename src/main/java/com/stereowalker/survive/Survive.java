@@ -16,7 +16,7 @@ import com.stereowalker.survive.network.client.CThirstMovementPacket;
 import com.stereowalker.survive.network.server.SDrinkSoundPacket;
 import com.stereowalker.survive.network.server.SSurvivalStatsPacket;
 import com.stereowalker.survive.potion.BrewingRecipes;
-import com.stereowalker.survive.resource.ArmorTemperatureDataManager;
+import com.stereowalker.survive.resource.ArmorDataManager;
 import com.stereowalker.survive.resource.BlockTemperatureDataManager;
 import com.stereowalker.survive.resource.ItemConsummableDataManager;
 import com.stereowalker.survive.resource.PotionDrinkDataManager;
@@ -58,7 +58,7 @@ public class Survive extends UnionMod {
 	public static boolean isPrimalWinterLoaded;
 	public static final ItemConsummableDataManager thirstReloader = new ItemConsummableDataManager();
 	public static final PotionDrinkDataManager potionReloader = new PotionDrinkDataManager();
-	public static final ArmorTemperatureDataManager armorReloader = new ArmorTemperatureDataManager();
+	public static final ArmorDataManager armorReloader = new ArmorDataManager();
 	public static final BlockTemperatureDataManager blockReloader = new BlockTemperatureDataManager();
 	private static Survive instance;
 	

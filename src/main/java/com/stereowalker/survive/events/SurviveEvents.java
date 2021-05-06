@@ -1,5 +1,7 @@
 package com.stereowalker.survive.events;
 
+import java.util.List;
+
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.compat.SereneSeasonsCompat;
 import com.stereowalker.survive.config.Config;
@@ -11,6 +13,7 @@ import com.stereowalker.survive.item.SItems;
 import com.stereowalker.survive.network.client.CInteractWithWaterPacket;
 import com.stereowalker.survive.network.server.SSurvivalStatsPacket;
 import com.stereowalker.survive.potion.SEffects;
+import com.stereowalker.survive.temperature.TemperatureChangeInstance;
 import com.stereowalker.survive.util.TemperatureStats;
 import com.stereowalker.survive.util.TemperatureUtil;
 import com.stereowalker.survive.util.data.BlockTemperatureData;
@@ -308,7 +311,16 @@ public class SurviveEvents {
 					if (!player.getItemStackFromSlot(slot).isEmpty()) {
 						Item armor = player.getItemStackFromSlot(slot).getItem();
 						float modifier = 1.0F;
-						if (Survive.armorModifierMap.containsKey(armor.getRegistryName())) modifier = Survive.armorModifierMap.get(armor.getRegistryName()).getTemperatureModifier();
+						if (Survive.armorModifierMap.containsKey(armor.getRegistryName())) {
+							List<TemperatureChangeInstance> instances = Survive.armorModifierMap.get(armor.getRegistryName()).getTemperatureModifier();
+							for (TemperatureChangeInstance instance : instances) {
+								if (instance.shouldChangeTemperature(player)) {
+									System.out.println(instance.getTemperature());
+									modifier = instance.getTemperature();
+									break;
+								}
+							}
+						}
 						armorMod += getModifierFromSlot(slot) * modifier;
 					}
 				}
