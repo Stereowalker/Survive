@@ -579,6 +579,7 @@ public class SurviveEvents {
 	public static void restoreStats(PlayerEvent.Clone event) {
 		SurviveEntityStats.getOrCreateModNBT(event.getPlayer());
 		if (!event.isWasDeath()) {
+			SurviveEntityStats.setHygieneStats(event.getPlayer(), SurviveEntityStats.getHygieneStats(event.getOriginal()));
 			SurviveEntityStats.setWaterStats(event.getPlayer(), SurviveEntityStats.getWaterStats(event.getOriginal()));
 			SurviveEntityStats.setEnergyStats(event.getPlayer(), SurviveEntityStats.getEnergyStats(event.getOriginal()));
 			SurviveEntityStats.setTemperatureStats(event.getPlayer(), SurviveEntityStats.getTemperatureStats(event.getOriginal()));
