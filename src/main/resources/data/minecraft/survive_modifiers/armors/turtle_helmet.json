@@ -4,7 +4,7 @@
 			"condition": "survive:underwater",
 			"temperature": 1.25,
 			"depth": 4,
-			"operation": "water_<="
+			"operation": "water_>="
 		},
 		{
 			"condition": "survive:default",
