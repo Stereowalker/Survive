@@ -180,183 +180,185 @@ public class RenderOverlayEvents {
 		}
 		//
 		living = null;
-		ModifiableAttributeInstance iattributemaxHealth = playerentity.getAttribute(Attributes.MAX_HEALTH);
-		int i1 = gui().scaledWidth / 2 - 91;
-		int j1 = gui().scaledWidth / 2 + 91;
-		int k1 = gui().scaledHeight - 39;
-		float f = (float)iattributemaxHealth.getValue();
-		int l1 = MathHelper.ceil(playerentity.getAbsorptionAmount());
-		int i2 = MathHelper.ceil((f + (float)l1) / 2.0F / 10.0F);
-		int j2 = Math.max(10 - (i2 - 2), 3);
-		boolean needsAir = false;
-		int l6 = playerentity.getAir();
-		int j7 = playerentity.getMaxAir();
-		if (playerentity.areEyesInFluid(FluidTags.WATER) || l6 < j7) {
-			int j8 = MathHelper.ceil((double)(l6 - 2) * 10.0D / (double)j7);
-			int l8 = MathHelper.ceil((double)l6 * 10.0D / (double)j7) - j8;
-
-			for(int k5 = 0; k5 < j8 + l8; ++k5) {
-				if (k5 < j8) {
-					needsAir = true;
-				} else {
-					needsAir = true;
-				}
-			}
-		}
-		if (Config.enable_temperature && !Config.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
-			renderTemperature(ScreenOffset.TOP, playerentity, event.getMatrixStack());
-		}
-
-
-		//Render Hypothermia Hearts
-		int i = MathHelper.ceil(playerentity.getHealth());
-		boolean flag = healthUpdateCounter > (long)gui().getTicks() && (healthUpdateCounter - (long)gui().getTicks()) / 3L % 2L == 1L;
-		long j = Util.milliTime();
-		if (i < playerHealth && playerentity.hurtResistantTime > 0) {
-			lastSystemTime = j;
-			healthUpdateCounter = (long)(gui().getTicks() + 20);
-		} else if (i > playerHealth && playerentity.hurtResistantTime > 0) {
-			lastSystemTime = j;
-			healthUpdateCounter = (long)(gui().getTicks() + 10);
-		}
-
-		if (j - lastSystemTime > 1000L) {
-			playerHealth = i;
-			lastPlayerHealth = i;
-			lastSystemTime = j;
-		}
-
-		playerHealth = i;
-		int k = lastPlayerHealth;
-		rand.setSeed((long)(gui().getTicks() * 312871));
-		int i3 = l1;
-		int k3 = -1;
-		if (playerentity.isPotionActive(Effects.REGENERATION)) {
-			k3 = gui().getTicks() % MathHelper.ceil(f + 5.0F);
-		}
-
-		if (event.getType() == RenderGameOverlayEvent.ElementType.HEALTH && (Config.tempDisplayMode.equals(TempDisplayMode.HOTBAR) || !Config.tempEffects)) {
-			mc.getProfiler().startSection("health");
-			for(int l5 = MathHelper.ceil((f + (float)l1) / 2.0F) - 1; l5 >= 0; --l5) {
-				int i6 = 16;
-				if (playerentity.isPotionActive(SEffects.HYPOTHERMIA)) {
-					i6 += 36;
-				} else if (playerentity.isPotionActive(SEffects.HYPERTHERMIA)) {
-					i6 += 72;
-				}
-
-				int j4 = 0;
-				if (flag) {
-					j4 = 1;
-				}
-
-				int k4 = MathHelper.ceil((float)(l5 + 1) / 10.0F) - 1;
-				int l4 = i1 + l5 % 10 * 8;
-				int i5 = k1 - k4 * j2;
-				if (i <= 4) {
-					i5 += rand.nextInt(2);
-				}
-
-				if (i3 <= 0 && l5 == k3) {
-					i5 -= 2;
-				}
-
-				int j5 = 0;
-				if (playerentity.world.getWorldInfo().isHardcore()) {
-					j5 = 5;
-				}
-				if (playerentity.isPotionActive(SEffects.HYPERTHERMIA) || playerentity.isPotionActive(SEffects.HYPOTHERMIA)) {
-					mc.getTextureManager().bindTexture(GUI_ICONS);
-					gui().blit(event.getMatrixStack(), l4, i5, 16 + j4 * 9, 9 * j5, 9, 9);
-					if (flag) {
-						if (l5 * 2 + 1 < k) {
-							gui().blit(event.getMatrixStack(), l4, i5, i6 + 54, 9 * j5, 9, 9);
-						}
-
-						if (l5 * 2 + 1 == k) {
-							gui().blit(event.getMatrixStack(), l4, i5, i6 + 63, 9 * j5, 9, 9);
-						}
-					}
-
-					if (i3 > 0) {
-						if (i3 == l1 && l1 % 2 == 1) {
-							gui().blit(event.getMatrixStack(), l4, i5, i6 + 153, 9 * j5, 9, 9);
-							--i3;
-						} else {
-							gui().blit(event.getMatrixStack(), l4, i5, i6 + 144, 9 * j5, 9, 9);
-							i3 -= 2;
-						}
+		if (playerentity != null) {
+			ModifiableAttributeInstance iattributemaxHealth = playerentity.getAttribute(Attributes.MAX_HEALTH);
+			int i1 = gui().scaledWidth / 2 - 91;
+			int j1 = gui().scaledWidth / 2 + 91;
+			int k1 = gui().scaledHeight - 39;
+			float f = (float)iattributemaxHealth.getValue();
+			int l1 = MathHelper.ceil(playerentity.getAbsorptionAmount());
+			int i2 = MathHelper.ceil((f + (float)l1) / 2.0F / 10.0F);
+			int j2 = Math.max(10 - (i2 - 2), 3);
+			boolean needsAir = false;
+			int l6 = playerentity.getAir();
+			int j7 = playerentity.getMaxAir();
+			if (playerentity.areEyesInFluid(FluidTags.WATER) || l6 < j7) {
+				int j8 = MathHelper.ceil((double)(l6 - 2) * 10.0D / (double)j7);
+				int l8 = MathHelper.ceil((double)l6 * 10.0D / (double)j7) - j8;
+				
+				for(int k5 = 0; k5 < j8 + l8; ++k5) {
+					if (k5 < j8) {
+						needsAir = true;
 					} else {
-						if (l5 * 2 + 1 < i) {
-							gui().blit(event.getMatrixStack(), l4, i5, i6 + 36, 9 * j5, 9, 9);
-						}
-
-						if (l5 * 2 + 1 == i) {
-							gui().blit(event.getMatrixStack(), l4, i5, i6 + 45, 9 * j5, 9, 9);
-						}
+						needsAir = true;
 					}
 				}
-				mc.getProfiler().endSection();
-				mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
 			}
-		}
-		if (event.getType() == RenderGameOverlayEvent.ElementType.FOOD) {
-			if (Config.enable_thirst) {
-				LivingEntity livingentity = living;
-				int moveUp = needsAir ? -10 : 0;
-				int l = (int) SurviveEntityStats.getWaterStats(playerentity).getWaterLevel();
-				int j6 = getRenderMountHealth(livingentity);
-				if (j6 == 0) {
-					mc.getProfiler().startSection("thirst");
-					mc.getTextureManager().bindTexture(GUI_ICONS);
-					for(int k6 = 0; k6 < 10; ++k6) {
-						int i7 = k1;
-						int k7 = 16;
-						int i8 = 0;
-						if (playerentity.isPotionActive(SEffects.THIRST)) {
-							k7 += 36;
-							i8 = 13;
+			if (Config.enable_temperature && !Config.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
+				renderTemperature(ScreenOffset.TOP, playerentity, event.getMatrixStack());
+			}
+			
+			
+			//Render Hypothermia Hearts
+			int i = MathHelper.ceil(playerentity.getHealth());
+			boolean flag = healthUpdateCounter > (long)gui().getTicks() && (healthUpdateCounter - (long)gui().getTicks()) / 3L % 2L == 1L;
+			long j = Util.milliTime();
+			if (i < playerHealth && playerentity.hurtResistantTime > 0) {
+				lastSystemTime = j;
+				healthUpdateCounter = (long)(gui().getTicks() + 20);
+			} else if (i > playerHealth && playerentity.hurtResistantTime > 0) {
+				lastSystemTime = j;
+				healthUpdateCounter = (long)(gui().getTicks() + 10);
+			}
+			
+			if (j - lastSystemTime > 1000L) {
+				playerHealth = i;
+				lastPlayerHealth = i;
+				lastSystemTime = j;
+			}
+			
+			playerHealth = i;
+			int k = lastPlayerHealth;
+			rand.setSeed((long)(gui().getTicks() * 312871));
+			int i3 = l1;
+			int k3 = -1;
+			if (playerentity.isPotionActive(Effects.REGENERATION)) {
+				k3 = gui().getTicks() % MathHelper.ceil(f + 5.0F);
+			}
+			
+			if (event.getType() == RenderGameOverlayEvent.ElementType.HEALTH && (Config.tempDisplayMode.equals(TempDisplayMode.HOTBAR) || !Config.tempEffects)) {
+				mc.getProfiler().startSection("health");
+				for(int l5 = MathHelper.ceil((f + (float)l1) / 2.0F) - 1; l5 >= 0; --l5) {
+					int i6 = 16;
+					if (playerentity.isPotionActive(SEffects.HYPOTHERMIA)) {
+						i6 += 36;
+					} else if (playerentity.isPotionActive(SEffects.HYPERTHERMIA)) {
+						i6 += 72;
+					}
+					
+					int j4 = 0;
+					if (flag) {
+						j4 = 1;
+					}
+					
+					int k4 = MathHelper.ceil((float)(l5 + 1) / 10.0F) - 1;
+					int l4 = i1 + l5 % 10 * 8;
+					int i5 = k1 - k4 * j2;
+					if (i <= 4) {
+						i5 += rand.nextInt(2);
+					}
+					
+					if (i3 <= 0 && l5 == k3) {
+						i5 -= 2;
+					}
+					
+					int j5 = 0;
+					if (playerentity.world.getWorldInfo().isHardcore()) {
+						j5 = 5;
+					}
+					if (playerentity.isPotionActive(SEffects.HYPERTHERMIA) || playerentity.isPotionActive(SEffects.HYPOTHERMIA)) {
+						mc.getTextureManager().bindTexture(GUI_ICONS);
+						gui().blit(event.getMatrixStack(), l4, i5, 16 + j4 * 9, 9 * j5, 9, 9);
+						if (flag) {
+							if (l5 * 2 + 1 < k) {
+								gui().blit(event.getMatrixStack(), l4, i5, i6 + 54, 9 * j5, 9, 9);
+							}
+							
+							if (l5 * 2 + 1 == k) {
+								gui().blit(event.getMatrixStack(), l4, i5, i6 + 63, 9 * j5, 9, 9);
+							}
 						}
-
-						if (SurviveEntityStats.getWaterStats(playerentity).getHydrationLevel() <= 0.0F && gui().getTicks() % (l * 3 + 1) == 0) {
-							i7 = k1 + (rand.nextInt(3) - 1);
-						}
-
-						int k8 = j1 - k6 * 8 - 9;
-						gui().blit(event.getMatrixStack(), k8, i7 - 10 + moveUp, 16 + i8 * 9, 54, 9, 9);
-						if (k6 * 2 + 1 < l) {
-							gui().blit(event.getMatrixStack(), k8, i7 - 10 + moveUp, k7 + 36, 54, 9, 9);
-						}
-
-						if (k6 * 2 + 1 == l) {
-							gui().blit(event.getMatrixStack(), k8, i7 - 10 + moveUp, k7 + 45, 54, 9, 9);
+						
+						if (i3 > 0) {
+							if (i3 == l1 && l1 % 2 == 1) {
+								gui().blit(event.getMatrixStack(), l4, i5, i6 + 153, 9 * j5, 9, 9);
+								--i3;
+							} else {
+								gui().blit(event.getMatrixStack(), l4, i5, i6 + 144, 9 * j5, 9, 9);
+								i3 -= 2;
+							}
+						} else {
+							if (l5 * 2 + 1 < i) {
+								gui().blit(event.getMatrixStack(), l4, i5, i6 + 36, 9 * j5, 9, 9);
+							}
+							
+							if (l5 * 2 + 1 == i) {
+								gui().blit(event.getMatrixStack(), l4, i5, i6 + 45, 9 * j5, 9, 9);
+							}
 						}
 					}
 					mc.getProfiler().endSection();
 					mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
 				}
 			}
-			//Energy
-			if (Config.enable_stamina) {
-				renderEnergyBars(event.getMatrixStack(), playerentity, needsAir, j1, k1, living);
-			}
-		}
-		if (event.getType() == RenderGameOverlayEvent.ElementType.VIGNETTE) {
-			if (Config.tired_overlay) {
-				if (playerentity.isPotionActive(SEffects.TIREDNESS)) {
-					mc.getProfiler().startSection("tired");
-					int amplifier = playerentity.getActivePotionEffect(SEffects.TIREDNESS).getAmplifier() + 1;
-					amplifier/=(Config.tiredTimeStacks/5);
-					amplifier = MathHelper.clamp(amplifier, 0, 4);
-					renderTiredOverlay(amplifier);
-					mc.getProfiler().endSection();
+			if (event.getType() == RenderGameOverlayEvent.ElementType.FOOD) {
+				if (Config.enable_thirst) {
+					LivingEntity livingentity = living;
+					int moveUp = needsAir ? -10 : 0;
+					int l = (int) SurviveEntityStats.getWaterStats(playerentity).getWaterLevel();
+					int j6 = getRenderMountHealth(livingentity);
+					if (j6 == 0) {
+						mc.getProfiler().startSection("thirst");
+						mc.getTextureManager().bindTexture(GUI_ICONS);
+						for(int k6 = 0; k6 < 10; ++k6) {
+							int i7 = k1;
+							int k7 = 16;
+							int i8 = 0;
+							if (playerentity.isPotionActive(SEffects.THIRST)) {
+								k7 += 36;
+								i8 = 13;
+							}
+							
+							if (SurviveEntityStats.getWaterStats(playerentity).getHydrationLevel() <= 0.0F && gui().getTicks() % (l * 3 + 1) == 0) {
+								i7 = k1 + (rand.nextInt(3) - 1);
+							}
+							
+							int k8 = j1 - k6 * 8 - 9;
+							gui().blit(event.getMatrixStack(), k8, i7 - 10 + moveUp, 16 + i8 * 9, 54, 9, 9);
+							if (k6 * 2 + 1 < l) {
+								gui().blit(event.getMatrixStack(), k8, i7 - 10 + moveUp, k7 + 36, 54, 9, 9);
+							}
+							
+							if (k6 * 2 + 1 == l) {
+								gui().blit(event.getMatrixStack(), k8, i7 - 10 + moveUp, k7 + 45, 54, 9, 9);
+							}
+						}
+						mc.getProfiler().endSection();
+						mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
+					}
+				}
+				//Energy
+				if (Config.enable_stamina) {
+					renderEnergyBars(event.getMatrixStack(), playerentity, needsAir, j1, k1, living);
 				}
 			}
+			if (event.getType() == RenderGameOverlayEvent.ElementType.VIGNETTE) {
+				if (Config.tired_overlay) {
+					if (playerentity.isPotionActive(SEffects.TIREDNESS)) {
+						mc.getProfiler().startSection("tired");
+						int amplifier = playerentity.getActivePotionEffect(SEffects.TIREDNESS).getAmplifier() + 1;
+						amplifier/=(Config.tiredTimeStacks/5);
+						amplifier = MathHelper.clamp(amplifier, 0, 4);
+						renderTiredOverlay(amplifier);
+						mc.getProfiler().endSection();
+					}
+				}
+			}
+			
+			RenderSystem.enableBlend();
+			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+			RenderSystem.disableAlphaTest();
 		}
-
-		RenderSystem.enableBlend();
-		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-		RenderSystem.disableAlphaTest();
 	}
 
 	@SuppressWarnings("deprecation")
