@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "survive.refmap.json",
   "mixins": [
-  	"AbstractVillagerEntityMixin"
+  	"AbstractVillagerEntityMixin",
+  	"OriginManagerMixin"
   ],
   "client": [
   ],

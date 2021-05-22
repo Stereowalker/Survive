@@ -103,5 +103,8 @@
 	"survive.Enable Thirst": "Enable Thirst",
 	"survive.Enable Sleep": "Enable Sleep",
 	"survive.Enable Stamina": "Enable Stamina",
-	"survive.Temperature Display Mode": "Temp. Display"
+	"survive.Temperature Display Mode": "Temp. Display",
+///////////////////////////////////////////////////////////[ORIGINS_POWERS]///////////////////////////////////////////////////////////
+	"power.survive.heat_resistance.name": "Heat Resistance",
+	"power.survive.heat_resistance.description": "You have a really high resistance to heat"
 }
