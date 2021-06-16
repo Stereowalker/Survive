@@ -369,7 +369,7 @@ public class SurviveEvents {
 				int modInt = (int) (modifier*1000);
 				modifier = modInt / 1000.0D;
 				if (player.ticksExisted%type.getTickInterval() == type.getTickInterval()-1) {
-					TemperatureStats.setTemperatureModifier(player, "survive:"+type.toString().toLowerCase(), modifier);
+					TemperatureStats.setTemperatureModifier(player, "survive:"+type.getName(), modifier);
 				}
 			}
 		}
@@ -457,15 +457,20 @@ public class SurviveEvents {
 	}
 
 	private enum TempType {
-		BIOME(10, 7, false), BLOCK(10, 9, true), SHADE(10, 200, true), SUN(10, 200, true);
+		BIOME("biome", 10, 7, false), BLOCK("block", 10, 9, true), SHADE("shade", 10, 200, true), SUN("sun", 10, 200, true);
 
+		String name;
 		int tickInterval;
 		double reductionAmount;
 		boolean usingExact;
-		private TempType(int tickIntervalIn, double reductionAmountIn, boolean usingExactIn) {
+		private TempType(String name, int tickIntervalIn, double reductionAmountIn, boolean usingExactIn) {
 			this.tickInterval = tickIntervalIn;
 			this.reductionAmount = reductionAmountIn;
 			this.usingExact = usingExactIn;
+			this.name = name;
+		}
+		public String getName() {
+			return name;
 		}
 		public int getTickInterval() {
 			return tickInterval;
