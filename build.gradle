@@ -108,6 +108,7 @@ dependencies {
 	compile fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
 	compile fg.deobf("curse.maven:origins-474438:"+originsID)
 	compile fg.deobf("curse.maven:architectury-419699:"+architecturyID)
+	compile fg.deobf("curse.maven:create-328085:"+createID)
 	
 	compile fg.deobf("curse.maven:combat-api-320729:"+combatAPIID)
 	
