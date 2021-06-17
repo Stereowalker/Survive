@@ -9,7 +9,7 @@ import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.fluid.SFluids;
-import com.stereowalker.survive.network.client.CEnergyMovementPacket;
+import com.stereowalker.survive.network.client.CArmorStaminaPacket;
 import com.stereowalker.survive.network.client.CEnergyTaxPacket;
 import com.stereowalker.survive.network.client.CInteractWithWaterPacket;
 import com.stereowalker.survive.network.client.CThirstMovementPacket;
@@ -86,7 +86,7 @@ public class Survive extends UnionMod {
 	@Override
 	public void registerMessages(SimpleChannel channel) {
 		int netID = -1;
-		PacketRegistry.registerMessage(channel, netID++, CEnergyMovementPacket.class, (packetBuffer) -> {return new CEnergyMovementPacket(packetBuffer);});
+		PacketRegistry.registerMessage(channel, netID++, CArmorStaminaPacket.class, (packetBuffer) -> {return new CArmorStaminaPacket(packetBuffer);});
 		channel.registerMessage(netID++, SSurvivalStatsPacket.class, SSurvivalStatsPacket::encode, SSurvivalStatsPacket::decode, SSurvivalStatsPacket::handle);
 		channel.registerMessage(netID++, CThirstMovementPacket.class, CThirstMovementPacket::encode, CThirstMovementPacket::decode, CThirstMovementPacket::handle);
 		channel.registerMessage(netID++, CInteractWithWaterPacket.class, CInteractWithWaterPacket::encode, CInteractWithWaterPacket::decode, CInteractWithWaterPacket::handle);

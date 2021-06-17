@@ -5,7 +5,7 @@ import java.util.Random;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.entity.SurviveEntityStats;
-import com.stereowalker.survive.network.client.CEnergyMovementPacket;
+import com.stereowalker.survive.network.client.CArmorStaminaPacket;
 import com.stereowalker.survive.network.client.CEnergyTaxPacket;
 
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -177,17 +177,6 @@ public class EnergyStats {
 	/////-----------EVENTS-----------/////
 
 	@SubscribeEvent
-	public static void breakBlock(PlayerEvent.HarvestCheck harvestEvent) {
-		EnergyStats energyStats = SurviveEntityStats.getEnergyStats(harvestEvent.getPlayer());
-		if (!harvestEvent.canHarvest()) {
-			energyStats.addExhaustion(harvestEvent.getPlayer(), 0.25F);
-		} else {
-			energyStats.addExhaustion(harvestEvent.getPlayer(), 0.025F);
-		}
-		SurviveEntityStats.setEnergyStats(harvestEvent.getPlayer(), energyStats);
-	}
-
-	@SubscribeEvent
 	public static void clickBlock(PlayerInteractEvent.RightClickBlock clickBlock) {
 		if(!clickBlock.isCanceled() && clickBlock.getPlayer() instanceof PlayerEntity && clickBlock.getCancellationResult().isSuccessOrConsume()) {
 			EnergyStats energyStats = SurviveEntityStats.getEnergyStats(clickBlock.getPlayer());
@@ -222,15 +211,6 @@ public class EnergyStats {
 	}
 
 	@SubscribeEvent
-	public static void attackEntity(AttackEntityEvent entityEvent) {
-		if(!entityEvent.isCanceled()) {
-			EnergyStats energyStats = SurviveEntityStats.getEnergyStats(entityEvent.getPlayer());
-			energyStats.addExhaustion(entityEvent.getPlayer(), 0.5F);
-			SurviveEntityStats.setEnergyStats(entityEvent.getPlayer(), energyStats);
-		}
-	}
-
-	@SubscribeEvent
 	public static void passivelyIncreaseEnergy(LivingUpdateEvent event) {
 		if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
 			ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
@@ -256,7 +236,7 @@ public class EnergyStats {
 			ClientPlayerEntity player = (ClientPlayerEntity)event.getEntityLiving();
 			if (player.ticksExisted%90 == 89) {
 				if (player.world.getDifficulty() != Difficulty.PEACEFUL) {
-					new CEnergyMovementPacket(player.movementInput.moveForward, player.movementInput.moveStrafe, player.movementInput.jump).send();
+					new CArmorStaminaPacket().send();
 				}
 			}
 		}

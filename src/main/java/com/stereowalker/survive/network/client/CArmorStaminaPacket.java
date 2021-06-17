@@ -12,30 +12,18 @@ import com.stereowalker.unionlib.network.client.CUnionPacket;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 
-public class CEnergyMovementPacket extends CUnionPacket {
-	private float moveF;
-	private float moveS;
-	private boolean jump;
+public class CArmorStaminaPacket extends CUnionPacket {
 
-	public CEnergyMovementPacket(final float moveF, final float moveS, final boolean jump) {
+	public CArmorStaminaPacket() {
 		super(Survive.getInstance().channel);
-		this.moveF = moveF;
-		this.moveS = moveS;
-		this.jump = jump;
 	}
 
-	public CEnergyMovementPacket(PacketBuffer packetBuffer) {
+	public CArmorStaminaPacket(PacketBuffer packetBuffer) {
 		super(packetBuffer, Survive.getInstance().channel);
-		this.moveF = packetBuffer.readFloat();
-		this.moveS = packetBuffer.readFloat();
-		this.jump = packetBuffer.readBoolean();
 	}
 
 	@Override
 	public void encode(final PacketBuffer packetBuffer) {
-		packetBuffer.writeFloat(this.moveF);
-		packetBuffer.writeFloat(this.moveS);
-		packetBuffer.writeBoolean(this.jump);
 	}
 
 	@Override
@@ -43,24 +31,7 @@ public class CEnergyMovementPacket extends CUnionPacket {
 		Random rand = new Random();
 		if (Config.enable_stamina) {
 			EnergyStats stats = SurviveEntityStats.getEnergyStats(sender);
-			int movM = (int) ((moveS+moveF)*10);
 			float moveMul = 0;
-			if (movM > 0 && sender.getRidingEntity() == null) {
-				if (sender.isActualySwimming()) {
-					moveMul += 0.05F;
-				} else if (sender.isCrouching()) {
-					moveMul += 0.1F;
-				} else {
-					moveMul += 0.2F;
-				}
-				if (sender.isSprinting()) {
-					moveMul+=3.0F;
-				}
-			}
-			if (jump) {
-				moveMul+=1.0F;
-			}
-
 			int rgn = rand.nextInt(1);
 
 			float maxWeight = 21.0F;
