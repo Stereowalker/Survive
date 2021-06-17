@@ -331,6 +331,15 @@ public class SurviveEvents {
 				snow = -2.0D;
 			}
 			TemperatureStats.setTemperatureModifier(player, "survive:snow", snow);
+			
+			for (String dimensionList : ServerConfig.dimensionModifiers) {
+				String[] dimension = dimensionList.split(",");
+				ResourceLocation loc = new ResourceLocation(dimension[0]);
+				if (RegistryHelper.matchesRegistryKey(loc, player.world.getDimensionKey())) {
+					TemperatureStats.setTemperatureModifier(player, "survive:dimension", Float.parseFloat(dimension[1]));
+					break;
+				}
+			}
 
 			if (ModHelper.isSereneSeasonsLoaded()) {
 				float seasonMod = SereneSeasonsCompat.modifyTemperatureBySeason(player.getEntityWorld(), player.getPosition());
@@ -392,15 +401,7 @@ public class SurviveEvents {
 			if (ModHelper.isPrimalWinterLoaded()) {
 				biomeTemp = -0.7F;
 			}
-			float dimensionMod = 1.0F;
-			for (String dimensionList : ServerConfig.dimensionModifiers) {
-				String[] dimension = dimensionList.split(",");
-				ResourceLocation loc = new ResourceLocation(dimension[0]);
-				if (RegistryHelper.matchesRegistryKey(loc, world.getDimensionKey())) {
-					dimensionMod = Float.parseFloat(dimension[1]);
-				}
-			}
-			return biomeTemp*dimensionMod;
+			return biomeTemp;
 
 		case BLOCK:
 			float blockTemp = 0;
