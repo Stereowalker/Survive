@@ -22,23 +22,19 @@ import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.settings.AttackIndicatorStatus;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effects;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
@@ -55,109 +51,6 @@ public class RenderOverlayEvents {
 
 	static IngameGui gui() {
 		return mc.ingameGUI;
-	}
-
-	@SubscribeEvent
-	public static void renderGameOverlay2(RenderGameOverlayEvent.Pre event) {
-		if (Config.enable_temperature && event.getType().equals(ElementType.HOTBAR) && Config.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
-			if (!mc.playerController.isSpectatorMode()) {
-				renderHotbar(event.getPartialTicks(), event.getMatrixStack());
-				event.setCanceled(true);
-			}
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-	protected static void renderHotbar(float partialTicks, MatrixStack matrixStack) {
-		//TODO: Access transform this
-		ResourceLocation WIDGETS_TEX_PATH = new ResourceLocation("textures/gui/widgets.png");
-		PlayerEntity playerentity = gui().getRenderViewPlayer();
-
-		double rawTemperature = SurviveEntityStats.getTemperatureStats(playerentity).getTemperatureLevel();
-		double tempLocation = rawTemperature - Survive.DEFAULT_TEMP;
-		double displayTemp = 0;
-		if (tempLocation > 0) {
-			double maxTemp = 0.0D;
-			if (playerentity.getAttribute(SAttributes.HEAT_RESISTANCE) != null) {
-				maxTemp = playerentity.getAttributeValue(SAttributes.HEAT_RESISTANCE);
-			} else {
-				maxTemp = SAttributes.HEAT_RESISTANCE.getDefaultValue();
-			}
-			double div = tempLocation / maxTemp;
-			displayTemp = MathHelper.clamp(div, 0, 1.0D+(28.0D/63.0D));
-		}
-		if (tempLocation < 0) {
-			double maxTemp = 0.0D;
-			if (playerentity.getAttribute(SAttributes.COLD_RESISTANCE) != null) {
-				maxTemp = playerentity.getAttributeValue(SAttributes.COLD_RESISTANCE);
-			} else {
-				maxTemp = SAttributes.COLD_RESISTANCE.getDefaultValue();
-			}
-			double div = tempLocation / maxTemp;
-			displayTemp = MathHelper.clamp(div, -1.0D-(28.0D/63.0D), 0);
-		}
-
-		float heatTemp = (float) (1.0F - displayTemp);
-		float coldTemp = (float) (1.0F + displayTemp);
-		float whiteTemp = (float) ((1.0F - Math.abs(displayTemp))/2 + 0.5F);
-		if (playerentity != null) {
-			RenderSystem.color4f(coldTemp, whiteTemp, heatTemp, 1.0F);
-			mc.getTextureManager().bindTexture(/* gui(). */WIDGETS_TEX_PATH);
-			ItemStack itemstack = playerentity.getHeldItemOffhand();
-			HandSide handside = playerentity.getPrimaryHand().opposite();
-			int i =  gui().scaledWidth / 2;
-			int j = gui().getBlitOffset();
-			gui().setBlitOffset(-90);
-			gui().blit(matrixStack, i - 91,  gui().scaledHeight - 22, 0, 0, 182, 22);
-			gui().blit(matrixStack, i - 91 - 1 + playerentity.inventory.currentItem * 20,  gui().scaledHeight - 22 - 1, 0, 22, 24, 22);
-			if (!itemstack.isEmpty()) {
-				if (handside == HandSide.LEFT) {
-					gui().blit(matrixStack, i - 91 - 29,  gui().scaledHeight - 23, 24, 22, 29, 24);
-				} else {
-					gui().blit(matrixStack, i + 91,  gui().scaledHeight - 23, 53, 22, 29, 24);
-				}
-			}
-
-			gui().setBlitOffset(j);
-			RenderSystem.enableRescaleNormal();
-			RenderSystem.enableBlend();
-			RenderSystem.defaultBlendFunc();
-
-			for(int i1 = 0; i1 < 9; ++i1) {
-				int j1 = i - 90 + i1 * 20 + 2;
-				int k1 =  gui().scaledHeight - 16 - 3;
-				gui().renderHotbarItem(j1, k1, partialTicks, playerentity, playerentity.inventory.mainInventory.get(i1));
-			}
-
-			if (!itemstack.isEmpty()) {
-				int i2 =  gui().scaledHeight - 16 - 3;
-				if (handside == HandSide.LEFT) {
-					gui().renderHotbarItem(i - 91 - 26, i2, partialTicks, playerentity, itemstack);
-				} else {
-					gui().renderHotbarItem(i + 91 + 10, i2, partialTicks, playerentity, itemstack);
-				}
-			}
-
-			if (mc.gameSettings.attackIndicator == AttackIndicatorStatus.HOTBAR) {
-				float f = mc.player.getCooledAttackStrength(0.0F);
-				if (f < 1.0F) {
-					int j2 =  gui().scaledHeight - 20;
-					int k2 = i + 91 + 6;
-					if (handside == HandSide.RIGHT) {
-						k2 = i - 91 - 22;
-					}
-
-					mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
-					int l1 = (int)(f * 19.0F);
-					RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-					gui().blit(matrixStack, k2, j2, 0, 94, 18, 18);
-					gui().blit(matrixStack, k2, j2 + 18 - l1, 18, 112 - l1, 18, l1);
-				}
-			}
-
-			RenderSystem.disableRescaleNormal();
-			RenderSystem.disableBlend();
-		}
 	}
 
 	@SuppressWarnings("deprecation")

@@ -9,6 +9,7 @@
   	"PlayerEntityMixin"
   ],
   "client": [
+  	"IngameGuiMixin"
   ],
   "injectors": {
     "defaultRequire": 1
