@@ -401,6 +401,9 @@ public class SurviveEvents {
 			if (ModHelper.isPrimalWinterLoaded()) {
 				biomeTemp = -0.7F;
 			}
+			if (Survive.biomeTemperatureMap.containsKey(world.func_242406_i(pos).get().getLocation())) {
+				biomeTemp = Survive.biomeTemperatureMap.get(world.func_242406_i(pos).get().getLocation()).getTemperature();
+			}
 			return biomeTemp;
 
 		case BLOCK:
@@ -596,9 +599,10 @@ public class SurviveEvents {
 
 	@SubscribeEvent
 	public static void addReload(AddReloadListenerEvent event) {
-		event.addListener(Survive.thirstReloader);
+		event.addListener(Survive.consummableReloader);
 		event.addListener(Survive.potionReloader);
 		event.addListener(Survive.armorReloader);
 		event.addListener(Survive.blockReloader);
+		event.addListener(Survive.biomeReloader);
 	}
 }

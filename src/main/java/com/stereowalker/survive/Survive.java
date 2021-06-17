@@ -17,12 +17,14 @@ import com.stereowalker.survive.network.server.SDrinkSoundPacket;
 import com.stereowalker.survive.network.server.SSurvivalStatsPacket;
 import com.stereowalker.survive.potion.BrewingRecipes;
 import com.stereowalker.survive.resource.ArmorDataManager;
+import com.stereowalker.survive.resource.BiomeTemperatureDataManager;
 import com.stereowalker.survive.resource.BlockTemperatureDataManager;
 import com.stereowalker.survive.resource.ItemConsummableDataManager;
 import com.stereowalker.survive.resource.PotionDrinkDataManager;
 import com.stereowalker.survive.spell.SSpells;
 import com.stereowalker.survive.stat.SStats;
 import com.stereowalker.survive.util.data.ArmorData;
+import com.stereowalker.survive.util.data.BiomeTemperatureData;
 import com.stereowalker.survive.util.data.BlockTemperatureData;
 import com.stereowalker.survive.util.data.ConsummableData;
 import com.stereowalker.survive.world.CGameRules;
@@ -56,10 +58,11 @@ public class Survive extends UnionMod {
 	public static final float DEFAULT_TEMP = 37.0F;
 	public static final String MOD_ID = "survive";
 	public static boolean isPrimalWinterLoaded;
-	public static final ItemConsummableDataManager thirstReloader = new ItemConsummableDataManager();
+	public static final ItemConsummableDataManager consummableReloader = new ItemConsummableDataManager();
 	public static final PotionDrinkDataManager potionReloader = new PotionDrinkDataManager();
 	public static final ArmorDataManager armorReloader = new ArmorDataManager();
 	public static final BlockTemperatureDataManager blockReloader = new BlockTemperatureDataManager();
+	public static final BiomeTemperatureDataManager biomeReloader = new BiomeTemperatureDataManager();
 	private static Survive instance;
 	
 	public static boolean isCombatLoaded() {
@@ -100,6 +103,7 @@ public class Survive extends UnionMod {
 	public static final Map<ResourceLocation, ConsummableData> potionDrinkMap = Maps.newHashMap();
 	public static final Map<ResourceLocation, ArmorData> armorModifierMap = Maps.newHashMap();
 	public static final Map<ResourceLocation, BlockTemperatureData> blockTemperatureMap = Maps.newHashMap();
+	public static final Map<ResourceLocation, BiomeTemperatureData> biomeTemperatureMap = Maps.newHashMap();
 	public static void registerDrinkDataForItem(ResourceLocation location, ConsummableData drinkData) {
 		consummableItemMap.put(location, drinkData);
 	}
@@ -111,6 +115,9 @@ public class Survive extends UnionMod {
 	}
 	public static void registerBlockTemperatures(ResourceLocation location, BlockTemperatureData drinkData) {
 		blockTemperatureMap.put(location, drinkData);
+	}
+	public static void registerBiomeTemperatures(ResourceLocation location, BiomeTemperatureData biomeData) {
+		biomeTemperatureMap.put(location, biomeData);
 	}
 
 	@Override
