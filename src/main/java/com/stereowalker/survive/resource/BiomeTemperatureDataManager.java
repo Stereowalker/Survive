@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.util.data.BiomeTemperatureData;
+import com.stereowalker.unionlib.resource.IResourceReloadListener;
 
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.resources.IResource;

@@ -12,6 +12,7 @@ import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.util.data.ConsummableData;
+import com.stereowalker.unionlib.resource.IResourceReloadListener;
 
 import net.minecraft.item.Food;
 import net.minecraft.potion.EffectInstance;
