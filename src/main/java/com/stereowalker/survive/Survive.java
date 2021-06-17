@@ -151,9 +151,9 @@ public class Survive extends UnionMod {
 
 	public static List<String> defaultDimensionMods() {
 		List<String> dims = new ArrayList<String>();
-		dims.add("minecraft:overworld,1.0");
-		dims.add("minecraft:the_nether,1.0");
-		dims.add("minecraft:the_end,1.0");
+		dims.add("minecraft:overworld,0.0");
+		dims.add("minecraft:the_nether,0.0");
+		dims.add("minecraft:the_end,0.0");
 		return dims;
 	}
 	

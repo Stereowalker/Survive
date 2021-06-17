@@ -7,13 +7,13 @@ import com.stereowalker.unionlib.config.UnionConfig;
 
 import net.minecraftforge.fml.config.ModConfig.Type;
 
-@UnionConfig(name = "survive.server", autoReload = true, appendWithType = false)
+@UnionConfig(name = "survive-server", autoReload = true, appendWithType = false)
 public class ServerConfig {
 
 	//
 	//Temperature
 	@UnionConfig.Entry(group = "Temperature" , name = "Dimensional Temperature Modifier", type = Type.SERVER)
-	@UnionConfig.Comment(comment = {"This list defines dimensional temperature modifiers","Dimensions in this list will multiply the tempeatures of their biomes by this value"})
+	@UnionConfig.Comment(comment = {"This list defines dimensional temperature modifiers","Dimensions in this list will multiply the tempeatures of their biomes by this value.","Values here should typically be between 2 (hot) and -2 (cold) but they can be anything"})
 	public static List<String> dimensionModifiers = Survive.defaultDimensionMods();
 	
 	//
