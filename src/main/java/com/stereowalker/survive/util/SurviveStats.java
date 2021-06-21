@@ -1,5 +1,6 @@
 package com.stereowalker.survive.util;
 
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -16,5 +17,15 @@ public abstract class SurviveStats {
 			tick(player);
 			save(player);
 		}
+	}
+	
+	public void baseClientTick(AbstractClientPlayerEntity player) {
+		if (shouldTick()) {
+			clientTick(player);
+		}
+	}
+	
+	public void clientTick(AbstractClientPlayerEntity player) {
+		
 	}
 }

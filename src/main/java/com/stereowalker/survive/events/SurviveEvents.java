@@ -28,6 +28,7 @@ import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CauldronBlock;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -119,12 +120,18 @@ public class SurviveEvents {
 		if(event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 			SurviveEntityStats.addStatsOnSpawn(player);
-			if (player.isServerWorld()) {
+			if (!player.world.isRemote) {
 				SurviveEntityStats.getEnergyStats(player).baseTick(player);
 				SurviveEntityStats.getHygieneStats(player).baseTick(player);
 				SurviveEntityStats.getNutritionStats(player).baseTick(player);
 				SurviveEntityStats.getTemperatureStats(player).baseTick(player);
 				SurviveEntityStats.getWaterStats(player).baseTick(player);
+			} else {
+				SurviveEntityStats.getEnergyStats(player).baseClientTick((AbstractClientPlayerEntity) player);
+				SurviveEntityStats.getHygieneStats(player).baseClientTick((AbstractClientPlayerEntity) player);
+				SurviveEntityStats.getNutritionStats(player).baseClientTick((AbstractClientPlayerEntity) player);
+				SurviveEntityStats.getTemperatureStats(player).baseClientTick((AbstractClientPlayerEntity) player);
+				SurviveEntityStats.getWaterStats(player).baseClientTick((AbstractClientPlayerEntity) player);
 			}
 		}
 	}
@@ -338,7 +345,7 @@ public class SurviveEvents {
 				snow = -2.0D;
 			}
 			TemperatureStats.setTemperatureModifier(player, "survive:snow", snow);
-			
+
 			for (String dimensionList : ServerConfig.dimensionModifiers) {
 				String[] dimension = dimensionList.split(",");
 				ResourceLocation loc = new ResourceLocation(dimension[0]);

@@ -75,6 +75,7 @@ public abstract class PlayerEntityMixin extends LivingEntity{
 			float total = protein+carbs;
 			nutritionStats.addCarbs(food.getHealing()*MathHelper.ceil((carbs/total)*10));
 			nutritionStats.addProtein(food.getHealing()*MathHelper.ceil((protein/total)*10));
+			nutritionStats.save((LivingEntity)(Object)this);
 		}
 	}
 }

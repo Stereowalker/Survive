@@ -1,18 +1,16 @@
 package com.stereowalker.survive.util;
 
+import java.util.Random;
+
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.entity.SurviveEntityStats;
+import com.stereowalker.survive.particles.SParticleTypes;
 
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-@EventBusSubscriber
 public class HygieneStats extends SurviveStats {
 	private int uncleanLevel = 10;
 	private int hygieneTimer;
@@ -20,7 +18,7 @@ public class HygieneStats extends SurviveStats {
 	public HygieneStats() {
 		this.uncleanLevel = 20;
 	}
-	
+
 	/**
 	 * Attempts to clean the player
 	 * @param cleanLevelIn - Caps at zero
@@ -28,7 +26,7 @@ public class HygieneStats extends SurviveStats {
 	public void clean(int cleanLevelIn) {
 		this.uncleanLevel = Math.max(cleanLevelIn - this.uncleanLevel, 0);
 	}
-	
+
 	/**
 	 * Attempts to dirty the player
 	 * @param cleanLevelIn - Caps at zero
@@ -37,50 +35,29 @@ public class HygieneStats extends SurviveStats {
 		this.uncleanLevel = Math.max(dirtyLevelIn + this.uncleanLevel, 0);
 	}
 
+	@Override
+	public void clientTick(AbstractClientPlayerEntity player) {
+		if (this.needsABath()) {
+			Random rand = new Random();
+			for(int i = 0; i < 2; ++i) {
+				player.world.addParticle(SParticleTypes.STINK, player.getPosXRandom(0.5D), player.getPosYRandom() - 0.25D, player.getPosZRandom(0.5D), (rand.nextDouble() - 0.5D) * 0.5D, -rand.nextDouble() * 0.5D, (rand.nextDouble() - 0.5D) * 0.5D);
+			}
+		}
+	}
+
 	/**
 	 * Handles the water game logic.
 	 */
 	public void tick(PlayerEntity player) {
-//		Difficulty difficulty = player.world.getDifficulty();
-//		this.prevWaterLevel = this.waterLevel;
-//		if (this.waterExhaustionLevel > 4.0F) {
-//			this.waterExhaustionLevel -= 4.0F;
-//			if (this.waterHydrationLevel > 0.0F) {
-//				this.waterHydrationLevel = Math.max(this.waterHydrationLevel - 1.0F, 0.0F);
-//			} else if (difficulty != Difficulty.PEACEFUL) {
-//				this.waterLevel = Math.max(this.waterLevel - 1, 0);
-//			}
-//		}
-
-		boolean flag = /*player.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)*/ Config.enable_hygiene;
-		if (flag/*
-				 * && this.waterHydrationLevel > 0.0F && player.shouldHeal() && this.waterLevel
-				 * >= 20
-				 */) {
+		if (!player.isCreative() && !player.isSpectator()) {
 			++this.hygieneTimer;
-			if (this.hygieneTimer >= 400) {
-//				float f = Math.min(this.waterHydrationLevel, 6.0F);
-//				player.heal(f / 12.0F);
-//				this.addExhaustion(f);
-				this.uncleanLevel+=1.0F;
+			if (this.hygieneTimer >= 100 && player.isWet()) {
+				this.clean(1);
+				this.hygieneTimer = 0;
+			} else if (this.hygieneTimer >= 1) {
+				this.dirty(1);
 				this.hygieneTimer = 0;
 			}
-//		} else if (flag && this.waterLevel >= 18 && player.shouldHeal()) {
-//			++this.waterTimer;
-//			if (this.waterTimer >= 80) {
-//				player.heal(0.5F);
-//				this.addExhaustion(6.0F);
-//				this.waterTimer = 0;
-//			}
-//		} else if (this.waterLevel <= 0) {
-//			++this.waterTimer;
-//			if (this.waterTimer >= 80) {
-//				if (player.getHealth() > 10.0F || difficulty == Difficulty.HARD || player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL) {
-//					player.attackEntityFrom(SDamageSource.DEHYDRATE, 1.0F);
-//				}
-//
-//				this.waterTimer = 0;
-//			}
 		} else {
 			this.hygieneTimer = 0;
 		}
@@ -124,28 +101,9 @@ public class HygieneStats extends SurviveStats {
 	public void save(LivingEntity player) {
 		SurviveEntityStats.setHygieneStats(player, this);
 	}
-	
+
 	@Override
 	public boolean shouldTick() {
 		return Config.enable_hygiene;
-	}
-
-	/////-----------EVENTS-----------/////
-
-	@SubscribeEvent
-	public static void regulateHygiene(LivingUpdateEvent event) {
-		if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
-			ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
-			if (Config.enable_hygiene) {
-				HygieneStats stats = SurviveEntityStats.getHygieneStats(player);
-				if (player.isWet() && player.ticksExisted % 20 == 0) {
-					stats.clean(1);
-				}
-				SurviveEntityStats.setHygieneStats(player, stats);
-			}
-		}
-		if (event.getEntityLiving() != null && event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ClientPlayerEntity) {
-			ClientPlayerEntity player = (ClientPlayerEntity)event.getEntityLiving();
-		}
 	}
 }
