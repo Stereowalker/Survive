@@ -56,6 +56,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class Survive extends UnionMod {
 
 	public static final float DEFAULT_TEMP = 37.0F;
+	public static final float MAX_WEIGHT = 21.0F;
 	public static final String MOD_ID = "survive";
 	public static boolean isPrimalWinterLoaded;
 	public static final ItemConsummableDataManager consummableReloader = new ItemConsummableDataManager();
@@ -127,7 +128,7 @@ public class Survive extends UnionMod {
 	}
 
 	public void debug(Object message) {
-		if (Config.debugMode)LOGGER.debug(message);
+		if (Config.debugMode)getLogger().debug(message);
 	}
 
 	private void setup(final FMLCommonSetupEvent event)

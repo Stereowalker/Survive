@@ -45,15 +45,15 @@ public class BlockTemperatureDataManager implements IResourceReloadListener<Map<
 							
 							JsonObject object = parser.parse(reader).getAsJsonObject();
 							BlockTemperatureData blockData = new BlockTemperatureData(blockId, object);
-							Survive.getInstance().LOGGER.info("Found block temperature modifier for the item "+blockId);
+							Survive.getInstance().getLogger().info("Found block temperature modifier for the item "+blockId);
 							
 							drinkMap.put(blockId, blockData);
 						}
 					} catch (Exception e) {
-						Survive.getInstance().LOGGER.warn("Error reading the block temperature modifier for the item " + blockId + "!", e);
+						Survive.getInstance().getLogger().warn("Error reading the block temperature modifier for the item " + blockId + "!", e);
 					}
 				} else {
-					Survive.getInstance().LOGGER.warn("No such block exists with the block id " + blockId + "!");
+					Survive.getInstance().getLogger().warn("No such block exists with the block id " + blockId + "!");
 				}
 			}
 

@@ -12,7 +12,7 @@ import net.minecraft.util.ResourceLocation;
  * @author Stereowalker
  *
  */
-public class ConsummableData {
+public class ConsummableData extends JsonData {
     private static final Marker DRINK_DATA = MarkerManager.getMarker("DRINK_DATA");
     
 	private ResourceLocation itemID;
@@ -26,6 +26,9 @@ public class ConsummableData {
 	private float hungerChance = 0;
 	//Stamina
 	private int energyAmount = 0;
+	//Nutrition
+	private int carbohydrateRatio = 1;
+	private int proteinRatio = 1;
 	//
 	private boolean isChilled = false;
 	private boolean isHeated = false;
@@ -36,6 +39,7 @@ public class ConsummableData {
 	private boolean overwritesDefaultHungerChance = false;
 	
 	public ConsummableData(ResourceLocation itemID, JsonObject object) {
+		super(object);
 		String NOTHING = "nothing";
 		String THIRST = "thirst";
 		String HYDRATION = "hydration";
@@ -47,79 +51,109 @@ public class ConsummableData {
 		String CHILLED = "gives_chilled_effect";
 		String HEATED = "gives_heated_effect";
 		String ENERGIZING = "gives_energizing_effect";
+		String NUTRITION = "nutrition";
 		
 		this.itemID = itemID;
 		if(object.entrySet().size() != 0) {
 			String workingOn = NOTHING;
 			try {
 				
-				if(object.has(THIRST) && object.get(THIRST).isJsonPrimitive()) {
+				if(this.hasMemberAndIsPrimitive(THIRST, object)) {
 					workingOn = THIRST;
 					thirstAmount = object.get(THIRST).getAsInt();
 					workingOn = NOTHING;
 				}
 
-				if(object.has(HYDRATION) && object.get(HYDRATION).isJsonPrimitive()) {
+				if(this.hasMemberAndIsPrimitive(HYDRATION, object)) {
 					workingOn = HYDRATION;
 					hydrationAmount = object.get(HYDRATION).getAsFloat();
 					workingOn = NOTHING;
 				}
 				
-				if(object.has(THIRSTY) && object.get(THIRSTY).isJsonPrimitive()) {
+				if(this.hasMemberAndIsPrimitive(THIRSTY, object)) {
 					workingOn = THIRSTY;
 					thirstChance = object.get(THIRSTY).getAsFloat();
 					workingOn = NOTHING;
 				}
 				
-				if(object.has(HUNGER) && object.get(HUNGER).isJsonPrimitive()) {
+				if(this.hasMemberAndIsPrimitive(HUNGER, object)) {
 					workingOn = HUNGER;
 					hungerAmount = object.get(HUNGER).getAsInt();
 					overwritesDefaultHunger = true;
 					workingOn = NOTHING;
 				}
 
-				if(object.has(SATURATION) && object.get(SATURATION).isJsonPrimitive()) {
+				if(this.hasMemberAndIsPrimitive(SATURATION, object)) {
 					workingOn = SATURATION;
 					saturationAmount = object.get(SATURATION).getAsFloat();
 					overwritesDefaultSaturation = true;
 					workingOn = NOTHING;
 				}
 				
-				if(object.has(HUNGERY) && object.get(HUNGERY).isJsonPrimitive()) {
+				if(this.hasMemberAndIsPrimitive(HUNGERY, object)) {
 					workingOn = HUNGERY;
 					hungerChance = object.get(HUNGERY).getAsFloat();
 					overwritesDefaultHungerChance = true;
 					workingOn = NOTHING;
 				}
 				
-				if(object.has(ENERGY) && object.get(ENERGY).isJsonPrimitive()) {
+				if(this.hasMemberAndIsPrimitive(ENERGY, object)) {
 					workingOn = ENERGY;
 					energyAmount = object.get(ENERGY).getAsInt();
 					workingOn = NOTHING;
 				}
 				
-				if(object.has(CHILLED) && object.get(CHILLED).isJsonPrimitive()) {
+				if(this.hasMemberAndIsPrimitive(CHILLED, object)) {
 					workingOn = CHILLED;
 					isChilled = object.get(CHILLED).getAsBoolean();
 					workingOn = NOTHING;
 				}
 				
-				if(object.has(HEATED) && object.get(HEATED).isJsonPrimitive()) {
+				if(this.hasMemberAndIsPrimitive(HEATED, object)) {
 					workingOn = HEATED;
 					isHeated = object.get(HEATED).getAsBoolean();
 					workingOn = NOTHING;
 				}
 				
-				if(object.has(ENERGIZING) && object.get(ENERGIZING).isJsonPrimitive()) {
+				if(this.hasMemberAndIsPrimitive(ENERGIZING, object)) {
 					workingOn = ENERGIZING;
 					isEnergizing = object.get(ENERGIZING).getAsBoolean();
 					workingOn = NOTHING;
 				}
 				
+				if(this.hasMemberAndIsPrimitive(NUTRITION, object)) {
+					workingOn = NUTRITION;
+					JsonObject object2 = object.get(NUTRITION).getAsJsonObject();
+					String CARB_RATIO = "carbohydrate_ratio";
+					String PROTEIN_RATIO = "protein_ratio";
+					if(object2.entrySet().size() != 0) {
+						try {
+							
+							if(this.hasMemberAndIsPrimitive(CARB_RATIO, object2)) {
+								workingOn = CARB_RATIO;
+								carbohydrateRatio = object.get(CARB_RATIO).getAsInt();
+								workingOn = NOTHING;
+							}
+							
+							if(this.hasMemberAndIsPrimitive(PROTEIN_RATIO, object2)) {
+								workingOn = PROTEIN_RATIO;
+								proteinRatio = object.get(PROTEIN_RATIO).getAsInt();
+								workingOn = NOTHING;
+							}
+							
+						} catch (ClassCastException e) {
+							Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was wrong type!", e, itemID, workingOn);
+						} catch (NumberFormatException e) {
+							Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was an invalid number!", e, itemID, workingOn);
+						}
+					}
+					workingOn = NOTHING;
+				}
+				
 			} catch (ClassCastException e) {
-				Survive.getInstance().LOGGER.warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was wrong type!", e, itemID, workingOn);
+				Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was wrong type!", e, itemID, workingOn);
 			} catch (NumberFormatException e) {
-				Survive.getInstance().LOGGER.warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was an invalid number!", e, itemID, workingOn);
+				Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was an invalid number!", e, itemID, workingOn);
 			}
 		}
 	}
@@ -207,6 +241,14 @@ public class ConsummableData {
 	 */
 	public int getEnergyAmount() {
 		return energyAmount;
+	}
+
+	public int getCarbohydrateRatio() {
+		return carbohydrateRatio;
+	}
+
+	public int getProteinRatio() {
+		return proteinRatio;
 	}
 	
 	

@@ -6,7 +6,9 @@
   "mixins": [
   	"AbstractVillagerEntityMixin",
   	"OriginManagerMixin",
-  	"PlayerEntityMixin"
+  	"PlayerEntityMixin",
+  	"FoodStatsMixin",
+  	"BlockMixin"
   ],
   "client": [
   	"IngameGuiMixin"

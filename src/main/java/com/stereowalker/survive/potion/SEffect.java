@@ -2,7 +2,7 @@ package com.stereowalker.survive.potion;
 
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.entity.SurviveEntityStats;
-import com.stereowalker.survive.util.EnergyStats;
+import com.stereowalker.survive.util.StaminaStats;
 import com.stereowalker.survive.util.SDamageSource;
 import com.stereowalker.survive.util.TemperatureStats;
 import com.stereowalker.survive.util.WaterStats;
@@ -25,7 +25,7 @@ public class SEffect extends Effect{
 		if (this == SEffects.THIRST && entityLivingBaseIn instanceof ServerPlayerEntity) {
 			WaterStats waterStats = SurviveEntityStats.getWaterStats(entityLivingBaseIn);
 			waterStats.addExhaustion((PlayerEntity) entityLivingBaseIn, (0.005F * (float)(amplifier + 1)));
-			SurviveEntityStats.setWaterStats(entityLivingBaseIn, waterStats);
+			waterStats.save(entityLivingBaseIn);
 		} else if (this == SEffects.HYPOTHERMIA && entityLivingBaseIn instanceof PlayerEntity) {
 			boolean flag = !entityLivingBaseIn.world.getDifficulty().equals(Difficulty.HARD) && entityLivingBaseIn.getHealth() > 1.0F;
 			if (entityLivingBaseIn.world.getDifficulty().equals(Difficulty.HARD)) flag = true;
@@ -49,18 +49,18 @@ public class SEffect extends Effect{
 			TemperatureStats.setTemperatureModifier(entityLivingBaseIn, "survive:heated_effect", +(0.05F * (float)(amplifier + 1)));
 			SurviveEntityStats.setTemperatureStats((ServerPlayerEntity) entityLivingBaseIn, stats);
 		} else if (this == SEffects.ENERGIZED && entityLivingBaseIn instanceof ServerPlayerEntity) {
-			EnergyStats energyStats = SurviveEntityStats.getEnergyStats(entityLivingBaseIn);
+			StaminaStats energyStats = SurviveEntityStats.getEnergyStats(entityLivingBaseIn);
 			if (entityLivingBaseIn.ticksExisted % 20 == 0) {
 				energyStats.addStats(1);
-				SurviveEntityStats.setEnergyStats(entityLivingBaseIn, energyStats);
+				SurviveEntityStats.setStaminaStats(entityLivingBaseIn, energyStats);
 			}
 			if (entityLivingBaseIn.isPotionActive(SEffects.TIREDNESS)) {
 				entityLivingBaseIn.removePotionEffect(SEffects.TIREDNESS);
 			}
 		} else if (this == SEffects.TIREDNESS && entityLivingBaseIn instanceof ServerPlayerEntity) {
-			EnergyStats energyStats = SurviveEntityStats.getEnergyStats(entityLivingBaseIn);
+			StaminaStats energyStats = SurviveEntityStats.getEnergyStats(entityLivingBaseIn);
 			energyStats.addExhaustion((PlayerEntity) entityLivingBaseIn, (0.005F * (float)(amplifier + 1)));
-			SurviveEntityStats.setEnergyStats(entityLivingBaseIn, energyStats);
+			SurviveEntityStats.setStaminaStats(entityLivingBaseIn, energyStats);
 		}
 		super.performEffect(entityLivingBaseIn, amplifier);
 	}

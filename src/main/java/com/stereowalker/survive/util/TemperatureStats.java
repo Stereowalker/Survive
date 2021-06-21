@@ -11,17 +11,16 @@ import com.stereowalker.survive.hooks.SurviveHooks;
 import com.stereowalker.unionlib.util.NBTHelper.NbtType;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber
-public class TemperatureStats {
+public class TemperatureStats extends SurviveStats {
 	private double temperatureLevel = 0;
 	private double displayTemperature = 0;
 	private int temperatureTimer;
@@ -38,11 +37,11 @@ public class TemperatureStats {
 	public void addHeat(float heatLevel, double max) {
 		this.temperatureLevel = Math.min(this.temperatureLevel + heatLevel, max);
 	}
-	
+
 	public void addCold(float coldLevel, double max) {
 		this.temperatureLevel = Math.max(this.temperatureLevel - coldLevel, max);
 	}
-	
+
 	private boolean addTemperature(ServerPlayerEntity player, double temperature) {
 		if (Config.enable_temperature) {
 			if (player.interactionManager.survivalOrAdventure()) {
@@ -97,27 +96,27 @@ public class TemperatureStats {
 		}
 		return false;
 	}
-	
+
 	public void addModifier(TemperatureModifier modifier) {
 		if (!temperatureModifiers.containsKey(modifier.getId())) {
 			temperatureModifiers.put(modifier.getId(), modifier);
 		}
 	}
-	
+
 	public TemperatureModifier getOrCreateModifier(ResourceLocation location) {
 		if (!temperatureModifiers.containsKey(location)) { 
 			addModifier(new TemperatureModifier(location, 0));
 		}
 		return temperatureModifiers.get(location);
 	}
-	
+
 	public static void setTemperatureModifier(LivingEntity entity, ResourceLocation id, double value) {
 		TemperatureStats temp = SurviveEntityStats.getTemperatureStats(entity);
 		double newValue = SurviveHooks.getTemperatureModifer(entity, id, value);
 		temp.getOrCreateModifier(id).setMod(newValue);
 		SurviveEntityStats.setTemperatureStats(entity, temp);
 	}
-	
+
 	public static void setTemperatureModifier(LivingEntity entity, String id, double value) {
 		setTemperatureModifier(entity, new ResourceLocation(id), value);
 	}
@@ -125,17 +124,18 @@ public class TemperatureStats {
 	/**
 	 * Handles the temperature game logic.
 	 */
-	public void tick(ServerPlayerEntity player) {
+	public void tick(PlayerEntity player) {
 		double calculatedTarget = Survive.DEFAULT_TEMP;
 		for (TemperatureModifier modifier : this.temperatureModifiers.values()) {
 			calculatedTarget+=modifier.getMod();
-//			Survive.debug(modifier+" "+SurviveEvents.isSnowingAt(player.getServerWorld(), player.getPosition()));
-//			Survive.debug("Target: "+calculatedTarget);
+			//			Survive.debug(modifier+" "+SurviveEvents.isSnowingAt(player.getServerWorld(), player.getPosition()));
+			//			Survive.debug("Target: "+calculatedTarget);
 		}
 		this.targetTemperature = calculatedTarget;
 		double mod = (this.targetTemperature - this.temperatureLevel) * Config.tempChangeSpeed;
-//		Survive.debug("Modifier: "+(this.targetTemperature-Survive.DEFAULT_TEMP)+" Target: "+targetTemperature+" Value: "+temperatureLevel);
-		addTemperature(player, mod);
+		//		Survive.debug("Modifier: "+(this.targetTemperature-Survive.DEFAULT_TEMP)+" Target: "+targetTemperature+" Value: "+temperatureLevel);
+		if (player instanceof ServerPlayerEntity)
+			addTemperature((ServerPlayerEntity) player, mod);
 		//For Display Purposes
 		double tempLocation = this.temperatureLevel - Survive.DEFAULT_TEMP;
 		if (tempLocation > 0) {
@@ -165,7 +165,7 @@ public class TemperatureStats {
 			this.targetTemperature = compound.getDouble("targetTemperature");
 			this.temperatureTimer = compound.getInt("temperatureTickTimer");
 			this.displayTemperature = compound.getDouble("displayTemperature");
-			
+
 			ListNBT modifiers = compound.getList("modifiers", NbtType.CompoundNBT);
 			Map<ResourceLocation,TemperatureModifier> temperatureModifiers = Maps.newHashMap();
 			for(int i = 0; i < modifiers.size(); i++) {
@@ -199,7 +199,7 @@ public class TemperatureStats {
 	public double getTemperatureLevel() {
 		return this.temperatureLevel;
 	}
-	
+
 	public double getTargetTemperature() {
 		return targetTemperature;
 	}
@@ -207,19 +207,14 @@ public class TemperatureStats {
 	public void setTemperatureLevel(int temperatureLevelIn) {
 		this.temperatureLevel = temperatureLevelIn;
 	}
-	
-	@SubscribeEvent
-	public static void tickTemperature(LivingUpdateEvent event) {
-		if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
-			ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
-			if (Config.enable_temperature) {
-				TemperatureStats temperatureStats = SurviveEntityStats.getTemperatureStats(player);
-				temperatureStats.tick(player);
-				SurviveEntityStats.setTemperatureStats(player, temperatureStats);
-			}
-		}
-//		if (event.getEntityLiving() != null && event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ClientPlayerEntity) {
-//			ClientPlayerEntity player = (ClientPlayerEntity)event.getEntityLiving();
-//		}
+
+	@Override
+	public void save(LivingEntity player) {
+		SurviveEntityStats.setTemperatureStats(player, this);
+	}
+
+	@Override
+	public boolean shouldTick() {
+		return Config.enable_temperature;
 	}
 }

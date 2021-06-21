@@ -45,15 +45,15 @@ public class ArmorDataManager implements IResourceReloadListener<Map<ResourceLoc
 							
 							JsonObject object = parser.parse(reader).getAsJsonObject();
 							ArmorData drinkData = new ArmorData(drinkId, object);
-							Survive.getInstance().LOGGER.info("Found armor modifier for the item {}", drinkId);
+							Survive.getInstance().getLogger().info("Found armor modifier for the item {}", drinkId);
 							
 							drinkMap.put(drinkId, drinkData);
 						}
 					} catch (Exception e) {
-						Survive.getInstance().LOGGER.warn("Error reading the armor modifier for the item {}!", drinkId, e);
+						Survive.getInstance().getLogger().warn("Error reading the armor modifier for the item {}!", drinkId, e);
 					}
 				} else {
-					Survive.getInstance().LOGGER.warn("No such armor exists with the item id {}!", drinkId);
+					Survive.getInstance().getLogger().warn("No such armor exists with the item id {}!", drinkId);
 				}
 			}
 

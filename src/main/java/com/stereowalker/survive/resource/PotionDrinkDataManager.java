@@ -45,15 +45,15 @@ public class PotionDrinkDataManager implements IResourceReloadListener<Map<Resou
 							
 							JsonObject object = parser.parse(reader).getAsJsonObject();
 							ConsummableData drinkData = new ConsummableData(drinkId, object);
-							Survive.getInstance().LOGGER.info("Found potion drink data for "+drinkId);
+							Survive.getInstance().getLogger().info("Found potion drink data for "+drinkId);
 							
 							drinkMap.put(drinkId, drinkData);
 						}
 					} catch (Exception e) {
-						Survive.getInstance().LOGGER.warn("Error reading potion drink data " + drinkId + "!", e);
+						Survive.getInstance().getLogger().warn("Error reading potion drink data " + drinkId + "!", e);
 					}
 				} else {
-					Survive.getInstance().LOGGER.warn("No such potion exists with the id " + drinkId + "!");
+					Survive.getInstance().getLogger().warn("No such potion exists with the id " + drinkId + "!");
 				}
 			}
 

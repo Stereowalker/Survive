@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.entity.SurviveEntityStats;
-import com.stereowalker.survive.util.EnergyStats;
+import com.stereowalker.survive.util.StaminaStats;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -42,9 +42,9 @@ public class CEnergyTaxPacket {
 			final UUID uuid = msg.uuid;
 			if (uuid.equals(PlayerEntity.getUUID(sender.getGameProfile()))) {
 				if (Config.enable_stamina) {
-					EnergyStats stats = SurviveEntityStats.getEnergyStats(sender);
+					StaminaStats stats = SurviveEntityStats.getEnergyStats(sender);
 					stats.addExhaustion(sender, exhaustion);
-					SurviveEntityStats.setEnergyStats(sender, stats);
+					SurviveEntityStats.setStaminaStats(sender, stats);
 				}
 			}
 		});

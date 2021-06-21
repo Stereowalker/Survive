@@ -24,7 +24,7 @@ public abstract class AbstractVillagerEntityMixin extends AgeableEntity implemen
 	
 	protected void registerGoals() {
 	      this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, PlayerEntity.class, (p_200828_0_) -> {
-	          return SurviveEntityStats.getHygieneStats(p_200828_0_).needsABath() && Config.enable_Hygiene;
+	          return SurviveEntityStats.getHygieneStats(p_200828_0_).needsABath() && Config.enable_hygiene;
 	      }, 6.0F, 1.0D, 1.2D, EntityPredicates.CAN_AI_TARGET::test));
 	   }
 

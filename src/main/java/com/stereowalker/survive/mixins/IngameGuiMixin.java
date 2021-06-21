@@ -12,12 +12,13 @@ import com.stereowalker.survive.entity.SurviveEntityStats;
 import com.stereowalker.survive.entity.TempDisplayMode;
 import com.stereowalker.survive.entity.ai.SAttributes;
 
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.IngameGui;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.MathHelper;
 
 @Mixin(IngameGui.class)
-public class IngameGuiMixin {
+public abstract class IngameGuiMixin extends AbstractGui{
 	@Shadow
 	public PlayerEntity getRenderViewPlayer() {return null;}
 	

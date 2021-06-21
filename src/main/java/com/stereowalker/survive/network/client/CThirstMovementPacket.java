@@ -70,7 +70,7 @@ public class CThirstMovementPacket {
 						moveMul+=1.5F;
 					}
 					stats.addExhaustion(sender, 0.1F*moveMul);
-					SurviveEntityStats.setWaterStats(sender, stats);
+					stats.save(sender);
 				}
 			}
 		});

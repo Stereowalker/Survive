@@ -114,7 +114,7 @@ public class CInteractWithWaterPacket {
 								}
 								Survive.getInstance().channel.sendTo(new SDrinkSoundPacket(pos, sender.getUniqueID()), sender.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
 							}
-							SurviveEntityStats.setWaterStats(sender, waterStats);
+							waterStats.save(sender);
 						}
 					} else if (heldItem.getItem() == SItems.CANTEEN) {
 						if (isValidContainerSource(waterAmount)) {

@@ -2,8 +2,9 @@ package com.stereowalker.survive.entity;
 
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.config.Config;
-import com.stereowalker.survive.util.EnergyStats;
+import com.stereowalker.survive.util.StaminaStats;
 import com.stereowalker.survive.util.HygieneStats;
+import com.stereowalker.survive.util.NutritionStats;
 import com.stereowalker.survive.util.TemperatureStats;
 import com.stereowalker.survive.util.WaterStats;
 
@@ -18,6 +19,7 @@ public class SurviveEntityStats {
 	public static String temperatureStatsID = "TemperatureStats";
 	public static String energyStatsID = "EnergyStats";
 	public static String hygieneStatsID = "HygieneStats";
+	public static String nutritionStatsID = "NutritionStats";
 	//Getters
 
 	public static WaterStats getWaterStats(LivingEntity entity) {
@@ -31,8 +33,8 @@ public class SurviveEntityStats {
 		return stats;
 	}
 	
-	public static EnergyStats getEnergyStats(LivingEntity entity) {
-		EnergyStats stats = new EnergyStats();
+	public static StaminaStats getEnergyStats(LivingEntity entity) {
+		StaminaStats stats = new StaminaStats();
 		if(entity != null) {
 			if (getModNBT(entity) != null && getModNBT(entity).contains(energyStatsID, 10)) {
 				stats.read(getModNBT(entity).getCompound(energyStatsID));
@@ -63,6 +65,17 @@ public class SurviveEntityStats {
 		}
 		return stats;
 	}
+	
+	public static NutritionStats getNutritionStats(LivingEntity entity) {
+		NutritionStats stats = new NutritionStats();
+		if(entity != null) {
+			if (getModNBT(entity) != null && getModNBT(entity).contains(nutritionStatsID, 10)) {
+				stats.read(getModNBT(entity).getCompound(nutritionStatsID));
+				return stats;
+			}
+		}
+		return stats;
+	}
 
 	public static int getAwakeTime(LivingEntity entity) {
 		if (getModNBT(entity) != null && getModNBT(entity).contains(append("AwakeTime"))) {
@@ -86,7 +99,7 @@ public class SurviveEntityStats {
 		getModNBT(entity).put(waterStatsID, compound2);
 	}
 	
-	public static void setEnergyStats(LivingEntity entity, EnergyStats energyStats) {
+	public static void setStaminaStats(LivingEntity entity, StaminaStats energyStats) {
 		CompoundNBT compound2 = new CompoundNBT();
 		energyStats.write(compound2);
 		getModNBT(entity).put(energyStatsID, compound2);
@@ -102,6 +115,12 @@ public class SurviveEntityStats {
 		CompoundNBT compound2 = new CompoundNBT();
 		hygieneStats.write(compound2);
 		getModNBT(entity).put(hygieneStatsID, compound2);
+	}
+	
+	public static void setNutritionStats(LivingEntity entity, NutritionStats nutritionStats) {
+		CompoundNBT compound2 = new CompoundNBT();
+		nutritionStats.write(compound2);
+		getModNBT(entity).put(nutritionStatsID, compound2);
 	}
 
 	public static void setAwakeTime(LivingEntity entity, int awakeTime) {
@@ -150,10 +169,16 @@ public class SurviveEntityStats {
 					setWaterStats(player, new WaterStats());
 				}
 				if (!compound.contains(energyStatsID)) {
-					setEnergyStats(player, new EnergyStats());
+					setStaminaStats(player, new StaminaStats());
 				}
 				if (!compound.contains(temperatureStatsID)) {
 					setTemperatureStats(player, new TemperatureStats());
+				}
+				if (!compound.contains(hygieneStatsID)) {
+					setHygieneStats(player, new HygieneStats());
+				}
+				if (!compound.contains(nutritionStatsID)) {
+					setNutritionStats(player, new NutritionStats());
 				}
 				if (!compound.contains(append("AwakeTime"))) {
 					setAwakeTime(player, 0);

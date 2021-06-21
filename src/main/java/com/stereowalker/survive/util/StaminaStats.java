@@ -1,14 +1,14 @@
 package com.stereowalker.survive.util;
 
-import java.util.Random;
-
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.entity.SurviveEntityStats;
+import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.network.client.CArmorStaminaPacket;
 import com.stereowalker.survive.network.client.CEnergyTaxPacket;
 
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -18,8 +18,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,7 +25,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.network.NetworkDirection;
 
 @EventBusSubscriber
-public class EnergyStats {
+public class StaminaStats extends SurviveStats {
 	private int energyLevel = 20;
 	private int energyReserveLevel;
 	private float energyExhaustionLevel;
@@ -35,7 +33,7 @@ public class EnergyStats {
 	@SuppressWarnings("unused")
 	private int prevEnergyLevel = 20;
 
-	public EnergyStats() {
+	public StaminaStats() {
 		this.energyReserveLevel = 6;
 	}
 
@@ -55,45 +53,47 @@ public class EnergyStats {
 	 * Handles the water game logic.
 	 */
 	public void tick(PlayerEntity player) {
-		Difficulty difficulty = player.world.getDifficulty();
-		this.prevEnergyLevel = this.energyLevel;
-		if (this.energyExhaustionLevel > 4.0F) {
-			this.energyExhaustionLevel -= 4.0F;
-			if (difficulty != Difficulty.PEACEFUL) {
-				if (this.energyLevel > 0) {
-					this.energyLevel = Math.max(this.energyLevel - 1, 0);
-				} else if (this.energyReserveLevel > 0) {
-					this.energyReserveLevel = Math.max(this.energyReserveLevel - 1, 0);
+		if (Config.enable_stamina) {
+			Difficulty difficulty = player.world.getDifficulty();
+			this.prevEnergyLevel = this.energyLevel;
+			if (this.energyExhaustionLevel > 4.0F) {
+				this.energyExhaustionLevel -= 4.0F;
+				if (difficulty != Difficulty.PEACEFUL) {
+					if (this.energyLevel > 0) {
+						this.energyLevel = Math.max(this.energyLevel - 1, 0);
+					} else if (this.energyReserveLevel > 0) {
+						this.energyReserveLevel = Math.max(this.energyReserveLevel - 1, 0);
+					}
 				}
 			}
-		}
 
-		boolean flag = player.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION);
-		if (flag && this.energyReserveLevel > 6 && player.shouldHeal() && this.energyLevel >= 19) {
-			++this.energyTimer;
-			if (this.energyTimer >= 10) {
-				player.heal(2.0F);
-				this.addExhaustion(6.0F);
-				this.energyTimer = 0;
-			}
-		} else if (flag && this.energyReserveLevel > 6 && player.shouldHeal() && this.energyLevel >= 18) {
-			++this.energyTimer;
-			if (this.energyTimer >= 80) {
-				player.heal(1.0F);
-				this.addExhaustion(6.0F);
-				this.energyTimer = 0;
-			}
-		} else if (this.energyLevel <= 0 && this.energyReserveLevel <= 0) {
-			++this.energyTimer;
-			if (this.energyTimer >= 20) {
-				player.attackEntityFrom(SDamageSource.OVERWORK, 3.0F);
-				//				if (player.getHealth() > 10.0F || difficulty == Difficulty.HARD || player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL) {
-				//				}
+			boolean flag = player.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION);
+			if (flag && this.energyReserveLevel > 6 && player.shouldHeal() && this.energyLevel >= 19) {
+				++this.energyTimer;
+				if (this.energyTimer >= 10) {
+					player.heal(2.0F);
+					this.addExhaustion(6.0F);
+					this.energyTimer = 0;
+				}
+			} else if (flag && this.energyReserveLevel > 6 && player.shouldHeal() && this.energyLevel >= 18) {
+				++this.energyTimer;
+				if (this.energyTimer >= 80) {
+					player.heal(1.0F);
+					this.addExhaustion(6.0F);
+					this.energyTimer = 0;
+				}
+			} else if (this.energyLevel <= 0 && this.energyReserveLevel <= 0) {
+				++this.energyTimer;
+				if (this.energyTimer >= 20) {
+					player.attackEntityFrom(SDamageSource.OVERWORK, 3.0F);
+					//				if (player.getHealth() > 10.0F || difficulty == Difficulty.HARD || player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL) {
+					//				}
 
+					this.energyTimer = 0;
+				}
+			} else {
 				this.energyTimer = 0;
 			}
-		} else {
-			this.energyTimer = 0;
 		}
 
 	}
@@ -174,23 +174,33 @@ public class EnergyStats {
 		this.energyReserveLevel = energyReserveLevelIn;
 	}
 
+	@Override
+	public void save(LivingEntity player) {
+		SurviveEntityStats.setStaminaStats(player, this);
+	}
+	
+	@Override
+	public boolean shouldTick() {
+		return Config.enable_stamina;
+	}
+
 	/////-----------EVENTS-----------/////
 
 	@SubscribeEvent
 	public static void clickBlock(PlayerInteractEvent.RightClickBlock clickBlock) {
 		if(!clickBlock.isCanceled() && clickBlock.getPlayer() instanceof PlayerEntity && clickBlock.getCancellationResult().isSuccessOrConsume()) {
-			EnergyStats energyStats = SurviveEntityStats.getEnergyStats(clickBlock.getPlayer());
+			StaminaStats energyStats = SurviveEntityStats.getEnergyStats(clickBlock.getPlayer());
 			energyStats.addExhaustion(clickBlock.getPlayer(), 0.5F);
-			SurviveEntityStats.setEnergyStats(clickBlock.getPlayer(), energyStats);
+			SurviveEntityStats.setStaminaStats(clickBlock.getPlayer(), energyStats);
 		}
 	}
 
 	@SubscribeEvent
 	public static void clickItem(PlayerInteractEvent.RightClickItem clickItem) {
 		if(!clickItem.isCanceled() && clickItem.getPlayer() instanceof PlayerEntity && clickItem.getCancellationResult().isSuccessOrConsume()) {
-			EnergyStats energyStats = SurviveEntityStats.getEnergyStats(clickItem.getPlayer());
+			StaminaStats energyStats = SurviveEntityStats.getEnergyStats(clickItem.getPlayer());
 			energyStats.addExhaustion(clickItem.getPlayer(), 0.5F);
-			SurviveEntityStats.setEnergyStats(clickItem.getPlayer(), energyStats);
+			SurviveEntityStats.setStaminaStats(clickItem.getPlayer(), energyStats);
 		}
 	}
 
@@ -214,22 +224,32 @@ public class EnergyStats {
 	public static void passivelyIncreaseEnergy(LivingUpdateEvent event) {
 		if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
 			ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
-			Random rand = new Random();
 			if (Config.enable_stamina) {
-				EnergyStats energyStats = SurviveEntityStats.getEnergyStats(player);
+				StaminaStats energyStats = SurviveEntityStats.getEnergyStats(player);
 				if (player.isSleeping() && player.ticksExisted%20 == 19) {
 					energyStats.addStats(1);
 				}
-				if (player.ticksExisted%600 == 599) {
-					if (rand.nextInt(2)==0)energyStats.addStats(1);
+				if (player.ticksExisted%300 == 299 && energyStats.getEnergyLevel() < 20) {
+					if (Config.nutrition_enabled) {
+						NutritionStats nutritionStats = SurviveEntityStats.getNutritionStats(player);
+						if (nutritionStats.getCarbLevel() >= 2) {
+							energyStats.addStats(1);
+							nutritionStats.removeCarbs(2);
+						}
+						nutritionStats.save(player);
+					} else {
+						if (player.foodStats.getFoodLevel() > 15 && SurviveEvents.getTotalArmorWeight(player)/Survive.MAX_WEIGHT < 1.0F) {
+							energyStats.addStats(1);
+							player.foodStats.addExhaustion(1.0F);
+						}
+					}
 				}
 				if (player.world.getDifficulty() == Difficulty.PEACEFUL && player.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)) {
 					if (energyStats.isTired() && player.ticksExisted % 10 == 0) {
 						energyStats.setEnergyLevel(energyStats.getEnergyLevel() + 1);
 					}
 				}
-				energyStats.tick(player);
-				SurviveEntityStats.setEnergyStats(player, energyStats);
+				SurviveEntityStats.setStaminaStats(player, energyStats);
 			}
 		}
 		if (event.getEntityLiving() != null && event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ClientPlayerEntity) {
@@ -245,9 +265,9 @@ public class EnergyStats {
 	@SubscribeEvent
 	public static void replenishEnergyOnSleep(SleepFinishedTimeEvent event) {
 		for (PlayerEntity player : event.getWorld().getPlayers()) {
-			EnergyStats energyStats = SurviveEntityStats.getEnergyStats(player);
+			StaminaStats energyStats = SurviveEntityStats.getEnergyStats(player);
 			energyStats.addStats(20);
-			SurviveEntityStats.setEnergyStats(player, energyStats);
+			SurviveEntityStats.setStaminaStats(player, energyStats);
 		}
 	}
 
@@ -256,9 +276,9 @@ public class EnergyStats {
 		if (event.getResultStack().isFood() && Survive.consummableItemMap.containsKey(event.getItem().getItem().getRegistryName())) {
 			if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
 				ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
-				EnergyStats energyStats = SurviveEntityStats.getEnergyStats(player);
+				StaminaStats energyStats = SurviveEntityStats.getEnergyStats(player);
 				energyStats.addStats(Survive.consummableItemMap.get(event.getItem().getItem().getRegistryName()).getEnergyAmount());
-				SurviveEntityStats.setEnergyStats(player, energyStats);
+				SurviveEntityStats.setStaminaStats(player, energyStats);
 			}
 		}
 	}

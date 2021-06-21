@@ -13,6 +13,7 @@ import com.stereowalker.survive.entity.SurviveEntityStats;
 import com.stereowalker.survive.entity.TempDisplayMode;
 import com.stereowalker.survive.entity.ai.SAttributes;
 import com.stereowalker.survive.potion.SEffects;
+import com.stereowalker.survive.util.NutritionStats;
 import com.stereowalker.unionlib.util.ScreenHelper;
 import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 
@@ -343,6 +344,11 @@ public class RenderOverlayEvents {
 			} else {
 				mc.fontRenderer.drawStringWithShadow(matrixStack, s, x, y, TextFormatting.GRAY.getColor());
 			}
+		}
+		if (Config.nutrition_enabled) {
+			NutritionStats stats = SurviveEntityStats.getNutritionStats(playerentity);
+			mc.fontRenderer.drawStringWithShadow(matrixStack, "Carbs = "+stats.getCarbLevel(), 0, 0, TextFormatting.GRAY.getColor());
+			mc.fontRenderer.drawStringWithShadow(matrixStack, "Protein = "+stats.getProteinLevel(), 0, 10, TextFormatting.GRAY.getColor());
 		}
 		mc.getTextureManager().bindTexture(AbstractGui.GUI_ICONS_LOCATION);
 		mc.getProfiler().endSection();

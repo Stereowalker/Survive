@@ -119,6 +119,13 @@ public class SurviveEvents {
 		if(event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 			SurviveEntityStats.addStatsOnSpawn(player);
+			if (player.isServerWorld()) {
+				SurviveEntityStats.getEnergyStats(player).baseTick(player);
+				SurviveEntityStats.getHygieneStats(player).baseTick(player);
+				SurviveEntityStats.getNutritionStats(player).baseTick(player);
+				SurviveEntityStats.getTemperatureStats(player).baseTick(player);
+				SurviveEntityStats.getWaterStats(player).baseTick(player);
+			}
 		}
 	}
 
@@ -588,9 +595,10 @@ public class SurviveEvents {
 	public static void restoreStats(PlayerEvent.Clone event) {
 		SurviveEntityStats.getOrCreateModNBT(event.getPlayer());
 		if (!event.isWasDeath()) {
+			SurviveEntityStats.setNutritionStats(event.getPlayer(), SurviveEntityStats.getNutritionStats(event.getOriginal()));
 			SurviveEntityStats.setHygieneStats(event.getPlayer(), SurviveEntityStats.getHygieneStats(event.getOriginal()));
 			SurviveEntityStats.setWaterStats(event.getPlayer(), SurviveEntityStats.getWaterStats(event.getOriginal()));
-			SurviveEntityStats.setEnergyStats(event.getPlayer(), SurviveEntityStats.getEnergyStats(event.getOriginal()));
+			SurviveEntityStats.setStaminaStats(event.getPlayer(), SurviveEntityStats.getEnergyStats(event.getOriginal()));
 			SurviveEntityStats.setTemperatureStats(event.getPlayer(), SurviveEntityStats.getTemperatureStats(event.getOriginal()));
 			SurviveEntityStats.setAwakeTime(event.getPlayer(), SurviveEntityStats.getAwakeTime(event.getOriginal()));
 			SurviveEntityStats.setWetTime(event.getPlayer(), SurviveEntityStats.getWetTime(event.getOriginal()));

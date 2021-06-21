@@ -50,13 +50,13 @@ public class ArmorData {
 									if (condition != null) {
 										temperatureModifierIn.add(condition.createInstance(object2));
 									} else {
-										Survive.getInstance().LOGGER.error("Error loading armor data {} from JSON: The condition {} does not exist", itemID,  new ResourceLocation(object2.get(CONDITION).getAsString()));
+										Survive.getInstance().getLogger().error("Error loading armor data {} from JSON: The condition {} does not exist", itemID,  new ResourceLocation(object2.get(CONDITION).getAsString()));
 									}
 									workingOn = NOTHING;
 								}
 							}
 						} else {
-							Survive.getInstance().LOGGER.error("Error loading armor data {} from JSON: The conditions for {} aren't a json object", itemID,  elem);
+							Survive.getInstance().getLogger().error("Error loading armor data {} from JSON: The conditions for {} aren't a json object", itemID,  elem);
 						}
 					}
 					workingOn = NOTHING;
@@ -68,14 +68,14 @@ public class ArmorData {
 					workingOn = NOTHING;
 				}
 			} catch (ClassCastException e) {
-				Survive.getInstance().LOGGER.warn(ARMOR_DATA, "Error loading armor data {} from JSON: Parsing element {}: element was wrong type!", itemID, workingOn);
+				Survive.getInstance().getLogger().warn(ARMOR_DATA, "Error loading armor data {} from JSON: Parsing element {}: element was wrong type!", itemID, workingOn);
 			} catch (NumberFormatException e) {
-				Survive.getInstance().LOGGER.warn(ARMOR_DATA, "Error loading armor data {} from JSON: Parsing element {}: element was an invalid number!", itemID, workingOn);
+				Survive.getInstance().getLogger().warn(ARMOR_DATA, "Error loading armor data {} from JSON: Parsing element {}: element was an invalid number!", itemID, workingOn);
 			}
 		}
 		
 		if (weightModifierIn < 0) {
-			Survive.getInstance().LOGGER.warn(ARMOR_DATA, "Error loading armor data {} from JSON: Parsing element {}: weight is less than zero, please fix this!", itemID, WEIGHT_MODIFIER);
+			Survive.getInstance().getLogger().warn(ARMOR_DATA, "Error loading armor data {} from JSON: Parsing element {}: weight is less than zero, please fix this!", itemID, WEIGHT_MODIFIER);
 			weightModifierIn = 0;
 		}
 		

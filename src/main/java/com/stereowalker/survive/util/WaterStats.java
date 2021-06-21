@@ -35,7 +35,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.network.NetworkDirection;
 
 @EventBusSubscriber
-public class WaterStats {
+public class WaterStats extends SurviveStats {
 	private int waterLevel = 20;
 	private float waterHydrationLevel;
 	private float waterExhaustionLevel;
@@ -182,6 +182,16 @@ public class WaterStats {
 		this.waterHydrationLevel = waterHydrationLevelIn;
 	}
 
+	@Override
+	public void save(LivingEntity player) {
+		SurviveEntityStats.setWaterStats(player, this);
+	}
+	
+	@Override
+	public boolean shouldTick() {
+		return Config.enable_thirst;
+	}
+
 	/////-----------EVENTS-----------/////
 
 	@SubscribeEvent
@@ -200,8 +210,7 @@ public class WaterStats {
 						stats.setWaterLevel(stats.getWaterLevel() + 1);
 					}
 				}
-				stats.tick(player);
-				SurviveEntityStats.setWaterStats(player, stats);
+				stats.save(player);
 			}
 		}
 		if (event.getEntityLiving() != null && event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ClientPlayerEntity) {
@@ -274,7 +283,7 @@ public class WaterStats {
 			}
 			
 			
-			SurviveEntityStats.setWaterStats(player, stats);
+			stats.save(player);
 		}
 	}
 

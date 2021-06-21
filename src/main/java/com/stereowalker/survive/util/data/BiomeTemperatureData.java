@@ -30,9 +30,9 @@ public class BiomeTemperatureData {
 					workingOn = NOTHING;
 				}
 			} catch (ClassCastException e) {
-				Survive.getInstance().LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was wrong type!", e, biomeID, workingOn);
+				Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was wrong type!", e, biomeID, workingOn);
 			} catch (NumberFormatException e) {
-				Survive.getInstance().LOGGER.warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was an invalid number!", e, biomeID, workingOn);
+				Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was an invalid number!", e, biomeID, workingOn);
 			}
 		}
 		

@@ -45,15 +45,15 @@ public class BiomeTemperatureDataManager implements IResourceReloadListener<Map<
 							
 							JsonObject object = parser.parse(reader).getAsJsonObject();
 							BiomeTemperatureData biomeData = new BiomeTemperatureData(blockId, object);
-							Survive.getInstance().LOGGER.info("Found biome temperature modifier for the biome "+blockId);
+							Survive.getInstance().getLogger().info("Found biome temperature modifier for the biome "+blockId);
 							
 							drinkMap.put(blockId, biomeData);
 						}
 					} catch (Exception e) {
-						Survive.getInstance().LOGGER.warn("Error reading the biomes temperature modifier for the biome " + blockId + "!", e);
+						Survive.getInstance().getLogger().warn("Error reading the biomes temperature modifier for the biome " + blockId + "!", e);
 					}
 				} else {
-					Survive.getInstance().LOGGER.warn("No such biome exists with the block id " + blockId + "!");
+					Survive.getInstance().getLogger().warn("No such biome exists with the block id " + blockId + "!");
 				}
 			}
 

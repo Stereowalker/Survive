@@ -4,6 +4,7 @@ import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.entity.SurviveEntityStats;
 
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -12,7 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber
-public class HygieneStats {
+public class HygieneStats extends SurviveStats {
 	private int uncleanLevel = 10;
 	private int hygieneTimer;
 
@@ -51,7 +52,7 @@ public class HygieneStats {
 //			}
 //		}
 
-		boolean flag = /*player.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)*/ Config.enable_Hygiene;
+		boolean flag = /*player.world.getGameRules().getBoolean(GameRules.NATURAL_REGENERATION)*/ Config.enable_hygiene;
 		if (flag/*
 				 * && this.waterHydrationLevel > 0.0F && player.shouldHeal() && this.waterLevel
 				 * >= 20
@@ -119,18 +120,27 @@ public class HygieneStats {
 		return this.uncleanLevel > 25;
 	}
 
+	@Override
+	public void save(LivingEntity player) {
+		SurviveEntityStats.setHygieneStats(player, this);
+	}
+	
+	@Override
+	public boolean shouldTick() {
+		return Config.enable_hygiene;
+	}
+
 	/////-----------EVENTS-----------/////
 
 	@SubscribeEvent
 	public static void regulateHygiene(LivingUpdateEvent event) {
 		if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
 			ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
-			if (Config.enable_Hygiene) {
+			if (Config.enable_hygiene) {
 				HygieneStats stats = SurviveEntityStats.getHygieneStats(player);
 				if (player.isWet() && player.ticksExisted % 20 == 0) {
 					stats.clean(1);
 				}
-				stats.tick(player);
 				SurviveEntityStats.setHygieneStats(player, stats);
 			}
 		}
