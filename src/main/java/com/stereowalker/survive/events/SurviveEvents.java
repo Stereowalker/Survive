@@ -126,12 +126,14 @@ public class SurviveEvents {
 				SurviveEntityStats.getNutritionStats(player).baseTick(player);
 				SurviveEntityStats.getTemperatureStats(player).baseTick(player);
 				SurviveEntityStats.getWaterStats(player).baseTick(player);
+				SurviveEntityStats.getWellbeingStats(player).baseTick(player);
 			} else {
 				SurviveEntityStats.getEnergyStats(player).baseClientTick((AbstractClientPlayerEntity) player);
 				SurviveEntityStats.getHygieneStats(player).baseClientTick((AbstractClientPlayerEntity) player);
 				SurviveEntityStats.getNutritionStats(player).baseClientTick((AbstractClientPlayerEntity) player);
 				SurviveEntityStats.getTemperatureStats(player).baseClientTick((AbstractClientPlayerEntity) player);
 				SurviveEntityStats.getWaterStats(player).baseClientTick((AbstractClientPlayerEntity) player);
+				SurviveEntityStats.getWellbeingStats(player).baseClientTick((AbstractClientPlayerEntity) player);
 			}
 		}
 	}
@@ -560,6 +562,7 @@ public class SurviveEvents {
 		SurviveEntityStats.getOrCreateModNBT(event.getPlayer());
 		if (!event.isWasDeath()) {
 			SurviveEntityStats.setNutritionStats(event.getPlayer(), SurviveEntityStats.getNutritionStats(event.getOriginal()));
+			SurviveEntityStats.setWellbeingStats(event.getPlayer(), SurviveEntityStats.getWellbeingStats(event.getOriginal()));
 			SurviveEntityStats.setHygieneStats(event.getPlayer(), SurviveEntityStats.getHygieneStats(event.getOriginal()));
 			SurviveEntityStats.setWaterStats(event.getPlayer(), SurviveEntityStats.getWaterStats(event.getOriginal()));
 			SurviveEntityStats.setStaminaStats(event.getPlayer(), SurviveEntityStats.getEnergyStats(event.getOriginal()));

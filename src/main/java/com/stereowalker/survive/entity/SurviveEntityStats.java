@@ -7,6 +7,7 @@ import com.stereowalker.survive.util.HygieneStats;
 import com.stereowalker.survive.util.NutritionStats;
 import com.stereowalker.survive.util.TemperatureStats;
 import com.stereowalker.survive.util.WaterStats;
+import com.stereowalker.survive.util.WellbeingStats;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -20,6 +21,7 @@ public class SurviveEntityStats {
 	public static String energyStatsID = "EnergyStats";
 	public static String hygieneStatsID = "HygieneStats";
 	public static String nutritionStatsID = "NutritionStats";
+	public static String wellbeingStatsID = "WellbeingStats";
 	//Getters
 
 	public static WaterStats getWaterStats(LivingEntity entity) {
@@ -76,6 +78,17 @@ public class SurviveEntityStats {
 		}
 		return stats;
 	}
+	
+	public static WellbeingStats getWellbeingStats(LivingEntity entity) {
+		WellbeingStats stats = new WellbeingStats();
+		if(entity != null) {
+			if (getModNBT(entity) != null && getModNBT(entity).contains(wellbeingStatsID, 10)) {
+				stats.read(getModNBT(entity).getCompound(wellbeingStatsID));
+				return stats;
+			}
+		}
+		return stats;
+	}
 
 	public static int getAwakeTime(LivingEntity entity) {
 		if (getModNBT(entity) != null && getModNBT(entity).contains(append("AwakeTime"))) {
@@ -120,6 +133,12 @@ public class SurviveEntityStats {
 	public static void setNutritionStats(LivingEntity entity, NutritionStats nutritionStats) {
 		CompoundNBT compound2 = new CompoundNBT();
 		nutritionStats.write(compound2);
+		getModNBT(entity).put(nutritionStatsID, compound2);
+	}
+	
+	public static void setWellbeingStats(LivingEntity entity, WellbeingStats wellbeingStats) {
+		CompoundNBT compound2 = new CompoundNBT();
+		wellbeingStats.write(compound2);
 		getModNBT(entity).put(nutritionStatsID, compound2);
 	}
 
@@ -179,6 +198,9 @@ public class SurviveEntityStats {
 				}
 				if (!compound.contains(nutritionStatsID)) {
 					setNutritionStats(player, new NutritionStats());
+				}
+				if (!compound.contains(wellbeingStatsID)) {
+					setWellbeingStats(player, new WellbeingStats());
 				}
 				if (!compound.contains(append("AwakeTime"))) {
 					setAwakeTime(player, 0);

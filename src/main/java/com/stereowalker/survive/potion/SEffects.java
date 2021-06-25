@@ -29,6 +29,7 @@ public class SEffects {
 	public static final Effect CHILLED = register("chilled", new SEffect(EffectType.BENEFICIAL, 5750248));
 	public static final Effect HEATED = register("heated", new SEffect(EffectType.BENEFICIAL, 16750592));
 	public static final Effect ENERGIZED = register("energized", new SEffect(EffectType.BENEFICIAL, 16750592));
+	public static final Effect SLOWNESS_ILLNESS = register("slowness_illness", (new UnwellEffect(EffectType.HARMFUL, 5926017)).addAttributesModifier(Attributes.MOVEMENT_SPEED, "7107DE5E-7CE8-4030-940E-514C1F160891", (double)-0.15F, AttributeModifier.Operation.MULTIPLY_TOTAL));
 	
 	public static void registerAll(IForgeRegistry<Effect> registry) {
 		for(Effect effect : EFFECT) {

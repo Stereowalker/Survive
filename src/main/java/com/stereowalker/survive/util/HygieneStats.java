@@ -51,12 +51,16 @@ public class HygieneStats extends SurviveStats {
 	public void tick(PlayerEntity player) {
 		if (!player.isCreative() && !player.isSpectator()) {
 			++this.hygieneTimer;
-			if (this.hygieneTimer >= 100 && player.isWet()) {
+			if (this.hygieneTimer >= 200 && player.isWet()) {
 				this.clean(1);
 				this.hygieneTimer = 0;
-			} else if (this.hygieneTimer >= 1) {
+			} else if (this.hygieneTimer >= 500) {
 				this.dirty(1);
 				this.hygieneTimer = 0;
+			}
+			
+			if (this.uncleanLevel > 100 && Config.wellbeing_enabled) {
+				SurviveEntityStats.getWellbeingStats(player).setTimer(6000, 24000);
 			}
 		} else {
 			this.hygieneTimer = 0;

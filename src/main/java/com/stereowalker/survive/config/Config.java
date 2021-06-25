@@ -150,6 +150,12 @@ public class Config {
 	@UnionConfig.Comment(comment = {"Disabling this will disable this mods nutrition system","The nutrition system might be pretty buggy, so proceed with caution"})
 	public static boolean nutrition_enabled = false;
 	
+	//
+	//Wellbeing
+	@UnionConfig.Entry(group = "Well Being" , name = "Enable Well Being (Beta)", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"Disabling this will disable this mods well being system","The nutrition system might be pretty buggy, so proceed with caution"})
+	public static boolean wellbeing_enabled = false;
+	
 	
 	//
 	//Misc

@@ -118,7 +118,7 @@ public class TemperatureStats extends SurviveStats {
 		TemperatureStats temp = SurviveEntityStats.getTemperatureStats(entity);
 		double newValue = SurviveHooks.getTemperatureModifer(entity, id, value);
 		temp.getOrCreateModifier(id).setMod(newValue);
-		SurviveEntityStats.setTemperatureStats(entity, temp);
+		temp.save(entity);;
 	}
 
 	public static void setTemperatureModifier(LivingEntity entity, String id, double value) {
