@@ -48,6 +48,11 @@ public class Config {
 //	@UnionConfig.Range(min = 0, max = 20)
 //	public static int tempCalcRange = 5;
 	
+	@UnionConfig.Entry(group = "Temperature" , name = "Hypo/Hyperthermia Grace Timer", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"This is a timer used to decide when a player should get affected by the elements when their temperature hits the extreme"})
+	@UnionConfig.Range(min = 0, max = 1980)
+	public static int tempGrace = 20;
+	
 	@UnionConfig.Entry(group = "Temperature" , name = "Temperature Update Speed", type = Type.COMMON)
 	@UnionConfig.Comment(comment = {"The speed at which the players temperature will change from their current temperature to the target temperature.","Setting it to 1 makes the players temperature change instantly to its target"})
 	@UnionConfig.Range(min = 0.0001D, max = 1.0D)

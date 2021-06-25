@@ -207,49 +207,6 @@ public class SurviveEvents {
 	}
 
 	@SubscribeEvent
-	public static void regulateTemperature(LivingUpdateEvent event) {
-		if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
-			ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
-
-
-			if(Config.enable_temperature) {
-				double temperature = SurviveEntityStats.getTemperatureStats(player).getTemperatureLevel();
-				if(!(player.isCreative() || player.isSpectator())) {
-					double maxHeat1 = TemperatureUtil.firstHeat(player);
-					double maxHeat2 = TemperatureUtil.secondHeat(player);
-					double maxHeat3 = TemperatureUtil.maxHeat(player);
-					double maxCold1 = TemperatureUtil.firstCold(player);
-					double maxCold2 = TemperatureUtil.secondCold(player);
-					double maxCold3 = TemperatureUtil.maxCold(player);
-
-					if (!player.isPotionActive(SEffects.HYPERTHERMIA)) {
-						if (temperature > maxHeat1 && temperature <= maxHeat2) {
-							player.addPotionEffect(new EffectInstance(SEffects.HYPERTHERMIA, 100, 0));
-						}
-						else if (temperature > maxHeat2 && temperature <= maxHeat3) {
-							player.addPotionEffect(new EffectInstance(SEffects.HYPERTHERMIA, 100, 1));
-						}
-						else if (temperature > maxHeat3) {
-							player.addPotionEffect(new EffectInstance(SEffects.HYPERTHERMIA, 100, 2));
-						}
-					}
-					if (!player.isPotionActive(SEffects.HYPOTHERMIA)) {
-						if (temperature < maxCold1 && temperature >= maxCold2) {
-							player.addPotionEffect(new EffectInstance(SEffects.HYPOTHERMIA, 100, 0));
-						}
-						else if (temperature < maxCold2 && temperature >= maxCold3) {
-							player.addPotionEffect(new EffectInstance(SEffects.HYPOTHERMIA, 100, 1));
-						}
-						else if (temperature < maxCold3) {
-							player.addPotionEffect(new EffectInstance(SEffects.HYPOTHERMIA, 100, 2));
-						}
-					}
-				}
-			}
-		}
-	}
-
-	@SubscribeEvent
 	public static void regulateWetness(LivingUpdateEvent event) {
 		if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
 			ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();

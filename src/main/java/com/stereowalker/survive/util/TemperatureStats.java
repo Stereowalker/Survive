@@ -8,6 +8,7 @@ import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.entity.SurviveEntityStats;
 import com.stereowalker.survive.entity.ai.SAttributes;
 import com.stereowalker.survive.hooks.SurviveHooks;
+import com.stereowalker.survive.potion.SEffects;
 import com.stereowalker.unionlib.util.NBTHelper.NbtType;
 
 import net.minecraft.entity.LivingEntity;
@@ -15,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -25,9 +27,11 @@ public class TemperatureStats extends SurviveStats {
 	private double displayTemperature = 0;
 	private int temperatureTimer;
 	private double targetTemperature = 0;
+	private int hypTimer = 0;
 	private Map<ResourceLocation,TemperatureModifier> temperatureModifiers = Maps.newHashMap();
 
 	public TemperatureStats() {
+		this.hypTimer = Config.tempGrace;
 		this.temperatureLevel = Survive.DEFAULT_TEMP;
 	}
 
@@ -153,6 +157,46 @@ public class TemperatureStats extends SurviveStats {
 			}
 			double div = tempLocation / maxTemp;
 			this.displayTemperature = MathHelper.clamp(div, -1.0D-(28.0D/63.0D), 0);
+		}
+
+		if(!(player.isCreative() || player.isSpectator())) {
+			double maxHeat1 = TemperatureUtil.firstHeat(player);
+			double maxHeat2 = TemperatureUtil.secondHeat(player);
+			double maxHeat3 = TemperatureUtil.maxHeat(player);
+			double maxCold1 = TemperatureUtil.firstCold(player);
+			double maxCold2 = TemperatureUtil.secondCold(player);
+			double maxCold3 = TemperatureUtil.maxCold(player);
+
+			if (this.temperatureLevel > maxHeat1 || this.temperatureLevel < maxCold1) {
+				if (this.hypTimer > 0) {
+					this.hypTimer--;
+				} else if (this.hypTimer == 0) {
+					if (!player.isPotionActive(SEffects.HYPERTHERMIA)) {
+						if (this.temperatureLevel > maxHeat1 && this.temperatureLevel <= maxHeat2) {
+							player.addPotionEffect(new EffectInstance(SEffects.HYPERTHERMIA, 100, 0));
+						}
+						else if (this.temperatureLevel > maxHeat2 && this.temperatureLevel <= maxHeat3) {
+							player.addPotionEffect(new EffectInstance(SEffects.HYPERTHERMIA, 100, 1));
+						}
+						else if (this.temperatureLevel > maxHeat3) {
+							player.addPotionEffect(new EffectInstance(SEffects.HYPERTHERMIA, 100, 2));
+						}
+					}
+					if (!player.isPotionActive(SEffects.HYPOTHERMIA)) {
+						if (this.temperatureLevel < maxCold1 && this.temperatureLevel >= maxCold2) {
+							player.addPotionEffect(new EffectInstance(SEffects.HYPOTHERMIA, 100, 0));
+						}
+						else if (this.temperatureLevel < maxCold2 && this.temperatureLevel >= maxCold3) {
+							player.addPotionEffect(new EffectInstance(SEffects.HYPOTHERMIA, 100, 1));
+						}
+						else if (this.temperatureLevel < maxCold3) {
+							player.addPotionEffect(new EffectInstance(SEffects.HYPOTHERMIA, 100, 2));
+						}
+					}
+				}
+			} else if (this.hypTimer < Config.tempGrace){
+				this.hypTimer++;
+			}
 		}
 	}
 
