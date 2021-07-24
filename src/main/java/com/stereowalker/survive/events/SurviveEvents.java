@@ -103,13 +103,21 @@ public class SurviveEvents {
 		for (EquipmentSlotType slot : EquipmentSlotType.values()) {
 			if (slot.getSlotType() == Group.ARMOR) {
 				ItemStack stack = player.getItemStackFromSlot(slot);
-				if (!stack.isEmpty() && Config.enable_weights) {
-					if (Survive.armorModifierMap.containsKey(stack.getItem().getRegistryName()) && !SEnchantmentHelper.hasWeightless(stack)) {
-						int i = SEnchantmentHelper.getFeatherweightModifier(stack);
-						//Reduces the total weight of that armor piece by 18% for each level
-						totalWeight += Survive.armorModifierMap.get(stack.getItem().getRegistryName()).getWeightModifier() * (1 - i*0.18);
-					}
+				if (Config.enable_weights) {
+					totalWeight += getArmorWeight(stack);
 				}
+			}
+		}
+		return totalWeight;
+	}
+
+	public static float getArmorWeight(ItemStack piece) {
+		float totalWeight = 0.0F;
+		if (!piece.isEmpty()) {
+			if (Survive.armorModifierMap.containsKey(piece.getItem().getRegistryName()) && !SEnchantmentHelper.hasWeightless(piece)) {
+				int i = SEnchantmentHelper.getFeatherweightModifier(piece);
+				//Reduces the total weight of that armor piece by 18% for each level
+				totalWeight += Survive.armorModifierMap.get(piece.getItem().getRegistryName()).getWeightModifier() * (1 - i*0.18);
 			}
 		}
 		return totalWeight;
