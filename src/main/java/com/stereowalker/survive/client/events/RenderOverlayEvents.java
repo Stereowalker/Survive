@@ -345,7 +345,7 @@ public class RenderOverlayEvents {
 				mc.fontRenderer.drawStringWithShadow(matrixStack, s, x, y, TextFormatting.GRAY.getColor());
 			}
 		}
-		if (Config.nutrition_enabled) {
+		if (Config.nutrition_enabled && (playerentity.getHeldItemMainhand().isFood() || playerentity.getHeldItemOffhand().isFood())) {
 			NutritionStats stats = SurviveEntityStats.getNutritionStats(playerentity);
 			mc.fontRenderer.drawStringWithShadow(matrixStack, "Carbs = "+stats.getCarbLevel(), 0, 0, TextFormatting.GRAY.getColor());
 			mc.fontRenderer.drawStringWithShadow(matrixStack, "Protein = "+stats.getProteinLevel(), 0, 10, TextFormatting.GRAY.getColor());
