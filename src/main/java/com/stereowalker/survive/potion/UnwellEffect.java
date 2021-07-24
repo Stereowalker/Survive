@@ -28,7 +28,6 @@ public class UnwellEffect extends Effect{
 	@Override
 	public List<ItemStack> getCurativeItems() {
 		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
-		ret.add(new ItemStack(Items.MILK_BUCKET));
 		return ret;
 	}
 }
