@@ -17,6 +17,7 @@ import com.stereowalker.survive.temperature.TemperatureChangeInstance;
 import com.stereowalker.survive.util.TemperatureStats;
 import com.stereowalker.survive.util.TemperatureUtil;
 import com.stereowalker.survive.util.data.BlockTemperatureData;
+import com.stereowalker.survive.util.data.EntityTemperatureData;
 import com.stereowalker.unionlib.state.properties.UBlockStateProperties;
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
@@ -30,6 +31,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.CauldronBlock;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -44,6 +47,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
@@ -140,7 +144,7 @@ public class SurviveEvents {
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public static void tickStatsOnClient(LivingUpdateEvent event) {
@@ -396,12 +400,13 @@ public class SurviveEvents {
 			return biomeTemp;
 
 		case BLOCK:
-			float blockTemp = 0;
+			float totalBlockTemp = 0;
 			int rangeInBlocks = 5;
 			for (int x = -rangeInBlocks; x <= rangeInBlocks; x++) {
 				for (int y = -rangeInBlocks; y <= rangeInBlocks; y++) {
 					for (int z = -rangeInBlocks; z <= rangeInBlocks; z++) {
 
+						float blockTemp = 0;
 						BlockPos heatSource = new BlockPos(pos.getX()+x, pos.getY()+y, pos.getZ()+z);
 						float blockLight = world.getChunkProvider().getLightManager().getLightEngine(LightType.BLOCK).getLightFor(heatSource);
 						BlockState heatState = world.getBlockState(heatSource);
@@ -435,14 +440,31 @@ public class SurviveEvents {
 									}
 								}
 							}
+							totalBlockTemp+=blockTemp;
 						}
 					}
 				}
 			}
-			return blockTemp;
+			return totalBlockTemp;
 
 		case SHADE:
 			return ((skyLight / 7.5F) - 1);
+
+		case ENTITY:
+			float totalEntityTemp = 0;
+			rangeInBlocks = 5;
+			for (Entity entity : world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.add(rangeInBlocks, rangeInBlocks, rangeInBlocks), pos.add(-rangeInBlocks, -rangeInBlocks, -rangeInBlocks)))) {
+				float sourceRange = Survive.entityTemperatureMap.containsKey(entity.getType().getRegistryName()) ? Survive.entityTemperatureMap.get(entity.getType().getRegistryName()).getRange() : 5;
+				
+				if (pos.withinDistance(entity.getPosition(), sourceRange)) {
+					if (Survive.entityTemperatureMap.containsKey(entity.getType().getRegistryName())) {
+						EntityTemperatureData entityTemperatureData = Survive.entityTemperatureMap.get(entity.getType().getRegistryName());
+						totalEntityTemp+=entityTemperatureData.getTemperatureModifier();
+						EntityType<Entity>
+					}
+				}
+			}
+			return totalEntityTemp;
 
 		default:
 			return Survive.DEFAULT_TEMP;
@@ -450,7 +472,7 @@ public class SurviveEvents {
 	}
 
 	private enum TempType {
-		BIOME("biome", 10, 7, false), BLOCK("block", 10, 9, true), SHADE("shade", 10, 200, true), SUN("sun", 10, 200, true);
+		BIOME("biome", 10, 7, false), BLOCK("block", 10, 9, true), ENTITY("entity", 10, 9, true), SHADE("shade", 10, 200, true), SUN("sun", 10, 200, true);
 
 		String name;
 		int tickInterval;
@@ -595,5 +617,6 @@ public class SurviveEvents {
 		event.addListener(Survive.armorReloader);
 		event.addListener(Survive.blockReloader);
 		event.addListener(Survive.biomeReloader);
+		event.addListener(Survive.entityReloader);
 	}
 }
