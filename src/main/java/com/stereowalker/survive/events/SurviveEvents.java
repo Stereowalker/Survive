@@ -54,6 +54,8 @@ import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.Heightmap;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -135,13 +137,22 @@ public class SurviveEvents {
 				SurviveEntityStats.getTemperatureStats(player).baseTick(player);
 				SurviveEntityStats.getWaterStats(player).baseTick(player);
 				SurviveEntityStats.getWellbeingStats(player).baseTick(player);
-			} else {
-				SurviveEntityStats.getEnergyStats(player).baseClientTick((AbstractClientPlayerEntity) player);
-				SurviveEntityStats.getHygieneStats(player).baseClientTick((AbstractClientPlayerEntity) player);
-				SurviveEntityStats.getNutritionStats(player).baseClientTick((AbstractClientPlayerEntity) player);
-				SurviveEntityStats.getTemperatureStats(player).baseClientTick((AbstractClientPlayerEntity) player);
-				SurviveEntityStats.getWaterStats(player).baseClientTick((AbstractClientPlayerEntity) player);
-				SurviveEntityStats.getWellbeingStats(player).baseClientTick((AbstractClientPlayerEntity) player);
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	@OnlyIn(Dist.CLIENT)
+	public static void tickStatsOnClient(LivingUpdateEvent event) {
+		if(event.getEntityLiving() instanceof AbstractClientPlayerEntity) {
+			AbstractClientPlayerEntity player = (AbstractClientPlayerEntity)event.getEntityLiving();
+			if (player.world.isRemote) {
+				SurviveEntityStats.getEnergyStats(player).baseClientTick(player);
+				SurviveEntityStats.getHygieneStats(player).baseClientTick(player);
+				SurviveEntityStats.getNutritionStats(player).baseClientTick(player);
+				SurviveEntityStats.getTemperatureStats(player).baseClientTick(player);
+				SurviveEntityStats.getWaterStats(player).baseClientTick(player);
+				SurviveEntityStats.getWellbeingStats(player).baseClientTick(player);
 			}
 		}
 	}

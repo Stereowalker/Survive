@@ -6,6 +6,8 @@ import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public abstract class SurviveStats {
 	Random rng;
@@ -26,12 +28,14 @@ public abstract class SurviveStats {
 		}
 	}
 	
+	@OnlyIn(Dist.CLIENT)
 	public void baseClientTick(AbstractClientPlayerEntity player) {
 		if (shouldTick()) {
 			clientTick(player);
 		}
 	}
 	
+	@OnlyIn(Dist.CLIENT)
 	public void clientTick(AbstractClientPlayerEntity player) {
 		
 	}

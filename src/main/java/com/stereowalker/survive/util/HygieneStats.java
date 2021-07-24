@@ -10,6 +10,8 @@ import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class HygieneStats extends SurviveStats {
 	private int uncleanLevel = 10;
@@ -36,6 +38,7 @@ public class HygieneStats extends SurviveStats {
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void clientTick(AbstractClientPlayerEntity player) {
 		if (this.needsABath()) {
 			Random rand = new Random();
