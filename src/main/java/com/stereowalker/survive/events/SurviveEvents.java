@@ -32,7 +32,6 @@ import net.minecraft.block.CauldronBlock;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -460,7 +459,6 @@ public class SurviveEvents {
 					if (Survive.entityTemperatureMap.containsKey(entity.getType().getRegistryName())) {
 						EntityTemperatureData entityTemperatureData = Survive.entityTemperatureMap.get(entity.getType().getRegistryName());
 						totalEntityTemp+=entityTemperatureData.getTemperatureModifier();
-						EntityType<Entity>
 					}
 				}
 			}
