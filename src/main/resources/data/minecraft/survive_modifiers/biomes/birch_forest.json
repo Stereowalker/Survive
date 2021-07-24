@@ -1,3 +1,7 @@
 {
-  "temperature": -0.8
+  "temperature": -0.8,
+  "altitude_level_modifier": {
+  	"upper": 1.0,
+  	"lower": 1.0
+  }
 }

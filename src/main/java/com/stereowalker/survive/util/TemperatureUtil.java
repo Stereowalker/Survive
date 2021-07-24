@@ -45,7 +45,15 @@ public class TemperatureUtil {
 	 */
 	public static float getTemperature(Biome biome, BlockPos pos) {
 		float f = (float)(TEMPERATURE_NOISE.noiseAt((double)((float)pos.getX() / 8.0F), (double)((float)pos.getZ() / 8.0F), false) * 4.0D);
-		return biome.getTemperature() - (f + (float)pos.getY() - 64.0F) * 0.05F / 3.75F;
+		float modifier = 1.0f;
+		if (Survive.biomeTemperatureMap.containsKey(biome.getRegistryName())) {
+			if (pos.getY() > 64.0F) {
+				modifier = Survive.biomeTemperatureMap.get(biome.getRegistryName()).getAltitudeLevelModifier().getFirst();
+			} else if (pos.getY() < 64.0F) {
+				modifier = Survive.biomeTemperatureMap.get(biome.getRegistryName()).getAltitudeLevelModifier().getSecond();
+			}
+		}
+		return biome.getTemperature() - modifier*((f + (float)pos.getY() - 64.0F) * 0.05F / 3.75F);
 	}
 
 }

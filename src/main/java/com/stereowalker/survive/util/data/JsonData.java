@@ -14,4 +14,8 @@ public abstract class JsonData {
 		return object.has(member) && object.get(member).isJsonPrimitive();
 	}
 	
+	protected boolean hasMemberAndIsObject(String member, JsonObject object) {
+		return object.has(member) && object.get(member).isJsonObject();
+	}
+	
 }

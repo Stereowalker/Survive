@@ -121,7 +121,7 @@ public class ConsummableData extends JsonData {
 					workingOn = NOTHING;
 				}
 				
-				if(this.hasMemberAndIsPrimitive(NUTRITION, object)) {
+				if(this.hasMemberAndIsObject(NUTRITION, object)) {
 					workingOn = NUTRITION;
 					JsonObject object2 = object.get(NUTRITION).getAsJsonObject();
 					String CARB_RATIO = "carbohydrate_ratio";
