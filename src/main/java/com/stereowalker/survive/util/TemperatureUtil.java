@@ -3,6 +3,7 @@ package com.stereowalker.survive.util;
 import com.google.common.collect.ImmutableList;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.entity.ai.SAttributes;
+import com.stereowalker.survive.util.data.BiomeTemperatureData;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SharedSeedRandom;
@@ -46,14 +47,17 @@ public class TemperatureUtil {
 	public static float getTemperature(Biome biome, BlockPos pos) {
 		float f = (float)(TEMPERATURE_NOISE.noiseAt((double)((float)pos.getX() / 8.0F), (double)((float)pos.getZ() / 8.0F), false) * 4.0D);
 		float modifier = 1.0f;
+		float t = biome.getTemperature();
 		if (Survive.biomeTemperatureMap.containsKey(biome.getRegistryName())) {
+			BiomeTemperatureData temperatureData = Survive.biomeTemperatureMap.get(biome.getRegistryName());
+			t = (temperatureData.getTemperature() + 2) / 2;
 			if (pos.getY() > 64.0F) {
-				modifier = Survive.biomeTemperatureMap.get(biome.getRegistryName()).getAltitudeLevelModifier().getFirst();
+				modifier = temperatureData.getAltitudeLevelModifier().getFirst();
 			} else if (pos.getY() < 64.0F) {
-				modifier = Survive.biomeTemperatureMap.get(biome.getRegistryName()).getAltitudeLevelModifier().getSecond();
+				modifier = temperatureData.getAltitudeLevelModifier().getSecond();
 			}
 		}
-		return biome.getTemperature() - modifier*((f + (float)pos.getY() - 64.0F) * 0.05F / 3.75F);
+		return t - modifier*((f + (float)pos.getY() - 64.0F) * 0.05F / 3.75F);
 	}
 
 }

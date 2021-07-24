@@ -374,9 +374,6 @@ public class SurviveEvents {
 			if (ModHelper.isPrimalWinterLoaded()) {
 				biomeTemp = -0.7F;
 			}
-			if (Survive.biomeTemperatureMap.containsKey(world.func_242406_i(pos).get().getLocation())) {
-				biomeTemp = Survive.biomeTemperatureMap.get(world.func_242406_i(pos).get().getLocation()).getTemperature();
-			}
 			return biomeTemp;
 
 		case BLOCK:
