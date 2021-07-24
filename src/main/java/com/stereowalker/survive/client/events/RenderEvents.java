@@ -332,7 +332,7 @@ public class RenderEvents {
 		String s = temperaure+" °C";
 		if(Minecraft.isGuiEnabled() && !mc.playerController.isSpectatorMode() && Config.tempDisplayMode.equals(TempDisplayMode.NUMBERS)) {
 			if (Config.displayTempInFahrenheit) {
-				double rawFTemp = (temperaure * (9/5)) + 32.0D;
+				double rawFTemp = (temperaure * (9.0D/5.0D)) + 32.0D;
 				int fTemp = (int) (rawFTemp*100);
 				double fTemperaure = ((double)fTemp) / 100.0D;
 				s = fTemperaure+" °F";
