@@ -2,6 +2,7 @@ package com.stereowalker.survive.client.events;
 
 import java.util.List;
 
+import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.events.SurviveEvents;
 
 import net.minecraft.inventory.EquipmentSlotType;
@@ -28,15 +29,17 @@ public class TooltipEvents {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void tooltips(ItemTooltipEvent event) {
-		boolean showWeight = false;
-		for(EquipmentSlotType type : EquipmentSlotType.values()) {
-			if (event.getItemStack().canEquip(type, event.getPlayer()) && type.getSlotType() == Group.ARMOR) {
-				showWeight = true;
-				break;
+		if (Config.enable_weights) {
+			boolean showWeight = false;
+			for(EquipmentSlotType type : EquipmentSlotType.values()) {
+				if (event.getItemStack().canEquip(type, event.getPlayer()) && type.getSlotType() == Group.ARMOR) {
+					showWeight = true;
+					break;
+				}
 			}
-		}
-		if (showWeight) {
-			accessoryTooltip(event.getItemStack(), event.getToolTip());
+			if (showWeight) {
+				accessoryTooltip(event.getItemStack(), event.getToolTip());
+			}
 		}
 	}
 }
