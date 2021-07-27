@@ -45,7 +45,7 @@ public class BiomeTemperatureData extends JsonData {
 								altitude_level_modifierIn = Pair.of(sea.get("upper").getAsFloat(), altitude_level_modifierIn.getSecond());
 								workingOn = NOTHING;
 							}
-							if (this.hasMemberAndIsObject("lower", object)) {
+							if (this.hasMemberAndIsPrimitive("lower", object)) {
 								workingOn = "lower";
 								altitude_level_modifierIn = Pair.of(altitude_level_modifierIn.getFirst(), sea.get("lower").getAsFloat());
 								workingOn = NOTHING;
