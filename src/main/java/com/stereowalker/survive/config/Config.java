@@ -138,6 +138,10 @@ public class Config {
 	@UnionConfig.Comment(comment = {"Disabling this will allow the weight of certain armor pieces to affect your stamina"})
 	public static boolean enable_weights = true;
 	
+	@UnionConfig.Entry(group = "Stamina" , name = "Display Weights in Pounds", type = Type.CLIENT)
+	@UnionConfig.Comment(comment = {"If Enabled, armor weights will be displayed in pounds rather than kilograms"})
+	public static boolean displayWeightInPounds = false;
+	
 	//
 	//Hygiene
 	@UnionConfig.Entry(group = "Hygiene" , name = "Enable Hygiene (Beta)", type = Type.COMMON)

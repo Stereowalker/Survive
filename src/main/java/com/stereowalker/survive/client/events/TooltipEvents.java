@@ -23,7 +23,12 @@ public class TooltipEvents {
 
 	@OnlyIn(Dist.CLIENT)
 	public static void accessoryTooltip(ItemStack stack, List<ITextComponent> tooltip) {
-		tooltip.add(1, new TranslationTextComponent("tooltip.survive.weight", SurviveEvents.getArmorWeight(stack)).mergeStyle(TextFormatting.DARK_PURPLE));
+		float kg = SurviveEvents.getArmorWeight(stack);
+		float rawPound = kg*2.205f;
+		int poundInt = (int)(rawPound*1000);
+		float pound = poundInt/1000.0F;
+		
+		tooltip.add(1, new TranslationTextComponent("tooltip.survive.weight", Config.displayWeightInPounds ? pound : kg, Config.displayWeightInPounds ? "lbs" : "kg").mergeStyle(TextFormatting.DARK_PURPLE));
 	}
 
 	@OnlyIn(Dist.CLIENT)
