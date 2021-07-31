@@ -166,5 +166,12 @@ public class Config {
 	@UnionConfig.Entry(group = "Micellaneous" , name = "Debug Mode", type = Type.COMMON)
 	@UnionConfig.Comment(comment = {"Enable Debug mode to have some informational stuff print on your console"})
 	public static boolean debugMode = false;
+	
+	@UnionConfig.Entry(group = "Micellaneous" , name = "Disable All Enchantments", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {
+			"For hardcore servers that do not need a little bit of magic to make life easier",
+			"Be warned, this is not for the faint of heart.",
+			"A lot of the mechanics in this mod become a lot more unreasonable without enchantments"})
+	public static boolean disable_enchantments = false;
 
 }

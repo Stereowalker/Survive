@@ -44,10 +44,14 @@ public class SEnchantments {
 	}
 	
 	public static void registerAll(IForgeRegistry<Enchantment> registry) {
-		for(Enchantment enchantment : ENCHANTMENTS) {
-			registry.register(enchantment);
-			Survive.getInstance().debug("Enchantment: \""+enchantment.getRegistryName().toString()+"\" registered");
+		if (!Config.disable_enchantments) {
+			for(Enchantment enchantment : ENCHANTMENTS) {
+				registry.register(enchantment);
+				Survive.getInstance().debug("Enchantment: \""+enchantment.getRegistryName().toString()+"\" registered");
+			}
+			Survive.getInstance().debug("All Enchantments Registered");
+		} else {
+			Survive.getInstance().debug("Enchantments not registered due to it being disabled");
 		}
-		Survive.getInstance().debug("All Enchantments Registered");
 	}
 }
