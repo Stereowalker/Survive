@@ -56,8 +56,8 @@ public class StaminaStats extends SurviveStats {
 		if (Config.enable_stamina) {
 			Difficulty difficulty = player.world.getDifficulty();
 			this.prevEnergyLevel = this.energyLevel;
-			if (this.energyExhaustionLevel > 4.0F) {
-				this.energyExhaustionLevel -= 4.0F;
+			if (this.energyExhaustionLevel > 10.0F) {
+				this.energyExhaustionLevel -= 10.0F;
 				if (difficulty != Difficulty.PEACEFUL) {
 					if (this.energyLevel > 0) {
 						this.energyLevel = Math.max(this.energyLevel - 1, 0);
@@ -187,20 +187,9 @@ public class StaminaStats extends SurviveStats {
 	/////-----------EVENTS-----------/////
 
 	@SubscribeEvent
-	public static void clickBlock(PlayerInteractEvent.RightClickBlock clickBlock) {
-		if(!clickBlock.isCanceled() && clickBlock.getPlayer() instanceof PlayerEntity && clickBlock.getCancellationResult().isSuccessOrConsume()) {
-			StaminaStats energyStats = SurviveEntityStats.getEnergyStats(clickBlock.getPlayer());
-			energyStats.addExhaustion(clickBlock.getPlayer(), 0.5F);
-			SurviveEntityStats.setStaminaStats(clickBlock.getPlayer(), energyStats);
-		}
-	}
-
-	@SubscribeEvent
 	public static void clickItem(PlayerInteractEvent.RightClickItem clickItem) {
 		if(!clickItem.isCanceled() && clickItem.getPlayer() instanceof PlayerEntity && clickItem.getCancellationResult().isSuccessOrConsume()) {
-			StaminaStats energyStats = SurviveEntityStats.getEnergyStats(clickItem.getPlayer());
-			energyStats.addExhaustion(clickItem.getPlayer(), 0.5F);
-			SurviveEntityStats.setStaminaStats(clickItem.getPlayer(), energyStats);
+			
 		}
 	}
 

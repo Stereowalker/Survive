@@ -8,7 +8,8 @@
   	"OriginManagerMixin",
   	"PlayerEntityMixin",
   	"FoodStatsMixin",
-  	"BlockMixin"
+  	"BlockMixin",
+  	"PlayerInteractionManagerMixin"
   ],
   "client": [
   	"IngameGuiMixin"

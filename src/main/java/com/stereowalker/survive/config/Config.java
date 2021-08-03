@@ -142,6 +142,26 @@ public class Config {
 	@UnionConfig.Comment(comment = {"If Enabled, armor weights will be displayed in pounds rather than kilograms"})
 	public static boolean displayWeightInPounds = false;
 	
+	@UnionConfig.Entry(group = "Stamina" , name = "Stamina Exhaustion From Interacting With Blocks", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"Adds stamina exhaustion from interacting with blocks","This will only count if the block's interaction is successful i.e opening a chest","Stamina exhaustion unlike food exhaustion counts up to 10"})
+	@UnionConfig.Range(min = 0.0D, max = 4.0D)
+	public static float stamina_drain_from_using_blocks = 1.25F;
+	
+	@UnionConfig.Entry(group = "Stamina" , name = "Stamina Exhaustion From Interacting With Items", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"Adds stamina exhaustion from interacting with items","This will only count if the block's interaction is successful i.e drawing a bow","Stamina exhaustion unlike food exhaustion counts up to 10"})
+	@UnionConfig.Range(min = 0.0D, max = 4.0D)
+	public static float stamina_drain_from_items = 1.25F;
+	
+	@UnionConfig.Entry(group = "Stamina" , name = "Stamina Exhaustion From Breaking Harvestable Blocks", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"Adds stamina exhaustion from breaking harvestable blocks","This will only count if the player uses the incorrect tool to break the block","Stamina exhaustion unlike food exhaustion counts up to 10"})
+	@UnionConfig.Range(min = 0.0D, max = 4.0D)
+	public static float stamina_drain_from_breaking_blocks_without_tool = 1.50F;
+	
+	@UnionConfig.Entry(group = "Stamina" , name = "Stamina Exhaustion From Breaking Non-Harvestable Blocks", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"Adds stamina exhaustion from breaking non harvestable blocks","This will only count if the player uses the correct tool to break the block","Stamina exhaustion unlike food exhaustion counts up to 10"})
+	@UnionConfig.Range(min = 0.0D, max = 4.0D)
+	public static float stamina_drain_from_breaking_blocks_with_tool = 0.125F;
+	
 	//
 	//Hygiene
 	@UnionConfig.Entry(group = "Hygiene" , name = "Enable Hygiene (Beta)", type = Type.COMMON)

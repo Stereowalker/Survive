@@ -35,9 +35,9 @@ public abstract class BlockMixin extends AbstractBlock implements IItemProvider,
 		if (Config.enable_stamina) {
 			StaminaStats energyStats = SurviveEntityStats.getEnergyStats(player);
 			if (ForgeHooks.canHarvestBlock(state, player2, worldIn, pos)) {
-				energyStats.addExhaustion(player, 0.5F);
+				energyStats.addExhaustion(player, Config.stamina_drain_from_breaking_blocks_with_tool);
 			} else {
-				energyStats.addExhaustion(player, 0.05F);
+				energyStats.addExhaustion(player, Config.stamina_drain_from_breaking_blocks_without_tool);
 			}
 			SurviveEntityStats.setStaminaStats(player, energyStats);
 		}
