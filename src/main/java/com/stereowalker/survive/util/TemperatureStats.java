@@ -209,6 +209,7 @@ public class TemperatureStats extends SurviveStats {
 			this.targetTemperature = compound.getDouble("targetTemperature");
 			this.temperatureTimer = compound.getInt("temperatureTickTimer");
 			this.displayTemperature = compound.getDouble("displayTemperature");
+			this.hypTimer = compound.getInt("hypTimer");
 
 			ListNBT modifiers = compound.getList("modifiers", NbtType.CompoundNBT);
 			Map<ResourceLocation,TemperatureModifier> temperatureModifiers = Maps.newHashMap();
@@ -230,6 +231,7 @@ public class TemperatureStats extends SurviveStats {
 		compound.putDouble("targetTemperature", this.targetTemperature);
 		compound.putInt("temperatureTickTimer", this.temperatureTimer);
 		compound.putDouble("displayTemperature", this.displayTemperature);
+		compound.putInt("hypTimer", this.hypTimer);
 		ListNBT modifiers = new ListNBT();
 		for(TemperatureModifier modifier : temperatureModifiers.values()) {
 			modifiers.add(modifier.write(new CompoundNBT()));
