@@ -37,7 +37,7 @@ public class TooltipEvents {
 		if (Config.enable_weights) {
 			boolean showWeight = false;
 			for(EquipmentSlotType type : EquipmentSlotType.values()) {
-				if (event.getItemStack().canEquip(type, event.getPlayer()) && type.getSlotType() == Group.ARMOR) {
+				if (event.getPlayer() != null && event.getItemStack().canEquip(type, event.getPlayer()) && type.getSlotType() == Group.ARMOR) {
 					showWeight = true;
 					break;
 				}
