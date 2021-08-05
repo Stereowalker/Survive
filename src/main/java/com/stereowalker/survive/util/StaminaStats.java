@@ -1,5 +1,6 @@
 package com.stereowalker.survive.util;
 
+import com.stereowalker.survive.DataMaps;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.entity.SurviveEntityStats;
@@ -197,7 +198,7 @@ public class StaminaStats extends SurviveStats {
 	public static void rightClickEmpty(PlayerInteractEvent.RightClickEmpty clickItem) {
 		if(!clickItem.isCanceled() && clickItem.getPlayer() instanceof ClientPlayerEntity && clickItem.getCancellationResult().isSuccessOrConsume()) {
 			ClientPlayerEntity player = (ClientPlayerEntity)clickItem.getPlayer();
-			Survive.getInstance().channel.sendTo(new CEnergyTaxPacket(0.125F, player.getUniqueID()), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
+			Survive.getInstance().channel.sendTo(new CEnergyTaxPacket(0.3125F, player.getUniqueID()), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
 		}
 	}
 
@@ -205,7 +206,7 @@ public class StaminaStats extends SurviveStats {
 	public static void leftClickEmpty(PlayerInteractEvent.LeftClickEmpty clickItem) {
 		if(!clickItem.isCanceled() && clickItem.getPlayer() instanceof ClientPlayerEntity && clickItem.getCancellationResult().isSuccessOrConsume()) {
 			ClientPlayerEntity player = (ClientPlayerEntity)clickItem.getPlayer();
-			Survive.getInstance().channel.sendTo(new CEnergyTaxPacket(0.125F, player.getUniqueID()), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
+			Survive.getInstance().channel.sendTo(new CEnergyTaxPacket(0.3125F, player.getUniqueID()), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_SERVER);
 		}
 	}
 
@@ -262,11 +263,11 @@ public class StaminaStats extends SurviveStats {
 
 	@SubscribeEvent
 	public static void eatFood(LivingEntityUseItemEvent.Finish event) {
-		if (event.getResultStack().isFood() && Survive.consummableItemMap.containsKey(event.getItem().getItem().getRegistryName())) {
+		if (event.getResultStack().isFood() && DataMaps.Server.consummableItem.containsKey(event.getItem().getItem().getRegistryName())) {
 			if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
 				ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
 				StaminaStats energyStats = SurviveEntityStats.getEnergyStats(player);
-				energyStats.addStats(Survive.consummableItemMap.get(event.getItem().getItem().getRegistryName()).getEnergyAmount());
+				energyStats.addStats(DataMaps.Server.consummableItem.get(event.getItem().getItem().getRegistryName()).getEnergyAmount());
 				SurviveEntityStats.setStaminaStats(player, energyStats);
 			}
 		}

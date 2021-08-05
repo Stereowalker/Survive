@@ -10,7 +10,7 @@ import java.util.concurrent.Executor;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.util.data.ConsummableData;
+import com.stereowalker.survive.util.data.PotionData;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
 
 import net.minecraft.profiler.IProfiler;
@@ -23,13 +23,13 @@ import net.minecraftforge.registries.ForgeRegistries;
  * Maps marker type to texture.
  * @author Hunternif
  */
-public class PotionDrinkDataManager implements IResourceReloadListener<Map<ResourceLocation, ConsummableData>> {
+public class PotionDrinkDataManager implements IResourceReloadListener<Map<ResourceLocation, PotionData>> {
 	private static final JsonParser parser = new JsonParser();
 
 	@Override
-	public CompletableFuture<Map<ResourceLocation, ConsummableData>> load(IResourceManager manager, IProfiler profiler, Executor executor) {
+	public CompletableFuture<Map<ResourceLocation, PotionData>> load(IResourceManager manager, IProfiler profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
-			Map<ResourceLocation, ConsummableData> drinkMap = new HashMap<>();
+			Map<ResourceLocation, PotionData> drinkMap = new HashMap<>();
 
 			for (ResourceLocation id : manager.getAllResourceLocations("survive_modifiers/consumables/potions", (s) -> s.endsWith(".json"))) {
 				ResourceLocation drinkId = new ResourceLocation(
@@ -44,7 +44,7 @@ public class PotionDrinkDataManager implements IResourceReloadListener<Map<Resou
 								InputStreamReader reader = new InputStreamReader(stream)) {
 							
 							JsonObject object = parser.parse(reader).getAsJsonObject();
-							ConsummableData drinkData = new ConsummableData(drinkId, object);
+							PotionData drinkData = new PotionData(drinkId, object);
 							Survive.getInstance().getLogger().info("Found potion drink data for "+drinkId);
 							
 							drinkMap.put(drinkId, drinkData);
@@ -62,7 +62,7 @@ public class PotionDrinkDataManager implements IResourceReloadListener<Map<Resou
 	}
 
 	@Override
-	public CompletableFuture<Void> apply(Map<ResourceLocation, ConsummableData> data, IResourceManager manager, IProfiler profiler, Executor executor) {
+	public CompletableFuture<Void> apply(Map<ResourceLocation, PotionData> data, IResourceManager manager, IProfiler profiler, Executor executor) {
 		return CompletableFuture.runAsync(() -> {
 			for (ResourceLocation drinkId : data.keySet()) {
 				Survive.registerDrinkDataForPotion(drinkId, data.get(drinkId));

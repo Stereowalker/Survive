@@ -1,6 +1,7 @@
 package com.stereowalker.survive.util;
 
 import com.google.common.collect.ImmutableList;
+import com.stereowalker.survive.DataMaps;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.entity.ai.SAttributes;
 import com.stereowalker.survive.util.data.BiomeTemperatureData;
@@ -48,8 +49,8 @@ public class TemperatureUtil {
 		float f = (float)(TEMPERATURE_NOISE.noiseAt((double)((float)pos.getX() / 8.0F), (double)((float)pos.getZ() / 8.0F), false) * 4.0D);
 		float modifier = 1.0f;
 		float t = biome.getTemperature();
-		if (Survive.biomeTemperatureMap.containsKey(biome.getRegistryName())) {
-			BiomeTemperatureData temperatureData = Survive.biomeTemperatureMap.get(biome.getRegistryName());
+		if (DataMaps.Server.biomeTemperature.containsKey(biome.getRegistryName())) {
+			BiomeTemperatureData temperatureData = DataMaps.Server.biomeTemperature.get(biome.getRegistryName());
 			t = (temperatureData.getTemperature() + 2) / 2;
 			if (pos.getY() > 64.0F) {
 				modifier = temperatureData.getAltitudeLevelModifier().getFirst();

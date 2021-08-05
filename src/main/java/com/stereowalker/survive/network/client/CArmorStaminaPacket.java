@@ -32,7 +32,7 @@ public class CArmorStaminaPacket extends CUnionPacket {
 
 			if (SurviveEvents.getTotalArmorWeight(sender)/Survive.MAX_WEIGHT > 1.0F) moveMul += (SurviveEvents.getTotalArmorWeight(sender)/Survive.MAX_WEIGHT) - 1.0F;
 
-			if (moveMul > 0) stats.addExhaustion(sender, moveMul);
+			if (moveMul > 0) stats.addExhaustion(sender, moveMul*2.5f);
 			SurviveEntityStats.setStaminaStats(sender, stats);
 		}
 		return true;

@@ -6,6 +6,7 @@ import org.apache.logging.log4j.MarkerManager;
 import com.google.gson.JsonObject;
 import com.stereowalker.survive.Survive;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -249,6 +250,12 @@ public class ConsummableData extends JsonData {
 
 	public int getProteinRatio() {
 		return proteinRatio;
+	}
+
+	@Override
+	public CompoundNBT serialize() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

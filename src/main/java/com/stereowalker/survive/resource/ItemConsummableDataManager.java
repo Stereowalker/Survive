@@ -10,8 +10,9 @@ import java.util.concurrent.Executor;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
+import com.stereowalker.survive.DataMaps;
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.util.data.ConsummableData;
+import com.stereowalker.survive.util.data.FoodData;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
 
 import net.minecraft.item.Food;
@@ -27,13 +28,13 @@ import net.minecraftforge.registries.ForgeRegistries;
  * Loads the item drink data from json
  * @author Stereowalker
  */
-public class ItemConsummableDataManager implements IResourceReloadListener<Map<ResourceLocation, ConsummableData>> {
+public class ItemConsummableDataManager implements IResourceReloadListener<Map<ResourceLocation, FoodData>> {
 	private static final JsonParser parser = new JsonParser();
 
 	@Override
-	public CompletableFuture<Map<ResourceLocation, ConsummableData>> load(IResourceManager manager, IProfiler profiler, Executor executor) {
+	public CompletableFuture<Map<ResourceLocation, FoodData>> load(IResourceManager manager, IProfiler profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
-			Map<ResourceLocation, ConsummableData> drinkMap = new HashMap<>();
+			Map<ResourceLocation, FoodData> drinkMap = new HashMap<>();
 
 			for (ResourceLocation id : manager.getAllResourceLocations("survive_modifiers/consumables/items", (s) -> s.endsWith(".json"))) {
 				ResourceLocation drinkId = new ResourceLocation(
@@ -48,11 +49,11 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 								InputStreamReader reader = new InputStreamReader(stream)) {
 
 							JsonObject object = parser.parse(reader).getAsJsonObject();
-							ConsummableData drinkData = new ConsummableData(drinkId, object);
+							FoodData drinkData = new FoodData(drinkId, object);
 
-							if (ForgeRegistries.ITEMS.getValue(drinkId).food != null && Survive.defaultFoodMap.containsKey(drinkId)) {
-								ForgeRegistries.ITEMS.getValue(drinkId).food.value = drinkData.overwritesDefaultHunger() ? drinkData.getHungerAmount() : Survive.defaultFoodMap.get(drinkId).value;
-								ForgeRegistries.ITEMS.getValue(drinkId).food.saturation = drinkData.overwritesDefaultSaturation() ? drinkData.getSaturationAmount() : Survive.defaultFoodMap.get(drinkId).saturation;
+							if (ForgeRegistries.ITEMS.getValue(drinkId).food != null && DataMaps.Server.defaultFood.containsKey(drinkId)) {
+								ForgeRegistries.ITEMS.getValue(drinkId).food.value = drinkData.overwritesDefaultHunger() ? drinkData.getHungerAmount() : DataMaps.Server.defaultFood.get(drinkId).value;
+								ForgeRegistries.ITEMS.getValue(drinkId).food.saturation = drinkData.overwritesDefaultSaturation() ? drinkData.getSaturationAmount() : DataMaps.Server.defaultFood.get(drinkId).saturation;
 
 								Pair<EffectInstance, Float> defaultEffect = null;
 								Pair<EffectInstance, Float> itemEffect = null;
@@ -62,7 +63,7 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 									}
 								}
 
-								for (Pair<EffectInstance, Float> effect : Survive.defaultFoodMap.get(drinkId).getEffects()) {
+								for (Pair<EffectInstance, Float> effect : DataMaps.Server.defaultFood.get(drinkId).getEffects()) {
 									if (effect.getFirst().getPotion() == Effects.HUNGER) {
 										defaultEffect = effect;
 									}
@@ -81,7 +82,7 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 							if (drinkData.overwritesDefaultFood() && ForgeRegistries.ITEMS.getValue(drinkId).food == null) {
 								ForgeRegistries.ITEMS.getValue(drinkId).food = (new Food.Builder()).hunger(drinkData.getHungerAmount()).saturation(drinkData.getSaturationAmount()).effect(() -> new EffectInstance(Effects.HUNGER, 600, 0), drinkData.getHungerChance()).build();
 							}
-							if (!Survive.defaultFoodMap.containsKey(drinkId) && !drinkData.overwritesDefaultFood() && ForgeRegistries.ITEMS.getValue(drinkId).food != null) {
+							if (!DataMaps.Server.defaultFood.containsKey(drinkId) && !drinkData.overwritesDefaultFood() && ForgeRegistries.ITEMS.getValue(drinkId).food != null) {
 								ForgeRegistries.ITEMS.getValue(drinkId).food = null;
 							}
 							Survive.getInstance().getLogger().info("Found item consummable data for "+drinkId);
@@ -101,7 +102,7 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 	}
 
 	@Override
-	public CompletableFuture<Void> apply(Map<ResourceLocation, ConsummableData> data, IResourceManager manager, IProfiler profiler, Executor executor) {
+	public CompletableFuture<Void> apply(Map<ResourceLocation, FoodData> data, IResourceManager manager, IProfiler profiler, Executor executor) {
 		return CompletableFuture.runAsync(() -> {
 			for (ResourceLocation drinkId : data.keySet()) {
 				Survive.registerDrinkDataForItem(drinkId, data.get(drinkId));

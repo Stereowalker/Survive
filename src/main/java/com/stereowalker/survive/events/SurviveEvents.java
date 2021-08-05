@@ -1,7 +1,8 @@
 package com.stereowalker.survive.events;
 
-import java.util.List;
+import org.apache.commons.lang3.mutable.MutableInt;
 
+import com.stereowalker.survive.DataMaps;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.compat.SereneSeasonsCompat;
 import com.stereowalker.survive.config.Config;
@@ -11,6 +12,7 @@ import com.stereowalker.survive.entity.SurviveEntityStats;
 import com.stereowalker.survive.fluid.SFluids;
 import com.stereowalker.survive.item.SItems;
 import com.stereowalker.survive.network.client.CInteractWithWaterPacket;
+import com.stereowalker.survive.network.server.SArmorDataTransferPacket;
 import com.stereowalker.survive.network.server.SSurvivalStatsPacket;
 import com.stereowalker.survive.potion.SEffects;
 import com.stereowalker.survive.temperature.TemperatureChangeInstance;
@@ -119,10 +121,23 @@ public class SurviveEvents {
 	public static float getArmorWeight(ItemStack piece) {
 		float totalWeight = 0.0F;
 		if (!piece.isEmpty()) {
-			if (Survive.armorModifierMap.containsKey(piece.getItem().getRegistryName()) && !SEnchantmentHelper.hasWeightless(piece)) {
+			if (DataMaps.Server.armor.containsKey(piece.getItem().getRegistryName()) && !SEnchantmentHelper.hasWeightless(piece)) {
 				int i = SEnchantmentHelper.getFeatherweightModifier(piece);
 				//Reduces the total weight of that armor piece by 18% for each level
-				totalWeight += Survive.armorModifierMap.get(piece.getItem().getRegistryName()).getWeightModifier() * (1 - i*0.18);
+				totalWeight += DataMaps.Server.armor.get(piece.getItem().getRegistryName()).getWeightModifier() * (1 - i*0.18);
+			}
+		}
+		return totalWeight;
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	public static float getArmorWeightClient(ItemStack piece) {
+		float totalWeight = 0.0F;
+		if (!piece.isEmpty()) {
+			if (DataMaps.Client.armor.containsKey(piece.getItem().getRegistryName()) && !SEnchantmentHelper.hasWeightless(piece)) {
+				int i = SEnchantmentHelper.getFeatherweightModifier(piece);
+				//Reduces the total weight of that armor piece by 18% for each level
+				totalWeight += DataMaps.Client.armor.get(piece.getItem().getRegistryName()).getWeightModifier() * (1 - i*0.18);
 			}
 		}
 		return totalWeight;
@@ -215,6 +230,13 @@ public class SurviveEvents {
 		if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
 			ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
 			Survive.getInstance().channel.sendTo(new SSurvivalStatsPacket(player), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+			if (player.ticksExisted%20==0) {
+				MutableInt i = new MutableInt(0);
+				DataMaps.Server.armor.forEach((key, value) -> {
+					Survive.getInstance().channel.sendTo(new SArmorDataTransferPacket(key, value, i.getValue() == 0), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+					i.increment();;
+				});
+			}
 		}
 	}
 
@@ -306,9 +328,8 @@ public class SurviveEvents {
 					if (!player.getItemStackFromSlot(slot).isEmpty()) {
 						Item armor = player.getItemStackFromSlot(slot).getItem();
 						float modifier = 1.0F;
-						if (Survive.armorModifierMap.containsKey(armor.getRegistryName())) {
-							List<TemperatureChangeInstance> instances = Survive.armorModifierMap.get(armor.getRegistryName()).getTemperatureModifier();
-							for (TemperatureChangeInstance instance : instances) {
+						if (DataMaps.Server.armor.containsKey(armor.getRegistryName())) {
+							for (TemperatureChangeInstance instance : DataMaps.Server.armor.get(armor.getRegistryName()).getTemperatureModifier().values()) {
 								if (instance.shouldChangeTemperature(player)) {
 									modifier = instance.getTemperature();
 									break;
@@ -409,12 +430,12 @@ public class SurviveEvents {
 						BlockPos heatSource = new BlockPos(pos.getX()+x, pos.getY()+y, pos.getZ()+z);
 						float blockLight = world.getChunkProvider().getLightManager().getLightEngine(LightType.BLOCK).getLightFor(heatSource);
 						BlockState heatState = world.getBlockState(heatSource);
-						int sourceRange = Survive.blockTemperatureMap.containsKey(heatState.getBlock().getRegistryName()) ? Survive.blockTemperatureMap.get(heatState.getBlock().getRegistryName()).getRange() : 5;
+						int sourceRange = DataMaps.Server.blockTemperature.containsKey(heatState.getBlock().getRegistryName()) ? DataMaps.Server.blockTemperature.get(heatState.getBlock().getRegistryName()).getRange() : 5;
 
 						if (pos.withinDistance(heatSource, sourceRange)) {
 							blockTemp += blockLight/500.0F;
-							if (Survive.blockTemperatureMap.containsKey(heatState.getBlock().getRegistryName())) {
-								BlockTemperatureData blockTemperatureData = Survive.blockTemperatureMap.get(heatState.getBlock().getRegistryName());
+							if (DataMaps.Server.blockTemperature.containsKey(heatState.getBlock().getRegistryName())) {
+								BlockTemperatureData blockTemperatureData = DataMaps.Server.blockTemperature.get(heatState.getBlock().getRegistryName());
 								if (blockTemperatureData.usesLitOrActiveProperty()) {
 									boolean litOrActive = false;
 									if (heatState.hasProperty(BlockStateProperties.LIT) && heatState.get(BlockStateProperties.LIT)) litOrActive = true;
@@ -453,11 +474,11 @@ public class SurviveEvents {
 			float totalEntityTemp = 0;
 			rangeInBlocks = 5;
 			for (Entity entity : world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.add(rangeInBlocks, rangeInBlocks, rangeInBlocks), pos.add(-rangeInBlocks, -rangeInBlocks, -rangeInBlocks)))) {
-				float sourceRange = Survive.entityTemperatureMap.containsKey(entity.getType().getRegistryName()) ? Survive.entityTemperatureMap.get(entity.getType().getRegistryName()).getRange() : 5;
-				
+				float sourceRange = DataMaps.Server.entityTemperature.containsKey(entity.getType().getRegistryName()) ? DataMaps.Server.entityTemperature.get(entity.getType().getRegistryName()).getRange() : 5;
+
 				if (pos.withinDistance(entity.getPosition(), sourceRange)) {
-					if (Survive.entityTemperatureMap.containsKey(entity.getType().getRegistryName())) {
-						EntityTemperatureData entityTemperatureData = Survive.entityTemperatureMap.get(entity.getType().getRegistryName());
+					if (DataMaps.Server.entityTemperature.containsKey(entity.getType().getRegistryName())) {
+						EntityTemperatureData entityTemperatureData = DataMaps.Server.entityTemperature.get(entity.getType().getRegistryName());
 						totalEntityTemp+=entityTemperatureData.getTemperatureModifier();
 					}
 				}

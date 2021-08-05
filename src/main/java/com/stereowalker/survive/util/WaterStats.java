@@ -3,6 +3,7 @@ package com.stereowalker.survive.util;
 import java.util.List;
 import java.util.Random;
 
+import com.stereowalker.survive.DataMaps;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.compat.PamsHarvestcraftCompat;
 import com.stereowalker.survive.config.Config;
@@ -265,16 +266,16 @@ public class WaterStats extends SurviveStats {
 			ServerPlayerEntity player = (ServerPlayerEntity) event.getEntityLiving();
 			WaterStats stats = SurviveEntityStats.getWaterStats(player);
 			
-			if (event.getItem().getItem() == Items.POTION && Survive.potionDrinkMap.containsKey(PotionUtils.getPotionFromItem(event.getItem()).getRegistryName())) {
-				ConsummableData drinkData = Survive.potionDrinkMap.get(PotionUtils.getPotionFromItem(event.getItem()).getRegistryName());
+			if (event.getItem().getItem() == Items.POTION && DataMaps.Server.potionDrink.containsKey(PotionUtils.getPotionFromItem(event.getItem()).getRegistryName())) {
+				ConsummableData drinkData = DataMaps.Server.potionDrink.get(PotionUtils.getPotionFromItem(event.getItem()).getRegistryName());
 				stats.addStats(drinkData.getThirstAmount(), drinkData.getHydrationAmount());
 				applyThirst(event.getEntityLiving(), drinkData.getThirstChance());
 				if (drinkData.isHeated())event.getEntityLiving().addPotionEffect(new EffectInstance(SEffects.HEATED, 30*20));
 				if (drinkData.isChilled())event.getEntityLiving().addPotionEffect(new EffectInstance(SEffects.CHILLED, 30*20));
 				if (drinkData.isEnergizing())event.getEntityLiving().addPotionEffect(new EffectInstance(SEffects.ENERGIZED, 60*20*5));
 			}
-			else if (Survive.consummableItemMap.containsKey(event.getItem().getItem().getRegistryName())) {
-				ConsummableData drinkData = Survive.consummableItemMap.get(event.getItem().getItem().getRegistryName());
+			else if (DataMaps.Server.consummableItem.containsKey(event.getItem().getItem().getRegistryName())) {
+				ConsummableData drinkData = DataMaps.Server.consummableItem.get(event.getItem().getItem().getRegistryName());
 				stats.addStats(drinkData.getThirstAmount(), drinkData.getHydrationAmount());
 				applyThirst(event.getEntityLiving(), drinkData.getThirstChance());
 				if (drinkData.isHeated())event.getEntityLiving().addPotionEffect(new EffectInstance(SEffects.HEATED, 30*20));

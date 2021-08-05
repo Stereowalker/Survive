@@ -59,7 +59,7 @@ public class SEffect extends Effect{
 			}
 		} else if (this == SEffects.TIREDNESS && entityLivingBaseIn instanceof ServerPlayerEntity) {
 			StaminaStats energyStats = SurviveEntityStats.getEnergyStats(entityLivingBaseIn);
-			energyStats.addExhaustion((PlayerEntity) entityLivingBaseIn, (0.005F * (float)(amplifier + 1)));
+			energyStats.addExhaustion((PlayerEntity) entityLivingBaseIn, (0.0125F * (float)(amplifier + 1)));
 			SurviveEntityStats.setStaminaStats(entityLivingBaseIn, energyStats);
 		}
 		super.performEffect(entityLivingBaseIn, amplifier);

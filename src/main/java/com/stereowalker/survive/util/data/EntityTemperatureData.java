@@ -6,9 +6,10 @@ import org.apache.logging.log4j.MarkerManager;
 import com.google.gson.JsonObject;
 import com.stereowalker.survive.Survive;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 
-public class EntityTemperatureData {
+public class EntityTemperatureData extends JsonData {
     private static final Marker ENTITY_TEMPERATURE_DATA = MarkerManager.getMarker("ENTITY_TEMPERATURE_DATA");
     
 	private ResourceLocation entityID;
@@ -16,6 +17,7 @@ public class EntityTemperatureData {
 	private final float range;
 	
 	public EntityTemperatureData(ResourceLocation blockID, JsonObject object) {
+		super(object);
 		String NOTHING = "nothing";
 		String TEMPERATURE_MODIFIER = "temperature_modifier";
 		String RANGE = "range";
@@ -77,5 +79,11 @@ public class EntityTemperatureData {
 	 */
 	public float getRange() {
 		return range;
+	}
+
+	@Override
+	public CompoundNBT serialize() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

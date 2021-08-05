@@ -3,6 +3,7 @@ package com.stereowalker.survive.temperature;
 import com.google.gson.JsonObject;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
 
 public class UnderwaterCondition extends TemperatureChangeCondition<UnderwaterCondition.Instance>{
@@ -25,6 +26,14 @@ public class UnderwaterCondition extends TemperatureChangeCondition<UnderwaterCo
 		if(object.has("operation") && object.get("operation").isJsonPrimitive()) {
 			operationIn = object.get("operation").getAsString();
 		}
+		return new Instance(temperatureIn, depthIn, operationIn);
+	}
+	
+	@Override
+	public Instance createInstance(CompoundNBT nbt) {
+		float temperatureIn = nbt.getFloat("temperature");
+		int depthIn = nbt.getInt("depth");
+		String operationIn = nbt.getString("operation");
 		return new Instance(temperatureIn, depthIn, operationIn);
 	}
 	

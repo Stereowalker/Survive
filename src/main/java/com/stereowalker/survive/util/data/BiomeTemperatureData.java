@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 
 public class BiomeTemperatureData extends JsonData {
@@ -82,5 +83,11 @@ public class BiomeTemperatureData extends JsonData {
 
 	public Pair<Float, Float> getAltitudeLevelModifier() {
 		return altitude_level_modifier;
+	}
+
+	@Override
+	public CompoundNBT serialize() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

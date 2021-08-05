@@ -2,9 +2,7 @@ package com.stereowalker.survive;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import com.google.common.collect.Maps;
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.events.SurviveEvents;
@@ -14,6 +12,7 @@ import com.stereowalker.survive.network.client.CEnergyTaxPacket;
 import com.stereowalker.survive.network.client.CInteractWithWaterPacket;
 import com.stereowalker.survive.network.client.CThirstMovementPacket;
 import com.stereowalker.survive.network.server.SDrinkSoundPacket;
+import com.stereowalker.survive.network.server.SArmorDataTransferPacket;
 import com.stereowalker.survive.network.server.SSurvivalStatsPacket;
 import com.stereowalker.survive.potion.BrewingRecipes;
 import com.stereowalker.survive.resource.ArmorDataManager;
@@ -27,8 +26,9 @@ import com.stereowalker.survive.stat.SStats;
 import com.stereowalker.survive.util.data.ArmorData;
 import com.stereowalker.survive.util.data.BiomeTemperatureData;
 import com.stereowalker.survive.util.data.BlockTemperatureData;
-import com.stereowalker.survive.util.data.ConsummableData;
 import com.stereowalker.survive.util.data.EntityTemperatureData;
+import com.stereowalker.survive.util.data.FoodData;
+import com.stereowalker.survive.util.data.PotionData;
 import com.stereowalker.survive.world.CGameRules;
 import com.stereowalker.unionlib.client.gui.screen.ConfigScreen;
 import com.stereowalker.unionlib.config.ConfigBuilder;
@@ -39,7 +39,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.item.Food;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -99,33 +98,27 @@ public class Survive extends UnionMod {
 		channel.registerMessage(netID++, CInteractWithWaterPacket.class, CInteractWithWaterPacket::encode, CInteractWithWaterPacket::decode, CInteractWithWaterPacket::handle);
 		channel.registerMessage(netID++, SDrinkSoundPacket.class, SDrinkSoundPacket::encode, SDrinkSoundPacket::decode, SDrinkSoundPacket::handle);
 		channel.registerMessage(netID++, CEnergyTaxPacket.class, CEnergyTaxPacket::encode, CEnergyTaxPacket::decode, CEnergyTaxPacket::handle);
+		channel.registerMessage(netID++, SArmorDataTransferPacket.class, SArmorDataTransferPacket::encode, SArmorDataTransferPacket::decode, SArmorDataTransferPacket::handle);
 	}
 	
 	//TODO: FInd Somewhere to put all these
-	public static final Map<ResourceLocation, Food> defaultFoodMap = Maps.newHashMap();
-	public static final Map<ResourceLocation, ConsummableData> consummableItemMap = Maps.newHashMap();
-	public static final Map<ResourceLocation, ConsummableData> potionDrinkMap = Maps.newHashMap();
-	public static final Map<ResourceLocation, ArmorData> armorModifierMap = Maps.newHashMap();
-	public static final Map<ResourceLocation, BlockTemperatureData> blockTemperatureMap = Maps.newHashMap();
-	public static final Map<ResourceLocation, EntityTemperatureData> entityTemperatureMap = Maps.newHashMap();
-	public static final Map<ResourceLocation, BiomeTemperatureData> biomeTemperatureMap = Maps.newHashMap();
-	public static void registerDrinkDataForItem(ResourceLocation location, ConsummableData drinkData) {
-		consummableItemMap.put(location, drinkData);
+	public static void registerDrinkDataForItem(ResourceLocation location, FoodData drinkData) {
+		DataMaps.Server.consummableItem.put(location, drinkData);
 	}
-	public static void registerDrinkDataForPotion(ResourceLocation location, ConsummableData consummableData) {
-		potionDrinkMap.put(location, consummableData);
+	public static void registerDrinkDataForPotion(ResourceLocation location, PotionData consummableData) {
+		DataMaps.Server.potionDrink.put(location, consummableData);
 	}
 	public static void registerArmorTemperatures(ResourceLocation location, ArmorData armorData) {
-		armorModifierMap.put(location, armorData);
+		DataMaps.Server.armor.put(location, armorData);
 	}
 	public static void registerBlockTemperatures(ResourceLocation location, BlockTemperatureData drinkData) {
-		blockTemperatureMap.put(location, drinkData);
+		DataMaps.Server.blockTemperature.put(location, drinkData);
 	}
 	public static void registerEntityTemperatures(ResourceLocation location, EntityTemperatureData drinkData) {
-		entityTemperatureMap.put(location, drinkData);
+		DataMaps.Server.entityTemperature.put(location, drinkData);
 	}
 	public static void registerBiomeTemperatures(ResourceLocation location, BiomeTemperatureData biomeData) {
-		biomeTemperatureMap.put(location, biomeData);
+		DataMaps.Server.biomeTemperature.put(location, biomeData);
 	}
 
 	@Override
@@ -146,7 +139,7 @@ public class Survive extends UnionMod {
 		
 		for(Item item : ForgeRegistries.ITEMS) {
 			if (item.isFood())
-			defaultFoodMap.put(item.getRegistryName(), item.getFood());
+				DataMaps.Server.defaultFood.put(item.getRegistryName(), item.getFood());
 		}
 	}
 

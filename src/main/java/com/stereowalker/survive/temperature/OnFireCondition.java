@@ -3,6 +3,7 @@ package com.stereowalker.survive.temperature;
 import com.google.gson.JsonObject;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 
 public class OnFireCondition extends TemperatureChangeCondition<OnFireCondition.Instance>{
 
@@ -24,6 +25,14 @@ public class OnFireCondition extends TemperatureChangeCondition<OnFireCondition.
 		if(object.has("operation") && object.get("operation").isJsonPrimitive()) {
 			operationIn = object.get("operation").getAsString();
 		}
+		return new Instance(temperatureIn, fireTimerIn, operationIn);
+	}
+	
+	@Override
+	public Instance createInstance(CompoundNBT nbt) {
+		float temperatureIn = nbt.getFloat("temperature");
+		int fireTimerIn = nbt.getInt("fireTimer");
+		String operationIn = nbt.getString("operation");
 		return new Instance(temperatureIn, fireTimerIn, operationIn);
 	}
 

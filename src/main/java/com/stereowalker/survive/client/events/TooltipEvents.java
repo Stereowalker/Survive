@@ -23,7 +23,7 @@ public class TooltipEvents {
 
 	@OnlyIn(Dist.CLIENT)
 	public static void accessoryTooltip(ItemStack stack, List<ITextComponent> tooltip) {
-		float kg = SurviveEvents.getArmorWeight(stack);
+		float kg = SurviveEvents.getArmorWeightClient(stack);
 		float rawPound = kg*2.205f;
 		int poundInt = (int)(rawPound*1000);
 		float pound = poundInt/1000.0F;

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 
 public class BiomeNotCondition extends TemperatureChangeCondition<BiomeNotCondition.Instance>{
@@ -22,6 +23,13 @@ public class BiomeNotCondition extends TemperatureChangeCondition<BiomeNotCondit
 		if(object.has("biome") && object.get("biome").isJsonPrimitive()) {
 			biomeIn = object.get("biome").getAsString();
 		}
+		return new Instance(temperatureIn, new ResourceLocation(biomeIn));
+	}
+	
+	@Override
+	public Instance createInstance(CompoundNBT nbt) {
+		float temperatureIn = nbt.getFloat("temperature");
+		String biomeIn = nbt.getString("biome");
 		return new Instance(temperatureIn, new ResourceLocation(biomeIn));
 	}
 

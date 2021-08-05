@@ -7,11 +7,12 @@ import com.google.gson.JsonObject;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.unionlib.state.properties.UBlockStateProperties;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class BlockTemperatureData {
+public class BlockTemperatureData extends JsonData {
     private static final Marker BLOCK_TEMPERATURE_DATA = MarkerManager.getMarker("BLOCK_TEMPERATURE_DATA");
     
 	private ResourceLocation itemID;
@@ -21,6 +22,7 @@ public class BlockTemperatureData {
 	private final boolean usesLevelProperty;
 	
 	public BlockTemperatureData(ResourceLocation blockID, JsonObject object) {
+		super(object);
 		String NOTHING = "nothing";
 		String TEMPERATURE_MODIFIER = "temperature_modifier";
 		String LIT_PROPERTY = "uses_lit_or_active_property";
@@ -127,5 +129,11 @@ public class BlockTemperatureData {
 	 */
 	public boolean usesLevelProperty() {
 		return usesLevelProperty;
+	}
+
+	@Override
+	public CompoundNBT serialize() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

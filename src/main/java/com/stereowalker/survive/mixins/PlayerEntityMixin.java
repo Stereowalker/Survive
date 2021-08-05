@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.DataMaps;
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.entity.SurviveEntityStats;
 import com.stereowalker.survive.util.NutritionStats;
@@ -32,7 +32,7 @@ public abstract class PlayerEntityMixin extends LivingEntity{
 	public void morphExhaustion(PlayerEntity player, float value) {
 		if (Config.enable_stamina) {
 			StaminaStats energyStats = SurviveEntityStats.getEnergyStats(player);
-			energyStats.addExhaustion(player, value);
+			energyStats.addExhaustion(player, value*2.5f);
 			energyStats.save(player);
 		}
 		else if (Config.nutrition_enabled) {
@@ -48,7 +48,7 @@ public abstract class PlayerEntityMixin extends LivingEntity{
 	public void morphStaminaDuringAttack(PlayerEntity player, float value) {
 		if (Config.enable_stamina) {
 			StaminaStats energyStats = SurviveEntityStats.getEnergyStats(player);
-			energyStats.addExhaustion(player, 0.5f);
+			energyStats.addExhaustion(player, 1.25f);
 			energyStats.save(player);
 		}
 		else if (Config.nutrition_enabled) {
@@ -66,8 +66,8 @@ public abstract class PlayerEntityMixin extends LivingEntity{
 			NutritionStats nutritionStats = SurviveEntityStats.getNutritionStats((LivingEntity)(Object)this);
 			float protein = 1;
 			float carbs = 1;
-			if (Survive.consummableItemMap.containsKey(p_213357_2_.getItem().getRegistryName())) {
-				ConsummableData data = Survive.consummableItemMap.get(p_213357_2_.getItem().getRegistryName());
+			if (DataMaps.Server.consummableItem.containsKey(p_213357_2_.getItem().getRegistryName())) {
+				ConsummableData data = DataMaps.Server.consummableItem.get(p_213357_2_.getItem().getRegistryName());
 				protein = data.getProteinRatio();
 				carbs = data.getCarbohydrateRatio();
 			}
