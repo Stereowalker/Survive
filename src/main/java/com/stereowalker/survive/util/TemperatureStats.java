@@ -171,7 +171,7 @@ public class TemperatureStats extends SurviveStats {
 				if (this.hypTimer > 0) {
 					this.hypTimer--;
 				} else if (this.hypTimer == 0) {
-					if (!player.isPotionActive(SEffects.HYPERTHERMIA)) {
+					if (!player.isPotionActive(SEffects.HYPERTHERMIA) && !player.isPotionActive(SEffects.HYPOTHERMIA)) {
 						if (this.temperatureLevel > maxHeat1 && this.temperatureLevel <= maxHeat2) {
 							player.addPotionEffect(new EffectInstance(SEffects.HYPERTHERMIA, 100, 0));
 						}
@@ -181,8 +181,7 @@ public class TemperatureStats extends SurviveStats {
 						else if (this.temperatureLevel > maxHeat3) {
 							player.addPotionEffect(new EffectInstance(SEffects.HYPERTHERMIA, 100, 2));
 						}
-					}
-					if (!player.isPotionActive(SEffects.HYPOTHERMIA)) {
+						
 						if (this.temperatureLevel < maxCold1 && this.temperatureLevel >= maxCold2) {
 							player.addPotionEffect(new EffectInstance(SEffects.HYPOTHERMIA, 100, 0));
 						}
