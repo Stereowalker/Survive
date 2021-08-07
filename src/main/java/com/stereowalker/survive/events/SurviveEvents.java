@@ -405,7 +405,6 @@ public class SurviveEvents {
 
 
 	public static double getExactTemperature(World world, BlockPos pos, TempType type) {
-		float biomeTemp = (TemperatureUtil.getTemperature(world.getBiome(pos), pos)*2)-2;
 		float skyLight = world.getChunkProvider().getLightManager().getLightEngine(LightType.SKY).getLightFor(pos);
 		float gameTime = world.getDayTime() % 24000L;
 		gameTime = gameTime/(200/3);
@@ -417,6 +416,7 @@ public class SurviveEvents {
 			else return -1.0F * 5.0F;
 
 		case BIOME:
+			float biomeTemp = (TemperatureUtil.getTemperature(world.getBiome(pos), pos)*2)-2;
 			if (ModHelper.isPrimalWinterLoaded()) {
 				biomeTemp = -0.7F;
 			}
