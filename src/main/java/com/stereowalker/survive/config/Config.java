@@ -162,6 +162,16 @@ public class Config {
 	@UnionConfig.Range(min = 0.0D, max = 4.0D)
 	public static float stamina_drain_from_breaking_blocks_with_tool = 0.125F;
 	
+	@UnionConfig.Entry(group = "Stamina" , name = "Stamina Recovery Ticks", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"How often in ticks does the player recover stamina","This recovers 1 point of stamina after the amount of set ticks passes"})
+	@UnionConfig.Range(min = 0.0D, max = 10000.0D)
+	public static int stamina_recovery_ticks = 300;
+	
+	@UnionConfig.Entry(group = "Stamina" , name = "Maximum Armor Carry Weight", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"The maximum weight (kg) of armor that the player can carry without losing stamina"})
+	@UnionConfig.Range(min = 0.0D, max = 10000.0D)
+	public static float max_weight = 21.0F;
+	
 	//
 	//Hygiene
 	@UnionConfig.Entry(group = "Hygiene" , name = "Enable Hygiene (Beta)", type = Type.COMMON)

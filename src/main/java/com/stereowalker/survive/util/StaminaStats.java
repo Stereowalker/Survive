@@ -219,7 +219,7 @@ public class StaminaStats extends SurviveStats {
 				if (player.isSleeping() && player.ticksExisted%20 == 19) {
 					energyStats.addStats(1);
 				}
-				if (player.ticksExisted%300 == 299 && energyStats.getEnergyLevel() < 20) {
+				if ((Config.stamina_recovery_ticks == 0 || player.ticksExisted%Config.stamina_recovery_ticks == Config.stamina_recovery_ticks-1) && energyStats.getEnergyLevel() < 20) {
 					if (Config.nutrition_enabled) {
 						NutritionStats nutritionStats = SurviveEntityStats.getNutritionStats(player);
 						if (nutritionStats.getCarbLevel() >= 2) {
@@ -228,7 +228,7 @@ public class StaminaStats extends SurviveStats {
 						}
 						nutritionStats.save(player);
 					} else {
-						if (player.foodStats.getFoodLevel() > 15 && SurviveEvents.getTotalArmorWeight(player)/Survive.MAX_WEIGHT < 1.0F) {
+						if (player.foodStats.getFoodLevel() > 15 && SurviveEvents.getTotalArmorWeight(player)/Config.max_weight < 1.0F) {
 							energyStats.addStats(1);
 							player.foodStats.addExhaustion(1.0F);
 						}

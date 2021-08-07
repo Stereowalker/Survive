@@ -28,9 +28,9 @@ public class CArmorStaminaPacket extends CUnionPacket {
 	public boolean handleOnServer(ServerPlayerEntity sender) {
 		if (Config.enable_stamina) {
 			StaminaStats stats = SurviveEntityStats.getEnergyStats(sender);
-			float moveMul = (SurviveEvents.getTotalArmorWeight(sender)/Survive.MAX_WEIGHT)*0.1F;
+			float moveMul = (SurviveEvents.getTotalArmorWeight(sender)/Config.max_weight)*0.1F;
 
-			if (SurviveEvents.getTotalArmorWeight(sender)/Survive.MAX_WEIGHT > 1.0F) moveMul += (SurviveEvents.getTotalArmorWeight(sender)/Survive.MAX_WEIGHT) - 1.0F;
+			if (SurviveEvents.getTotalArmorWeight(sender)/Config.max_weight > 1.0F) moveMul += (SurviveEvents.getTotalArmorWeight(sender)/Config.max_weight) - 1.0F;
 
 			if (moveMul > 0) stats.addExhaustion(sender, moveMul*2.5f);
 			SurviveEntityStats.setStaminaStats(sender, stats);
