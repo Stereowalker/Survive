@@ -36,6 +36,13 @@ public class DefaultCondition extends TemperatureChangeCondition<DefaultConditio
 		public boolean shouldChangeTemperature(PlayerEntity player) {
 			return true;
 		}
+
+		@Override
+		public CompoundNBT serialize() {
+			CompoundNBT nbt = new CompoundNBT();
+			nbt.putFloat("temperature", this.getTemperature());
+			return nbt;
+		}
 		
 	}
 }

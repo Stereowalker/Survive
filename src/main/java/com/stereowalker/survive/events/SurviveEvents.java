@@ -2,6 +2,7 @@ package com.stereowalker.survive.events;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.DataMaps;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.compat.SereneSeasonsCompat;
@@ -230,12 +231,14 @@ public class SurviveEvents {
 		if (event.getEntityLiving() != null && !event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
 			ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
 			Survive.getInstance().channel.sendTo(new SSurvivalStatsPacket(player), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
-			if (player.ticksExisted%20==0) {
+			if (!DataMaps.Server.syncedToClient) {
+				Survive.getInstance().getLogger().info("Syncing Armor Data To Client ("+player.getDisplayName().getString()+")");
 				MutableInt i = new MutableInt(0);
 				DataMaps.Server.armor.forEach((key, value) -> {
 					Survive.getInstance().channel.sendTo(new SArmorDataTransferPacket(key, value, i.getValue() == 0), player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
 					i.increment();;
 				});
+				DataMaps.Server.syncedToClient = true;
 			}
 		}
 	}
@@ -329,9 +332,9 @@ public class SurviveEvents {
 						Item armor = player.getItemStackFromSlot(slot).getItem();
 						float modifier = 1.0F;
 						if (DataMaps.Server.armor.containsKey(armor.getRegistryName())) {
-							for (TemperatureChangeInstance instance : DataMaps.Server.armor.get(armor.getRegistryName()).getTemperatureModifier().values()) {
-								if (instance.shouldChangeTemperature(player)) {
-									modifier = instance.getTemperature();
+							for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Server.armor.get(armor.getRegistryName()).getTemperatureModifier()) {
+								if (instance.getSecond().shouldChangeTemperature(player)) {
+									modifier = instance.getSecond().getTemperature();
 									break;
 								}
 							}

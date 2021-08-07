@@ -5,6 +5,10 @@ import com.google.gson.JsonObject;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class UnderwaterCondition extends TemperatureChangeCondition<UnderwaterCondition.Instance>{
 
@@ -88,6 +92,21 @@ public class UnderwaterCondition extends TemperatureChangeCondition<UnderwaterCo
 			} else {
 				return false;
 			}
+		}
+
+		@Override
+		public CompoundNBT serialize() {
+			CompoundNBT nbt = new CompoundNBT();
+			nbt.putFloat("temperature", this.getTemperature());
+			nbt.putInt("depth", this.depth);
+			nbt.putString("operation", this.operation);
+			return nbt;
+		}
+		
+		@Override
+		@OnlyIn(Dist.CLIENT)
+		public ITextComponent getAdditionalContext() {
+			return new TranslationTextComponent("temperature_context.underwater");
 		}
 		
 	}

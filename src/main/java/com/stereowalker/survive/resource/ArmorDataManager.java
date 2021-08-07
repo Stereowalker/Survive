@@ -9,6 +9,7 @@ import java.util.concurrent.Executor;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.stereowalker.survive.DataMaps;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.util.data.ArmorData;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
@@ -64,6 +65,7 @@ public class ArmorDataManager implements IResourceReloadListener<Map<ResourceLoc
 	@Override
 	public CompletableFuture<Void> apply(Map<ResourceLocation, ArmorData> data, IResourceManager manager, IProfiler profiler, Executor executor) {
 		return CompletableFuture.runAsync(() -> {
+			DataMaps.Server.syncedToClient = false;
 			for (ResourceLocation drinkId : data.keySet()) {
 				Survive.registerArmorTemperatures(drinkId, data.get(drinkId));
 			}

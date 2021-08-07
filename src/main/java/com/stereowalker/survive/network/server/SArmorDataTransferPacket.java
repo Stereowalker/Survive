@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableMap;
 import com.stereowalker.survive.DataMaps;
+import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.util.data.ArmorData;
 
 import net.minecraft.network.PacketBuffer;
@@ -52,6 +53,7 @@ public class SArmorDataTransferPacket {
 	
 	@OnlyIn(Dist.CLIENT)
 	public static void clear() {
+		Survive.getInstance().getLogger().info("Clearing Client Side Armor Data");
 		DataMaps.Client.armor = ImmutableMap.of();
 	}
 

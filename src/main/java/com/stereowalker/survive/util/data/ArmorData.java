@@ -1,18 +1,18 @@
 package com.stereowalker.survive.util.data;
 
-import java.util.Map;
+import java.util.List;
 
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.registries.SurviveRegistries;
 import com.stereowalker.survive.temperature.TemperatureChangeCondition;
 import com.stereowalker.survive.temperature.TemperatureChangeInstance;
-import com.stereowalker.unionlib.util.NBTHelper.NbtType;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -22,18 +22,18 @@ public class ArmorData extends JsonData {
     private static final Marker ARMOR_DATA = MarkerManager.getMarker("ARMOR_DATA");
     
 	private ResourceLocation itemID;
-	private final Map<String,TemperatureChangeInstance> temperatureModifier;
+	private final List<Pair<String,TemperatureChangeInstance>> temperatureModifier;
 	private final float weightModifier;
 	
 	public ArmorData(CompoundNBT nbt) {
 		super(nbt);
 		this.itemID = new ResourceLocation(nbt.getString("id"));
 		this.weightModifier = nbt.getFloat("weight_modifier");
-		this.temperatureModifier = Maps.newHashMap();
+		this.temperatureModifier = Lists.newArrayList();
 		
-		nbt.getList("temperature_modifiers", NbtType.CompoundNBT).forEach((comp) -> {
+		nbt.getList("temperature_modifiers", 10).forEach((comp) -> {
 			CompoundNBT nbt2 = (CompoundNBT) comp;
-			this.temperatureModifier.put(nbt.getString("condition"), SurviveRegistries.CONDITION.getValue(new ResourceLocation(nbt2.getString("condition"))).createInstance(nbt2));
+			this.temperatureModifier.add(Pair.of(nbt2.getString("condition"), SurviveRegistries.CONDITION.getValue(new ResourceLocation(nbt2.getString("condition"))).createInstance(nbt2.getCompound("contents"))));
 		});
 	}
 	
@@ -41,7 +41,7 @@ public class ArmorData extends JsonData {
 		super(object);
 		String NOTHING = "nothing";
 		
-		Map<String,TemperatureChangeInstance> temperatureModifierIn = Maps.newHashMap();
+		List<Pair<String,TemperatureChangeInstance>> temperatureModifierIn = Lists.newArrayList();
 		float weightModifierIn = 0;
 		
 		this.itemID = itemID;
@@ -61,7 +61,7 @@ public class ArmorData extends JsonData {
 									workingOn = "condition";
 									condition = SurviveRegistries.CONDITION.getValue(new ResourceLocation(object2.get("condition").getAsString()));
 									if (condition != null) {
-										temperatureModifierIn.put(object2.get("condition").getAsString(), condition.createInstance(object2));
+										temperatureModifierIn.add(Pair.of(object2.get("condition").getAsString(), condition.createInstance(object2)));
 									} else {
 										Survive.getInstance().getLogger().error("Error loading armor data {} from JSON: The condition {} does not exist", itemID,  new ResourceLocation(object2.get("condition").getAsString()));
 									}
@@ -103,7 +103,7 @@ public class ArmorData extends JsonData {
 	/**
 	 * @return the temperatureModifier
 	 */
-	public Map<String,TemperatureChangeInstance> getTemperatureModifier() {
+	public List<Pair<String,TemperatureChangeInstance>> getTemperatureModifier() {
 		return temperatureModifier;
 	}
 
@@ -120,9 +120,10 @@ public class ArmorData extends JsonData {
 		nbt.putString("id", this.itemID.toString());
 		nbt.putFloat("weight_modifier", this.weightModifier);
 		ListNBT list = new ListNBT();
-		this.temperatureModifier.forEach((key,mod) -> {
+		this.temperatureModifier.forEach((mod) -> {
 			CompoundNBT entry = new CompoundNBT();
-			entry.putString("condition", key);
+			entry.putString("condition", mod.getFirst());
+			entry.put("contents", mod.getSecond().serialize());
 			list.add(entry);
 		});
 		nbt.put("temperature_modifiers", list);

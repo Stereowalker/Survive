@@ -4,6 +4,10 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class OnFireCondition extends TemperatureChangeCondition<OnFireCondition.Instance>{
 
@@ -67,6 +71,25 @@ public class OnFireCondition extends TemperatureChangeCondition<OnFireCondition.
 				}
 			} else {
 				return false;
+			}
+		}
+
+		@Override
+		public CompoundNBT serialize() {
+			CompoundNBT nbt = new CompoundNBT();
+			nbt.putFloat("temperature", this.getTemperature());
+			nbt.putInt("fireTimer", this.fireTimer);
+			nbt.putString("operation", this.operation);
+			return nbt;
+		}
+		
+		@Override
+		@OnlyIn(Dist.CLIENT)
+		public ITextComponent getAdditionalContext() {
+			if (this.fireTimer > 0) {
+				return new TranslationTextComponent("temperature_context.on_fire", this.operation.equals("") ? "<" : this.operation, this.fireTimer);
+			} else {
+				return new TranslationTextComponent("temperature_context.on_fire_no_timer");
 			}
 		}
 	}
