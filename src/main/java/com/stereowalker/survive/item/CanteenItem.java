@@ -143,9 +143,9 @@ public class CanteenItem extends Item {
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
 		tooltip.add(new TranslationTextComponent("text.drinksLeft").appendString(": "+getDrinksLeft(stack)).mergeStyle(TextFormatting.AQUA));
 		if (this == SItems.PURIFIED_WATER_CANTEEN)
-			tooltip.add(new StringTextComponent("Is Purified").mergeStyle(TextFormatting.AQUA));
+			tooltip.add(new TranslationTextComponent("text.drink_purified").mergeStyle(TextFormatting.AQUA));
 		if (this == SItems.WATER_CANTEEN)
-			tooltip.add(new StringTextComponent("Is Not Purified").mergeStyle(TextFormatting.RED));
+			tooltip.add(new TranslationTextComponent("text.drink_unpurifued").mergeStyle(TextFormatting.RED));
 	}
 
 }
