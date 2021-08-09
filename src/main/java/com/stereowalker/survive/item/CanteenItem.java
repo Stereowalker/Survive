@@ -24,7 +24,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -141,11 +140,11 @@ public class CanteenItem extends Item {
 	
 	@Override
 	public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-		tooltip.add(new TranslationTextComponent("text.drinksLeft").appendString(": "+getDrinksLeft(stack)).mergeStyle(TextFormatting.AQUA));
+		tooltip.add(new TranslationTextComponent("tooltip.drinks_left").appendString(": "+getDrinksLeft(stack)).mergeStyle(TextFormatting.AQUA));
 		if (this == SItems.PURIFIED_WATER_CANTEEN)
-			tooltip.add(new TranslationTextComponent("text.drink_purified").mergeStyle(TextFormatting.AQUA));
+			tooltip.add(new TranslationTextComponent("tooltip.drink_purified").mergeStyle(TextFormatting.AQUA));
 		if (this == SItems.WATER_CANTEEN)
-			tooltip.add(new TranslationTextComponent("text.drink_unpurifued").mergeStyle(TextFormatting.RED));
+			tooltip.add(new TranslationTextComponent("tooltip.drink_not_purified").mergeStyle(TextFormatting.RED));
 	}
 
 }

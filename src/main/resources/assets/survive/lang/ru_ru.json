@@ -29,8 +29,6 @@
 	"entity.survive.chakram": "Chakram",
 ///////////////////////////////////////////////////////////[ITEM_GROUPS]///////////////////////////////////////////////////////////
 	"itemGroup.survive": "Survive",
-///////////////////////////////////////////////////////////[MISC]///////////////////////////////////////////////////////////
-	"text.drinksLeft": "Drinks Left",
 ///////////////////////////////////////////////////////////[POTIONS_&_EFFECTS]///////////////////////////////////////////////////////////
 	"effect.survive.thirst": "Жажда",
 	"effect.survive.tiredness": "Усталость",
@@ -87,5 +85,6 @@
 	"survive.Enable Thirst": "Включить Жажду",
 	"survive.Enable Sleep": "Включить Сон",
 	"survive.Enable Stamina": "Включить Выносливость",
-	"survive.Temperature Display Mode": "Показывать Температуру"
+	"survive.Temperature Display Mode": "Показывать Температуру",
+	"tooltip.drinks_left": "Drinks Left"
 }

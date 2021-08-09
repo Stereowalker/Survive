@@ -45,8 +45,6 @@
 	"entity.survive.chakram": "Chakram",
 ///////////////////////////////////////////////////////////[ITEM_GROUPS]///////////////////////////////////////////////////////////
 	"itemGroup.survive": "Survive",
-///////////////////////////////////////////////////////////[MISC]///////////////////////////////////////////////////////////
-	"text.drinksLeft": "Portionen übrig",
 ///////////////////////////////////////////////////////////[POTIONS_&_EFFECTS]///////////////////////////////////////////////////////////
 	"effect.survive.thirst": "Durst",
 	"effect.survive.tiredness": "Müdigkeit",
@@ -103,4 +101,5 @@
 	"survive.Enable Thirst": "Enable Durst",
 	"survive.Enable Sleep": "Enable Schlaf",
 	"survive.Enable Stamina": "Enable Stamina",
-	"survive.Temperature Display Mode": "Temp. Anzeige"
+	"survive.Temperature Display Mode": "Temp. Anzeige",
+	"tooltip.drinks_left": "Portionen übrig"

@@ -49,8 +49,6 @@
 	"entity.survive.chakram": "Chakram",
 ///////////////////////////////////////////////////////////[ITEM_GROUPS]///////////////////////////////////////////////////////////
 	"itemGroup.survive": "Survive",
-///////////////////////////////////////////////////////////[MISC]///////////////////////////////////////////////////////////
-	"text.drinksLeft": "Drinks Left",
 ///////////////////////////////////////////////////////////[POTIONS_&_EFFECTS]///////////////////////////////////////////////////////////
 	"effect.survive.thirst": "Thirst",
 	"effect.survive.tiredness": "Tiredness",
@@ -110,6 +108,9 @@
 	"survive.Temperature Display Mode": "Temp. Display",
 	"tooltip.survive.weight": "Weight: %1$s %2$s",
 	"tooltip.survive.temperature": "Temperature: %1$s pts ",
+	"tooltip.drinks_left": "Drinks Left",
+	"tooltip.drink_purified": "Is Purified",
+	"tooltip.drink_not_purified": "Is Not Purified",
 ///////////////////////////////////////////////////////////[ORIGINS_POWERS]///////////////////////////////////////////////////////////
 	"power.survive.heat_resistance.name": "Heat Resistance",
 	"power.survive.heat_resistance.description": "You have a really high resistance to heat"
