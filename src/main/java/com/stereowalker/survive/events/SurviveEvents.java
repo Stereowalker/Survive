@@ -15,8 +15,8 @@ import com.stereowalker.survive.item.SItems;
 import com.stereowalker.survive.network.client.CInteractWithWaterPacket;
 import com.stereowalker.survive.network.server.SArmorDataTransferPacket;
 import com.stereowalker.survive.network.server.SSurvivalStatsPacket;
-import com.stereowalker.survive.potion.SEffects;
 import com.stereowalker.survive.temperature.TemperatureChangeInstance;
+import com.stereowalker.survive.util.SleepStats;
 import com.stereowalker.survive.util.TemperatureStats;
 import com.stereowalker.survive.util.TemperatureUtil;
 import com.stereowalker.survive.util.data.BlockTemperatureData;
@@ -45,7 +45,6 @@ import net.minecraft.inventory.EquipmentSlotType.Group;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.potion.EffectInstance;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.ResourceLocation;
@@ -156,6 +155,7 @@ public class SurviveEvents {
 				SurviveEntityStats.getTemperatureStats(player).baseTick(player);
 				SurviveEntityStats.getWaterStats(player).baseTick(player);
 				SurviveEntityStats.getWellbeingStats(player).baseTick(player);
+				SurviveEntityStats.getSleepStats(player).baseTick(player);
 			}
 		}
 	}
@@ -172,22 +172,7 @@ public class SurviveEvents {
 				SurviveEntityStats.getTemperatureStats(player).baseClientTick(player);
 				SurviveEntityStats.getWaterStats(player).baseClientTick(player);
 				SurviveEntityStats.getWellbeingStats(player).baseClientTick(player);
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public static void manageSleep(LivingUpdateEvent event) {
-		if (Config.enable_sleep) {
-			if (!event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
-				ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
-				if (player.isSleeping())
-					SurviveEntityStats.addAwakeTime(player, -player.getSleepTimer());
-				else if (player.getServerWorld().getDimensionType().doesBedWork())
-					SurviveEntityStats.addAwakeTime(player, 1);
-				if (player.ticksExisted % 20 == 0) {
-					addTiredEffect(player);
-				}
+				SurviveEntityStats.getSleepStats(player).baseClientTick(player);
 			}
 		}
 	}
@@ -197,16 +182,11 @@ public class SurviveEvents {
 		if (Config.enable_sleep) {
 			if (!event.getEntityLiving().world.isRemote && event.getEntityLiving() instanceof ServerPlayerEntity) {
 				ServerPlayerEntity player = (ServerPlayerEntity)event.getEntityLiving();
-				if (SurviveEntityStats.getAwakeTime(player) > time(0) - 5000 && (Config.canSleepDuringDay || !player.world.isDaytime())) {
+				SleepStats stats = SurviveEntityStats.getSleepStats(player);
+				if (stats.getAwakeTimer() > time(0) - 5000 && (Config.canSleepDuringDay || !player.world.isDaytime())) {
 					event.setResult(Result.ALLOW);
 				}
 			}
-		}
-	}
-
-	public static void addTiredEffect(ServerPlayerEntity player) {
-		if (timeAmp(player) >= 0 && !player.isPotionActive(SEffects.ENERGIZED)) {
-			player.addPotionEffect(new EffectInstance(SEffects.TIREDNESS, 200, Math.min(timeAmp(player), Config.tiredTimeStacks), false, false, true));
 		}
 	}
 
@@ -214,15 +194,12 @@ public class SurviveEvents {
 		return Config.initialTiredTime+(Config.tiredTimeStep*i);
 	}
 
-	public static int timeAmp(PlayerEntity player) {
-		int extraTime = SurviveEntityStats.getAwakeTime(player) - Config.initialTiredTime;
-		return MathHelper.floor(extraTime/Config.tiredTimeStep);
-	}
-
 	@SubscribeEvent
 	public static void manageSleep(SleepFinishedTimeEvent event) {
 		for (PlayerEntity player : event.getWorld().getPlayers()) {
-			SurviveEntityStats.setAwakeTime(player, 0);
+			SleepStats stats = SurviveEntityStats.getSleepStats(player);
+			stats.setAwakeTimer(0);
+			stats.save(player);
 		}
 	}
 
@@ -627,7 +604,7 @@ public class SurviveEvents {
 			SurviveEntityStats.setWaterStats(event.getPlayer(), SurviveEntityStats.getWaterStats(event.getOriginal()));
 			SurviveEntityStats.setStaminaStats(event.getPlayer(), SurviveEntityStats.getEnergyStats(event.getOriginal()));
 			SurviveEntityStats.setTemperatureStats(event.getPlayer(), SurviveEntityStats.getTemperatureStats(event.getOriginal()));
-			SurviveEntityStats.setAwakeTime(event.getPlayer(), SurviveEntityStats.getAwakeTime(event.getOriginal()));
+			SurviveEntityStats.setSleepStats(event.getPlayer(), SurviveEntityStats.getSleepStats(event.getOriginal()));
 			SurviveEntityStats.setWetTime(event.getPlayer(), SurviveEntityStats.getWetTime(event.getOriginal()));
 		}
 	}

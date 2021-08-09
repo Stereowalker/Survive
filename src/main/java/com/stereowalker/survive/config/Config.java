@@ -43,11 +43,6 @@ public class Config {
 	@UnionConfig.Comment(comment = {"If Enabled, temperature will be displayed in fahrenheit if the display mode is set to NUMBERS"})
 	public static boolean displayTempInFahrenheit = false;
 	
-//	@UnionConfig.Entry(group = "Temperature" , name = "Temperature Calculation Range", type = Type.COMMON)
-//	@UnionConfig.Comment(comment = {"The range in blocks which temperature is calculated. It can also be interpreted as the range you have to be for a block for it to factor in your temperature"})
-//	@UnionConfig.Range(min = 0, max = 20)
-//	public static int tempCalcRange = 5;
-	
 	@UnionConfig.Entry(group = "Temperature" , name = "Hypo/Hyperthermia Grace Timer", type = Type.COMMON)
 	@UnionConfig.Comment(comment = {"This is a timer used to decide when a player should get affected by the elements when their temperature hits the extreme"})
 	@UnionConfig.Range(min = 0, max = 1980)

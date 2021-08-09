@@ -1,10 +1,10 @@
 package com.stereowalker.survive.entity;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.config.Config;
-import com.stereowalker.survive.util.StaminaStats;
 import com.stereowalker.survive.util.HygieneStats;
 import com.stereowalker.survive.util.NutritionStats;
+import com.stereowalker.survive.util.SleepStats;
+import com.stereowalker.survive.util.StaminaStats;
 import com.stereowalker.survive.util.TemperatureStats;
 import com.stereowalker.survive.util.WaterStats;
 import com.stereowalker.survive.util.WellbeingStats;
@@ -12,7 +12,6 @@ import com.stereowalker.survive.util.WellbeingStats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 
 public class SurviveEntityStats {
@@ -22,6 +21,7 @@ public class SurviveEntityStats {
 	public static String hygieneStatsID = "HygieneStats";
 	public static String nutritionStatsID = "NutritionStats";
 	public static String wellbeingStatsID = "WellbeingStats";
+	public static String sleepStatsID = "SleepStats";
 	//Getters
 
 	public static WaterStats getWaterStats(LivingEntity entity) {
@@ -89,12 +89,16 @@ public class SurviveEntityStats {
 		}
 		return stats;
 	}
-
-	public static int getAwakeTime(LivingEntity entity) {
-		if (getModNBT(entity) != null && getModNBT(entity).contains(append("AwakeTime"))) {
-			return getModNBT(entity).getInt(append("AwakeTime"));
+	
+	public static SleepStats getSleepStats(LivingEntity entity) {
+		SleepStats stats = new SleepStats();
+		if(entity != null) {
+			if (getModNBT(entity) != null && getModNBT(entity).contains(sleepStatsID, 10)) {
+				stats.read(getModNBT(entity).getCompound(sleepStatsID));
+				return stats;
+			}
 		}
-		return 0;
+		return stats;
 	}
 
 	public static int getWetTime(LivingEntity entity) {
@@ -141,26 +145,15 @@ public class SurviveEntityStats {
 		wellbeingStats.write(compound2);
 		getModNBT(entity).put(nutritionStatsID, compound2);
 	}
-
-	public static void setAwakeTime(LivingEntity entity, int awakeTime) {
-		getModNBT(entity).putInt(append("AwakeTime"), awakeTime);
+	
+	public static void setSleepStats(LivingEntity entity, SleepStats sleepStats) {
+		CompoundNBT compound2 = new CompoundNBT();
+		sleepStats.write(compound2);
+		getModNBT(entity).put(sleepStatsID, compound2);
 	}
 
 	public static void setWetTime(LivingEntity entity, int wetTime) {
 		getModNBT(entity).putInt(append("WetTime"), wetTime);
-	}
-
-	public static boolean addAwakeTime(ServerPlayerEntity player, int awakeTime) {
-		if (Config.enable_sleep) {
-			if (getModNBT(player) != null && getModNBT(player).contains(append("AwakeTime")) && player.interactionManager.survivalOrAdventure()) {
-				setAwakeTime(player, getAwakeTime(player)+awakeTime);
-				if (getAwakeTime(player) < 0 ) {
-					setAwakeTime(player, 0);
-				}
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public static boolean addWetTime(LivingEntity entity, int wetTime) {
@@ -202,9 +195,8 @@ public class SurviveEntityStats {
 				if (!compound.contains(wellbeingStatsID)) {
 					setWellbeingStats(player, new WellbeingStats());
 				}
-				if (!compound.contains(append("AwakeTime"))) {
-					setAwakeTime(player, 0);
-					Survive.getInstance().debug("Set " + name + "'s awake time to " + getAwakeTime(player));
+				if (!compound.contains(sleepStatsID)) {
+					setSleepStats(player, new SleepStats());
 				}
 				if (!compound.contains(append("WetTime"))) {
 					setWetTime(player, 0);
