@@ -3,6 +3,7 @@ package com.stereowalker.survive;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.events.SurviveEvents;
@@ -11,8 +12,8 @@ import com.stereowalker.survive.network.client.CArmorStaminaPacket;
 import com.stereowalker.survive.network.client.CEnergyTaxPacket;
 import com.stereowalker.survive.network.client.CInteractWithWaterPacket;
 import com.stereowalker.survive.network.client.CThirstMovementPacket;
-import com.stereowalker.survive.network.server.SDrinkSoundPacket;
 import com.stereowalker.survive.network.server.SArmorDataTransferPacket;
+import com.stereowalker.survive.network.server.SDrinkSoundPacket;
 import com.stereowalker.survive.network.server.SSurvivalStatsPacket;
 import com.stereowalker.survive.potion.BrewingRecipes;
 import com.stereowalker.survive.resource.ArmorDataManager;
@@ -70,6 +71,9 @@ public class Survive extends UnionMod {
 	public static boolean isCombatLoaded() {
 		return ModList.get().isLoaded("combat");
 	}
+	public static boolean isOriginsLoaded() {
+		return ModList.get().isLoaded("origins");
+	}
 	
 	public Survive() 
 	{
@@ -85,6 +89,9 @@ public class Survive extends UnionMod {
 		if (isCombatLoaded()) {
 			SSpells.registerAll(modEventBus);
 			SStats.registerAll(modEventBus);
+		}
+		if (isOriginsLoaded()) {
+			OriginsCompat.initOriginsPatcher();
 		}
 	}
 	

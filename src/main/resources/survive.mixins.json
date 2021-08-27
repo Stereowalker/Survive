@@ -6,7 +6,6 @@
   "refmap": "survive.refmap.json",
   "mixins": [
   	"AbstractVillagerEntityMixin",
-  	"OriginManagerMixin",
   	"PlayerEntityMixin",
   	"FoodStatsMixin",
   	"BlockMixin",

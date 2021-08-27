@@ -25,6 +25,7 @@ import com.stereowalker.unionlib.state.properties.UBlockStateProperties;
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
+import io.github.apace100.origins.integration.OriginEventsArchitectury;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
@@ -145,6 +146,7 @@ public class SurviveEvents {
 
 	@SubscribeEvent
 	public static void registerStats(LivingUpdateEvent event) {
+		
 		if(event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 			SurviveEntityStats.addStatsOnSpawn(player);
