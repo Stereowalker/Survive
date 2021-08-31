@@ -11,7 +11,7 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
+#*.jar
 *.war
 *.nar
 *.ear
@@ -26,6 +26,9 @@ hs_err_pid*
 .metadata/
 .project
 .settings/
+libs/
+loadLibs/
+sources/
 bin/
 build/
 CREDITS.txt
