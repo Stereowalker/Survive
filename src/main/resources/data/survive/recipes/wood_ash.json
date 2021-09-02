@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:smelting",
-  "ingredient": {
-    "item": "minecraft:charcoal"
-  },
-  "result": "survive:wood_ash",
-  "cookingtime": 100
-}

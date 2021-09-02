@@ -1,9 +1,0 @@
-{
-  "type": "origins:attribute",
-  "modifier": {
-    "name": "Increased Heat Resistance",
-    "attribute": "survive:generic.heat_resistance",
-    "value": 1024,
-    "operation": "addition"
-  }
-}

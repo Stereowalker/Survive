@@ -1,8 +1,0 @@
-{
-  "type": "minecraft:smelting",
-  "ingredient": {
-    "item": "minecraft:water_bucket"
-  },
-  "result": "survive:purified_water_bucket",
-  "cookingtime": 600
-}
