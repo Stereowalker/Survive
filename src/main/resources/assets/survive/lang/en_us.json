@@ -39,8 +39,9 @@
 	"item.survive.black_washcloth": "Black Washcloth",
 	"item.survive.wood_ash": "Wood Ash",
 	"item.survive.potash_solution": "Potash Solution",
+	"item.survive.potash": "Potash",
 ///////////////////////////////////////////////////////////[BLOCKS]///////////////////////////////////////////////////////////
-	"block.survive.serable_block": "Serable Block",
+	"block.survive.potash_cauldron": "Potash Cauldron",
 ///////////////////////////////////////////////////////////[TEMPERATURE_CONDITIONS]///////////////////////////////////////////////////////////
 	"temperature_context.biome": "when in %1$s",
 	"temperature_context.not_biome": "when not in %1$s",

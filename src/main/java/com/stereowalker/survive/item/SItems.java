@@ -56,6 +56,7 @@ public class SItems {
 	public static final Item BLACK_WASHCLOTH = register("black_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
 	public static final Item WOOD_ASH = register("wood_ash", new Item(new Item.Properties().group(SItemGroup.MAIN)));
 	public static final Item POTASH_SOLUTION = register("potash_solution", new Item(new Item.Properties().group(SItemGroup.MAIN)));
+	public static final Item POTASH = register("potash", new Item(new Item.Properties().group(SItemGroup.MAIN)));
 	
 	
 	//	private static Item register(Block block) {

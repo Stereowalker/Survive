@@ -95,7 +95,7 @@ public class PotashCauldronBlock extends CauldronBlock {
 	@Override
 	public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
 		if (worldIn.getLight(pos.up()) >= 12 && random.nextInt(10) == 0 && state.get(LEVEL) > 0) {
-			worldIn.summonEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(SItems.WOOD_ASH)));
+			worldIn.summonEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(SItems.POTASH)));
 			if (state.get(LEVEL) == 1)
 				 worldIn.setBlockState(pos, Blocks.CAULDRON.getDefaultState());
 			 else 
