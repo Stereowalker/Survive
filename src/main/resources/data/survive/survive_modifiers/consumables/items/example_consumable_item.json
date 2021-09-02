@@ -1,0 +1,19 @@
+{
+	//The amount of thirst recovered
+	"thirst": 1,
+	//The amount of hydration recovered
+	"hydration": 1.0,
+	//The chance for getting thirst. This should be between 1 and 0.
+	"thirst_chance": 1.0,
+	//The amount of hunger recovered. This overrides whatever was the before (Optional)
+	"hunger": 1,
+	//The amount of saturation recovered. This overrides whatever was the before (Optional)
+	"saturation": 1.0,
+	//The chance of getting hunger effect. This overrides whatever was the before (Optional)
+	"hunger_chance": 0.0,
+	//The amount of energy recovered
+	"energy": 5,
+	"gives_chilled_effect": false,
+	"gives_heated_effect": false,
+	"gives_energizing_effect": false
+}

@@ -1,0 +1,20 @@
+{
+  "type": "crafting_shaped",
+  "pattern": [
+    "X",
+    "O",
+    "X"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:paper"
+    },
+    "O": {
+      "item": "minecraft:charcoal"
+    }
+  },
+  "result": {
+    "item": "survive:charcoal_filter",
+    "count": 2
+  }
+}

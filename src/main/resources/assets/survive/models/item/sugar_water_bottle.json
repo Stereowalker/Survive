@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "survive:item/sugar_water_bottle"
+    }
+}

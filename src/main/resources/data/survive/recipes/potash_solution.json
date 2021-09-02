@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "survive:purified_water_bottle"
+    },
+    {
+      "item": "survive:wood_ash"
+    }
+  ],
+  "result": {
+    "item": "survive:potash_solution"
+  }
+}

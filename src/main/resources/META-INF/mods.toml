@@ -1,37 +1,59 @@
 
 modLoader="javafml"
 loaderVersion="[35,)"
-license="GNU GENERAL PUBLIC LICENSE"
-issueTrackerURL="https://github.com/AntiqueAtlasTeam/AntiqueAtlas/issues"
-logoFile="antiqueatlas_icon.png"
+license="All Rights Reserved"
+issueTrackerURL="https://github.com/Stereowalker/Survive/issues"
+logoFile="logo.png"
 [[mods]]
-modId="antiqueatlas"
+modId="survive"
 version="${version}"
-displayName="Antique Atlas"
-displayURL="https://www.curseforge.com/minecraft/mc-mods/antique-atlas"
-credits="Hunternif, Kenkron, tyra314, , osipxd, thecodewarrior, TehNut, crafteverywhere, coolAlias, Ruukas97, Mazdallier, chesterccj305, asiekierka, sam-kirby, esotericist, dadodollabela, Yulife, Waterrail, The-Fireplace, TBM13, Rikshy, GirafiStudios, DrCopernicus, DBotThePony, AugiteSoul, Stereowalker"
-authors="Hunternif"
+displayName="Survive"
+updateJSONURL="https://raw.githubusercontent.com/Stereowalker/Survive/1.16-forge/update.json"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/survive"
+credits="I'd like to thank my Obsidian Patreon, Komorebi, ChainmailPickaxe for making the textures look nice and you for downloading this mod"
+authors="Stereowalker"
 description='''
-Antique Atlas is a book that acts like a map featuring infinite scrolling, zoom and custom labeled markers. The map is generated around the player by calculating the average biome in each 16x16 chunk.
+Adds new survival mechanics like thirst, body temperature, sleep management and stamina
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.antiqueatlas]]
+[[dependencies.survive]] #optional
     # the modid of the dependency
-    modId="forge"
-    mandatory=true
-    versionRange="[35.1.28,)"
+    modId="forge" #mandatory
+    # Does this dependency have to exist - if not, ordering below must be specified
+    mandatory=true #mandatory
+    # The version range of the dependency
+    versionRange="[35.1.4,)" #mandatory
+    # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
+    # Side this dependency is applied on - BOTH, CLIENT or SERVER
     side="BOTH"
 # Here's another dependency
-[[dependencies.antiqueatlas]]
+[[dependencies.survive]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.2,)"
+    versionRange="[1.16.4,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.antiqueatlas]]
-    modId="cloth-config"
+	
+[[dependencies.survive]]
+    modId="unionlib"
     mandatory=true
-    versionRange="[4.11.15,)"
+    versionRange="[3.3.0, 3.3.999)"
     ordering="NONE"
     side="BOTH"
+	
+[[dependencies.survive]]
+    modId="combat"
+    mandatory=false
+    versionRange="[1.16.5-7.1.0,)"
+    ordering="NONE"
+    side="BOTH"
+	
+[[dependencies.survive]]
+    modId="sereneseasons"
+    mandatory=false
+    versionRange="[1.16.5-4.0.1.91,)"
+    ordering="NONE"
+    side="BOTH"
+	
+

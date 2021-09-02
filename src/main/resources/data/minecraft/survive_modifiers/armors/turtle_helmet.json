@@ -1,0 +1,15 @@
+{
+  "temperature_modifiers": [
+  		{
+			"condition": "survive:underwater",
+			"temperature": 1.25,
+			"depth": 4,
+			"operation": "water_>="
+		},
+		{
+			"condition": "survive:default",
+			"temperature": 0.75
+		}
+	],
+  "weight_modifier": 0.008
+}
