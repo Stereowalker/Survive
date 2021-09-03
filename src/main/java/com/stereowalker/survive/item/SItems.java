@@ -57,6 +57,7 @@ public class SItems {
 	public static final Item WOOD_ASH = register("wood_ash", new Item(new Item.Properties().group(SItemGroup.MAIN)));
 	public static final Item POTASH_SOLUTION = register("potash_solution", new Item(new Item.Properties().group(SItemGroup.MAIN)));
 	public static final Item POTASH = register("potash", new Item(new Item.Properties().group(SItemGroup.MAIN)));
+	public static final Item ANIMAL_FAT = register("animal_fat", new Item(new Item.Properties().group(SItemGroup.MAIN)));
 	
 	
 	//	private static Item register(Block block) {
