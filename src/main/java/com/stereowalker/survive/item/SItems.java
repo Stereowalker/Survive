@@ -58,6 +58,8 @@ public class SItems {
 	public static final Item POTASH_SOLUTION = register("potash_solution", new Item(new Item.Properties().group(SItemGroup.MAIN)));
 	public static final Item POTASH = register("potash", new Item(new Item.Properties().group(SItemGroup.MAIN)));
 	public static final Item ANIMAL_FAT = register("animal_fat", new Item(new Item.Properties().group(SItemGroup.MAIN)));
+	public static final Item SOAP_MIX = register("soap_mix", new Item(new Item.Properties().group(SItemGroup.MAIN)));
+	public static final Item SOAP_BOTTLE = register("soap_bottle", new SoapItem(new Item.Properties().group(SItemGroup.MAIN), 2, 20));
 	
 	
 	//	private static Item register(Block block) {

@@ -24,7 +24,18 @@ public class BodyCleaningItem extends Item {
 		
 		HygieneStats stats = SurviveEntityStats.getHygieneStats(playerIn);
 		if (playerIn.isWet()) {
-			stats.clean(this.cleanValue);
+			int cleaning = 0;
+			if (playerIn.getHeldItem(handIn == Hand.MAIN_HAND ? Hand.OFF_HAND : Hand.MAIN_HAND).getItem() instanceof SoapItem) {
+				ItemStack soap = playerIn.getHeldItem(handIn == Hand.MAIN_HAND ? Hand.OFF_HAND : Hand.MAIN_HAND);
+				cleaning = this.cleanValue * ((SoapItem)soap.getItem()).soapEfficacy;
+				SoapItem.decrementSoap(soap);
+				if (SoapItem.getSoapLeft(soap) <= 0) {
+					playerIn.setHeldItem(handIn == Hand.MAIN_HAND ? Hand.OFF_HAND : Hand.MAIN_HAND, soap.getContainerItem());
+				}
+			} else {
+				cleaning = this.cleanValue;
+			}
+			stats.clean(cleaning);
 			playerIn.getHeldItem(handIn).damageItem(1, playerIn, (anim) ->{
 				anim.sendBreakAnimation(EquipmentSlotType.MAINHAND);
 			});

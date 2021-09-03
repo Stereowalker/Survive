@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:smelting",
+	"ingredient": {
+		"item": "survive:soap_mix"
+	},
+	"result": {
+		"item": "survive:soap_bottle",
+		"nbt": {"SoapLeft": 20}
+	},
+	"experience": 0.25,
+	"cookingtime": 200
+}

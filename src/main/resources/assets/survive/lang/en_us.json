@@ -41,6 +41,8 @@
 	"item.survive.potash_solution": "Potash Solution",
 	"item.survive.potash": "Potash",
 	"item.survive.animal_fat": "Animal Fat",
+	"item.survive.soap_bottle": "Soap Bottle",
+	"item.survive.soap_mix": "Soap Mix",
 ///////////////////////////////////////////////////////////[BLOCKS]///////////////////////////////////////////////////////////
 	"block.survive.potash_cauldron": "Potash Cauldron",
 ///////////////////////////////////////////////////////////[TEMPERATURE_CONDITIONS]///////////////////////////////////////////////////////////
@@ -115,6 +117,7 @@
 	"tooltip.drinks_left": "Drinks Left",
 	"tooltip.drink_purified": "Is Purified",
 	"tooltip.drink_not_purified": "Is Not Purified",
+	"tooltip.soap_left": "Soap Remaining: %1$s",
 ///////////////////////////////////////////////////////////[ORIGINS_POWERS]///////////////////////////////////////////////////////////
 	"power.survive.heat_resistance.name": "Heat Resistance",
 	"power.survive.heat_resistance.description": "You have a really high resistance to heat"
