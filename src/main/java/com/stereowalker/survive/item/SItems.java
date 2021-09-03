@@ -9,6 +9,7 @@ import com.stereowalker.survive.fluid.SFluids;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.item.BoneMealItem;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -56,7 +57,7 @@ public class SItems {
 	public static final Item BLACK_WASHCLOTH = register("black_washcloth", new BodyCleaningItem(2, new Item.Properties().group(SItemGroup.MAIN).maxDamage(50)));
 	public static final Item WOOD_ASH = register("wood_ash", new Item(new Item.Properties().group(SItemGroup.MAIN)));
 	public static final Item POTASH_SOLUTION = register("potash_solution", new Item(new Item.Properties().group(SItemGroup.MAIN)));
-	public static final Item POTASH = register("potash", new Item(new Item.Properties().group(SItemGroup.MAIN)));
+	public static final Item POTASH = register("potash", new BoneMealItem(new Item.Properties().group(SItemGroup.MAIN)));
 	public static final Item ANIMAL_FAT = register("animal_fat", new Item(new Item.Properties().group(SItemGroup.MAIN)));
 	public static final Item SOAP_MIX = register("soap_mix", new Item(new Item.Properties().group(SItemGroup.MAIN)));
 	public static final Item SOAP_BOTTLE = register("soap_bottle", new SoapItem(new Item.Properties().group(SItemGroup.MAIN), 2, 20));
