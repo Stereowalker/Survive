@@ -20,11 +20,13 @@ import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.potion.Effect;
+import net.minecraft.potion.Effects;
 import net.minecraft.potion.Potion;
 import net.minecraft.world.biome.BiomeColors;
 import net.minecraftforge.api.distmarker.Dist;
@@ -92,6 +94,7 @@ public class SurviveRegistryEvents
 	@SubscribeEvent
 	public static void registerEffects(final RegistryEvent.Register<Effect> event) {
 		SEffects.registerAll(event.getRegistry());
+		Effects.FIRE_RESISTANCE.addAttributesModifier(SAttributes.HEAT_RESISTANCE, "795606d6-4ac6-4ae7-8311-63ccdb293eb4", 5.0D, AttributeModifier.Operation.ADDITION);
 	}
 	
 	@SubscribeEvent
