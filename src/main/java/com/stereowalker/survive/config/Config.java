@@ -199,4 +199,10 @@ public class Config {
 			"A lot of the mechanics in this mod become a lot more unreasonable without enchantments"})
 	public static boolean disable_enchantments = false;
 
+	//
+	//Other mods
+	@UnionConfig.Entry(group = "Other" , name = "Origins Heat Resistant Races", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"If you have the origins mod, specify the names of races to add heat resistance to. Comma separated list"})
+	public static String originsHeat = "blazeborn";
+
 }
