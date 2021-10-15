@@ -1,5 +1,5 @@
 {
     "variants": {
-        "": { "model": "combat:block/purified_water" }
+        "": { "model": "survive:block/purified_water" }
     }
 }

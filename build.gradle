@@ -129,28 +129,6 @@ jar {
     }
 }
 
-curseforge {
-    project {
-    	id = '367337'
-		apiKey = "$System.env.CURSEFORGEKEY"
-		changelog = file('changelog.txt')
-		releaseType = 'release'
-		addGameVersion(modMinecraftVersion)
-        addGameVersion("Forge")
-		mainArtifact(jar) {
-			displayName = "Survive-$project.version"
-		}
-		addArtifact deobfJar
-		addArtifact sourcesJar
-		relations {
-      		requiredDependency 'unionlib'
-		}	
-	}
-	options {
-    	debug = false // defaults to false
-  	}		
-}
-
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
     from (sourceSets.main.output) {
@@ -165,17 +143,27 @@ task deobfJar(type: Jar) {
 	classifier = "deobf"
 }
 
-//task apiJar(type: Jar) {
-//    from(sourceSets.main.allJava) {
-//        include 'com/stereowalker/survive/api/**'
-//		include 'com/stereowalker/upgradeableattributes/api/**'
-//    }
-//    from (sourceSets.main.output) {
-//        include 'com/stereowalker/survive/api/**'
-//		include 'com/stereowalker/upgradeableattributes/api/**'
-//    }
-//	classifier = 'api'
-//}
+curseforge {
+    project {
+    	id = '367337'
+		apiKey = "$System.env.CURSEFORGEKEY"
+		changelog = file('changelog.md')
+		releaseType = 'release'
+		addGameVersion(modMinecraftVersion)
+        addGameVersion("Forge")
+		relations {
+      		requiredDependency 'unionlib'
+		}	
+		mainArtifact(jar) {
+			displayName = "Survive-$project.version"
+		}
+		addArtifact deobfJar
+		addArtifact sourcesJar
+	}
+	options {
+    	debug = false // defaults to false
+  	}		
+}
 
 // Example configuration to allow publishing using the maven-publish task
 // we define a custom artifact that is sourced from the reobfJar output task

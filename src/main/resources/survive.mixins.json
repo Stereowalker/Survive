@@ -5,15 +5,17 @@
   "compatibilityLevel": "JAVA_16",
   "refmap": "survive.refmap.json",
   "mixins": [
-  	"AbstractVillagerEntityMixin",
-  	"PlayerEntityMixin",
-  	"FoodStatsMixin",
+  	"AbstractVillagerMixin",
+  	"PlayerMixin",
+  	"FoodDataMixin",
   	"BlockMixin",
-  	"PlayerInteractionManagerMixin",
-  	"CauldronBlockMixin"
+  	"ServerPlayerGameModeMixin",
+	"GMix",
+	"CampfireBlockMixin",
+	"LayeredCauldronBlockMixin"
   ],
   "client": [
-  	"IngameGuiMixin"
+  	"GuiMixin"
   ],
   "injectors": {
     "defaultRequire": 1

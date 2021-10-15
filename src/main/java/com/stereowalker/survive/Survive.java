@@ -3,19 +3,25 @@ package com.stereowalker.survive;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.config.ServerConfig;
+import com.stereowalker.survive.core.cauldron.SCauldronInteraction;
 import com.stereowalker.survive.events.SurviveEvents;
-import com.stereowalker.survive.fluid.SFluids;
-import com.stereowalker.survive.network.client.CArmorStaminaPacket;
-import com.stereowalker.survive.network.client.CEnergyTaxPacket;
-import com.stereowalker.survive.network.client.CInteractWithWaterPacket;
-import com.stereowalker.survive.network.client.CThirstMovementPacket;
-import com.stereowalker.survive.network.server.SArmorDataTransferPacket;
-import com.stereowalker.survive.network.server.SDrinkSoundPacket;
-import com.stereowalker.survive.network.server.SSurvivalStatsPacket;
-import com.stereowalker.survive.potion.BrewingRecipes;
+import com.stereowalker.survive.json.ArmorJsonHolder;
+import com.stereowalker.survive.json.BiomeTemperatureJsonHolder;
+import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
+import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
+import com.stereowalker.survive.json.FoodJsonHolder;
+import com.stereowalker.survive.json.PotionJsonHolder;
+import com.stereowalker.survive.network.protocol.game.ClientboundArmorDataTransferPacket;
+import com.stereowalker.survive.network.protocol.game.ClientboundDrinkSoundPacket;
+import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPacket;
+import com.stereowalker.survive.network.protocol.game.ServerboundArmorStaminaPacket;
+import com.stereowalker.survive.network.protocol.game.ServerboundEnergyTaxPacket;
+import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWaterPacket;
+import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
 import com.stereowalker.survive.resource.ArmorDataManager;
 import com.stereowalker.survive.resource.BiomeTemperatureDataManager;
 import com.stereowalker.survive.resource.BlockTemperatureDataManager;
@@ -24,34 +30,36 @@ import com.stereowalker.survive.resource.ItemConsummableDataManager;
 import com.stereowalker.survive.resource.PotionDrinkDataManager;
 import com.stereowalker.survive.spell.SSpells;
 import com.stereowalker.survive.stat.SStats;
-import com.stereowalker.survive.util.data.ArmorData;
-import com.stereowalker.survive.util.data.BiomeTemperatureData;
-import com.stereowalker.survive.util.data.BlockTemperatureData;
-import com.stereowalker.survive.util.data.EntityTemperatureData;
-import com.stereowalker.survive.util.data.FoodData;
-import com.stereowalker.survive.util.data.PotionData;
-import com.stereowalker.survive.world.CGameRules;
+import com.stereowalker.survive.world.DataMaps;
+import com.stereowalker.survive.world.effect.SEffects;
+import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.survive.world.level.CGameRules;
+import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.unionlib.client.gui.screen.ConfigScreen;
 import com.stereowalker.unionlib.config.ConfigBuilder;
 import com.stereowalker.unionlib.mod.UnionMod;
 import com.stereowalker.unionlib.network.PacketRegistry;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.gui.IIngameOverlay;
+import net.minecraftforge.client.gui.OverlayRegistry;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(value = "survive")
@@ -59,6 +67,7 @@ public class Survive extends UnionMod {
 
 	public static final float DEFAULT_TEMP = 37.0F;
 	public static final String MOD_ID = "survive";
+	public static final Config CONFIG = new Config();
 	public static boolean isPrimalWinterLoaded;
 	public static final ItemConsummableDataManager consummableReloader = new ItemConsummableDataManager();
 	public static final PotionDrinkDataManager potionReloader = new PotionDrinkDataManager();
@@ -79,8 +88,8 @@ public class Survive extends UnionMod {
 	{
 		super("survive", new ResourceLocation(MOD_ID, "textures/icon.png"), LoadType.BOTH);
 		instance = this;
-		ConfigBuilder.registerConfig(Config.class);
 		ConfigBuilder.registerConfig(ServerConfig.class);
+		ConfigBuilder.registerConfig(CONFIG);
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::clientRegistries);
@@ -96,64 +105,88 @@ public class Survive extends UnionMod {
 	}
 	
 	@Override
+	public List<Class<?>> getRegistries() {
+		return Lists.newArrayList(SItems.class);
+	}
+	
+	@Override
 	public void registerMessages(SimpleChannel channel) {
 		int netID = -1;
-		PacketRegistry.registerMessage(channel, netID++, CArmorStaminaPacket.class, (packetBuffer) -> {return new CArmorStaminaPacket(packetBuffer);});
-		channel.registerMessage(netID++, SSurvivalStatsPacket.class, SSurvivalStatsPacket::encode, SSurvivalStatsPacket::decode, SSurvivalStatsPacket::handle);
-		channel.registerMessage(netID++, CThirstMovementPacket.class, CThirstMovementPacket::encode, CThirstMovementPacket::decode, CThirstMovementPacket::handle);
-		channel.registerMessage(netID++, CInteractWithWaterPacket.class, CInteractWithWaterPacket::encode, CInteractWithWaterPacket::decode, CInteractWithWaterPacket::handle);
-		channel.registerMessage(netID++, SDrinkSoundPacket.class, SDrinkSoundPacket::encode, SDrinkSoundPacket::decode, SDrinkSoundPacket::handle);
-		channel.registerMessage(netID++, CEnergyTaxPacket.class, CEnergyTaxPacket::encode, CEnergyTaxPacket::decode, CEnergyTaxPacket::handle);
-		channel.registerMessage(netID++, SArmorDataTransferPacket.class, SArmorDataTransferPacket::encode, SArmorDataTransferPacket::decode, SArmorDataTransferPacket::handle);
+		PacketRegistry.registerMessage(channel, netID++, ServerboundArmorStaminaPacket.class, (packetBuffer) -> {return new ServerboundArmorStaminaPacket(packetBuffer);});
+		channel.registerMessage(netID++, ClientboundSurvivalStatsPacket.class, ClientboundSurvivalStatsPacket::encode, ClientboundSurvivalStatsPacket::decode, ClientboundSurvivalStatsPacket::handle);
+		channel.registerMessage(netID++, ServerboundThirstMovementPacket.class, ServerboundThirstMovementPacket::encode, ServerboundThirstMovementPacket::decode, ServerboundThirstMovementPacket::handle);
+		channel.registerMessage(netID++, ServerboundInteractWithWaterPacket.class, ServerboundInteractWithWaterPacket::encode, ServerboundInteractWithWaterPacket::decode, ServerboundInteractWithWaterPacket::handle);
+		channel.registerMessage(netID++, ClientboundDrinkSoundPacket.class, ClientboundDrinkSoundPacket::encode, ClientboundDrinkSoundPacket::decode, ClientboundDrinkSoundPacket::handle);
+		channel.registerMessage(netID++, ServerboundEnergyTaxPacket.class, ServerboundEnergyTaxPacket::encode, ServerboundEnergyTaxPacket::decode, ServerboundEnergyTaxPacket::handle);
+		channel.registerMessage(netID++, ClientboundArmorDataTransferPacket.class, ClientboundArmorDataTransferPacket::encode, ClientboundArmorDataTransferPacket::decode, ClientboundArmorDataTransferPacket::handle);
 	}
 	
 	//TODO: FInd Somewhere to put all these
-	public static void registerDrinkDataForItem(ResourceLocation location, FoodData drinkData) {
+	public static void registerDrinkDataForItem(ResourceLocation location, FoodJsonHolder drinkData) {
 		DataMaps.Server.consummableItem.put(location, drinkData);
 	}
-	public static void registerDrinkDataForPotion(ResourceLocation location, PotionData consummableData) {
+	public static void registerDrinkDataForPotion(ResourceLocation location, PotionJsonHolder consummableData) {
 		DataMaps.Server.potionDrink.put(location, consummableData);
 	}
-	public static void registerArmorTemperatures(ResourceLocation location, ArmorData armorData) {
+	public static void registerArmorTemperatures(ResourceLocation location, ArmorJsonHolder armorData) {
 		DataMaps.Server.armor.put(location, armorData);
 	}
-	public static void registerBlockTemperatures(ResourceLocation location, BlockTemperatureData drinkData) {
+	public static void registerBlockTemperatures(ResourceLocation location, BlockTemperatureJsonHolder drinkData) {
 		DataMaps.Server.blockTemperature.put(location, drinkData);
 	}
-	public static void registerEntityTemperatures(ResourceLocation location, EntityTemperatureData drinkData) {
+	public static void registerEntityTemperatures(ResourceLocation location, EntityTemperatureJsonHolder drinkData) {
 		DataMaps.Server.entityTemperature.put(location, drinkData);
 	}
-	public static void registerBiomeTemperatures(ResourceLocation location, BiomeTemperatureData biomeData) {
+	public static void registerBiomeTemperatures(ResourceLocation location, BiomeTemperatureJsonHolder biomeData) {
 		DataMaps.Server.biomeTemperature.put(location, biomeData);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public Screen getConfigScreen(Minecraft mc, Screen previousScreen) {
-		return new ConfigScreen(previousScreen, Config.class, new TranslationTextComponent("gui.survive.config.title"));
+		return new ConfigScreen(previousScreen, CONFIG, new TranslatableComponent("gui.survive.config.title"));
 	}
 
 	public void debug(Object message) {
-		if (Config.debugMode)getLogger().debug(message);
+		if (CONFIG.debugMode)getLogger().debug(message);
 	}
 
 	private void setup(final FMLCommonSetupEvent event)
 	{
-		BrewingRecipes.addBrewingRecipes();
+		SCauldronInteraction.bootStrap();
+//		BrewingRecipes.addBrewingRecipes();
 		CGameRules.init();
 		SurviveEvents.registerHeatMap();
 		
 		for(Item item : ForgeRegistries.ITEMS) {
-			if (item.isFood())
-				DataMaps.Server.defaultFood.put(item.getRegistryName(), item.getFood());
+			if (item.isEdible())
+				DataMaps.Server.defaultFood.put(item.getRegistryName(), item.getFoodProperties());
 		}
 	}
 
 	public void clientRegistries(final FMLClientSetupEvent event)
 	{
-		RenderType frendertype = RenderType.getTranslucent();
-		RenderTypeLookup.setRenderLayer(SFluids.PURIFIED_WATER, frendertype);
-		RenderTypeLookup.setRenderLayer(SFluids.FLOWING_PURIFIED_WATER, frendertype);
+		RenderType frendertype = RenderType.translucent();
+		ItemBlockRenderTypes.setRenderLayer(SFluids.PURIFIED_WATER, frendertype);
+		ItemBlockRenderTypes.setRenderLayer(SFluids.FLOWING_PURIFIED_WATER, frendertype);
+		IIngameOverlay FROSTBITE_ELEMENT = OverlayRegistry.registerOverlayTop("Frostbite", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+	        gui.setupOverlayRenderState(true, false);
+	        renderTiredOverlay(gui);
+	    });
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	public static void renderTiredOverlay(Gui gui) {
+		if (CONFIG.tired_overlay) {
+			if (Minecraft.getInstance().player.hasEffect(SEffects.TIREDNESS)) {
+				Minecraft.getInstance().getProfiler().push("tired");
+				int amplifier = Minecraft.getInstance().player.getEffect(SEffects.TIREDNESS).getAmplifier() + 1;
+				amplifier/=(CONFIG.tiredTimeStacks/5);
+				amplifier = Mth.clamp(amplifier, 0, 4);
+				gui.renderTextureOverlay(Survive.getInstance().location("textures/misc/sleep_overlay_"+(amplifier)+".png"), 0.5F);
+				Minecraft.getInstance().getProfiler().pop();
+			}
+		}
 	}
 
 	public static List<String> defaultDimensionMods() {

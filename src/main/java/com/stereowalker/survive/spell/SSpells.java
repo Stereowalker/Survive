@@ -1,10 +1,7 @@
 package com.stereowalker.survive.spell;
 
-import com.stereowalker.combat.api.spell.Rank;
 import com.stereowalker.combat.api.spell.Spell;
-import com.stereowalker.combat.api.spell.SpellCategory;
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.potion.SEffects;
 
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -15,12 +12,12 @@ public class SSpells {
 	////----------------------------------------[Fire]----------------------------------------\\
 	//	//Basic
 	//	//Novice
-		public static final Spell HEAT = register("heat", new SEffectSpell(SpellCategory.FIRE, Rank.NOVICE, 0.4f, SEffects.HEATED, 0, 20));
+//		public static final Spell HEAT = register("heat", new SEffectSpell(SpellCategory.FIRE, Rank.NOVICE, 0.4f, SEffects.HEATED, 0, 20));
 	//	//Apprentice
 	//	//God
 	////----------------------------------------[Water]----------------------------------------\\
 	//	//Novice
-		public static final Spell CHILL = register("chill", new SEffectSpell(SpellCategory.WATER, Rank.NOVICE, 0.4f, SEffects.CHILLED, 0, 20));
+//		public static final Spell CHILL = register("chill", new SEffectSpell(SpellCategory.WATER, Rank.NOVICE, 0.4f, SEffects.CHILLED, 0, 20));
 	//	//Apprentice
 	//	//God
 	////----------------------------------------[Lightning]----------------------------------------\\

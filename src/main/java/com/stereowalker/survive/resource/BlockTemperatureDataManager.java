@@ -10,28 +10,28 @@ import java.util.concurrent.Executor;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.util.data.BlockTemperatureData;
+import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
 
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Loads block temperatures from json
  * @author Stereowalker
  */
-public class BlockTemperatureDataManager implements IResourceReloadListener<Map<ResourceLocation, BlockTemperatureData>> {
+public class BlockTemperatureDataManager implements IResourceReloadListener<Map<ResourceLocation, BlockTemperatureJsonHolder>> {
 	private static final JsonParser parser = new JsonParser();
 
 	@Override
-	public CompletableFuture<Map<ResourceLocation, BlockTemperatureData>> load(IResourceManager manager, IProfiler profiler, Executor executor) {
+	public CompletableFuture<Map<ResourceLocation, BlockTemperatureJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
-			Map<ResourceLocation, BlockTemperatureData> drinkMap = new HashMap<>();
+			Map<ResourceLocation, BlockTemperatureJsonHolder> drinkMap = new HashMap<>();
 
-			for (ResourceLocation id : manager.getAllResourceLocations("survive_modifiers/blocks", (s) -> s.endsWith(".json"))) {
+			for (ResourceLocation id : manager.listResources("survive_modifiers/blocks", (s) -> s.endsWith(".json"))) {
 				ResourceLocation blockId = new ResourceLocation(
 						id.getNamespace(),
 						id.getPath().replace("survive_modifiers/blocks/", "").replace(".json", "")
@@ -39,12 +39,12 @@ public class BlockTemperatureDataManager implements IResourceReloadListener<Map<
 
 				if (ForgeRegistries.BLOCKS.containsKey(blockId)) {
 					try {
-						IResource resource = manager.getResource(id);
+						Resource resource = manager.getResource(id);
 						try (InputStream stream = resource.getInputStream(); 
 								InputStreamReader reader = new InputStreamReader(stream)) {
 							
 							JsonObject object = parser.parse(reader).getAsJsonObject();
-							BlockTemperatureData blockData = new BlockTemperatureData(blockId, object);
+							BlockTemperatureJsonHolder blockData = new BlockTemperatureJsonHolder(blockId, object);
 							Survive.getInstance().getLogger().info("Found block temperature modifier for the item "+blockId);
 							
 							drinkMap.put(blockId, blockData);
@@ -62,7 +62,7 @@ public class BlockTemperatureDataManager implements IResourceReloadListener<Map<
 	}
 
 	@Override
-	public CompletableFuture<Void> apply(Map<ResourceLocation, BlockTemperatureData> data, IResourceManager manager, IProfiler profiler, Executor executor) {
+	public CompletableFuture<Void> apply(Map<ResourceLocation, BlockTemperatureJsonHolder> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.runAsync(() -> {
 			for (ResourceLocation drinkId : data.keySet()) {
 				Survive.registerBlockTemperatures(drinkId, data.get(drinkId));

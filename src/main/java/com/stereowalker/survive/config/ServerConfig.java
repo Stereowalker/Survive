@@ -33,4 +33,7 @@ public class ServerConfig {
 	
 	//
 	//Misc
+	@UnionConfig.Entry(group = "Miscellaneous" , name = "Should Purified Water Cauldron Revert", type = Type.SERVER)
+	@UnionConfig.Comment(comment = {"Should the purified water cauldron revert back to a water cauldron when no longer underneath a campfire?"})
+	public static boolean purifiedCauldronRevert = false;
 }

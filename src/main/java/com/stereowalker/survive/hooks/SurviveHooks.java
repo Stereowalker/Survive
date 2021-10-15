@@ -2,8 +2,8 @@ package com.stereowalker.survive.hooks;
 
 import com.stereowalker.survive.api.event.TemperatureModifierSetEvent;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.MinecraftForge;
 
 public class SurviveHooks {

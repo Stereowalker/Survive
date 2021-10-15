@@ -10,33 +10,33 @@ import java.util.concurrent.Executor;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.datafixers.util.Pair;
-import com.stereowalker.survive.DataMaps;
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.util.data.FoodData;
+import com.stereowalker.survive.json.FoodJsonHolder;
+import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
 
-import net.minecraft.item.Food;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Loads the item drink data from json
  * @author Stereowalker
  */
-public class ItemConsummableDataManager implements IResourceReloadListener<Map<ResourceLocation, FoodData>> {
+public class ItemConsummableDataManager implements IResourceReloadListener<Map<ResourceLocation, FoodJsonHolder>> {
 	private static final JsonParser parser = new JsonParser();
 
 	@Override
-	public CompletableFuture<Map<ResourceLocation, FoodData>> load(IResourceManager manager, IProfiler profiler, Executor executor) {
+	public CompletableFuture<Map<ResourceLocation, FoodJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
-			Map<ResourceLocation, FoodData> drinkMap = new HashMap<>();
+			Map<ResourceLocation, FoodJsonHolder> drinkMap = new HashMap<>();
 
-			for (ResourceLocation id : manager.getAllResourceLocations("survive_modifiers/consumables/items", (s) -> s.endsWith(".json"))) {
+			for (ResourceLocation id : manager.listResources("survive_modifiers/consumables/items", (s) -> s.endsWith(".json"))) {
 				ResourceLocation drinkId = new ResourceLocation(
 						id.getNamespace(),
 						id.getPath().replace("survive_modifiers/consumables/items/", "").replace(".json", "")
@@ -44,46 +44,49 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 
 				if (ForgeRegistries.ITEMS.containsKey(drinkId)) {
 					try {
-						IResource resource = manager.getResource(id);
+						Resource resource = manager.getResource(id);
 						try (InputStream stream = resource.getInputStream(); 
 								InputStreamReader reader = new InputStreamReader(stream)) {
 
 							JsonObject object = parser.parse(reader).getAsJsonObject();
-							FoodData drinkData = new FoodData(drinkId, object);
+							FoodJsonHolder drinkData = new FoodJsonHolder(drinkId, object);
 
-							if (ForgeRegistries.ITEMS.getValue(drinkId).food != null && DataMaps.Server.defaultFood.containsKey(drinkId)) {
-								ForgeRegistries.ITEMS.getValue(drinkId).food.value = drinkData.overwritesDefaultHunger() ? drinkData.getHungerAmount() : DataMaps.Server.defaultFood.get(drinkId).value;
-								ForgeRegistries.ITEMS.getValue(drinkId).food.saturation = drinkData.overwritesDefaultSaturation() ? drinkData.getSaturationAmount() : DataMaps.Server.defaultFood.get(drinkId).saturation;
+							//Overrides the current food if it is edible. Omitting any modifiers will set that modifier to what is is by default
+							if (ForgeRegistries.ITEMS.getValue(drinkId).isEdible() && DataMaps.Server.defaultFood.containsKey(drinkId)) {
+								ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().nutrition = drinkData.overwritesDefaultHunger() ? drinkData.getHungerAmount() : DataMaps.Server.defaultFood.get(drinkId).getNutrition();
+								ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().saturationModifier = drinkData.overwritesDefaultSaturation() ? drinkData.getSaturationAmount() : DataMaps.Server.defaultFood.get(drinkId).getSaturationModifier();
 
-								Pair<EffectInstance, Float> defaultEffect = null;
-								Pair<EffectInstance, Float> itemEffect = null;
-								for (Pair<EffectInstance, Float> effect : ForgeRegistries.ITEMS.getValue(drinkId).food.getEffects()) {
-									if (effect.getFirst().getPotion() == Effects.HUNGER) {
+								Pair<MobEffectInstance, Float> defaultEffect = null;
+								Pair<MobEffectInstance, Float> itemEffect = null;
+								for (Pair<MobEffectInstance, Float> effect : ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().getEffects()) {
+									if (effect.getFirst().getEffect() == MobEffects.HUNGER) {
 										itemEffect = effect;
 									}
 								}
 
-								for (Pair<EffectInstance, Float> effect : DataMaps.Server.defaultFood.get(drinkId).getEffects()) {
-									if (effect.getFirst().getPotion() == Effects.HUNGER) {
+								for (Pair<MobEffectInstance, Float> effect : DataMaps.Server.defaultFood.get(drinkId).getEffects()) {
+									if (effect.getFirst().getEffect() == MobEffects.HUNGER) {
 										defaultEffect = effect;
 									}
 								}
 
 								if (itemEffect != null) {
-									ForgeRegistries.ITEMS.getValue(drinkId).food.getEffects().remove(itemEffect);
+									ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().getEffects().remove(itemEffect);
 								}
 
 								if (drinkData.overwritesDefaultHungerChance()) {
-									ForgeRegistries.ITEMS.getValue(drinkId).food.getEffects().add(Pair.of(new EffectInstance(Effects.HUNGER, 30*20, 0), drinkData.getHungerChance()));
+									ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().getEffects().add(Pair.of(new MobEffectInstance(MobEffects.HUNGER, 30*20, 0), drinkData.getHungerChance()));
 								} else if (defaultEffect != null) {
-									ForgeRegistries.ITEMS.getValue(drinkId).food.getEffects().add(defaultEffect);
+									ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().getEffects().add(defaultEffect);
 								}
 							}
-							if (drinkData.overwritesDefaultFood() && ForgeRegistries.ITEMS.getValue(drinkId).food == null) {
-								ForgeRegistries.ITEMS.getValue(drinkId).food = (new Food.Builder()).hunger(drinkData.getHungerAmount()).saturation(drinkData.getSaturationAmount()).effect(() -> new EffectInstance(Effects.HUNGER, 600, 0), drinkData.getHungerChance()).build();
+							//Makes any item edible if it naturally isn't supposed to be edible
+							if (drinkData.overwritesDefaultFood() && !ForgeRegistries.ITEMS.getValue(drinkId).isEdible()) {
+								ForgeRegistries.ITEMS.getValue(drinkId).foodProperties = (new FoodProperties.Builder()).nutrition(drinkData.getHungerAmount()).saturationMod(drinkData.getSaturationAmount()).effect(() -> new MobEffectInstance(MobEffects.HUNGER, 600, 0), drinkData.getHungerChance()).build();
 							}
-							if (!DataMaps.Server.defaultFood.containsKey(drinkId) && !drinkData.overwritesDefaultFood() && ForgeRegistries.ITEMS.getValue(drinkId).food != null) {
-								ForgeRegistries.ITEMS.getValue(drinkId).food = null;
+							//Makes non edible items that were edible no longer edible. Basically, if a datapack that made stone edible was removed, this will reset the edibility of stone
+							if (!DataMaps.Server.defaultFood.containsKey(drinkId) && !drinkData.overwritesDefaultFood() && ForgeRegistries.ITEMS.getValue(drinkId).isEdible()) {
+								ForgeRegistries.ITEMS.getValue(drinkId).foodProperties = null;
 							}
 							Survive.getInstance().getLogger().info("Found item consummable data for "+drinkId);
 							
@@ -102,7 +105,7 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 	}
 
 	@Override
-	public CompletableFuture<Void> apply(Map<ResourceLocation, FoodData> data, IResourceManager manager, IProfiler profiler, Executor executor) {
+	public CompletableFuture<Void> apply(Map<ResourceLocation, FoodJsonHolder> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.runAsync(() -> {
 			for (ResourceLocation drinkId : data.keySet()) {
 				Survive.registerDrinkDataForItem(drinkId, data.get(drinkId));

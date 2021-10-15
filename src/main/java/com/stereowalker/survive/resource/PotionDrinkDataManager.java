@@ -10,41 +10,41 @@ import java.util.concurrent.Executor;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.util.data.PotionData;
+import com.stereowalker.survive.json.PotionJsonHolder;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
 
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Maps marker type to texture.
  * @author Hunternif
  */
-public class PotionDrinkDataManager implements IResourceReloadListener<Map<ResourceLocation, PotionData>> {
+public class PotionDrinkDataManager implements IResourceReloadListener<Map<ResourceLocation, PotionJsonHolder>> {
 	private static final JsonParser parser = new JsonParser();
 
 	@Override
-	public CompletableFuture<Map<ResourceLocation, PotionData>> load(IResourceManager manager, IProfiler profiler, Executor executor) {
+	public CompletableFuture<Map<ResourceLocation, PotionJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
-			Map<ResourceLocation, PotionData> drinkMap = new HashMap<>();
+			Map<ResourceLocation, PotionJsonHolder> drinkMap = new HashMap<>();
 
-			for (ResourceLocation id : manager.getAllResourceLocations("survive_modifiers/consumables/potions", (s) -> s.endsWith(".json"))) {
+			for (ResourceLocation id : manager.listResources("survive_modifiers/consumables/potions", (s) -> s.endsWith(".json"))) {
 				ResourceLocation drinkId = new ResourceLocation(
 						id.getNamespace(),
 						id.getPath().replace("survive_modifiers/consumables/potions/", "").replace(".json", "")
 						);
 
-				if (ForgeRegistries.POTION_TYPES.containsKey(drinkId)) {
+				if (ForgeRegistries.POTIONS.containsKey(drinkId)) {
 					try {
-						IResource resource = manager.getResource(id);
+						Resource resource = manager.getResource(id);
 						try (InputStream stream = resource.getInputStream(); 
 								InputStreamReader reader = new InputStreamReader(stream)) {
 							
 							JsonObject object = parser.parse(reader).getAsJsonObject();
-							PotionData drinkData = new PotionData(drinkId, object);
+							PotionJsonHolder drinkData = new PotionJsonHolder(drinkId, object);
 							Survive.getInstance().getLogger().info("Found potion drink data for "+drinkId);
 							
 							drinkMap.put(drinkId, drinkData);
@@ -62,7 +62,7 @@ public class PotionDrinkDataManager implements IResourceReloadListener<Map<Resou
 	}
 
 	@Override
-	public CompletableFuture<Void> apply(Map<ResourceLocation, PotionData> data, IResourceManager manager, IProfiler profiler, Executor executor) {
+	public CompletableFuture<Void> apply(Map<ResourceLocation, PotionJsonHolder> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.runAsync(() -> {
 			for (ResourceLocation drinkId : data.keySet()) {
 				Survive.registerDrinkDataForPotion(drinkId, data.get(drinkId));
