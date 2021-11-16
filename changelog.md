@@ -1,6 +1,9 @@
 [4.1.0]
 - Gave temperature its dedicated config folder
-- tweaked the behavior of temperature to fit in with 1.17. "Use Experimental Temperature System" has to be enabled to access this change
+- Gave wellbeing its dedicated config folder
+- Moved the Hypothermia and Hyperthermia effects to the wellbeing module
+- Prevented the Hypothermia and Hyperthermia effects from being removable with milk buckets
+- Tweaked the behavior of temperature to fit in with 1.17. "Use Experimental Temperature System" has to be enabled to access this change
 
 [4.0.0]
 - Updated to 1.17.1
