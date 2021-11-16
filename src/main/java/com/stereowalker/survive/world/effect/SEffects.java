@@ -16,7 +16,9 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class SEffects {
 	public static List<MobEffect> EFFECT = new ArrayList<MobEffect>();
 	
+	@Deprecated
 	public static final MobEffect DEPRECIATED_HYPOTHERMIA = register("depreciated_hypothermia", new SEffect(MobEffectCategory.HARMFUL, 5750248));
+	@Deprecated
 	public static final MobEffect DEPRECIATED_HYPERTHERMIA = register("depreciated_hyperthermia", new SEffect(MobEffectCategory.HARMFUL, 16750592));
 	public static final MobEffect THIRST = register("thirst", new SEffect(MobEffectCategory.HARMFUL, 5797459));
 	public static final MobEffect HEAT_RESISTANCE = register("heat_resistance", new SEffect(MobEffectCategory.BENEFICIAL, 12221756)).addAttributeModifier(SAttributes.HEAT_RESISTANCE, "795606d6-4ac6-4ae7-8311-63ccdb293eb3", 20.0D, AttributeModifier.Operation.ADDITION);
@@ -30,6 +32,8 @@ public class SEffects {
 	public static final MobEffect HEATED = register("heated", new SEffect(MobEffectCategory.BENEFICIAL, 16750592));
 	public static final MobEffect ENERGIZED = register("energized", new SEffect(MobEffectCategory.BENEFICIAL, 16750592));
 	public static final MobEffect SLOWNESS_ILLNESS = register("slowness_illness", (new UnwellEffect(MobEffectCategory.HARMFUL, 5926017)).addAttributeModifier(Attributes.MOVEMENT_SPEED, "7107DE5E-7CE8-4030-940E-514C1F160891", (double)-0.15F, AttributeModifier.Operation.MULTIPLY_TOTAL));
+	public static final MobEffect HYPOTHERMIA = register("hypothermia", new UnwellEffect(MobEffectCategory.HARMFUL, 5750248));
+	public static final MobEffect HYPERTHERMIA = register("hyperthermia", new UnwellEffect(MobEffectCategory.HARMFUL, 16750592));
 	
 	public static void registerAll(IForgeRegistry<MobEffect> registry) {
 		for(MobEffect effect : EFFECT) {

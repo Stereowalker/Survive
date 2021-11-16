@@ -14,6 +14,8 @@ public class WellbeingData extends SurviveData {
 	public boolean isWell;
 	public int timeUntilUnwell = 0;
 	public int timeUntilWell = 0;
+	public int timeUntilHypothermia = 0;
+	public int timeUntilHyperthermia = 0;
 
 	public void setTimer(int min, int max) {
 		if (this.timeUntilUnwell == 0 && this.isWell && this.shouldTick())
@@ -27,6 +29,7 @@ public class WellbeingData extends SurviveData {
 
 	@Override
 	public void tick(Player player) {
+		//This is logic for diseases
 		//If we have a timer to make us unwell, then tick that timer down
 		if (this.timeUntilUnwell > 1 && this.isWell) {	
 			this.timeUntilWell = 0;
@@ -51,6 +54,31 @@ public class WellbeingData extends SurviveData {
 			this.isWell = true;
 			this.timeUntilWell = 0;
 		}
+		
+		//This should be logic for hypothermia
+		if (Survive.TEMPERATURE_CONFIG.useExperimentalTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
+			TemperatureData data = SurviveEntityStats.getTemperatureStats(player);
+			if (data.getTemperatureLevel() > 0.7f) {
+				this.timeUntilHyperthermia--;
+			} else {
+				this.timeUntilHyperthermia = 6000;
+			}
+			
+			if (data.getTemperatureLevel() < -0.7f) {
+				this.timeUntilHypothermia--;
+			} else {
+				this.timeUntilHypothermia = 6000;
+			}
+			
+			if (this.timeUntilHyperthermia <= 0) {
+				this.timeUntilHyperthermia = 0;
+				if (!player.hasEffect(SEffects.HYPERTHERMIA))player.addEffect(new MobEffectInstance(SEffects.HYPERTHERMIA, 6000));
+			}
+			if (this.timeUntilHypothermia <= 0) {
+				this.timeUntilHypothermia = 0;
+				if (!player.hasEffect(SEffects.HYPOTHERMIA))player.addEffect(new MobEffectInstance(SEffects.HYPOTHERMIA, 6000));
+			}
+		}
 	}
 
 	@Override
@@ -58,6 +86,8 @@ public class WellbeingData extends SurviveData {
 		if (compound.contains("timeUntilUnwell", 99)) {
 			this.timeUntilUnwell = compound.getInt("timeUntilUnwell");
 			this.timeUntilWell = compound.getInt("timeUntilWell");
+			this.timeUntilHypothermia = compound.getInt("timeUntilHypothermia");
+			this.timeUntilHyperthermia = compound.getInt("timeUntilHyperthermia");
 			this.isWell = compound.getBoolean("timeUntilWell");
 		}
 	}
@@ -65,7 +95,8 @@ public class WellbeingData extends SurviveData {
 	@Override
 	public void write(CompoundTag compound) {
 		compound.putInt("timeUntilUnwell", this.timeUntilUnwell);
-		compound.putInt("timeUntilWell", this.timeUntilWell);
+		compound.putInt("timeUntilHypothermia", this.timeUntilHypothermia);
+		compound.putInt("timeUntilHyperthermia", this.timeUntilHyperthermia);
 		compound.putBoolean("isWell", this.isWell);
 	}
 
@@ -76,7 +107,7 @@ public class WellbeingData extends SurviveData {
 
 	@Override
 	public boolean shouldTick() {
-		return Survive.CONFIG.wellbeing_enabled;
+		return Survive.WELLBEING_CONFIG.enabled;
 	}
 
 }

@@ -9,6 +9,7 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 
 @UnionConfig(folder = "Survive Configs", name = "temperature", translatableName = "config.survive.temperature.file", autoReload = true)
 public class TemperatureConfig implements ConfigObject {
+	
 	@UnionConfig.Entry(name = "Enable", type = Type.COMMON)
 	@UnionConfig.Comment(comment = {"Disabling this will disable this mods temperature system"})
 	public boolean enabled = true;
