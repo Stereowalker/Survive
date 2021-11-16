@@ -30,7 +30,7 @@ public class TemperatureData extends SurviveData {
 	private Map<ResourceLocation,TemperatureModifier> temperatureModifiers = Maps.newHashMap();
 
 	public TemperatureData() {
-		this.hypTimer = Survive.CONFIG.tempGrace;
+		this.hypTimer = Survive.TEMPERATURE_CONFIG.tempGrace;
 		this.temperatureLevel = Survive.DEFAULT_TEMP;
 	}
 
@@ -46,7 +46,7 @@ public class TemperatureData extends SurviveData {
 	}
 
 	private boolean addTemperature(ServerPlayer player, double temperature) {
-		if (Survive.CONFIG.enable_temperature) {
+		if (Survive.TEMPERATURE_CONFIG.enabled) {
 			if (player.gameMode.isSurvival()) {
 				double defaultT = Survive.DEFAULT_TEMP;
 				double maxHeat1 = TemperatureUtil.firstHeat(player);
@@ -135,7 +135,7 @@ public class TemperatureData extends SurviveData {
 			//			Survive.debug("Target: "+calculatedTarget);
 		}
 		this.targetTemperature = calculatedTarget;
-		double mod = (this.targetTemperature - this.temperatureLevel) * Survive.CONFIG.tempChangeSpeed;
+		double mod = (this.targetTemperature - this.temperatureLevel) * Survive.TEMPERATURE_CONFIG.tempChangeSpeed;
 		//		Survive.debug("Modifier: "+(this.targetTemperature-Survive.DEFAULT_TEMP)+" Target: "+targetTemperature+" Value: "+temperatureLevel);
 		if (player instanceof ServerPlayer)
 			addTemperature((ServerPlayer) player, mod);
@@ -158,7 +158,7 @@ public class TemperatureData extends SurviveData {
 			this.displayTemperature = Mth.clamp(div, -1.0D-(28.0D/63.0D), 0);
 		}
 
-		if(!(player.isCreative() || player.isSpectator())) {
+		if(!(player.isCreative() || player.isSpectator()) && !Survive.TEMPERATURE_CONFIG.useExperimentalTemperatureSystem) {
 			double maxHeat1 = TemperatureUtil.firstHeat(player);
 			double maxHeat2 = TemperatureUtil.secondHeat(player);
 			double maxHeat3 = TemperatureUtil.maxHeat(player);
@@ -170,29 +170,29 @@ public class TemperatureData extends SurviveData {
 				if (this.hypTimer > 0) {
 					this.hypTimer--;
 				} else if (this.hypTimer == 0) {
-					if (!player.hasEffect(SEffects.HYPERTHERMIA) && !player.hasEffect(SEffects.HYPOTHERMIA)) {
+					if (!player.hasEffect(SEffects.DEPRECIATED_HYPERTHERMIA) && !player.hasEffect(SEffects.DEPRECIATED_HYPOTHERMIA)) {
 						if (this.temperatureLevel > maxHeat1 && this.temperatureLevel <= maxHeat2) {
-							player.addEffect(new MobEffectInstance(SEffects.HYPERTHERMIA, 100, 0));
+							player.addEffect(new MobEffectInstance(SEffects.DEPRECIATED_HYPERTHERMIA, 100, 0));
 						}
 						else if (this.temperatureLevel > maxHeat2 && this.temperatureLevel <= maxHeat3) {
-							player.addEffect(new MobEffectInstance(SEffects.HYPERTHERMIA, 100, 1));
+							player.addEffect(new MobEffectInstance(SEffects.DEPRECIATED_HYPERTHERMIA, 100, 1));
 						}
 						else if (this.temperatureLevel > maxHeat3) {
-							player.addEffect(new MobEffectInstance(SEffects.HYPERTHERMIA, 100, 2));
+							player.addEffect(new MobEffectInstance(SEffects.DEPRECIATED_HYPERTHERMIA, 100, 2));
 						}
 						
 						if (this.temperatureLevel < maxCold1 && this.temperatureLevel >= maxCold2) {
-							player.addEffect(new MobEffectInstance(SEffects.HYPOTHERMIA, 100, 0));
+							player.addEffect(new MobEffectInstance(SEffects.DEPRECIATED_HYPOTHERMIA, 100, 0));
 						}
 						else if (this.temperatureLevel < maxCold2 && this.temperatureLevel >= maxCold3) {
-							player.addEffect(new MobEffectInstance(SEffects.HYPOTHERMIA, 100, 1));
+							player.addEffect(new MobEffectInstance(SEffects.DEPRECIATED_HYPOTHERMIA, 100, 1));
 						}
 						else if (this.temperatureLevel < maxCold3) {
-							player.addEffect(new MobEffectInstance(SEffects.HYPOTHERMIA, 100, 2));
+							player.addEffect(new MobEffectInstance(SEffects.DEPRECIATED_HYPOTHERMIA, 100, 2));
 						}
 					}
 				}
-			} else if (this.hypTimer < Survive.CONFIG.tempGrace){
+			} else if (this.hypTimer < Survive.TEMPERATURE_CONFIG.tempGrace){
 				this.hypTimer++;
 			}
 		}
@@ -259,6 +259,6 @@ public class TemperatureData extends SurviveData {
 
 	@Override
 	public boolean shouldTick() {
-		return Survive.CONFIG.enable_temperature;
+		return Survive.TEMPERATURE_CONFIG.enabled;
 	}
 }

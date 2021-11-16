@@ -53,9 +53,9 @@ public enum SurviveHeartType {
 			gui$hearttype = WITHERED;
 		} else if (p_168733_.isFullyFrozen()) {
 			gui$hearttype = FROZEN;
-		} else if (p_168733_.hasEffect(SEffects.HYPERTHERMIA)) {
+		} else if (p_168733_.hasEffect(SEffects.DEPRECIATED_HYPERTHERMIA)) {
 			gui$hearttype = HYPER;
-		} else if (p_168733_.hasEffect(SEffects.HYPOTHERMIA)) {
+		} else if (p_168733_.hasEffect(SEffects.DEPRECIATED_HYPOTHERMIA)) {
 			gui$hearttype = HYPO;
 		} else {
 			gui$hearttype = NORMAL;

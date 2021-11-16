@@ -87,7 +87,7 @@ public class RenderEvents {
 					}
 				}
 			}
-			if (Survive.CONFIG.enable_temperature && !Survive.CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
+			if (Survive.TEMPERATURE_CONFIG.enabled && !Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
 				renderTemperature(ScreenOffset.TOP, playerentity, event.getMatrixStack());
 			}
 //			TODO: if (event.getType() == RenderGameOverlayEvent.ElementType.FOOD) {
@@ -141,8 +141,8 @@ public class RenderEvents {
 
 
 	public static void renderTemperature(ScreenOffset position, Player playerentity, PoseStack matrixStack) {
-		int x = ScreenHelper.getXOffset(position) + Survive.CONFIG.tempXLoc;
-		int y = ScreenHelper.getYOffset(position) + Survive.CONFIG.tempYLoc;
+		int x = ScreenHelper.getXOffset(position) + Survive.TEMPERATURE_CONFIG.tempXLoc;
+		int y = ScreenHelper.getYOffset(position) + Survive.TEMPERATURE_CONFIG.tempYLoc;
 		mc.getProfiler().push("temperature");
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, GUI_ICONS);
@@ -165,10 +165,10 @@ public class RenderEvents {
 			double div = tempLocation / maxTemp;
 			displayTemp = Mth.clamp(div, -1.0D-(28.0D/63.0D), 0);
 		}
-		if (Survive.CONFIG.tempDisplayMode.equals(TempDisplayMode.HORIZONTAL_BAR)) {
-			if (Survive.CONFIG.tempEffects && displayTemp >= 1) {//Hyperthermia override
+		if (Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HORIZONTAL_BAR)) {
+			if (Survive.TEMPERATURE_CONFIG.tempEffects && displayTemp >= 1) {//Hyperthermia override
 				if(Minecraft.renderNames() && mc.gameMode.hasExperience())gui().blit(matrixStack, x-3, y-3, 0, 79, 138, 11);
-			} else if (Survive.CONFIG.tempEffects && displayTemp <= -1) {//Hypothermia override
+			} else if (Survive.TEMPERATURE_CONFIG.tempEffects && displayTemp <= -1) {//Hypothermia override
 				if(Minecraft.renderNames() && mc.gameMode.hasExperience())gui().blit(matrixStack, x-3, y-3, 0, 90, 138, 11);
 			} else {
 				if(Minecraft.renderNames() && mc.gameMode.hasExperience())gui().blit(matrixStack, x, y, 3, 64, 132, 5);
@@ -176,10 +176,10 @@ public class RenderEvents {
 			}
 			if(Minecraft.renderNames() && mc.gameMode.hasExperience())gui().blit(matrixStack, x+Mth.floor(displayTemp*44)+63+(displayTemp>0?1:0), y, 3, 74, 5, 5);
 		}
-		if (Survive.CONFIG.tempDisplayMode.equals(TempDisplayMode.VERTICAL_BAR)) {
-			if (Survive.CONFIG.tempEffects && displayTemp >= 1) {//Hyperthermia override
+		if (Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.VERTICAL_BAR)) {
+			if (Survive.TEMPERATURE_CONFIG.tempEffects && displayTemp >= 1) {//Hyperthermia override
 				if(Minecraft.renderNames() && mc.gameMode.hasExperience())gui().blit(matrixStack, x-3, y-3, 11, 101, 11, 138);
-			} else if (Survive.CONFIG.tempEffects && displayTemp <= -1) {//Hypothermia override
+			} else if (Survive.TEMPERATURE_CONFIG.tempEffects && displayTemp <= -1) {//Hypothermia override
 				if(Minecraft.renderNames() && mc.gameMode.hasExperience())gui().blit(matrixStack, x-3, y-3, 00, 101, 11, 138);
 			} else {
 				if(Minecraft.renderNames() && mc.gameMode.hasExperience())gui().blit(matrixStack, x, y, 32, 104, 5, 132);
@@ -191,8 +191,8 @@ public class RenderEvents {
 		int temp = (int) (rawTemperature*100);
 		double temperaure = ((double)temp) / 100.0D;
 		String s = temperaure+" °C";
-		if(Minecraft.renderNames() && !mc.gameMode.isAlwaysFlying() && Survive.CONFIG.tempDisplayMode.equals(TempDisplayMode.NUMBERS)) {
-			if (Survive.CONFIG.displayTempInFahrenheit) {
+		if(Minecraft.renderNames() && !mc.gameMode.isAlwaysFlying() && Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.NUMBERS)) {
+			if (Survive.TEMPERATURE_CONFIG.displayTempInFahrenheit) {
 				double rawFTemp = (temperaure * (9.0D/5.0D)) + 32.0D;
 				int fTemp = (int) (rawFTemp*100);
 				double fTemperaure = ((double)fTemp) / 100.0D;

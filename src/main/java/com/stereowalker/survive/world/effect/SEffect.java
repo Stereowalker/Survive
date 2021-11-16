@@ -26,16 +26,16 @@ public class SEffect extends MobEffect {
 			WaterData waterStats = SurviveEntityStats.getWaterStats(entityLivingBaseIn);
 			waterStats.addExhaustion((Player) entityLivingBaseIn, (0.005F * (float)(amplifier + 1)));
 			waterStats.save(entityLivingBaseIn);
-		} else if (this == SEffects.HYPOTHERMIA && entityLivingBaseIn instanceof Player) {
+		} else if (this == SEffects.DEPRECIATED_HYPOTHERMIA && entityLivingBaseIn instanceof Player) {
 			boolean flag = !entityLivingBaseIn.level.getDifficulty().equals(Difficulty.HARD) && entityLivingBaseIn.getHealth() > 1.0F;
 			if (entityLivingBaseIn.level.getDifficulty().equals(Difficulty.HARD)) flag = true;
-			if ((!((Player)entityLivingBaseIn).isSleeping() || !Survive.CONFIG.hyp_allow_sleep) && flag) {
+			if ((!((Player)entityLivingBaseIn).isSleeping() || !Survive.TEMPERATURE_CONFIG.hyp_allow_sleep) && flag) {
 				entityLivingBaseIn.hurt(SDamageSource.HYPOTHERMIA, 0.4F);
 			}
-		} else if (this == SEffects.HYPERTHERMIA && entityLivingBaseIn instanceof Player) {
+		} else if (this == SEffects.DEPRECIATED_HYPERTHERMIA && entityLivingBaseIn instanceof Player) {
 			boolean flag = !entityLivingBaseIn.level.getDifficulty().equals(Difficulty.HARD) && entityLivingBaseIn.getHealth() > 1.0F;
 			if (entityLivingBaseIn.level.getDifficulty().equals(Difficulty.HARD)) flag = true;
-			if ((!((Player)entityLivingBaseIn).isSleeping() || !Survive.CONFIG.hyp_allow_sleep) && flag) {
+			if ((!((Player)entityLivingBaseIn).isSleeping() || !Survive.TEMPERATURE_CONFIG.hyp_allow_sleep) && flag) {
 				entityLivingBaseIn.hurt(SDamageSource.HYPERTHERMIA, 0.4F);
 			}
 		} else if (this == SEffects.CHILLED && entityLivingBaseIn instanceof ServerPlayer) {
@@ -63,14 +63,14 @@ public class SEffect extends MobEffect {
 
 	@Override
 	public boolean isDurationEffectTick(int duration, int amplifier) {
-		if (this == SEffects.HYPOTHERMIA) {
+		if (this == SEffects.DEPRECIATED_HYPOTHERMIA) {
 			int k = 40 >> amplifier;
 			if (k > 0) {
 				return duration % k == 0;
 			} else {
 				return true;
 			}
-		} else if (this == SEffects.HYPERTHERMIA) {
+		} else if (this == SEffects.DEPRECIATED_HYPERTHERMIA) {
 			int k = 40 >> amplifier;
 			if (k > 0) {
 				return duration % k == 0;

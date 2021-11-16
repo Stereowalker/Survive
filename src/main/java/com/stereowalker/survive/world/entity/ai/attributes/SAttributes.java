@@ -16,7 +16,7 @@ public class SAttributes {
 	public static final Attribute HEAT_RESISTANCE = registerTemp("generic.heat_resistance", new RangedAttribute("attribute.name.survive.heatResistance", 2.0D, 0.0D, 1024.0D)).setSyncable(true);
 	
 	public static Attribute registerTemp(String name, Attribute attribute) {
-		if (Survive.CONFIG.enable_temperature) {
+		if (Survive.TEMPERATURE_CONFIG.enabled) {
 			return register(name, attribute);
 		} else {
 			return attribute;

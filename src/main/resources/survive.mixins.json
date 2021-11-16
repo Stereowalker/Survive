@@ -12,7 +12,8 @@
   	"ServerPlayerGameModeMixin",
 	"GMix",
 	"CampfireBlockMixin",
-	"LayeredCauldronBlockMixin"
+	"LayeredCauldronBlockMixin",
+	"LivingEntityMixin"
   ],
   "client": [
   	"GuiMixin"

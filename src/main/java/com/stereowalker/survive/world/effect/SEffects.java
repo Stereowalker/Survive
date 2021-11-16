@@ -16,8 +16,8 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class SEffects {
 	public static List<MobEffect> EFFECT = new ArrayList<MobEffect>();
 	
-	public static final MobEffect HYPOTHERMIA = register("hypothermia", new SEffect(MobEffectCategory.HARMFUL, 5750248));
-	public static final MobEffect HYPERTHERMIA = register("hyperthermia", new SEffect(MobEffectCategory.HARMFUL, 16750592));
+	public static final MobEffect DEPRECIATED_HYPOTHERMIA = register("depreciated_hypothermia", new SEffect(MobEffectCategory.HARMFUL, 5750248));
+	public static final MobEffect DEPRECIATED_HYPERTHERMIA = register("depreciated_hyperthermia", new SEffect(MobEffectCategory.HARMFUL, 16750592));
 	public static final MobEffect THIRST = register("thirst", new SEffect(MobEffectCategory.HARMFUL, 5797459));
 	public static final MobEffect HEAT_RESISTANCE = register("heat_resistance", new SEffect(MobEffectCategory.BENEFICIAL, 12221756)).addAttributeModifier(SAttributes.HEAT_RESISTANCE, "795606d6-4ac6-4ae7-8311-63ccdb293eb3", 20.0D, AttributeModifier.Operation.ADDITION);
 	public static final MobEffect COLD_RESISTANCE = register("cold_resistance", new SEffect(MobEffectCategory.BENEFICIAL, 5750248)).addAttributeModifier(SAttributes.COLD_RESISTANCE, "5cebe402-4f28-4d41-8539-2496f900ef90", 20.0D, AttributeModifier.Operation.ADDITION);

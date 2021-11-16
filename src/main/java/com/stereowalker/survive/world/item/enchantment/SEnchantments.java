@@ -21,7 +21,7 @@ public class SEnchantments {
 	public static final Enchantment WEIGHTLESS = registerStami("weightless", new WeightlessEnchantment(Rarity.VERY_RARE, new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}));
 	
 	public static Enchantment registerTempe(String name, Enchantment enchantment) {
-		if (Survive.CONFIG.enable_temperature) {
+		if (Survive.TEMPERATURE_CONFIG.enabled) {
 			return register(name, enchantment);
 		} else {
 			return enchantment;

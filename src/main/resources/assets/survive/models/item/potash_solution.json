@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "survive:item/potash_solution"
+        "layer0": "survive:item/potash_solution_bottle"
     }
 }

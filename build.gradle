@@ -155,7 +155,7 @@ curseforge {
       		requiredDependency 'unionlib'
 		}	
 		mainArtifact(jar) {
-			displayName = "Survive-$project.version"
+			displayName = modFilename+"-$project.version"
 		}
 		addArtifact deobfJar
 		addArtifact sourcesJar

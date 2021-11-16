@@ -43,7 +43,7 @@ public abstract class GuiMixin extends GuiComponent {
 	@Redirect(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderColor(FFFF)V", ordinal = 0))
 	public void hotbarColor(float x, float y, float z, float a) {
 		Player playerentity = this.getCameraPlayer();
-		if (Survive.CONFIG.enable_temperature && Survive.CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
+		if (Survive.TEMPERATURE_CONFIG.enabled && Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
 			double rawTemperature = SurviveEntityStats.getTemperatureStats(playerentity).getTemperatureLevel();
 			double tempLocation = rawTemperature - Survive.DEFAULT_TEMP;
 			double displayTemp = 0;
@@ -79,7 +79,7 @@ public abstract class GuiMixin extends GuiComponent {
 
 	@Inject(method = "renderHearts", at = @At(value = "HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	public void changeHearts(PoseStack p_168689_, Player p_168690_, int p_168691_, int p_168692_, int p_168693_, int p_168694_, float p_168695_, int p_168696_, int p_168697_, int p_168698_, boolean p_168699_, CallbackInfo ci) {
-		if ((Survive.CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR) && Survive.CONFIG.tempEffects)) {
+		if ((Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR) && Survive.TEMPERATURE_CONFIG.tempEffects)) {
 			SurviveHeartType gui$hearttype = SurviveHeartType.forPlayer(p_168690_);
 			int i = 9 * (p_168690_.level.getLevelData().isHardcore() ? 5 : 0);
 			int j = Mth.ceil((double)p_168695_ / 2.0D);

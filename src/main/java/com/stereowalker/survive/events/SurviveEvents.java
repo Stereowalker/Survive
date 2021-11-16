@@ -365,7 +365,7 @@ public class SurviveEvents {
 				if (type.isUsingExact()) {
 					temperature = getExactTemperature(player.level, player.blockPosition(), type);
 				} else {
-					temperature = getAverageTemperature(player.level, player.blockPosition(), type, 5, Survive.CONFIG.tempMode);
+					temperature = getAverageTemperature(player.level, player.blockPosition(), type, 5, Survive.TEMPERATURE_CONFIG.tempMode);
 				}
 				//				System.out.println(type+" "+temperature);
 				double modifier = (temperature)/type.getReductionAmount();

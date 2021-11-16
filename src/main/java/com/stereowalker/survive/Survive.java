@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.config.ServerConfig;
+import com.stereowalker.survive.config.TemperatureConfig;
 import com.stereowalker.survive.core.cauldron.SCauldronInteraction;
 import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.json.ArmorJsonHolder;
@@ -35,9 +36,9 @@ import com.stereowalker.survive.world.effect.SEffects;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.level.CGameRules;
 import com.stereowalker.survive.world.level.material.SFluids;
-import com.stereowalker.unionlib.client.gui.screen.ConfigScreen;
+import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsScreen;
 import com.stereowalker.unionlib.config.ConfigBuilder;
-import com.stereowalker.unionlib.mod.UnionMod;
+import com.stereowalker.unionlib.mod.MinecraftMod;
 import com.stereowalker.unionlib.network.PacketRegistry;
 
 import net.minecraft.client.Minecraft;
@@ -63,11 +64,12 @@ import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(value = "survive")
-public class Survive extends UnionMod {
+public class Survive extends MinecraftMod {
 
 	public static final float DEFAULT_TEMP = 37.0F;
 	public static final String MOD_ID = "survive";
 	public static final Config CONFIG = new Config();
+	public static final TemperatureConfig TEMPERATURE_CONFIG = new TemperatureConfig();
 	public static boolean isPrimalWinterLoaded;
 	public static final ItemConsummableDataManager consummableReloader = new ItemConsummableDataManager();
 	public static final PotionDrinkDataManager potionReloader = new PotionDrinkDataManager();
@@ -90,6 +92,7 @@ public class Survive extends UnionMod {
 		instance = this;
 		ConfigBuilder.registerConfig(ServerConfig.class);
 		ConfigBuilder.registerConfig(CONFIG);
+		ConfigBuilder.registerConfig(TEMPERATURE_CONFIG);
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::clientRegistries);
@@ -144,7 +147,7 @@ public class Survive extends UnionMod {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public Screen getConfigScreen(Minecraft mc, Screen previousScreen) {
-		return new ConfigScreen(previousScreen, CONFIG, new TranslatableComponent("gui.survive.config.title"));
+		return new MinecraftModConfigsScreen(previousScreen, new TranslatableComponent("gui.survive.config.title"), TEMPERATURE_CONFIG, CONFIG);
 	}
 
 	public void debug(Object message) {
@@ -163,13 +166,15 @@ public class Survive extends UnionMod {
 				DataMaps.Server.defaultFood.put(item.getRegistryName(), item.getFoodProperties());
 		}
 	}
+	
+	IIngameOverlay TIRED_ELEMENT;
 
 	public void clientRegistries(final FMLClientSetupEvent event)
 	{
 		RenderType frendertype = RenderType.translucent();
 		ItemBlockRenderTypes.setRenderLayer(SFluids.PURIFIED_WATER, frendertype);
 		ItemBlockRenderTypes.setRenderLayer(SFluids.FLOWING_PURIFIED_WATER, frendertype);
-		IIngameOverlay FROSTBITE_ELEMENT = OverlayRegistry.registerOverlayTop("Frostbite", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+		TIRED_ELEMENT = OverlayRegistry.registerOverlayTop("Tired", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 	        gui.setupOverlayRenderState(true, false);
 	        renderTiredOverlay(gui);
 	    });

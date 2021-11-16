@@ -26,14 +26,14 @@ Adds new survival mechanics like thirst, body temperature, sleep management and 
 [[dependencies.survive]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.17.1,1.18]"
+    versionRange="[1.17.1,1.18)"
     ordering="NONE"
     side="BOTH"
 	
 [[dependencies.survive]]
     modId="unionlib"
     mandatory=true
-    versionRange="[4.0.0,4.1.0]"
+    versionRange="[4.1.0,4.2.0)"
     ordering="NONE"
     side="BOTH"
 	
