@@ -1,5 +1,8 @@
 package com.stereowalker.survive.client.gui;
 
+import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.core.TempDisplayMode;
+import com.stereowalker.survive.needs.IRoastedEntity;
 import com.stereowalker.survive.world.effect.SEffects;
 
 import net.minecraft.world.effect.MobEffects;
@@ -16,7 +19,8 @@ public enum SurviveHeartType {
 	ABSORBING(8, false, true),
 	FROZEN(9, false, true),
 	HYPO(0, false, false),
-	HYPER(2, false, false);
+	HYPER(2, false, false),
+	ROASTED(4, false, false);
 
 	private final int index;
 	private final boolean canBlink;
@@ -53,9 +57,11 @@ public enum SurviveHeartType {
 			gui$hearttype = WITHERED;
 		} else if (p_168733_.isFullyFrozen()) {
 			gui$hearttype = FROZEN;
-		} else if (p_168733_.hasEffect(SEffects.DEPRECIATED_HYPERTHERMIA)) {
+		} else if (((IRoastedEntity)p_168733_).isFullyRoasted()) {
+			gui$hearttype = ROASTED;
+		} else if (p_168733_.hasEffect(SEffects.DEPRECIATED_HYPERTHERMIA) && Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR) && Survive.TEMPERATURE_CONFIG.tempEffects) {
 			gui$hearttype = HYPER;
-		} else if (p_168733_.hasEffect(SEffects.DEPRECIATED_HYPOTHERMIA)) {
+		} else if (p_168733_.hasEffect(SEffects.DEPRECIATED_HYPOTHERMIA) && Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR) && Survive.TEMPERATURE_CONFIG.tempEffects) {
 			gui$hearttype = HYPO;
 		} else {
 			gui$hearttype = NORMAL;

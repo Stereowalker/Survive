@@ -33,12 +33,13 @@ public abstract class GuiMixin extends GuiComponent {
 	@Shadow protected final Random random = new Random();
 	@Shadow public Player getCameraPlayer() {return null;}
 	@Shadow public void renderTextureOverlay(ResourceLocation p_168709_, float p_168710_) {}
-	
+
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;lerp(FFF)F", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void render2(PoseStack arg0, float arg1, CallbackInfo ci, Font font, float f) {
 		Survive.renderTiredOverlay((Gui)(Object)this);
+		Survive.renderHeatStroke((Gui)(Object)this);
 	}
-	
+
 
 	@Redirect(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderColor(FFFF)V", ordinal = 0))
 	public void hotbarColor(float x, float y, float z, float a) {
@@ -79,51 +80,49 @@ public abstract class GuiMixin extends GuiComponent {
 
 	@Inject(method = "renderHearts", at = @At(value = "HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	public void changeHearts(PoseStack p_168689_, Player p_168690_, int p_168691_, int p_168692_, int p_168693_, int p_168694_, float p_168695_, int p_168696_, int p_168697_, int p_168698_, boolean p_168699_, CallbackInfo ci) {
-		if ((Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR) && Survive.TEMPERATURE_CONFIG.tempEffects)) {
-			SurviveHeartType gui$hearttype = SurviveHeartType.forPlayer(p_168690_);
-			int i = 9 * (p_168690_.level.getLevelData().isHardcore() ? 5 : 0);
-			int j = Mth.ceil((double)p_168695_ / 2.0D);
-			int k = Mth.ceil((double)p_168698_ / 2.0D);
-			int l = j * 2;
+		SurviveHeartType gui$hearttype = SurviveHeartType.forPlayer(p_168690_);
+		int i = 9 * (p_168690_.level.getLevelData().isHardcore() ? 5 : 0);
+		int j = Mth.ceil((double)p_168695_ / 2.0D);
+		int k = Mth.ceil((double)p_168698_ / 2.0D);
+		int l = j * 2;
 
-			for(int i1 = j + k - 1; i1 >= 0; --i1) {
-				int j1 = i1 / 10;
-				int k1 = i1 % 10;
-				int l1 = p_168691_ + k1 * 8;
-				int i2 = p_168692_ - j1 * p_168693_;
-				if (p_168696_ + p_168698_ <= 4) {
-					i2 += this.random.nextInt(2);
-				}
+		for(int i1 = j + k - 1; i1 >= 0; --i1) {
+			int j1 = i1 / 10;
+			int k1 = i1 % 10;
+			int l1 = p_168691_ + k1 * 8;
+			int i2 = p_168692_ - j1 * p_168693_;
+			if (p_168696_ + p_168698_ <= 4) {
+				i2 += this.random.nextInt(2);
+			}
 
-				if (i1 < j && i1 == p_168694_) {
-					i2 -= 2;
-				}
+			if (i1 < j && i1 == p_168694_) {
+				i2 -= 2;
+			}
 
-				this.renderHeart(p_168689_, SurviveHeartType.CONTAINER, l1, i2, i, p_168699_, false);
-				int j2 = i1 * 2;
-				boolean flag = i1 >= j;
-				if (flag) {
-					int k2 = j2 - l;
-					if (k2 < p_168698_) {
-						boolean flag1 = k2 + 1 == p_168698_;
-						this.renderHeart(p_168689_, gui$hearttype == SurviveHeartType.WITHERED ? gui$hearttype : SurviveHeartType.ABSORBING, l1, i2, i, false, flag1);
-					}
-				}
-
-				if (p_168699_ && j2 < p_168697_) {
-					boolean flag2 = j2 + 1 == p_168697_;
-					this.renderHeart(p_168689_, gui$hearttype, l1, i2, i, true, flag2);
-				}
-
-				if (j2 < p_168696_) {
-					boolean flag3 = j2 + 1 == p_168696_;
-					this.renderHeart(p_168689_, gui$hearttype, l1, i2, i, false, flag3);
+			this.renderHeart(p_168689_, SurviveHeartType.CONTAINER, l1, i2, i, p_168699_, false);
+			int j2 = i1 * 2;
+			boolean flag = i1 >= j;
+			if (flag) {
+				int k2 = j2 - l;
+				if (k2 < p_168698_) {
+					boolean flag1 = k2 + 1 == p_168698_;
+					this.renderHeart(p_168689_, gui$hearttype == SurviveHeartType.WITHERED ? gui$hearttype : SurviveHeartType.ABSORBING, l1, i2, i, false, flag1);
 				}
 			}
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
-			ci.cancel();
+
+			if (p_168699_ && j2 < p_168697_) {
+				boolean flag2 = j2 + 1 == p_168697_;
+				this.renderHeart(p_168689_, gui$hearttype, l1, i2, i, true, flag2);
+			}
+
+			if (j2 < p_168696_) {
+				boolean flag3 = j2 + 1 == p_168696_;
+				this.renderHeart(p_168689_, gui$hearttype, l1, i2, i, false, flag3);
+			}
 		}
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
+		ci.cancel();
 	}
 
 	protected void renderHeart(PoseStack p_168701_, SurviveHeartType surviveHeartType, int p_168703_, int p_168704_, int p_168705_, boolean p_168706_, boolean p_168707_) {

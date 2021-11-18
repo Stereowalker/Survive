@@ -13,7 +13,8 @@
 	"GMix",
 	"CampfireBlockMixin",
 	"LayeredCauldronBlockMixin",
-	"LivingEntityMixin"
+	"LivingEntityMixin",
+	"EntityMixin"
   ],
   "client": [
   	"GuiMixin"

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.config.ServerConfig;
@@ -17,6 +18,7 @@ import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.survive.json.FoodJsonHolder;
 import com.stereowalker.survive.json.PotionJsonHolder;
+import com.stereowalker.survive.needs.IRoastedEntity;
 import com.stereowalker.survive.network.protocol.game.ClientboundArmorDataTransferPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundDrinkSoundPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPacket;
@@ -171,6 +173,7 @@ public class Survive extends MinecraftMod {
 	}
 	
 	IIngameOverlay TIRED_ELEMENT;
+	IIngameOverlay HEAT_STROKE_ELEMENT;
 
 	public void clientRegistries(final FMLClientSetupEvent event)
 	{
@@ -180,6 +183,10 @@ public class Survive extends MinecraftMod {
 		TIRED_ELEMENT = OverlayRegistry.registerOverlayTop("Tired", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 	        gui.setupOverlayRenderState(true, false);
 	        renderTiredOverlay(gui);
+	    });
+		HEAT_STROKE_ELEMENT = OverlayRegistry.registerOverlayTop("Heat Stroke", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+	        gui.setupOverlayRenderState(true, false);
+	        renderHeatStroke(gui);
 	    });
 	}
 	
@@ -196,6 +203,14 @@ public class Survive extends MinecraftMod {
 			}
 		}
 	}
+	
+	@OnlyIn(Dist.CLIENT)
+    public static void renderHeatStroke(Gui gui)
+    {
+        if (((IRoastedEntity)gui.minecraft.player).getTicksRoasted() > 0) {
+        	gui.renderTextureOverlay(Survive.getInstance().location("textures/misc/burning_overlay.png"), ((IRoastedEntity)gui.minecraft.player).getPercentRoasted());
+        }
+    }
 
 	public static List<String> defaultDimensionMods() {
 		List<String> dims = new ArrayList<String>();
