@@ -18,6 +18,7 @@ import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWat
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.item.enchantment.SEnchantmentHelper;
 import com.stereowalker.survive.world.level.material.SFluids;
+import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.temperature.TemperatureChangeInstance;
 import com.stereowalker.unionlib.state.properties.UBlockStateProperties;
 import com.stereowalker.unionlib.util.ModHelper;
@@ -335,14 +336,19 @@ public class SurviveEvents {
 					break;
 				}
 			}
-
+			float seasonMod = 0;
 			if (ModHelper.isSereneSeasonsLoaded()) {
-				float seasonMod = SereneSeasonsCompat.modifyTemperatureBySeason(player.getCommandSenderWorld(), player.blockPosition());
+				Season season = SereneSeasonsCompat.modifyTemperatureBySeason(player.getCommandSenderWorld(), player.blockPosition());
+				if (DataMaps.Server.biomeTemperature.containsKey(player.getLevel().getBiome(player.blockPosition()).getRegistryName())) {
+					seasonMod = DataMaps.Server.biomeTemperature.get(player.getLevel().getBiome(player.blockPosition()).getRegistryName()).getSeasonModifiers().get(season);
+				} else {
+					seasonMod = season.getModifier();
+				}
 				if (ModHelper.isPrimalWinterLoaded()) {
 					seasonMod = -1.0F;
 				}
-				TemperatureData.setTemperatureModifier(player, "survive:season", seasonMod);
 			}
+			TemperatureData.setTemperatureModifier(player, "survive:season", seasonMod);
 		}
 	}
 
@@ -553,7 +559,6 @@ public class SurviveEvents {
 		BlockState state = event.getWorld().getBlockState(event.getPos());
 		Fluid fluid = event.getWorld().getFluidState(blockpos).getType();
 		BlockState stateUnder = event.getWorld().getBlockState(event.getPos().below());
-		Item item = event.getItemStack().getItem();
 		if (event.getWorld().isClientSide && event.getItemStack().isEmpty()) {
 			//Source Block Of Water
 			if (FLUID_THIRST_MAP.containsKey(fluid) && FLUID_THIRSTY_MAP.containsKey(fluid) && FLUID_HYDRATION_MAP.containsKey(fluid)) {

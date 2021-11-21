@@ -10,6 +10,8 @@ import com.stereowalker.survive.world.item.crafting.SRecipeSerializer;
 import com.stereowalker.survive.world.item.enchantment.SEnchantments;
 import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.SFluids;
+import com.stereowalker.survive.world.seasons.Season;
+import com.stereowalker.survive.world.seasons.Seasons;
 import com.stereowalker.survive.world.temperature.TemperatureChangeCondition;
 import com.stereowalker.survive.world.temperature.TemperatureChangeConditions;
 
@@ -109,14 +111,20 @@ public class SurviveRegistryEvents
 	}
 	
 	@SubscribeEvent
-	public static void registerCombatRegistries(final RegistryEvent.NewRegistry event) {
+	public static void registerSurviveRegistries(final RegistryEvent.NewRegistry event) {
 		new RegistryBuilder<TemperatureChangeCondition<?>>().setName(Survive.getInstance().location("temperature_change_condition")).setType(c(TemperatureChangeCondition.class)).setMaxID(MAX_VARINT).create();
-	}
+		new RegistryBuilder<Season>().setName(Survive.getInstance().location("season")).setType(c(Season.class)).setMaxID(MAX_VARINT).create();
+		}
 
 	//Custom Survive Registries
 	@SubscribeEvent
-	public static void registerSpells(final RegistryEvent.Register<TemperatureChangeCondition<?>> event) {
+	public static void registerTemperatureChangeConditions(final RegistryEvent.Register<TemperatureChangeCondition<?>> event) {
 		TemperatureChangeConditions.registerAll(event.getRegistry());
+	}
+	
+	@SubscribeEvent
+	public static void registerSeasons(final RegistryEvent.Register<Season> event) {
+		Seasons.registerAll(event.getRegistry());
 	}
 	
 	@SuppressWarnings("unchecked") //Ugly hack to let us pass in a typed Class object. Remove when we remove type specific references.

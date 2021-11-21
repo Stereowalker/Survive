@@ -1,13 +1,15 @@
 package com.stereowalker.survive.compat;
 
+import com.stereowalker.survive.core.registries.SurviveRegistries;
 import com.stereowalker.survive.needs.TemperatureUtil;
+import com.stereowalker.survive.world.seasons.Season;
+import com.stereowalker.survive.world.seasons.Seasons;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import sereneseasons.api.season.Season;
 import sereneseasons.api.season.SeasonHelper;
 import sereneseasons.config.BiomeConfig;
 
@@ -15,48 +17,46 @@ public class SereneSeasonsCompat {
 
 	public static boolean snowsHere(Level world, BlockPos pos) {
 		if (world.getBiomeName(pos).isPresent() && !sereneseasons.config.BiomeConfig.usesTropicalSeasons(world.getBiomeName(pos).get())) {
-			return SeasonHelper.getSeasonState(world).getSeason() == Season.WINTER;
+			return SeasonHelper.getSeasonState(world).getSeason() == sereneseasons.api.season.Season.WINTER;
 		}
 		return false;
 	}
 
-	public static float modifyTemperatureBySeason(Level world, BlockPos pos) {
+	public static Season modifyTemperatureBySeason(Level world, BlockPos pos) {
 		if (world.getBiomeName(pos) != null &&
-				world.getBiomeName(pos).isPresent() && 
-				sereneseasons.config.BiomeConfig.usesTropicalSeasons(world.getBiomeName(pos).get())) {
-			switch (SeasonHelper.getSeasonState(world).getTropicalSeason()) {
-			case EARLY_DRY: return 0.1F;
-			case MID_DRY: return 0.2F;
-			case LATE_DRY: return 0.1F;
+				world.getBiomeName(pos).isPresent()) {
+			if (sereneseasons.config.BiomeConfig.usesTropicalSeasons(world.getBiomeName(pos).get())) {
+				switch (SeasonHelper.getSeasonState(world).getTropicalSeason()) {
+				case EARLY_DRY: return Seasons.DRY_BEGIN;
+				case MID_DRY: return Seasons.DRY_MIDST;
+				case LATE_DRY: return Seasons.DRY_CLOSE;
 
-			case EARLY_WET: return -0.1F;
-			case MID_WET: return -0.2F;
-			case LATE_WET: return -0.1F;
+				case EARLY_WET: return Seasons.WET_BEGIN;
+				case MID_WET: return Seasons.WET_MIDST;
+				case LATE_WET: return Seasons.WET_CLOSE;
+				}
+			}
+			else {
+				switch (SeasonHelper.getSeasonState(world).getSubSeason()) {
+				case EARLY_WINTER: return Seasons.WINTER_BEGIN;
+				case MID_WINTER: return Seasons.WINTER_MIDST;
+				case LATE_WINTER: return Seasons.WINTER_CLOSE;
 
-			default: return 0.0F;
+				case EARLY_SPRING: return Seasons.SPRING_BEGIN;
+				case MID_SPRING: return Seasons.SPRING_MIDST;
+				case LATE_SPRING: return Seasons.SPRING_CLOSE;
+
+				case EARLY_SUMMER: return Seasons.SUMMER_BEGIN;
+				case MID_SUMMER: return Seasons.SUMMER_MIDST;
+				case LATE_SUMMER: return Seasons.SUMMER_CLOSE;
+
+				case EARLY_AUTUMN: return Seasons.AUTUMN_BEGIN;
+				case MID_AUTUMN: return Seasons.AUTUMN_MIDST;
+				case LATE_AUTUMN: return Seasons.AUTUMN_CLOSE;
+				}
 			}
 		}
-		else {
-			switch (SeasonHelper.getSeasonState(world).getSubSeason()) {
-			case EARLY_WINTER: return -0.6F;
-			case MID_WINTER: return -0.9F;
-			case LATE_WINTER: return -0.6F;
-
-			case EARLY_SPRING: return -0.3F;
-			case MID_SPRING: return 0.0F;
-			case LATE_SPRING: return 0.3F;
-
-			case EARLY_SUMMER: return 0.6F;
-			case MID_SUMMER: return 0.9F;
-			case LATE_SUMMER: return 0.6F;
-
-			case EARLY_AUTUMN: return 0.3F;
-			case MID_AUTUMN: return 0.0F;
-			case LATE_AUTUMN: return -0.3F;
-
-			default: return 0.0F;
-			}
-		}
+		return Seasons.NONE;
 	}
 	
 	
@@ -68,7 +68,7 @@ public class SereneSeasonsCompat {
      * @param pos
      * @return
      */
-    public static float getBiomeTemperatureInSeason(Season.SubSeason subSeason, Biome biome, ResourceKey<Biome> key, BlockPos pos)
+    public static float getBiomeTemperatureInSeason(sereneseasons.api.season.Season.SubSeason subSeason, Biome biome, ResourceKey<Biome> key, BlockPos pos)
     {
         boolean tropicalBiome = BiomeConfig.usesTropicalSeasons(key);
         float biomeTemp = TemperatureUtil.getTemperature(biome, pos);

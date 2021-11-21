@@ -1,4 +1,6 @@
 [4.1.0]
+- Made Season modifiers tweakable via datapacks
+- Added a roasting mechanic and tweaked the freezing mechanic
 - Gave temperature its dedicated config folder
 - Gave wellbeing its dedicated config folder
 - Moved the Hypothermia and Hyperthermia effects to the wellbeing module
