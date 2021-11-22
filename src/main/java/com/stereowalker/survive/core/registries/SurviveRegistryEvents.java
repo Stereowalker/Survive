@@ -1,7 +1,7 @@
 package com.stereowalker.survive.core.registries;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.client.particle.StinkParticle;
+import com.stereowalker.survive.client.particle.HygieneParticle;
 import com.stereowalker.survive.core.particles.SParticleTypes;
 import com.stereowalker.survive.world.effect.SEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
@@ -77,7 +77,8 @@ public class SurviveRegistryEvents
 	@OnlyIn(Dist.CLIENT)
 	public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
 		ParticleEngine manager = Minecraft.getInstance().particleEngine;
-		manager.register(SParticleTypes.STINK, StinkParticle.Factory::new);
+		manager.register(SParticleTypes.STINK, HygieneParticle.StinkFactory::new);
+		manager.register(SParticleTypes.CLEAN, HygieneParticle.CleanFactory::new);
 	}
 
 	@SubscribeEvent

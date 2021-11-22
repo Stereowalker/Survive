@@ -25,8 +25,9 @@ public class HygieneData extends SurviveData {
 	 * Attempts to clean the player
 	 * @param cleanLevelIn - Caps at zero
 	 */
-	public void clean(int cleanLevelIn) {
-		this.uncleanLevel = Math.max(cleanLevelIn - this.uncleanLevel, 0);
+	public void clean(int cleanLevelIn, boolean isSkinnyDipping) {
+		if ((this.uncleanLevel > 12 && isSkinnyDipping) || !isSkinnyDipping)
+			this.uncleanLevel = Math.max(cleanLevelIn - this.uncleanLevel, 0);
 	}
 
 	/**
@@ -40,11 +41,16 @@ public class HygieneData extends SurviveData {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void clientTick(AbstractClientPlayer player) {
+		System.out.println(this.uncleanLevel);
 		if (this.needsABath()) {
 			Random rand = new Random();
-			for(int i = 0; i < 2; ++i) {
+			for(int i = 0; i < ((this.uncleanLevel-25)/10)+2; ++i) {
 				player.level.addParticle(SParticleTypes.STINK, player.getRandomX(0.5D), player.getRandomY() - 0.25D, player.getRandomZ(0.5D), (rand.nextDouble() - 0.5D) * 0.5D, -rand.nextDouble() * 0.5D, (rand.nextDouble() - 0.5D) * 0.5D);
 			}
+		}
+		if (this.isSqueakyClean()) {
+			Random rand = new Random();
+			player.level.addParticle(SParticleTypes.CLEAN, player.getRandomX(0.5D), player.getRandomY() - 0.25D, player.getRandomZ(0.5D), (rand.nextDouble() - 0.5D) * 0.5D, -rand.nextDouble() * 0.5D, (rand.nextDouble() - 0.5D) * 0.5D);
 		}
 	}
 
@@ -55,7 +61,7 @@ public class HygieneData extends SurviveData {
 		if (!player.isCreative() && !player.isSpectator()) {
 			++this.hygieneTimer;
 			if (this.hygieneTimer >= 200 && player.isInWaterOrRain()) {
-				this.clean(1);
+				this.clean(1, true);
 				this.hygieneTimer = 0;
 			} else if (this.hygieneTimer >= 500) {
 				this.dirty(1);
@@ -72,7 +78,7 @@ public class HygieneData extends SurviveData {
 	}
 
 	/**
-	 * Reads the water data for the player.
+	 * Reads the hygiene data for the player.
 	 */
 	public void read(CompoundTag compound) {
 		if (compound.contains("uncleanLevel", 99)) {
@@ -83,7 +89,7 @@ public class HygieneData extends SurviveData {
 	}
 
 	/**
-	 * Writes the water data for the player.
+	 * Writes the hygiene data for the player.
 	 */
 	public void write(CompoundTag compound) {
 		compound.putFloat("uncleanLevel", this.uncleanLevel);
@@ -91,10 +97,17 @@ public class HygieneData extends SurviveData {
 	}
 
 	/**
-	 * Get the player's water level.
+	 * Get the player's unclean level.
 	 */
 	public int getUncleanLevel() {
 		return this.uncleanLevel;
+	}
+	
+	/**
+	 * Get whether the player is plenty clean.
+	 */
+	public boolean isSqueakyClean() {
+		return this.uncleanLevel < 10;
 	}
 
 	/**
@@ -102,6 +115,20 @@ public class HygieneData extends SurviveData {
 	 */
 	public boolean needsABath() {
 		return this.uncleanLevel > 25;
+	}
+
+	/**
+	 * Should the player be avoided by all animals except pigs?
+	 */
+	public boolean shouldBeAvoidedByAnimals() {
+		return this.uncleanLevel > 35;
+	}
+
+	/**
+	 * Should the player be avoided by pigs?
+	 */
+	public boolean shouldBeAvoidedByPigs() {
+		return this.uncleanLevel > 45;
 	}
 
 	@Override

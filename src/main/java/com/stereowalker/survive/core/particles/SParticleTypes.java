@@ -12,6 +12,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class SParticleTypes {
 	public static final List<ParticleType<?>> PARTICLES = new ArrayList<ParticleType<?>>();
 	public static final SimpleParticleType STINK = register("stink", false);
+	public static final SimpleParticleType CLEAN = register("clean", false);
 
 	private static SimpleParticleType register(String key, boolean alwaysShow) {
 		SimpleParticleType particle = new SimpleParticleType(alwaysShow);

@@ -1,4 +1,5 @@
 [4.1.0]
+- Cows and pigs now avoid unhygienic players
 - Made Season modifiers tweakable via datapacks
 - Added a roasting mechanic and tweaked the freezing mechanic
 - Gave temperature its dedicated config folder

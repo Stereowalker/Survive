@@ -35,7 +35,7 @@ public class BodyCleaningItem extends Item {
 			} else {
 				cleaning = this.cleanValue;
 			}
-			stats.clean(cleaning);
+			stats.clean(cleaning, false);
 			playerIn.getItemInHand(handIn).hurtAndBreak(1, playerIn, (anim) ->{
 				anim.broadcastBreakEvent(EquipmentSlot.MAINHAND);
 			});

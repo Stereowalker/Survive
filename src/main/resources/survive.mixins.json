@@ -14,7 +14,9 @@
 	"CampfireBlockMixin",
 	"LayeredCauldronBlockMixin",
 	"LivingEntityMixin",
-	"EntityMixin"
+	"EntityMixin",
+	"CowMixin",
+	"PigMixin"
   ],
   "client": [
   	"GuiMixin"
