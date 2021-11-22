@@ -63,7 +63,7 @@ public class HygieneData extends SurviveData {
 			if (this.hygieneTimer >= 200 && player.isInWaterOrRain()) {
 				this.clean(1, true);
 				this.hygieneTimer = 0;
-			} else if (this.hygieneTimer >= 500) {
+			} else if (Survive.HYGIENE_CONFIG.dirtyTickRate >= 0 && this.hygieneTimer >= Survive.HYGIENE_CONFIG.dirtyTickRate) {
 				this.dirty(1);
 				this.hygieneTimer = 0;
 			}
@@ -138,6 +138,6 @@ public class HygieneData extends SurviveData {
 
 	@Override
 	public boolean shouldTick() {
-		return Survive.CONFIG.enable_hygiene;
+		return Survive.HYGIENE_CONFIG.enable;
 	}
 }

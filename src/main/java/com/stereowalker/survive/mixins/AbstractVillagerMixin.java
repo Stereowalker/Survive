@@ -24,7 +24,7 @@ public abstract class AbstractVillagerMixin extends AgeableMob implements Npc, M
 	
 	protected void registerGoals() {
 	      this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Player.class, (p_200828_0_) -> {
-	          return SurviveEntityStats.getHygieneStats(p_200828_0_).needsABath() && Survive.CONFIG.enable_hygiene;
+	          return SurviveEntityStats.getHygieneStats(p_200828_0_).needsABath() && Survive.HYGIENE_CONFIG.enable;
 	      }, 6.0F, 1.0D, 1.2D, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test));
 	   }
 

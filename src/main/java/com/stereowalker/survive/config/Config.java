@@ -123,12 +123,6 @@ public class Config implements ConfigObject {
 	public float max_weight = 21.0F;
 	
 	//
-	//Hygiene
-	@UnionConfig.Entry(group = "Hygiene" , name = "Enable Hygiene (Beta)", type = Type.COMMON)
-	@UnionConfig.Comment(comment = {"Disabling this will disable this mods hygiene system","The hygiene system might be pretty buggy, so proceed with caution"})
-	public boolean enable_hygiene = false;
-	
-	//
 	//Nutrition
 	@UnionConfig.Entry(group = "Nutrition" , name = "Enable Nutrition (Beta)", type = Type.COMMON)
 	@UnionConfig.Comment(comment = {"Disabling this will disable this mods nutrition system","The nutrition system might be pretty buggy, so proceed with caution"})

@@ -41,7 +41,7 @@ public abstract class PigMixin extends Animal implements ItemSteerable, Saddleab
 		this.goalSelector.addGoal(0, new FloatGoal(this));
 		this.goalSelector.addGoal(1, new PanicGoal(this, 1.25D));
 		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Player.class, (p_200828_0_) -> {
-			return SurviveEntityStats.getHygieneStats(p_200828_0_).shouldBeAvoidedByPigs() && Survive.CONFIG.enable_hygiene;
+			return SurviveEntityStats.getHygieneStats(p_200828_0_).shouldBeAvoidedByPigs() && Survive.HYGIENE_CONFIG.enable;
 		}, 6.0F, 1.0D, 1.2D, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test));
 		this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
 		this.goalSelector.addGoal(4, new TemptGoal(this, 1.2D, Ingredient.of(Items.CARROT_ON_A_STICK), false));

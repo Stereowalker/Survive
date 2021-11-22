@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.config.Config;
+import com.stereowalker.survive.config.HygieneConfig;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.config.TemperatureConfig;
 import com.stereowalker.survive.config.WellbeingConfig;
@@ -72,6 +72,7 @@ public class Survive extends MinecraftMod {
 	public static final float DEFAULT_TEMP = 37.0F;
 	public static final String MOD_ID = "survive";
 	public static final Config CONFIG = new Config();
+	public static final HygieneConfig HYGIENE_CONFIG = new HygieneConfig();
 	public static final TemperatureConfig TEMPERATURE_CONFIG = new TemperatureConfig();
 	public static final WellbeingConfig WELLBEING_CONFIG = new WellbeingConfig();
 	public static boolean isPrimalWinterLoaded;
@@ -96,6 +97,7 @@ public class Survive extends MinecraftMod {
 		instance = this;
 		ConfigBuilder.registerConfig(ServerConfig.class);
 		ConfigBuilder.registerConfig(CONFIG);
+		ConfigBuilder.registerConfig(HYGIENE_CONFIG);
 		ConfigBuilder.registerConfig(TEMPERATURE_CONFIG);
 		ConfigBuilder.registerConfig(WELLBEING_CONFIG);
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -152,7 +154,7 @@ public class Survive extends MinecraftMod {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public Screen getConfigScreen(Minecraft mc, Screen previousScreen) {
-		return new MinecraftModConfigsScreen(previousScreen, new TranslatableComponent("gui.survive.config.title"), TEMPERATURE_CONFIG, CONFIG);
+		return new MinecraftModConfigsScreen(previousScreen, new TranslatableComponent("gui.survive.config.title"), HYGIENE_CONFIG, TEMPERATURE_CONFIG, WELLBEING_CONFIG, CONFIG);
 	}
 
 	public void debug(Object message) {

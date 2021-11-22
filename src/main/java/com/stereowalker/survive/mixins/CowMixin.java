@@ -36,7 +36,7 @@ public abstract class CowMixin extends Animal {
 		this.goalSelector.addGoal(0, new FloatGoal(this));
 		this.goalSelector.addGoal(1, new PanicGoal(this, 2.0D));
 		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Player.class, (p_200828_0_) -> {
-			return SurviveEntityStats.getHygieneStats(p_200828_0_).shouldBeAvoidedByAnimals() && Survive.CONFIG.enable_hygiene;
+			return SurviveEntityStats.getHygieneStats(p_200828_0_).shouldBeAvoidedByAnimals() && Survive.HYGIENE_CONFIG.enable;
 		}, 6.0F, 1.0D, 1.2D, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test));
 		this.goalSelector.addGoal(3, new BreedGoal(this, 1.0D));
 		this.goalSelector.addGoal(4, new TemptGoal(this, 1.25D, Ingredient.of(Items.WHEAT), false));
