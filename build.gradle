@@ -106,6 +106,7 @@ dependencies {
 	compile fg.deobf("curse.maven:unionlib-367806:"+unionLibID)
 	compile fg.deobf("curse.maven:biomes-o-plenty-220318:"+bopID)
 	compile fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
+	compile fg.deobf("curse.maven:better-weather-400714:"+betterWeatherID)
 	compile fg.deobf("curse.maven:origins-474438:"+originsID)
 	compile fg.deobf("curse.maven:architectury-419699:"+architecturyID)
 	compile fg.deobf("curse.maven:create-328085:"+createID)

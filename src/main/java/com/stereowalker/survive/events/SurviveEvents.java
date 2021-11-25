@@ -5,6 +5,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.DataMaps;
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.compat.BetterWeatherCompat;
 import com.stereowalker.survive.compat.SereneSeasonsCompat;
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.config.ServerConfig;
@@ -21,6 +22,8 @@ import com.stereowalker.survive.util.TemperatureStats;
 import com.stereowalker.survive.util.TemperatureUtil;
 import com.stereowalker.survive.util.data.BlockTemperatureData;
 import com.stereowalker.survive.util.data.EntityTemperatureData;
+import com.stereowalker.survive.world.seasons.Season;
+import com.stereowalker.survive.world.seasons.Seasons;
 import com.stereowalker.unionlib.state.properties.UBlockStateProperties;
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
@@ -71,6 +74,7 @@ import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.event.world.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.network.NetworkDirection;
 
@@ -130,7 +134,7 @@ public class SurviveEvents {
 		}
 		return totalWeight;
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	public static float getArmorWeightClient(ItemStack piece) {
 		float totalWeight = 0.0F;
@@ -146,7 +150,7 @@ public class SurviveEvents {
 
 	@SubscribeEvent
 	public static void registerStats(LivingUpdateEvent event) {
-		
+
 		if(event.getEntityLiving() instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
 			SurviveEntityStats.addStatsOnSpawn(player);
@@ -338,14 +342,27 @@ public class SurviveEvents {
 					break;
 				}
 			}
-
+			float seasonMod = 0;
+			Season season = Seasons.NONE;
 			if (ModHelper.isSereneSeasonsLoaded()) {
-				float seasonMod = SereneSeasonsCompat.modifyTemperatureBySeason(player.getEntityWorld(), player.getPosition());
+				season = SereneSeasonsCompat.modifyTemperatureBySeason(player.getEntityWorld(), player.getPosition());
+			}
+			else if (ModList.get().isLoaded("betterweather")) {
+				season = BetterWeatherCompat.modifyTemperatureBySeason(player.getEntityWorld(), player.getPosition());
+			}
+			System.out.println(season.getRegistryName());
+			if (season != Seasons.NONE) {
+				if (DataMaps.Server.biomeTemperature.containsKey(player.getEntityWorld().getBiome(player.getPosition()).getRegistryName())) {
+					seasonMod = DataMaps.Server.biomeTemperature.get(player.getEntityWorld().getBiome(player.getPosition()).getRegistryName()).getSeasonModifiers().get(season);
+				} else {
+					seasonMod = season.getModifier();
+				}
 				if (ModHelper.isPrimalWinterLoaded()) {
 					seasonMod = -1.0F;
 				}
-				TemperatureStats.setTemperatureModifier(player, "survive:season", seasonMod);
 			}
+			
+			TemperatureStats.setTemperatureModifier(player, "survive:season", seasonMod);
 		}
 	}
 
