@@ -1,6 +1,6 @@
 
 modLoader="javafml"
-loaderVersion="[37,)"
+loaderVersion="[38,)"
 license="All Rights Reserved"
 issueTrackerURL="https://github.com/Stereowalker/Survive/issues"
 logoFile="logo.png"
@@ -8,7 +8,7 @@ logoFile="logo.png"
 modId="survive"
 version="${file.jarVersion}"
 displayName="Survive"
-updateJSONURL="https://raw.githubusercontent.com/Stereowalker/Survive/1.16-forge/update.json"
+updateJSONURL="https://raw.githubusercontent.com/Stereowalker/Survive/1.18-forge/update.json"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/survive"
 credits="I'd like to thank all my supporters on Patreon for giving me a reason to continue modding, ChainmailPickaxe for the nice textures, and you for downloading and playing with this mod"
 authors="Stereowalker"
@@ -19,21 +19,21 @@ Adds new survival mechanics like thirst, body temperature, sleep management and 
 [[dependencies.survive]] #optional
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[35.1.4,)" #mandatory
+    versionRange="[38,)" #mandatory
     ordering="NONE"
     side="BOTH"
 # Here's another dependency
 [[dependencies.survive]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.17.1,1.18)"
+    versionRange="[1.18,1.19)"
     ordering="NONE"
     side="BOTH"
 	
 [[dependencies.survive]]
     modId="unionlib"
     mandatory=true
-    versionRange="[4.1.0,4.2.0)"
+    versionRange="[5.0,5.1)"
     ordering="NONE"
     side="BOTH"
 	

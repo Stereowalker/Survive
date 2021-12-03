@@ -32,20 +32,10 @@ version = modMinecraftVersion + "-" +modVersion
 group = modGroup // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = modFilename
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 println('Mod Name: ' + modFilename + ', Mod Version: ' + modVersion + ', Minecraft Version: ' + modMinecraftVersion + ', Forge Version: ' + modForgeVersion)
-
-repositories {
-	maven {url = "https://dvs1.progwml6.com/files/maven/"}// location of the maven that hosts JEI files
-	maven {url = "https://modmaven.k-4u.nl"}// location of a maven mirror for JEI files, as a fallback
-	maven {url = "https://maven.theillusivec4.top/"}
-	maven {url 'https://maven.blamejared.com'}
-	maven {url "https://www.cursemaven.com"}
-    maven {url = "https://repo.spongepowered.org/maven"} // mixin
-    maven {url "https://maven.shedaniel.me/"} // cloth config
-}
 
 minecraft {
     mappings channel: mappingsChannel, version: mappingsVersion
@@ -87,23 +77,35 @@ minecraft {
     }
 }
 
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+	maven {url = "https://dvs1.progwml6.com/files/maven/"}// JEI
+	maven {url "https://modmaven.dev/" }// UnionLib
+	maven {url = "https://maven.theillusivec4.top/"}
+	maven {url 'https://maven.blamejared.com'}
+	maven {url "https://www.cursemaven.com"}
+    maven {url = "https://repo.spongepowered.org/maven"} // mixin
+    maven {url "https://maven.shedaniel.me/"} // cloth config
+}
+
 dependencies {
 	minecraft 'net.minecraftforge:forge:' + modMinecraftVersion + '-' + modForgeVersion
-	annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
-	implementation 'org.spongepowered:mixin:0.8.4'
+	annotationProcessor "org.spongepowered:mixin:"+modMixinVersion+":processor"
+	implementation "org.spongepowered:mixin:"+modMixinVersion+""
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
+	implementation fg.deobf("com.stereowalker.unionlib:UnionLib:"+modMinecraftVersion+"-"+unionLibVersion+"")
 	
 	implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:"+clothConfigVersion)
 	
-	compileOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+":api")
-    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
+	//compileOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+":api")
+    //compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
 	
-	runtimeOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+"")
-	runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
+	//runtimeOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+"")
+	//runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
 	
-	implementation fg.deobf("curse.maven:unionlib-367806:"+unionLibID)
-	implementation fg.deobf("curse.maven:biomes-o-plenty-220318:"+bopID)
-	implementation fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
+	//implementation fg.deobf("curse.maven:biomes-o-plenty-220318:"+bopID)
+	//implementation fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
 	//implementation fg.deobf("curse.maven:origins-474438:"+originsID)
 	implementation fg.deobf("curse.maven:architectury-419699:"+architecturyID)
 	//implementation fg.deobf("curse.maven:create-328085:"+createID)
