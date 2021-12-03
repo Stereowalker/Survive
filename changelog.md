@@ -1,4 +1,5 @@
 [4.1.0]
+- Due to the change in configs, ensure your config files are backed up before you update the mod
 - Cows and pigs now avoid unhygienic players
 - Made Season modifiers tweakable via datapacks
 - Added a roasting mechanic and tweaked the freezing mechanic

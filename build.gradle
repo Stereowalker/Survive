@@ -145,7 +145,7 @@ task deobfJar(type: Jar) {
 
 curseforge {
     project {
-    	id = '367337'
+    	id = modCurseId
 		apiKey = "$System.env.CURSEFORGEKEY"
 		changelog = file('changelog.md')
 		releaseType = 'release'
