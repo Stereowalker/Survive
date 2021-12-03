@@ -28,7 +28,6 @@ import com.stereowalker.unionlib.state.properties.UBlockStateProperties;
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
-import io.github.apace100.origins.integration.OriginEventsArchitectury;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
@@ -350,7 +349,6 @@ public class SurviveEvents {
 			else if (ModList.get().isLoaded("betterweather")) {
 				season = BetterWeatherCompat.modifyTemperatureBySeason(player.getEntityWorld(), player.getPosition());
 			}
-			System.out.println(season.getRegistryName());
 			if (season != Seasons.NONE) {
 				if (DataMaps.Server.biomeTemperature.containsKey(player.getEntityWorld().getBiome(player.getPosition()).getRegistryName())) {
 					seasonMod = DataMaps.Server.biomeTemperature.get(player.getEntityWorld().getBiome(player.getPosition()).getRegistryName()).getSeasonModifiers().get(season);
@@ -549,6 +547,7 @@ public class SurviveEvents {
 		BLEND, NORMAL;
 	}
 
+	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickEmpty event) {
 		RayTraceResult raytraceresult = rayTrace(event.getWorld(), event.getEntityLiving(), RayTraceContext.FluidMode.SOURCE_ONLY);
@@ -566,6 +565,7 @@ public class SurviveEvents {
 		}
 	}
 
+	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickBlock event) {
 		RayTraceResult raytraceresult = rayTrace(event.getWorld(), event.getEntityLiving(), RayTraceContext.FluidMode.SOURCE_ONLY);
