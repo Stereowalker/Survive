@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.world.SurviveUUIDS;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.entity.ai.UAttributes;
 
@@ -31,9 +32,10 @@ public class SEffects {
 	public static final MobEffect CHILLED = register("chilled", new SEffect(MobEffectCategory.BENEFICIAL, 5750248));
 	public static final MobEffect HEATED = register("heated", new SEffect(MobEffectCategory.BENEFICIAL, 16750592));
 	public static final MobEffect ENERGIZED = register("energized", new SEffect(MobEffectCategory.BENEFICIAL, 16750592));
-	public static final MobEffect SLOWNESS_ILLNESS = register("slowness_illness", (new UnwellEffect(MobEffectCategory.HARMFUL, 5926017)).addAttributeModifier(Attributes.MOVEMENT_SPEED, "7107DE5E-7CE8-4030-940E-514C1F160891", (double)-0.15F, AttributeModifier.Operation.MULTIPLY_TOTAL));
-	public static final MobEffect HYPOTHERMIA = register("hypothermia", new UnwellEffect(MobEffectCategory.HARMFUL, 5750248));
-	public static final MobEffect HYPERTHERMIA = register("hyperthermia", new UnwellEffect(MobEffectCategory.HARMFUL, 16750592));
+	public static final MobEffect SLOWNESS_ILLNESS = register("slowness_illness", (new UnwellMobEffect(MobEffectCategory.HARMFUL, 5926017)).addAttributeModifier(Attributes.MOVEMENT_SPEED, SurviveUUIDS.UNWELL_SLOWNESS, (double)-0.15F, AttributeModifier.Operation.MULTIPLY_TOTAL));
+	public static final MobEffect WEAKNESS_ILLNESS = register("weakness_illness", (new UnwellAttackDamageMobEffect(MobEffectCategory.HARMFUL, 4738376, -4.0D)).addAttributeModifier(Attributes.ATTACK_DAMAGE, SurviveUUIDS.UNWELL_WEAKNESS, 0.0D, AttributeModifier.Operation.ADDITION));
+	public static final MobEffect HYPOTHERMIA = register("hypothermia", new UnwellMobEffect(MobEffectCategory.HARMFUL, 5750248));
+	public static final MobEffect HYPERTHERMIA = register("hyperthermia", new UnwellMobEffect(MobEffectCategory.HARMFUL, 16750592));
 	
 	public static void registerAll(IForgeRegistry<MobEffect> registry) {
 		for(MobEffect effect : EFFECT) {

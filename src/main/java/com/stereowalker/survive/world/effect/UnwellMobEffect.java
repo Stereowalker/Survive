@@ -7,9 +7,9 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.item.ItemStack;
 
-public class UnwellEffect extends MobEffect {
+public class UnwellMobEffect extends MobEffect {
 
-	public UnwellEffect(MobEffectCategory effectType, int liquidColorIn) {
+	public UnwellMobEffect(MobEffectCategory effectType, int liquidColorIn) {
 		super(effectType, liquidColorIn);
 	}
 

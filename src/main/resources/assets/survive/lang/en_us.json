@@ -126,7 +126,7 @@
 	"_comment6_": "///////////////////////////////////////////////[CONFIG]///////////////////////////////////////////////",
 	"config.survive.hygiene.file": "Hygiene Config (Beta)",
 	"config.survive.temperature.file": "Temperature Config",
-	"config.survive.wellbeing.file": "Wellbeing Config (Beta)",
+	"config.survive.wellbeing.file": "Wellbeing Config",
 	
 	"subtitles.entity.player.roast_hurt": "Player bakes",
 	"gamerule.roastDamage": "Deal roast damage"
