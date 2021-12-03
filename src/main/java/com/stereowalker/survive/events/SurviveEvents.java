@@ -70,7 +70,7 @@ import net.minecraftforge.event.world.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraftforge.network.NetworkDirection;
 
 @EventBusSubscriber
 public class SurviveEvents {
@@ -323,7 +323,7 @@ public class SurviveEvents {
 			TemperatureData.setTemperatureModifier(player, "survive:armor", armorMod);
 
 			double snow = 0.0D;
-			if (isSnowingAt(player.getLevel(), player.blockPosition())) {
+			if (isSnowingAt(player.level, player.blockPosition())) {
 				snow = -2.0D;
 			}
 			TemperatureData.setTemperatureModifier(player, "survive:snow", snow);
@@ -339,8 +339,8 @@ public class SurviveEvents {
 			float seasonMod = 0;
 			if (ModHelper.isSereneSeasonsLoaded()) {
 				Season season = SereneSeasonsCompat.modifyTemperatureBySeason(player.getCommandSenderWorld(), player.blockPosition());
-				if (DataMaps.Server.biomeTemperature.containsKey(player.getLevel().getBiome(player.blockPosition()).getRegistryName())) {
-					seasonMod = DataMaps.Server.biomeTemperature.get(player.getLevel().getBiome(player.blockPosition()).getRegistryName()).getSeasonModifiers().get(season);
+				if (DataMaps.Server.biomeTemperature.containsKey(player.level.getBiome(player.blockPosition()).getRegistryName())) {
+					seasonMod = DataMaps.Server.biomeTemperature.get(player.level.getBiome(player.blockPosition()).getRegistryName()).getSeasonModifiers().get(season);
 				} else {
 					seasonMod = season.getModifier();
 				}

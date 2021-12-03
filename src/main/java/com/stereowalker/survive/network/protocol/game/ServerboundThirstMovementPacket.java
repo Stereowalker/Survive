@@ -10,7 +10,7 @@ import com.stereowalker.survive.needs.WaterData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 public class ServerboundThirstMovementPacket {
 	private float moveF;

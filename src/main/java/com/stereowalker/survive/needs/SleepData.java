@@ -34,7 +34,7 @@ public class SleepData extends SurviveData {
 			ServerPlayer serverplayer = (ServerPlayer)player;
 			if (player.isSleeping())
 				addAwakeTime(serverplayer, -player.getSleepTimer());
-			else if (serverplayer.getLevel().dimensionType().bedWorks())
+			else if (serverplayer.level.dimensionType().bedWorks())
 				addAwakeTime(serverplayer, 1);
 			if (player.tickCount % 20 == 0) {
 				addTiredEffect(serverplayer);
