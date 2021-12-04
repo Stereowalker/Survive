@@ -25,7 +25,7 @@ public class EmptyCanteenItem extends Item {
 		HitResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.SOURCE_ONLY);
 		BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
 		if (worldIn.getFluidState(blockpos).is(FluidTags.WATER)) {
-			playerIn.setItemInHand(handIn, CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.WATER_CANTEEN), Survive.CONFIG.canteen_fill_amount));
+			playerIn.setItemInHand(handIn, CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.WATER_CANTEEN), Survive.THIRST_CONFIG.canteen_fill_amount));
 		}
 		return super.use(worldIn, playerIn, handIn);
 	}

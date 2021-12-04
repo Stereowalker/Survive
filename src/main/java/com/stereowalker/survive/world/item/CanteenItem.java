@@ -50,7 +50,7 @@ public class CanteenItem extends Item {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public ItemStack getDefaultInstance() {
-		return addPropertiesToCanteen(new ItemStack(this), Survive.CONFIG.canteen_fill_amount);
+		return addPropertiesToCanteen(new ItemStack(this), Survive.THIRST_CONFIG.canteen_fill_amount);
 	}
 	
 	public int getDrinksLeft(ItemStack stack) {
@@ -58,7 +58,7 @@ public class CanteenItem extends Item {
 	}
 	
 	public void setDrinksLeft(ItemStack stack, int drinks) {
-		stack.getOrCreateTag().putInt("DrinksLeft", Mth.clamp(drinks, 0, Survive.CONFIG.canteen_fill_amount));
+		stack.getOrCreateTag().putInt("DrinksLeft", Mth.clamp(drinks, 0, Survive.THIRST_CONFIG.canteen_fill_amount));
 	}
 	
 	public void decrementDrinks(ItemStack stack) {
@@ -128,11 +128,11 @@ public class CanteenItem extends Item {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
 		ItemStack stack = playerIn.getItemInHand(handIn);
-		if (getDrinksLeft(stack) < Survive.CONFIG.canteen_fill_amount) {
+		if (getDrinksLeft(stack) < Survive.THIRST_CONFIG.canteen_fill_amount) {
 			HitResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.SOURCE_ONLY);
 			BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
 			if (worldIn.getFluidState(blockpos).is(FluidTags.WATER)) {
-				setDrinksLeft(stack, Survive.CONFIG.canteen_fill_amount);
+				setDrinksLeft(stack, Survive.THIRST_CONFIG.canteen_fill_amount);
 			}
 		}
 		playerIn.startUsingItem(handIn);

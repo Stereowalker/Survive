@@ -49,7 +49,7 @@ public class ServerboundThirstMovementPacket {
 			final boolean jump = msg.jump;
 			final UUID uuid = msg.uuid;
 			if (uuid.equals(Player.createPlayerUUID(sender.getGameProfile()))) {
-				if (Survive.CONFIG.enable_thirst) {
+				if (Survive.THIRST_CONFIG.enabled) {
 					WaterData stats = SurviveEntityStats.getWaterStats(sender);
 					int movM = (int) ((moveS+moveF)*10);
 					float moveMul;

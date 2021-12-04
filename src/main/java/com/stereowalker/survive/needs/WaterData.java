@@ -189,7 +189,7 @@ public class WaterData extends SurviveData {
 	
 	@Override
 	public boolean shouldTick() {
-		return Survive.CONFIG.enable_thirst;
+		return Survive.THIRST_CONFIG.enabled;
 	}
 
 	/////-----------EVENTS-----------/////
@@ -198,11 +198,11 @@ public class WaterData extends SurviveData {
 	public static void regulateThirst(LivingUpdateEvent event) {
 		if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
 			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
-			if (Survive.CONFIG.enable_thirst) {
+			if (Survive.THIRST_CONFIG.enabled) {
 				WaterData stats = SurviveEntityStats.getWaterStats(player);
-				if (Survive.CONFIG.idle_thirst_tick_rate > -1) {
-					if (player.tickCount%Survive.CONFIG.idle_thirst_tick_rate == Survive.CONFIG.idle_thirst_tick_rate-1) {
-						stats.addExhaustion(player, Survive.CONFIG.idle_thirst_exhaustion);
+				if (Survive.THIRST_CONFIG.idle_thirst_tick_rate > -1) {
+					if (player.tickCount%Survive.THIRST_CONFIG.idle_thirst_tick_rate == Survive.THIRST_CONFIG.idle_thirst_tick_rate-1) {
+						stats.addExhaustion(player, Survive.THIRST_CONFIG.idle_thirst_exhaustion);
 					}
 				}
 				if (player.level.getDifficulty() == Difficulty.PEACEFUL && player.level.getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION)) {

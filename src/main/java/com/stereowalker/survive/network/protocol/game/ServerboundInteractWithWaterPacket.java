@@ -67,7 +67,7 @@ public class ServerboundInteractWithWaterPacket {
 	}
 	
 	public static boolean shouldRemoveSource(FluidState fluid) {
-		if ((!(fluid.getType() instanceof WaterFluid) || Survive.CONFIG.shouldRemoveSourceWaterBlock) && fluid.isSource()) return true;
+		if ((!(fluid.getType() instanceof WaterFluid) || Survive.THIRST_CONFIG.shouldRemoveSourceWaterBlock) && fluid.isSource()) return true;
 		return false;
 	}
 
@@ -87,7 +87,7 @@ public class ServerboundInteractWithWaterPacket {
 			FluidState fluid = sender.level.getFluidState(pos);
 			final UUID uuid = msg.uuid;
 			if (uuid.equals(Player.createPlayerUUID(sender.getGameProfile()))) {
-				if (Survive.CONFIG.enable_thirst) {
+				if (Survive.THIRST_CONFIG.enabled) {
 					if (heldItem.isEmpty()) {
 						if (sender.isCrouching()) {
 							WaterData waterStats = SurviveEntityStats.getWaterStats(sender);
@@ -97,7 +97,7 @@ public class ServerboundInteractWithWaterPacket {
 								if (block.getBlock() == Blocks.WATER_CAULDRON) {
 									LayeredCauldronBlock.lowerFillLevel(block, sender.level, pos);
 									flag = true;
-								} else if (canDrinkThis(fluid, Survive.CONFIG.drinkFromFlowingWater)) {
+								} else if (canDrinkThis(fluid, Survive.THIRST_CONFIG.drinkFromFlowingWater)) {
 									if (shouldRemoveSource(fluid)) {
 										sender.level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 									}
@@ -114,7 +114,7 @@ public class ServerboundInteractWithWaterPacket {
 						}
 					} else if (heldItem.getItem() == SItems.CANTEEN) {
 						if (isValidContainerSource(waterAmount)) {
-							int i = Survive.CONFIG.canteen_fill_amount;
+							int i = Survive.THIRST_CONFIG.canteen_fill_amount;
 							heldItem.shrink(1);
 							if (addThirst) sender.addItem(CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.WATER_CANTEEN), i));
 							else sender.addItem(CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.PURIFIED_WATER_CANTEEN), i));

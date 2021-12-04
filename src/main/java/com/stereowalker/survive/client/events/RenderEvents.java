@@ -91,7 +91,7 @@ public class RenderEvents {
 				renderTemperature(ScreenOffset.TOP, playerentity, event.getMatrixStack());
 			}
 //			TODO: if (event.getType() == RenderGameOverlayEvent.ElementType.FOOD) {
-				if (Survive.CONFIG.enable_thirst && !(playerentity.isCreative() || playerentity.isSpectator())) {
+				if (Survive.THIRST_CONFIG.enabled && !(playerentity.isCreative() || playerentity.isSpectator())) {
 					LivingEntity livingentity = living;
 					int moveUp = needsAir ? -10 : 0;
 					int l = (int) SurviveEntityStats.getWaterStats(playerentity).getWaterLevel();
@@ -224,7 +224,7 @@ public class RenderEvents {
 		Random rand = new Random();
 		LivingEntity livingentity = living;
 		int moveUp = needsAir ? -10 : 0;
-		int thirstEnabled = Survive.CONFIG.enable_thirst ? -10 : 0;
+		int thirstEnabled = Survive.THIRST_CONFIG.enabled ? -10 : 0;
 		int l = (int) SurviveEntityStats.getEnergyStats(playerentity).getEnergyLevel();
 		if (SurviveEntityStats.getEnergyStats(playerentity).isExhausted()) l = (int) SurviveEntityStats.getEnergyStats(playerentity).getReserveLevel();
 		//TODO Access transform this Gui#getRenderMountHealth
