@@ -179,15 +179,24 @@ curseforge {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact jar
-			artifact sourcesJar
-			artifact deobfJar
-			//artifact apiJar
+        	afterEvaluate {
+                artifact project.jar
+                artifact project.sourcesJar
+            }
+        
+        	groupId = project.group
+			artifactId = project.archivesBaseName
+			version = project.version
         }
     }
     repositories {
         maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
+            name = "modmaven"
+			credentials {
+				username "$System.env.ARTIFACTORYUSER"
+				password "$System.env.ARTIFACTORYPASS"
+			}
+			url = "https://modmaven.dev/artifactory/local-releases/"
         }
     }
 }
