@@ -11,6 +11,7 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluids;
 
 @RegistryHolder("survive")
 public class SItems {
@@ -31,9 +32,9 @@ public class SItems {
 	@RegistryHolder("canteen")
 	public static final Item CANTEEN = new EmptyCanteenItem(new Item.Properties().tab(SItemGroup.MAIN).stacksTo(1));
 	@RegistryHolder("water_canteen")
-	public static final Item WATER_CANTEEN = new CanteenItem(new Item.Properties().craftRemainder(CANTEEN).stacksTo(1).tab(SItemGroup.MAIN));
+	public static final Item WATER_CANTEEN = new CanteenItem(new Item.Properties().craftRemainder(CANTEEN).stacksTo(1).tab(SItemGroup.MAIN), Fluids.FLOWING_WATER, Fluids.WATER);
 	@RegistryHolder("purified_water_canteen")
-	public static final Item PURIFIED_WATER_CANTEEN = new CanteenItem(new Item.Properties().craftRemainder(CANTEEN).stacksTo(1).tab(SItemGroup.MAIN));
+	public static final Item PURIFIED_WATER_CANTEEN = new CanteenItem(new Item.Properties().craftRemainder(CANTEEN).stacksTo(1).tab(SItemGroup.MAIN), SFluids.FLOWING_PURIFIED_WATER, SFluids.PURIFIED_WATER);
 	@RegistryHolder("water_bowl")
 	public static final Item WATER_BOWL = new WaterBowlItem(new Item.Properties().tab(SItemGroup.MAIN).stacksTo(1));
 	@RegistryHolder("purified_water_bowl")

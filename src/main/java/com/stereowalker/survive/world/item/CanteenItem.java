@@ -1,5 +1,6 @@
 package com.stereowalker.survive.world.item;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.stereowalker.survive.Survive;
@@ -25,15 +26,18 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class CanteenItem extends Item {
+	private final Fluid[] validFluids;
 
-	public CanteenItem(Properties properties) {
+	public CanteenItem(Properties properties, Fluid... fluids) {
 		super(properties);
+		this.validFluids = fluids;
 	}
 	
 	public static CompoundTag canteenTag(int drinks) {
@@ -131,7 +135,7 @@ public class CanteenItem extends Item {
 		if (getDrinksLeft(stack) < Survive.THIRST_CONFIG.canteen_fill_amount) {
 			HitResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.SOURCE_ONLY);
 			BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
-			if (worldIn.getFluidState(blockpos).is(FluidTags.WATER)) {
+			if (worldIn.getFluidState(blockpos).is(FluidTags.WATER) && Arrays.asList(this.validFluids).contains(worldIn.getFluidState(blockpos).getType())) {
 				setDrinksLeft(stack, Survive.THIRST_CONFIG.canteen_fill_amount);
 			}
 		}
