@@ -10,7 +10,6 @@
   	"FoodDataMixin",
   	"BlockMixin",
   	"ServerPlayerGameModeMixin",
-	"GMix",
 	"CampfireBlockMixin",
 	"LayeredCauldronBlockMixin",
 	"LivingEntityMixin",
