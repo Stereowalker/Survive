@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.stereowalker.survive.GuiHelper;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.client.gui.SurviveHeartType;
 import com.stereowalker.survive.core.SurviveEntityStats;
@@ -36,8 +37,8 @@ public abstract class GuiMixin extends GuiComponent {
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;lerp(FFF)F", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void render2(PoseStack arg0, float arg1, CallbackInfo ci, Font font, float f) {
-		Survive.renderTiredOverlay((Gui)(Object)this);
-		Survive.renderHeatStroke((Gui)(Object)this);
+		GuiHelper.renderTiredOverlay((Gui)(Object)this);
+		GuiHelper.renderHeatStroke((Gui)(Object)this);
 	}
 
 

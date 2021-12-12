@@ -19,7 +19,6 @@ import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.survive.json.FoodJsonHolder;
 import com.stereowalker.survive.json.PotionJsonHolder;
-import com.stereowalker.survive.needs.IRoastedEntity;
 import com.stereowalker.survive.network.protocol.game.ClientboundArmorDataTransferPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundDrinkSoundPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPacket;
@@ -36,7 +35,6 @@ import com.stereowalker.survive.resource.PotionDrinkDataManager;
 import com.stereowalker.survive.spell.SSpells;
 import com.stereowalker.survive.stat.SStats;
 import com.stereowalker.survive.world.DataMaps;
-import com.stereowalker.survive.world.effect.SEffects;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.level.CGameRules;
 import com.stereowalker.survive.world.level.material.SFluids;
@@ -46,13 +44,11 @@ import com.stereowalker.unionlib.mod.MinecraftMod;
 import com.stereowalker.unionlib.network.PacketRegistry;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -178,46 +174,14 @@ public class Survive extends MinecraftMod {
 				DataMaps.Server.defaultFood.put(item.getRegistryName(), item.getFoodProperties());
 		}
 	}
-	
-	IIngameOverlay TIRED_ELEMENT;
-	IIngameOverlay HEAT_STROKE_ELEMENT;
 
 	public void clientRegistries(final FMLClientSetupEvent event)
 	{
 		RenderType frendertype = RenderType.translucent();
 		ItemBlockRenderTypes.setRenderLayer(SFluids.PURIFIED_WATER, frendertype);
 		ItemBlockRenderTypes.setRenderLayer(SFluids.FLOWING_PURIFIED_WATER, frendertype);
-		TIRED_ELEMENT = OverlayRegistry.registerOverlayTop("Tired", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
-	        gui.setupOverlayRenderState(true, false);
-	        renderTiredOverlay(gui);
-	    });
-		HEAT_STROKE_ELEMENT = OverlayRegistry.registerOverlayTop("Heat Stroke", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
-	        gui.setupOverlayRenderState(true, false);
-	        renderHeatStroke(gui);
-	    });
+		GuiHelper.registerOverlays();
 	}
-	
-	@OnlyIn(Dist.CLIENT)
-	public static void renderTiredOverlay(Gui gui) {
-		if (CONFIG.tired_overlay) {
-			if (Minecraft.getInstance().player.hasEffect(SEffects.TIREDNESS)) {
-				Minecraft.getInstance().getProfiler().push("tired");
-				int amplifier = Minecraft.getInstance().player.getEffect(SEffects.TIREDNESS).getAmplifier() + 1;
-				amplifier/=(CONFIG.tiredTimeStacks/5);
-				amplifier = Mth.clamp(amplifier, 0, 4);
-				gui.renderTextureOverlay(Survive.getInstance().location("textures/misc/sleep_overlay_"+(amplifier)+".png"), 0.5F);
-				Minecraft.getInstance().getProfiler().pop();
-			}
-		}
-	}
-	
-	@OnlyIn(Dist.CLIENT)
-    public static void renderHeatStroke(Gui gui)
-    {
-        if (((IRoastedEntity)gui.minecraft.player).getTicksRoasted() > 0) {
-        	gui.renderTextureOverlay(Survive.getInstance().location("textures/misc/burning_overlay.png"), ((IRoastedEntity)gui.minecraft.player).getPercentRoasted());
-        }
-    }
 
 	public static List<String> defaultDimensionMods() {
 		List<String> dims = new ArrayList<String>();
