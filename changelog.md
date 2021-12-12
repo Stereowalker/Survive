@@ -1,10 +1,11 @@
+[5.0.3]
+- Fix server not starting
+
 [5.0.2]
 - Removed GlDebug mixin
 
-
 [5.0.1]
 - Fix ability to refill canteens from wrong water source
-
 
 [5.0.0]
 - Temporarily disabled serene seasons compatability
