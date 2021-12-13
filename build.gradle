@@ -35,7 +35,7 @@ archivesBaseName = modFilename
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-println('Mod Name: ' + modFilename + ', Mod Version: ' + modVersion + ', Minecraft Version: ' + modMinecraftVersion + ', Forge Version: ' + modForgeVersion)
+println('Mod Name: ' + modFilename + ', Mod Version: ' + modVersion + ', Minecraft Version: ' + modMinecraftVersion + ', '+modLoader+' Version: ' + modLoaderVersion)
 
 minecraft {
     mappings channel: mappingsChannel, version: mappingsVersion
@@ -90,11 +90,11 @@ repositories {
 }
 
 dependencies {
-	minecraft 'net.minecraftforge:forge:' + modMinecraftVersion + '-' + modForgeVersion
+	minecraft 'net.minecraftforge:forge:' + modMinecraftVersion + '-' + modLoaderVersion
 	annotationProcessor "org.spongepowered:mixin:"+modMixinVersion+":processor"
 	implementation "org.spongepowered:mixin:"+modMixinVersion+""
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
-	implementation fg.deobf("com.stereowalker.unionlib:UnionLib:"+modMinecraftVersion+"-"+unionLibVersion+"")
+	implementation fg.deobf("com.stereowalker.unionlib:UnionLib:"+modMinecraftVersion+"-"+unionLibVersion+"-"+modLoader+"")
 	
 	implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:"+clothConfigVersion)
 	

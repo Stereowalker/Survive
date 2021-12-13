@@ -4,12 +4,12 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.needs.StaminaData;
-import com.stereowalker.unionlib.network.client.CUnionPacket;
+import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ServerboundArmorStaminaPacket extends CUnionPacket {
+public class ServerboundArmorStaminaPacket extends ServerboundUnionPacket {
 
 	public ServerboundArmorStaminaPacket() {
 		super(Survive.getInstance().channel);

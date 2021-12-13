@@ -1,6 +1,6 @@
 
 modLoader="javafml"
-loaderVersion="[38,)"
+loaderVersion="[39,)"
 license="All Rights Reserved"
 issueTrackerURL="https://github.com/Stereowalker/Survive/issues"
 logoFile="logo.png"
@@ -19,21 +19,21 @@ Adds new survival mechanics like thirst, body temperature, sleep management and 
 [[dependencies.survive]] #optional
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[38,)" #mandatory
+    versionRange="[39,)" #mandatory
     ordering="NONE"
     side="BOTH"
 # Here's another dependency
 [[dependencies.survive]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18,1.19)"
+    versionRange="[1.18.1,1.19)"
     ordering="NONE"
     side="BOTH"
 	
 [[dependencies.survive]]
     modId="unionlib"
     mandatory=true
-    versionRange="[5.0,5.1)"
+    versionRange="[6.1,6.2)"
     ordering="NONE"
     side="BOTH"
 	

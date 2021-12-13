@@ -28,7 +28,6 @@ public class GuiHelper {
 	}
 	
 	@SuppressWarnings("resource")
-	
 	public static void renderTiredOverlay(Gui gui) {
 		if (Survive.CONFIG.tired_overlay) {
 			if (Minecraft.getInstance().player.hasEffect(SEffects.TIREDNESS)) {
