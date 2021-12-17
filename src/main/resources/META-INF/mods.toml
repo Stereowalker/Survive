@@ -33,7 +33,7 @@ Adds new survival mechanics like thirst, body temperature, sleep management and 
 [[dependencies.survive]]
     modId="unionlib"
     mandatory=true
-    versionRange="[6.1,6.2)"
+    versionRange="[6.1.5,6.2)"
     ordering="NONE"
     side="BOTH"
 	

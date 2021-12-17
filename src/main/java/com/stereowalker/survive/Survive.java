@@ -117,7 +117,7 @@ public class Survive extends MinecraftMod {
 	
 	@Override
 	public List<Class<?>> getRegistries() {
-		return Lists.newArrayList(SItems.class);
+		return Lists.newArrayList(SFluids.class, SItems.class);
 	}
 	
 	@Override

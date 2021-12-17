@@ -50,11 +50,6 @@ public class SurviveRegistryEvents
 	}
 
 	@SubscribeEvent
-	public static void registerFluids(final RegistryEvent.Register<Fluid> event) {
-		SFluids.registerAll(event.getRegistry());
-	}
-
-	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public static void registerItemColors(ColorHandlerEvent.Block event) {
 		event.getBlockColors().register((state, displayReader, blockPos, tintIndex) -> {
