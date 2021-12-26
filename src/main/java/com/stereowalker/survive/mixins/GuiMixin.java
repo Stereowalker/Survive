@@ -18,6 +18,7 @@ import com.stereowalker.survive.client.gui.SurviveHeartType;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
+import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -39,6 +40,7 @@ public abstract class GuiMixin extends GuiComponent {
 	public void render2(PoseStack arg0, float arg1, CallbackInfo ci, Font font, float f) {
 		GuiHelper.renderTiredOverlay((Gui)(Object)this);
 		GuiHelper.renderHeatStroke((Gui)(Object)this);
+		GuiHelper.renderTemperature((Gui)(Object)this, ScreenOffset.TOP, getCameraPlayer(), arg0);
 	}
 
 
