@@ -37,8 +37,14 @@
 	"item.survive.green_washcloth": "绿色浴巾",
 	"item.survive.red_washcloth": "红色浴巾",
 	"item.survive.black_washcloth": "黑色浴巾",
+	"item.survive.wood_ash": "木灰",
+	"item.survive.potash_solution": "钾盐溶液",
+	"item.survive.potash": "碳酸钾",
+	"item.survive.animal_fat": "动物脂肪",
+	"item.survive.soap_bottle": "肥皂瓶",
+	"item.survive.soap_mix": "肥皂原液",
 ///////////////////////////////////////////////////////////[方块]///////////////////////////////////////////////////////////
-	"block.survive.serable_block": "可旋转方块",
+	"block.survive.potash_cauldron": "碳酸钾锅",
 ///////////////////////////////////////////////////////////[温度条件]///////////////////////////////////////////////////////////
 	"temperature_context.biome": "当在 %1$s 时",
 	"temperature_context.not_biome": "不在 %1$s 时",
@@ -67,12 +73,12 @@
 	"item.minecraft.potion.effect.cold_resistance": "寒冷抗性药水",
 	"item.minecraft.splash_potion.effect.cold_resistance": "喷溅型寒冷抗性药水",
 	"item.minecraft.lingering_potion.effect.cold_resistance": "滞留型寒冷抗性药水",
-///////////////////////////////////////////////////////////[附魔]///////////////////////////////////////////////////////////
-	"enchantment.survive.cooling": "冷却",
+	"_comment0_": "///////////////////////////////////////////////[ENCHANTMENTS]///////////////////////////////////////////////",
+	"enchantment.survive.cooling": "制冷",
 	"enchantment.survive.cooling.desc": "穿着带有该附魔的护甲可以降低温度",
-	"enchantment.survive.adjusted_cooling": "自适应冷却",
-	"enchantment.survive.adjusted_cooling.desc": "炽热时自动降低体温",
-	"enchantment.survive.warming": "暖和",
+	"enchantment.survive.adjusted_cooling": "自适应制冷",
+	"enchantment.survive.adjusted_cooling.desc": "在炎热时自动降低体温",
+	"enchantment.survive.warming": "自热",
 	"enchantment.survive.warming.desc": "穿着带有该附魔的护甲可以提高温度",
 	"enchantment.survive.adjusted_warming": "自适应增温",
 	"enchantment.survive.adjusted_warming.desc": "在寒冷时带来保暖效果",
@@ -80,7 +86,7 @@
 	"enchantment.survive.featherweight.desc": "每一级附魔可降低18%的盔甲重量",
 	"enchantment.survive.weightless": "无重力盔甲",
 	"enchantment.survive.weightless.desc": "让穿戴者感受不到这件盔甲的重量",
-///////////////////////////////////////////////////////////[死亡提示]///////////////////////////////////////////////////////////
+	"_comment1_": "///////////////////////////////////////////////[死亡提示]///////////////////////////////////////////////",
 	"death.attack.hypothermia": "%1$s 冻僵了。",
 	"death.attack.hypothermia.player": "%1$s 在试图逃离 %2$s 时冻僵了。",
 	"death.attack.hyperthermia": "%1$s 中暑了。",
@@ -88,18 +94,20 @@
 	"death.attack.dehydrate": "%1$s 脱水死亡了。",
 	"death.attack.dehydrate.player": "%1$s 在试图逃离 %2$s 时脱水死亡了。",
 	"death.attack.overwork": "%1$s 因过度疲劳猝死了。",
-///////////////////////////////////////////////////////////[SPELLS]///////////////////////////////////////////////////////////
+	"death.attack.roast": "%1$s 因高温炙烤而死。",
+  	"death.attack.roast.player": "%1$s 被 %2$s 高温炙烤而死。",
+	"_comment2_": "///////////////////////////////////////////////[SPELLS]///////////////////////////////////////////////",
 	"spell.survive.heat": "暖和",
 	"spell.survive.heat.desc": "提高体温",
 	"spell.survive.chill": "冷却",
 	"spell.survive.chill.desc": "降低体温",
-///////////////////////////////////////////////////////////[可升级_属性]///////////////////////////////////////////////////////////
+	"_comment3_": "///////////////////////////////////////////////[UPGRADEABLE_ATTRIBUTES]///////////////////////////////////////////////",
 	"stat.survive.heat_resistance": "炽热抗性",
 	"stat.survive.cold_resistance": "寒冷抗性",
-///////////////////////////////////////////////////////////[属性]///////////////////////////////////////////////////////////
+	"_comment4_": "///////////////////////////////////////////////[ATTRIBUTES]///////////////////////////////////////////////",
 	"attribute.name.survive.coldResistance": "寒冷抗性",
 	"attribute.name.survive.heatResistance": "炽热抗性",
-///////////////////////////////////////////////////////////[GUI]///////////////////////////////////////////////////////////
+	"_comment5_": "///////////////////////////////////////////////[GUI]///////////////////////////////////////////////",
 	"gui.survive.config.title": "Survive 配置",
 	"survive.Enable Temperature": "启用温度",
 	"survive.Enable Thirst": "启用口渴度",
@@ -111,7 +119,16 @@
 	"tooltip.drinks_left": "剩余饮用次数",
 	"tooltip.drink_purified": "已净化",
 	"tooltip.drink_not_purified": "未净化",
-///////////////////////////////////////////////////////////[ORIGINS_POWERS]///////////////////////////////////////////////////////////
+	"tooltip.soap_left": "剩余可用次数: %1$s",
+	"_comment6_": "///////////////////////////////////////////////[ORIGINS_POWERS]///////////////////////////////////////////////",
 	"power.survive.heat_resistance.name": "炽热抗性",
-	"power.survive.heat_resistance.description": "你对炽热拥有了非常高的抗性"
+	"power.survive.heat_resistance.description": "你对炽热拥有了非常高的抗性",
+	"_comment7_": "///////////////////////////////////////////////[CONFIG]///////////////////////////////////////////////",
+	"config.survive.hygiene.file": "清洁度设置(Beta)",
+	"config.survive.temperature.file": "温度设置",
+	"config.survive.thirst.file": "口渴度设置",
+	"config.survive.wellbeing.file": "幸福度设置",
+	
+	"subtitles.entity.player.roast_hurt": "玩家高温炙烤",
+	"gamerule.roastDamage": "玩家是否受到高温炙烤伤害"
 }
