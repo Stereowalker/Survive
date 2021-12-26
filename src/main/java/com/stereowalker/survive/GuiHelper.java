@@ -40,15 +40,20 @@ public class GuiHelper {
 	    });
 		OverlayRegistry.registerOverlayTop("Temperature", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 	        gui.setupOverlayRenderState(true, false);
-	        if (Survive.TEMPERATURE_CONFIG.enabled && !Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
+	        if (!gui.minecraft.options.hideGui && Survive.TEMPERATURE_CONFIG.enabled && !Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
 	        	GuiHelper.renderTemperature(gui, ScreenOffset.TOP, gui.getCameraPlayer(), mStack);
 			}
 	    });
 	}
+	
+	@OnlyIn(Dist.CLIENT)
+	public static void renderTemperature(Gui gui, ScreenOffset position, Player playerentity, PoseStack matrixStack) {
+		
+	}
 
 	@SuppressWarnings("resource")
 	@OnlyIn(Dist.CLIENT)
-	public static void renderTemperature(Gui gui, ScreenOffset position, Player playerentity, PoseStack matrixStack) {
+	public static void renderTemperatureDummy(Gui gui, ScreenOffset position, Player playerentity, PoseStack matrixStack) {
 		int x = ScreenHelper.getXOffset(position) + Survive.TEMPERATURE_CONFIG.tempXLoc;
 		int y = ScreenHelper.getYOffset(position) + Survive.TEMPERATURE_CONFIG.tempYLoc;
 		Minecraft.getInstance().getProfiler().push("temperature");
