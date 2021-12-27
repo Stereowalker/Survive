@@ -2,9 +2,12 @@ package com.stereowalker.survive.mixins;
 
 import java.util.Random;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -14,9 +17,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.stereowalker.survive.GuiHelper;
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.client.events.RenderEvents;
 import com.stereowalker.survive.client.gui.SurviveHeartType;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
+import com.stereowalker.survive.world.effect.SEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 
@@ -26,8 +31,14 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodData;
 
 @Mixin(Gui.class)
 public abstract class GuiMixin extends GuiComponent {
@@ -35,6 +46,9 @@ public abstract class GuiMixin extends GuiComponent {
 	@Shadow protected final Random random = new Random();
 	@Shadow public Player getCameraPlayer() {return null;}
 	@Shadow public void renderTextureOverlay(ResourceLocation p_168709_, float p_168710_) {}
+	@Shadow public int screenWidth;
+	@Shadow public int screenHeight;
+	@Shadow protected int tickCount;
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;lerp(FFF)F", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void render2(PoseStack arg0, float arg1, CallbackInfo ci, Font font, float f) {
@@ -80,6 +94,29 @@ public abstract class GuiMixin extends GuiComponent {
 			RenderSystem.setShaderColor(x, y, z, a);
 		}
 	}
+
+	@Inject(method = "renderPlayerHealth", at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/util/profiling/ProfilerFiller;pop()V"), locals = LocalCapture.CAPTURE_FAILHARD)
+	public void addThirstAndOthers(PoseStack pPoseStack, CallbackInfo ci, Player player, int i, boolean flag, long j, int k, FoodData fooddata, int l, int i1, int j1, int k1, float f, int l1, int i2, int j2, int k2, int l2, int i3, int j3, LivingEntity livingentity, int k5, int l5, int i6) {
+		RenderSystem.enableBlend();
+		boolean needsAir = false;
+		if (player.isEyeInFluid(FluidTags.WATER) || i6 < l5) {
+			needsAir = true;
+		}
+		if (k5 == 0) {
+			MutableInt moveUp = new MutableInt(needsAir ? -10 : 0 + 10);
+			if (Survive.THIRST_CONFIG.enabled) {
+				GuiHelper.renderThirst((Gui)(Object)this, pPoseStack, moveUp, j1, k1);
+				moveUp.add(10);
+			}
+			//Energy
+			if (Survive.CONFIG.enable_stamina) {
+				GuiHelper.renderEnergyBars((Gui)(Object)this, pPoseStack, moveUp, j1, k1);
+			}
+			RenderSystem.enableBlend();
+			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+		}
+	}
+
 
 	@Inject(method = "renderHearts", at = @At(value = "HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	public void changeHearts(PoseStack p_168689_, Player p_168690_, int p_168691_, int p_168692_, int p_168693_, int p_168694_, float p_168695_, int p_168696_, int p_168697_, int p_168698_, boolean p_168699_, CallbackInfo ci) {

@@ -52,8 +52,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.IIngameOverlay;
-import net.minecraftforge.client.gui.OverlayRegistry;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -68,6 +66,7 @@ public class Survive extends MinecraftMod {
 
 	public static final float DEFAULT_TEMP = 37.0F;
 	public static final String MOD_ID = "survive";
+	public static final ResourceLocation GUI_ICONS = new ResourceLocation(Survive.MOD_ID, "textures/gui/icons.png");
 	
 	public static final Config CONFIG = new Config();
 	public static final HygieneConfig HYGIENE_CONFIG = new HygieneConfig();
