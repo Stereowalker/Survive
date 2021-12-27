@@ -48,17 +48,17 @@ public class GuiHelper {
 				GuiHelper.renderTemperature(gui, ScreenOffset.TOP, gui.getCameraPlayer(), mStack);
 			}
 		});
-//		OverlayRegistry.registerOverlayTop("Thirst Level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
-//			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
-//			if (Survive.THIRST_CONFIG.enabled && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
-//			{
-//				gui.setupOverlayRenderState(true, false);
-//				int left = screenWidth / 2 + 91;
-//		        int top = screenHeight - gui.right_height;
-//				renderThirst(gui, mStack, new MutableInt(), left, top);
-//				gui.right_height += 10;
-//			}
-//		});
+		OverlayRegistry.registerOverlayTop("Thirst Level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
+			if (Survive.THIRST_CONFIG.enabled && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
+			{
+				gui.setupOverlayRenderState(true, false);
+				int left = screenWidth / 2 + 91;
+		        int top = screenHeight - gui.right_height;
+				renderThirst(gui, mStack, new MutableInt(), left, top);
+				gui.right_height += 10;
+			}
+		});
 //		OverlayRegistry.registerOverlayTop("Stamina Level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 //			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
 //			if (Survive.CONFIG.enable_stamina && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
@@ -158,38 +158,38 @@ public class GuiHelper {
 	
 	@OnlyIn(Dist.CLIENT)
 	public static void renderThirst(Gui gui, PoseStack matrixStack, MutableInt moveUp, int j1, int k1) {
-//		Player player = (Player)gui.minecraft.getCameraEntity();
-//		int waterL = (int) SurviveEntityStats.getWaterStats(player).getWaterLevel();
-//		gui.minecraft.getProfiler().push("thirst");
-//		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-//		RenderSystem.setShaderTexture(0, Survive.GUI_ICONS);
-//		for(int k6 = 0; k6 < 10; ++k6) {
-//			int i7 = k1;
-//			int k7 = 16;
-//			int i8 = 0;
-//			if (player.hasEffect(SEffects.THIRST)) {
-//				k7 += 36;
-//				i8 = 13;
-//			}
-//
-//			if (SurviveEntityStats.getWaterStats(player).getHydrationLevel() <= 0.0F && gui.tickCount % (waterL * 3 + 1) == 0) {
-//				i7 = k1 + (gui.random.nextInt(3) - 1);
-//			}
-//
-//			int k8 = j1 - k6 * 8 - 9;
-//			gui.blit(matrixStack, k8, i7 - moveUp.getValue(), 16 + i8 * 9, 54, 9, 9);
-//			if (k6 * 2 + 1 < waterL) {
-//				gui.blit(matrixStack, k8, i7 - moveUp.getValue(), k7 + 36, 54, 9, 9);
-//			}
-//
-//			if (k6 * 2 + 1 == waterL) {
-//				gui.blit(matrixStack, k8, i7 - moveUp.getValue(), k7 + 45, 54, 9, 9);
-//			}
-//		}
-//		moveUp.add(-10);
-//		gui.minecraft.getProfiler().pop();
-//		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-//		RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
+		Player player = (Player)gui.minecraft.getCameraEntity();
+		int waterL = (int) SurviveEntityStats.getWaterStats(player).getWaterLevel();
+		gui.minecraft.getProfiler().push("thirst");
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, Survive.GUI_ICONS);
+		for(int k6 = 0; k6 < 10; ++k6) {
+			int i7 = k1;
+			int k7 = 16;
+			int i8 = 0;
+			if (player.hasEffect(SEffects.THIRST)) {
+				k7 += 36;
+				i8 = 13;
+			}
+
+			if (SurviveEntityStats.getWaterStats(player).getHydrationLevel() <= 0.0F && gui.tickCount % (waterL * 3 + 1) == 0) {
+				i7 = k1 + (gui.random.nextInt(3) - 1);
+			}
+
+			int k8 = j1 - k6 * 8 - 9;
+			gui.blit(matrixStack, k8, i7 - moveUp.getValue(), 16 + i8 * 9, 54, 9, 9);
+			if (k6 * 2 + 1 < waterL) {
+				gui.blit(matrixStack, k8, i7 - moveUp.getValue(), k7 + 36, 54, 9, 9);
+			}
+
+			if (k6 * 2 + 1 == waterL) {
+				gui.blit(matrixStack, k8, i7 - moveUp.getValue(), k7 + 45, 54, 9, 9);
+			}
+		}
+		moveUp.add(-10);
+		gui.minecraft.getProfiler().pop();
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
 	}
 
 	@OnlyIn(Dist.CLIENT)
