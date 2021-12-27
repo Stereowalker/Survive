@@ -59,17 +59,17 @@ public class GuiHelper {
 				gui.right_height += 10;
 			}
 		});
-//		OverlayRegistry.registerOverlayTop("Stamina Level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
-//			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
-//			if (Survive.CONFIG.enable_stamina && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
-//			{
-//				gui.setupOverlayRenderState(true, false);
-//				int left = screenWidth / 2 + 91;
-//		        int top = screenHeight - gui.right_height;
-//				renderEnergyBars(gui, mStack, new MutableInt(), left, top);
-//				gui.right_height += 10;
-//			}
-//		});
+		OverlayRegistry.registerOverlayTop("Stamina Level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
+			if (Survive.CONFIG.enable_stamina && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
+			{
+				gui.setupOverlayRenderState(true, false);
+				int left = screenWidth / 2 + 91;
+		        int top = screenHeight - gui.right_height;
+				renderEnergyBars(gui, mStack, new MutableInt(), left, top);
+				gui.right_height += 10;
+			}
+		});
 	}
 
 	@SuppressWarnings("resource")
@@ -194,39 +194,39 @@ public class GuiHelper {
 
 	@OnlyIn(Dist.CLIENT)
 	public static void renderEnergyBars(Gui gui, PoseStack matrixStack, MutableInt moveUp, int j1, int k1) {
-//		Random rand = new Random();
-//		Player player = (Player)gui.minecraft.getCameraEntity();
-//		int l = (int) SurviveEntityStats.getEnergyStats(player).getEnergyLevel();
-//		if (SurviveEntityStats.getEnergyStats(player).isExhausted()) l = (int) SurviveEntityStats.getEnergyStats(player).getReserveLevel();
-//		Minecraft.getInstance().getProfiler().push("energy");
-//		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-//		RenderSystem.setShaderTexture(0, GUI_ICONS);
-//		for(int k6 = 0; k6 < 10; ++k6) {
-//			int i7 = k1;
-//			int k7 = 16;
-//			int i8 = 0;
-//			if (SurviveEntityStats.getEnergyStats(player).isExhausted()) {
-//				k7 += 36;
-//				i8 = 13;
-//			}
-//
-//			if (player.getFoodData().getSaturationLevel() <= 0.0F && gui.getGuiTicks() % (l * 3 + 1) == 0) {
-//				i7 = k1 + (rand.nextInt(3) - 1);
-//			}
-//
-//			int k8 = j1 - k6 * 8 - 9;
-//			gui.blit(matrixStack, k8, i7 - moveUp.getValue(), 16 + i8 * 9, 36, 9, 9);
-//			if (k6 * 2 + 1 < l) {
-//				gui.blit(matrixStack, k8, i7 - moveUp.getValue(), k7 + 36, 36, 9, 9);
-//			}
-//
-//			if (k6 * 2 + 1 == l) {
-//				gui.blit(matrixStack, k8, i7 - moveUp.getValue(), k7 + 45, 36, 9, 9);
-//			}
-//		}
-//		Minecraft.getInstance().getProfiler().pop();
-//		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-//		RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
+		Random rand = new Random();
+		Player player = (Player)gui.minecraft.getCameraEntity();
+		int l = (int) SurviveEntityStats.getEnergyStats(player).getEnergyLevel();
+		if (SurviveEntityStats.getEnergyStats(player).isExhausted()) l = (int) SurviveEntityStats.getEnergyStats(player).getReserveLevel();
+		Minecraft.getInstance().getProfiler().push("energy");
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, GUI_ICONS);
+		for(int k6 = 0; k6 < 10; ++k6) {
+			int i7 = k1;
+			int k7 = 16;
+			int i8 = 0;
+			if (SurviveEntityStats.getEnergyStats(player).isExhausted()) {
+				k7 += 36;
+				i8 = 13;
+			}
+
+			if (player.getFoodData().getSaturationLevel() <= 0.0F && gui.getGuiTicks() % (l * 3 + 1) == 0) {
+				i7 = k1 + (rand.nextInt(3) - 1);
+			}
+
+			int k8 = j1 - k6 * 8 - 9;
+			gui.blit(matrixStack, k8, i7 - moveUp.getValue(), 16 + i8 * 9, 36, 9, 9);
+			if (k6 * 2 + 1 < l) {
+				gui.blit(matrixStack, k8, i7 - moveUp.getValue(), k7 + 36, 36, 9, 9);
+			}
+
+			if (k6 * 2 + 1 == l) {
+				gui.blit(matrixStack, k8, i7 - moveUp.getValue(), k7 + 45, 36, 9, 9);
+			}
+		}
+		Minecraft.getInstance().getProfiler().pop();
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
 	}
 
 	@SuppressWarnings("resource")
