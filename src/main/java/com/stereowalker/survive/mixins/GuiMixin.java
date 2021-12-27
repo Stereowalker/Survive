@@ -17,11 +17,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.stereowalker.survive.GuiHelper;
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.client.events.RenderEvents;
 import com.stereowalker.survive.client.gui.SurviveHeartType;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
-import com.stereowalker.survive.world.effect.SEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 
@@ -33,10 +31,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 
