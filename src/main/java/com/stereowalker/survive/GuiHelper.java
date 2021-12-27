@@ -34,14 +34,14 @@ public class GuiHelper {
 	public static final ResourceLocation GUI_ICONS = new ResourceLocation(Survive.MOD_ID, "textures/gui/icons.png");
 	@OnlyIn(Dist.CLIENT)
 	public static void registerOverlays() {
-//		OverlayRegistry.registerOverlayTop("Tired", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
-//			gui.setupOverlayRenderState(true, false);
-//			GuiHelper.renderTiredOverlay(gui);
-//		});
-//		OverlayRegistry.registerOverlayTop("Heat Stroke", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
-//			gui.setupOverlayRenderState(true, false);
-//			GuiHelper.renderHeatStroke(gui);
-//		});
+		OverlayRegistry.registerOverlayTop("Tired", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+			gui.setupOverlayRenderState(true, false);
+			GuiHelper.renderTiredOverlay(gui);
+		});
+		OverlayRegistry.registerOverlayTop("Heat Stroke", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+			gui.setupOverlayRenderState(true, false);
+			GuiHelper.renderHeatStroke(gui);
+		});
 		OverlayRegistry.registerOverlayTop("Temperature", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 			gui.setupOverlayRenderState(true, false);
 			if (!gui.minecraft.options.hideGui && Survive.TEMPERATURE_CONFIG.enabled && !Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
@@ -232,23 +232,23 @@ public class GuiHelper {
 	@SuppressWarnings("resource")
 	@OnlyIn(Dist.CLIENT)
 	public static void renderTiredOverlay(Gui gui) {
-//		if (Survive.CONFIG.tired_overlay) {
-//			if (Minecraft.getInstance().player.hasEffect(SEffects.TIREDNESS)) {
-//				Minecraft.getInstance().getProfiler().push("tired");
-//				int amplifier = Minecraft.getInstance().player.getEffect(SEffects.TIREDNESS).getAmplifier() + 1;
-//				amplifier/=(Survive.CONFIG.tiredTimeStacks/5);
-//				amplifier = Mth.clamp(amplifier, 0, 4);
-//				gui.renderTextureOverlay(Survive.getInstance().location("textures/misc/sleep_overlay_"+(amplifier)+".png"), 0.5F);
-//				Minecraft.getInstance().getProfiler().pop();
-//			}
-//		}
+		if (Survive.CONFIG.tired_overlay) {
+			if (Minecraft.getInstance().player.hasEffect(SEffects.TIREDNESS)) {
+				Minecraft.getInstance().getProfiler().push("tired");
+				int amplifier = Minecraft.getInstance().player.getEffect(SEffects.TIREDNESS).getAmplifier() + 1;
+				amplifier/=(Survive.CONFIG.tiredTimeStacks/5);
+				amplifier = Mth.clamp(amplifier, 0, 4);
+				gui.renderTextureOverlay(Survive.getInstance().location("textures/misc/sleep_overlay_"+(amplifier)+".png"), 0.5F);
+				Minecraft.getInstance().getProfiler().pop();
+			}
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static void renderHeatStroke(Gui gui)
 	{
-//		if (((IRoastedEntity)gui.minecraft.player).getTicksRoasted() > 0) {
-//			gui.renderTextureOverlay(Survive.getInstance().location("textures/misc/burning_overlay.png"), ((IRoastedEntity)gui.minecraft.player).getPercentRoasted());
-//		}
+		if (((IRoastedEntity)gui.minecraft.player).getTicksRoasted() > 0) {
+			gui.renderTextureOverlay(Survive.getInstance().location("textures/misc/burning_overlay.png"), ((IRoastedEntity)gui.minecraft.player).getPercentRoasted());
+		}
 	}
 }
