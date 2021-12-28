@@ -49,7 +49,7 @@ public abstract class GuiMixin extends GuiComponent {
 	public void render2(PoseStack arg0, float arg1, CallbackInfo ci, Font font, float f) {
 		GuiHelper.renderTiredOverlay((Gui)(Object)this);
 		GuiHelper.renderHeatStroke((Gui)(Object)this);
-		GuiHelper.renderTemperature((Gui)(Object)this, ScreenOffset.TOP, getCameraPlayer(), arg0);
+		GuiHelper.renderTemperature((Gui)(Object)this, ScreenOffset.TOP, getCameraPlayer(), arg0, false);
 	}
 
 

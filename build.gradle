@@ -105,7 +105,7 @@ dependencies {
 	//runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
 	
 	//implementation fg.deobf("curse.maven:biomes-o-plenty-220318:"+bopID)
-	//implementation fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
+	implementation fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
 	//implementation fg.deobf("curse.maven:origins-474438:"+originsID)
 	implementation fg.deobf("curse.maven:architectury-419699:"+architecturyID)
 	//implementation fg.deobf("curse.maven:create-328085:"+createID)

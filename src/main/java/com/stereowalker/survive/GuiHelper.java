@@ -45,7 +45,7 @@ public class GuiHelper {
 		OverlayRegistry.registerOverlayTop("Temperature", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 			gui.setupOverlayRenderState(true, false);
 			if (!gui.minecraft.options.hideGui && Survive.TEMPERATURE_CONFIG.enabled && !Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
-				GuiHelper.renderTemperature(gui, ScreenOffset.TOP, gui.getCameraPlayer(), mStack);
+				GuiHelper.renderTemperature(gui, ScreenOffset.TOP, gui.getCameraPlayer(), mStack, true);
 			}
 		});
 		OverlayRegistry.registerOverlayTop("Thirst Level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
@@ -74,7 +74,7 @@ public class GuiHelper {
 
 	@SuppressWarnings("resource")
 	@OnlyIn(Dist.CLIENT)
-	public static void renderTemperature(Gui gui, ScreenOffset position, Player playerentity, PoseStack matrixStack) {
+	public static void renderTemperature(Gui gui, ScreenOffset position, Player playerentity, PoseStack matrixStack, boolean forgeOverlay) {
 		int x = ScreenHelper.getXOffset(position) + Survive.TEMPERATURE_CONFIG.tempXLoc;
 		int y = ScreenHelper.getYOffset(position) + Survive.TEMPERATURE_CONFIG.tempYLoc;
 		Minecraft.getInstance().getProfiler().push("temperature");
@@ -113,7 +113,7 @@ public class GuiHelper {
 					gui.blit(matrixStack, x, y, 3, 64, 132, 5);
 					gui.blit(matrixStack, x, y, 3, 69, 132, 5);
 				}
-				gui.blit(matrixStack, x+Mth.floor(displayTemp*44)+63+(displayTemp>0?1:0), y, 3, 74, 5, 5);
+				gui.blit(matrixStack, x+Mth.floor(displayTemp*44)+63+(displayTemp>0?1:0), y, 1, 74, 4, 5);
 			}
 			else if (Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.VERTICAL_BAR)) {
 				if (Survive.TEMPERATURE_CONFIG.tempEffects && displayTemp >= 1) {//Hyperthermia override
@@ -151,9 +151,10 @@ public class GuiHelper {
 		RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
 		Minecraft.getInstance().getProfiler().pop();
 
-
-		RenderSystem.enableBlend();
-		RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+		if (!forgeOverlay) {
+			RenderSystem.enableBlend();
+			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+		}
 	}
 	
 	@OnlyIn(Dist.CLIENT)
