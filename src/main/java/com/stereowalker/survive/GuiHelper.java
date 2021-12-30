@@ -35,16 +35,18 @@ public class GuiHelper {
 	@OnlyIn(Dist.CLIENT)
 	public static void registerOverlays() {
 		OverlayRegistry.registerOverlayTop("Tired", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
-			gui.setupOverlayRenderState(true, false);
-			GuiHelper.renderTiredOverlay(gui);
+			if (Survive.CONFIG.tired_overlay && gui.minecraft.player.hasEffect(SEffects.TIREDNESS)) {
+				gui.setupOverlayRenderState(true, false);
+				GuiHelper.renderTiredOverlay(gui);
+			}
 		});
 		OverlayRegistry.registerOverlayTop("Heat Stroke", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 			gui.setupOverlayRenderState(true, false);
 			GuiHelper.renderHeatStroke(gui);
 		});
 		OverlayRegistry.registerOverlayTop("Temperature", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
-			gui.setupOverlayRenderState(true, false);
 			if (!gui.minecraft.options.hideGui && Survive.TEMPERATURE_CONFIG.enabled && !Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
+				gui.setupOverlayRenderState(true, false, GUI_ICONS);
 				GuiHelper.renderTemperature(gui, ScreenOffset.TOP, gui.getCameraPlayer(), mStack, true);
 			}
 		});
@@ -52,10 +54,10 @@ public class GuiHelper {
 			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
 			if (Survive.THIRST_CONFIG.enabled && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
 			{
-				gui.setupOverlayRenderState(true, false);
+				gui.setupOverlayRenderState(true, false, GUI_ICONS);
 				int left = screenWidth / 2 + 91;
-		        int top = screenHeight - gui.right_height;
-				renderThirst(gui, mStack, new MutableInt(), left, top);
+				int top = screenHeight - gui.right_height;
+				renderThirst(gui, mStack, new MutableInt(), left, top, true);
 				gui.right_height += 10;
 			}
 		});
@@ -63,10 +65,10 @@ public class GuiHelper {
 			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
 			if (Survive.CONFIG.enable_stamina && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
 			{
-				gui.setupOverlayRenderState(true, false);
+				gui.setupOverlayRenderState(true, false, GUI_ICONS);
 				int left = screenWidth / 2 + 91;
-		        int top = screenHeight - gui.right_height;
-				renderEnergyBars(gui, mStack, new MutableInt(), left, top);
+				int top = screenHeight - gui.right_height;
+				renderEnergyBars(gui, mStack, new MutableInt(), left, top, true);
 				gui.right_height += 10;
 			}
 		});
@@ -78,8 +80,10 @@ public class GuiHelper {
 		int x = ScreenHelper.getXOffset(position) + Survive.TEMPERATURE_CONFIG.tempXLoc;
 		int y = ScreenHelper.getYOffset(position) + Survive.TEMPERATURE_CONFIG.tempYLoc;
 		Minecraft.getInstance().getProfiler().push("temperature");
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, GUI_ICONS);
+		if (!forgeOverlay) {
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShaderTexture(0, GUI_ICONS);
+		}
 		double rawTemperature = SurviveEntityStats.getTemperatureStats(playerentity).getTemperatureLevel();
 		double tempLocation = rawTemperature - Survive.DEFAULT_TEMP;
 		double displayTemp = 0;
@@ -147,23 +151,24 @@ public class GuiHelper {
 			Minecraft.getInstance().font.drawShadow(matrixStack, "Carbs = "+stats.getCarbLevel(), 0, 0, ChatFormatting.GRAY.getColor());
 			Minecraft.getInstance().font.drawShadow(matrixStack, "Protein = "+stats.getProteinLevel(), 0, 10, ChatFormatting.GRAY.getColor());
 		}
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
 		Minecraft.getInstance().getProfiler().pop();
-
 		if (!forgeOverlay) {
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 		}
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
-	public static void renderThirst(Gui gui, PoseStack matrixStack, MutableInt moveUp, int j1, int k1) {
+	public static void renderThirst(Gui gui, PoseStack matrixStack, MutableInt moveUp, int j1, int k1, boolean forgeOverlay) {
 		Player player = (Player)gui.minecraft.getCameraEntity();
 		int waterL = (int) SurviveEntityStats.getWaterStats(player).getWaterLevel();
 		gui.minecraft.getProfiler().push("thirst");
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, Survive.GUI_ICONS);
+		if (!forgeOverlay) {
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShaderTexture(0, GUI_ICONS);
+		}
 		for(int k6 = 0; k6 < 10; ++k6) {
 			int i7 = k1;
 			int k7 = 16;
@@ -189,19 +194,23 @@ public class GuiHelper {
 		}
 		moveUp.add(-10);
 		gui.minecraft.getProfiler().pop();
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
+		if (!forgeOverlay) {
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
+		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void renderEnergyBars(Gui gui, PoseStack matrixStack, MutableInt moveUp, int j1, int k1) {
+	public static void renderEnergyBars(Gui gui, PoseStack matrixStack, MutableInt moveUp, int j1, int k1, boolean forgeOverlay) {
 		Random rand = new Random();
 		Player player = (Player)gui.minecraft.getCameraEntity();
 		int l = (int) SurviveEntityStats.getEnergyStats(player).getEnergyLevel();
 		if (SurviveEntityStats.getEnergyStats(player).isExhausted()) l = (int) SurviveEntityStats.getEnergyStats(player).getReserveLevel();
 		Minecraft.getInstance().getProfiler().push("energy");
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, GUI_ICONS);
+		if (!forgeOverlay) {
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShaderTexture(0, GUI_ICONS);
+		}
 		for(int k6 = 0; k6 < 10; ++k6) {
 			int i7 = k1;
 			int k7 = 16;
@@ -226,23 +235,21 @@ public class GuiHelper {
 			}
 		}
 		Minecraft.getInstance().getProfiler().pop();
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
+		if (!forgeOverlay) {
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
+		}
 	}
 
 	@SuppressWarnings("resource")
 	@OnlyIn(Dist.CLIENT)
 	public static void renderTiredOverlay(Gui gui) {
-		if (Survive.CONFIG.tired_overlay) {
-			if (Minecraft.getInstance().player.hasEffect(SEffects.TIREDNESS)) {
-				Minecraft.getInstance().getProfiler().push("tired");
-				int amplifier = Minecraft.getInstance().player.getEffect(SEffects.TIREDNESS).getAmplifier() + 1;
-				amplifier/=(Survive.CONFIG.tiredTimeStacks/5);
-				amplifier = Mth.clamp(amplifier, 0, 4);
-				gui.renderTextureOverlay(Survive.getInstance().location("textures/misc/sleep_overlay_"+(amplifier)+".png"), 0.5F);
-				Minecraft.getInstance().getProfiler().pop();
-			}
-		}
+		Minecraft.getInstance().getProfiler().push("tired");
+		int amplifier = Minecraft.getInstance().player.getEffect(SEffects.TIREDNESS).getAmplifier() + 1;
+		amplifier/=(Survive.CONFIG.tiredTimeStacks/5);
+		amplifier = Mth.clamp(amplifier, 0, 4);
+		gui.renderTextureOverlay(Survive.getInstance().location("textures/misc/sleep_overlay_"+(amplifier)+".png"), 0.5F);
+		Minecraft.getInstance().getProfiler().pop();
 	}
 
 	@OnlyIn(Dist.CLIENT)

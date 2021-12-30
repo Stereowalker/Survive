@@ -20,6 +20,7 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.client.gui.SurviveHeartType;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
+import com.stereowalker.survive.world.effect.SEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 
@@ -47,7 +48,9 @@ public abstract class GuiMixin extends GuiComponent {
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;lerp(FFF)F", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void render2(PoseStack arg0, float arg1, CallbackInfo ci, Font font, float f) {
-		GuiHelper.renderTiredOverlay((Gui)(Object)this);
+		if (Survive.CONFIG.tired_overlay && minecraft.player.hasEffect(SEffects.TIREDNESS)) {
+			GuiHelper.renderTiredOverlay((Gui)(Object)this);
+		}
 		GuiHelper.renderHeatStroke((Gui)(Object)this);
 		GuiHelper.renderTemperature((Gui)(Object)this, ScreenOffset.TOP, getCameraPlayer(), arg0, false);
 	}
@@ -100,12 +103,12 @@ public abstract class GuiMixin extends GuiComponent {
 		if (k5 == 0) {
 			MutableInt moveUp = new MutableInt(needsAir ? -10 : 0 + 10);
 			if (Survive.THIRST_CONFIG.enabled) {
-				GuiHelper.renderThirst((Gui)(Object)this, pPoseStack, moveUp, j1, k1);
+				GuiHelper.renderThirst((Gui)(Object)this, pPoseStack, moveUp, j1, k1, false);
 				moveUp.add(10);
 			}
 			//Energy
 			if (Survive.CONFIG.enable_stamina) {
-				GuiHelper.renderEnergyBars((Gui)(Object)this, pPoseStack, moveUp, j1, k1);
+				GuiHelper.renderEnergyBars((Gui)(Object)this, pPoseStack, moveUp, j1, k1, false);
 			}
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
