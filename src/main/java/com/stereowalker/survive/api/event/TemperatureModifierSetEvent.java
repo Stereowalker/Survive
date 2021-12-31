@@ -1,26 +1,21 @@
 package com.stereowalker.survive.api.event;
 
-import net.minecraft.resources.ResourceLocation;
+import com.stereowalker.survive.world.temperature.TemperatureModifier;
+
 import net.minecraftforge.eventbus.api.Event;
 
 public class TemperatureModifierSetEvent extends Event {
-	private ResourceLocation id;
-	double modifier;
+	TemperatureModifier modifier;
 	
-	public TemperatureModifierSetEvent(ResourceLocation id, double modifier) {
-		this.id = id;
+	public TemperatureModifierSetEvent(TemperatureModifier modifier) {
 		this.modifier = modifier;
 	}
 	
-	public ResourceLocation getId() {
-		return id;
-	}
-	
-	public double getModifier() {
+	public TemperatureModifier getModifier() {
 		return modifier;
 	}
 	
-	public void setModifier(double modifier) {
+	public void setModifier(TemperatureModifier modifier) {
 		this.modifier = modifier;
 	}
 }

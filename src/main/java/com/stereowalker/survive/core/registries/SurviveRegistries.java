@@ -1,7 +1,7 @@
 package com.stereowalker.survive.core.registries;
 
 import com.stereowalker.survive.world.seasons.Season;
-import com.stereowalker.survive.world.temperature.TemperatureChangeCondition;
+import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeCondition;
 
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;

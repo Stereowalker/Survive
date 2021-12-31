@@ -16,13 +16,17 @@ import com.stereowalker.survive.network.protocol.game.ClientboundArmorDataTransf
 import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWaterPacket;
 import com.stereowalker.survive.world.DataMaps;
+import com.stereowalker.survive.world.effect.SEffects;
 import com.stereowalker.survive.world.item.enchantment.SEnchantmentHelper;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.seasons.Season;
-import com.stereowalker.survive.world.temperature.TemperatureChangeInstance;
+import com.stereowalker.survive.world.temperature.TemperatureQuery;
+import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
+import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
 import com.stereowalker.unionlib.state.properties.UBlockStateProperties;
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
+import com.stereowalker.unionlib.util.math.UnionMathHelper;
 
 //import io.github.apace100.origins.integration.OriginEventsArchitectury;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
@@ -67,6 +71,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.event.world.SleepFinishedTimeEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -144,7 +149,6 @@ public class SurviveEvents {
 
 	@SubscribeEvent
 	public static void registerStats(LivingUpdateEvent event) {
-		
 		if(event.getEntityLiving() instanceof Player) {
 			Player player = (Player)event.getEntityLiving();
 			SurviveEntityStats.addStatsOnSpawn(player);
@@ -243,6 +247,7 @@ public class SurviveEvents {
 	/**
 	 * Check if precipitation is currently happening at a position
 	 */
+	@SuppressWarnings("deprecation")
 	public static boolean isSnowingAt(Level world, BlockPos position) {
 		if (!world.isRaining()) {
 			return false;
@@ -261,94 +266,12 @@ public class SurviveEvents {
 
 	@SubscribeEvent
 	public static void updateEnvTemperature(LivingUpdateEvent event) {
-		if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
+		if (event.getEntityLiving() != null && event.getEntityLiving() instanceof ServerPlayer) {
 			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
-			TemperatureData stats = SurviveEntityStats.getTemperatureStats(player);
-			double wetness = (double)(SurviveEntityStats.getWetTime(player)) / -1800.0D;
-			TemperatureData.setTemperatureModifier(player, "survive:wetness", wetness);
-
-			double coolingMod = 0.0D;
-			coolingMod -= 0.05D * (float)SEnchantmentHelper.getCoolingModifier(player.getItemBySlot(EquipmentSlot.HEAD));
-			coolingMod -= 0.16D * (float)SEnchantmentHelper.getCoolingModifier(player.getItemBySlot(EquipmentSlot.CHEST));
-			coolingMod -= 0.13D * (float)SEnchantmentHelper.getCoolingModifier(player.getItemBySlot(EquipmentSlot.LEGS));
-			coolingMod -= 0.06D * (float)SEnchantmentHelper.getCoolingModifier(player.getItemBySlot(EquipmentSlot.FEET));
-			TemperatureData.setTemperatureModifier(player, "survive:cooling_enchantment", coolingMod);
-
-			double warmingMod = 0.0D;
-			warmingMod += 0.05D * (float)SEnchantmentHelper.getWarmingModifier(player.getItemBySlot(EquipmentSlot.HEAD));
-			warmingMod += 0.16D * (float)SEnchantmentHelper.getWarmingModifier(player.getItemBySlot(EquipmentSlot.CHEST));
-			warmingMod += 0.13D * (float)SEnchantmentHelper.getWarmingModifier(player.getItemBySlot(EquipmentSlot.LEGS));
-			warmingMod += 0.06D * (float)SEnchantmentHelper.getWarmingModifier(player.getItemBySlot(EquipmentSlot.FEET));
-			TemperatureData.setTemperatureModifier(player, "survive:warming_enchantment", warmingMod);
-
-			boolean shouldCool = false;
-			if (stats.getTemperatureLevel() > Survive.DEFAULT_TEMP) {
-				for (EquipmentSlot types : EquipmentSlot.values()) {
-					if (SEnchantmentHelper.hasAdjustedCooling(player.getItemBySlot(types))) {
-						shouldCool = true;
-					}
-				}
+			for (ResourceLocation queryId : TemperatureQuery.environmentQuerys.keySet()) {
+				double queryValue = TemperatureQuery.environmentQuerys.get(queryId).getA().run(player, SurviveEntityStats.getTemperatureStats(player).getTemperatureLevel(), player.level, player.blockPosition());
+				TemperatureData.setTemperatureModifier(player, queryId, queryValue, TemperatureQuery.environmentQuerys.get(queryId).getB());
 			}
-			TemperatureData.setTemperatureModifier(player, "survive:adjusted_cooling_enchantment", shouldCool?-2.0D:0.0D);
-
-			boolean shouldWarm = false;
-			if (stats.getTemperatureLevel() < Survive.DEFAULT_TEMP) {
-				for (EquipmentSlot types : EquipmentSlot.values()) {
-					if (SEnchantmentHelper.hasAdjustedWarming(player.getItemBySlot(types))) {
-						shouldWarm = true;
-					}
-				}
-			}
-			TemperatureData.setTemperatureModifier(player, "survive:adjusted_warming_enchantment", shouldWarm?2.0D:0.0D);
-
-
-			double armorMod = 0.0D;
-			for (EquipmentSlot slot : EquipmentSlot.values()) {
-				if (slot.getType() == Type.ARMOR) {
-					if (!player.getItemBySlot(slot).isEmpty()) {
-						Item armor = player.getItemBySlot(slot).getItem();
-						float modifier = 1.0F;
-						if (DataMaps.Server.armor.containsKey(armor.getRegistryName())) {
-							for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Server.armor.get(armor.getRegistryName()).getTemperatureModifier()) {
-								if (instance.getSecond().shouldChangeTemperature(player)) {
-									modifier = instance.getSecond().getTemperature();
-									break;
-								}
-							}
-						}
-						armorMod += getModifierFromSlot(slot) * modifier;
-					}
-				}
-			}
-			TemperatureData.setTemperatureModifier(player, "survive:armor", armorMod);
-
-			double snow = 0.0D;
-			if (isSnowingAt(player.level, player.blockPosition())) {
-				snow = -2.0D;
-			}
-			TemperatureData.setTemperatureModifier(player, "survive:snow", snow);
-
-			for (String dimensionList : ServerConfig.dimensionModifiers) {
-				String[] dimension = dimensionList.split(",");
-				ResourceLocation loc = new ResourceLocation(dimension[0]);
-				if (RegistryHelper.matchesRegistryKey(loc, player.level.dimension())) {
-					TemperatureData.setTemperatureModifier(player, "survive:dimension", Float.parseFloat(dimension[1]));
-					break;
-				}
-			}
-			float seasonMod = 0;
-			if (ModHelper.isSereneSeasonsLoaded()) {
-				Season season = SereneSeasonsCompat.modifyTemperatureBySeason(player.getCommandSenderWorld(), player.blockPosition());
-				if (DataMaps.Server.biomeTemperature.containsKey(player.level.getBiome(player.blockPosition()).getRegistryName())) {
-					seasonMod = DataMaps.Server.biomeTemperature.get(player.level.getBiome(player.blockPosition()).getRegistryName()).getSeasonModifiers().get(season);
-				} else {
-					seasonMod = season.getModifier();
-				}
-				if (ModHelper.isPrimalWinterLoaded()) {
-					seasonMod = -1.0F;
-				}
-			}
-			TemperatureData.setTemperatureModifier(player, "survive:season", seasonMod);
 		}
 	}
 
@@ -361,30 +284,6 @@ public class SurviveEvents {
 		default:return 0F;
 		}
 	}
-
-	@SubscribeEvent
-	public static void updateTemperature(LivingUpdateEvent event) {
-		if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
-			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
-			for (TempType type : TempType.values()) {
-				double temperature;
-				if (type.isUsingExact()) {
-					temperature = getExactTemperature(player.level, player.blockPosition(), type);
-				} else {
-					temperature = getAverageTemperature(player.level, player.blockPosition(), type, 5, Survive.TEMPERATURE_CONFIG.tempMode);
-				}
-				//				System.out.println(type+" "+temperature);
-				double modifier = (temperature)/type.getReductionAmount();
-				//				System.out.println(type.getReductionAmount());
-				int modInt = (int) (modifier*1000);
-				modifier = modInt / 1000.0D;
-				if (player.tickCount%type.getTickInterval() == type.getTickInterval()-1) {
-					TemperatureData.setTemperatureModifier(player, "survive:"+type.getName(), modifier);
-				}
-			}
-		}
-	}
-
 
 	public static double getExactTemperature(Level world, BlockPos pos, TempType type) {
 		float skyLight = world.getChunkSource().getLightEngine().getLayerListener(LightLayer.SKY).getLightValue(pos);
@@ -535,6 +434,7 @@ public class SurviveEvents {
 		BLEND, NORMAL;
 	}
 
+	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickEmpty event) {
 		HitResult raytraceresult = rayTrace(event.getWorld(), event.getEntityLiving(), ClipContext.Fluid.SOURCE_ONLY);
@@ -552,6 +452,7 @@ public class SurviveEvents {
 		}
 	}
 
+	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickBlock event) {
 		HitResult raytraceresult = rayTrace(event.getWorld(), event.getEntityLiving(), ClipContext.Fluid.SOURCE_ONLY);
@@ -621,5 +522,129 @@ public class SurviveEvents {
 		event.addListener(Survive.blockReloader);
 		event.addListener(Survive.biomeReloader);
 		event.addListener(Survive.entityReloader);
+	}
+	
+	@SubscribeEvent
+	public static void addReload(WorldEvent.Load event) {
+		System.out.println("Resistering Temperature Queries");
+		//Environment
+		for (TempType type : TempType.values()) {
+			TemperatureQuery.registerQuery("survive:"+type.getName(), ContributingFactor.ENVIRONMENTAL, (player, temp, level, pos)-> {
+				double temperature;
+				if (type.isUsingExact()) {
+					temperature = getExactTemperature(level, pos, type);
+				} else {
+					temperature = getAverageTemperature(level, pos, type, 5, Survive.TEMPERATURE_CONFIG.tempMode);
+				}
+				return UnionMathHelper.roundDecimal(3, (temperature)/type.getReductionAmount());
+			});
+		}
+		TemperatureQuery.registerQuery("survive:snow", ContributingFactor.ENVIRONMENTAL, (player, temp, level, pos)-> {
+			double snow = 0.0D;
+			if (isSnowingAt(level, pos)) {
+				snow = -2.0D;
+			}
+			return snow;
+		});
+		TemperatureQuery.registerQuery("survive:season", ContributingFactor.ENVIRONMENTAL, (player, temp, level, pos)-> {
+			float seasonMod = 0;
+			if (ModHelper.isSereneSeasonsLoaded()) {
+				Season season = SereneSeasonsCompat.modifyTemperatureBySeason(level, pos);
+				if (DataMaps.Server.biomeTemperature.containsKey(level.getBiome(pos).getRegistryName())) {
+					seasonMod = DataMaps.Server.biomeTemperature.get(level.getBiome(pos).getRegistryName()).getSeasonModifiers().get(season);
+				} else {
+					seasonMod = season.getModifier();
+				}
+				if (ModHelper.isPrimalWinterLoaded()) {
+					seasonMod = -1.0F;
+				}
+			}
+			return seasonMod;
+		});
+		TemperatureQuery.registerQuery("survive:dimension", ContributingFactor.ENVIRONMENTAL, (player, temp, level, pos)->{
+			for (String dimensionList : ServerConfig.dimensionModifiers) {
+				String[] dimension = dimensionList.split(",");
+				ResourceLocation loc = new ResourceLocation(dimension[0]);
+				if (RegistryHelper.matchesRegistryKey(loc, level.dimension())) {
+					return Float.parseFloat(dimension[1]);
+				}
+			}
+			return 0;
+		});
+		//Internal
+		TemperatureQuery.registerQuery("survive:wetness", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
+			return (double)(SurviveEntityStats.getWetTime(player)) / -1800.0D;
+		});
+		TemperatureQuery.registerQuery("survive:cooling_enchantment", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
+			double coolingMod = 0.0D;
+			coolingMod -= 0.05D * (float)SEnchantmentHelper.getCoolingModifier(player.getItemBySlot(EquipmentSlot.HEAD));
+			coolingMod -= 0.16D * (float)SEnchantmentHelper.getCoolingModifier(player.getItemBySlot(EquipmentSlot.CHEST));
+			coolingMod -= 0.13D * (float)SEnchantmentHelper.getCoolingModifier(player.getItemBySlot(EquipmentSlot.LEGS));
+			coolingMod -= 0.06D * (float)SEnchantmentHelper.getCoolingModifier(player.getItemBySlot(EquipmentSlot.FEET));
+			return coolingMod;
+		});
+		TemperatureQuery.registerQuery("survive:warming_enchantment", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
+			double warmingMod = 0.0D;
+			warmingMod += 0.05D * (float)SEnchantmentHelper.getWarmingModifier(player.getItemBySlot(EquipmentSlot.HEAD));
+			warmingMod += 0.16D * (float)SEnchantmentHelper.getWarmingModifier(player.getItemBySlot(EquipmentSlot.CHEST));
+			warmingMod += 0.13D * (float)SEnchantmentHelper.getWarmingModifier(player.getItemBySlot(EquipmentSlot.LEGS));
+			warmingMod += 0.06D * (float)SEnchantmentHelper.getWarmingModifier(player.getItemBySlot(EquipmentSlot.FEET));
+			return warmingMod;
+		});
+		TemperatureQuery.registerQuery("survive:adjusted_cooling_enchantment", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
+			boolean shouldCool = false;
+			if (temp > Survive.DEFAULT_TEMP) {
+				for (EquipmentSlot types : EquipmentSlot.values()) {
+					if (SEnchantmentHelper.hasAdjustedCooling(player.getItemBySlot(types))) {
+						shouldCool = true;
+					}
+				}
+			}
+			return shouldCool?-2.0D:0.0D;
+		});
+		TemperatureQuery.registerQuery("survive:adjusted_warming_enchantment", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
+			boolean shouldWarm = false;
+			if (temp < Survive.DEFAULT_TEMP) {
+				for (EquipmentSlot types : EquipmentSlot.values()) {
+					if (SEnchantmentHelper.hasAdjustedWarming(player.getItemBySlot(types))) {
+						shouldWarm = true;
+					}
+				}
+			}
+			return shouldWarm?2.0D:0.0D;
+		});
+		TemperatureQuery.registerQuery("survive:armor", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
+			double armorMod = 0.0D;
+			for (EquipmentSlot slot : EquipmentSlot.values()) {
+				if (slot.getType() == Type.ARMOR) {
+					if (!player.getItemBySlot(slot).isEmpty()) {
+						Item armor = player.getItemBySlot(slot).getItem();
+						float modifier = 1.0F;
+						if (DataMaps.Server.armor.containsKey(armor.getRegistryName())) {
+							for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Server.armor.get(armor.getRegistryName()).getTemperatureModifier()) {
+								if (instance.getSecond().shouldChangeTemperature(player)) {
+									modifier = instance.getSecond().getTemperature();
+									break;
+								}
+							}
+						}
+						armorMod += getModifierFromSlot(slot) * modifier;
+					}
+				}
+			}
+			return armorMod;
+		});
+		TemperatureQuery.registerQuery("survive:chilled_effect", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
+			if (player.hasEffect(SEffects.CHILLED))
+				return -(0.05F * (float)(player.getEffect(SEffects.CHILLED).getAmplifier() + 1));
+			else
+				return 0;
+		});
+		TemperatureQuery.registerQuery("survive:heated_effect", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
+			if (player.hasEffect(SEffects.CHILLED))
+				return +(0.05F * (float)(player.getEffect(SEffects.CHILLED).getAmplifier() + 1));
+			else
+				return 0;
+		});
 	}
 }

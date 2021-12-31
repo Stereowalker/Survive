@@ -1,4 +1,4 @@
-package com.stereowalker.survive.world.temperature;
+package com.stereowalker.survive.world.temperature.conditions;
 
 import com.google.gson.JsonObject;
 import com.stereowalker.unionlib.util.RegistryHelper;
@@ -11,9 +11,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class BiomeCondition extends TemperatureChangeCondition<BiomeCondition.Instance>{
+public class BiomeNotCondition extends TemperatureChangeCondition<BiomeNotCondition.Instance>{
 
-	public BiomeCondition() {
+	public BiomeNotCondition() {
 		super();
 	}
 
@@ -47,7 +47,7 @@ public class BiomeCondition extends TemperatureChangeCondition<BiomeCondition.In
 
 		@Override
 		public boolean shouldChangeTemperature(Player player) {
-			return RegistryHelper.matchesRegistryKey(this.biome, player.level.getBiomeName(player.blockPosition()).get());
+			return !RegistryHelper.matchesRegistryKey(this.biome, player.level.getBiomeName(player.blockPosition()).get());
 		}
 
 		@Override
@@ -61,7 +61,7 @@ public class BiomeCondition extends TemperatureChangeCondition<BiomeCondition.In
 		@Override
 		@OnlyIn(Dist.CLIENT)
 		public Component getAdditionalContext() {
-			return new TranslatableComponent("temperature_context.biome", this.biome);
+			return new TranslatableComponent("temperature_context.not_biome", this.biome);
 		}
 	}
 }

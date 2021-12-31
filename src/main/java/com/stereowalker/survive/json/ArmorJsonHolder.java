@@ -11,8 +11,8 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.registries.SurviveRegistries;
-import com.stereowalker.survive.world.temperature.TemperatureChangeCondition;
-import com.stereowalker.survive.world.temperature.TemperatureChangeInstance;
+import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeCondition;
+import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

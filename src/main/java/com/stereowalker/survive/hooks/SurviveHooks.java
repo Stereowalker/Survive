@@ -1,19 +1,19 @@
 package com.stereowalker.survive.hooks;
 
 import com.stereowalker.survive.api.event.TemperatureModifierSetEvent;
+import com.stereowalker.survive.world.temperature.TemperatureModifier;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.MinecraftForge;
 
 public class SurviveHooks {
 
-	public static double getTemperatureModifer(LivingEntity entity, ResourceLocation id, double originalValue)
+	public static TemperatureModifier getTemperatureModifer(LivingEntity entity, TemperatureModifier originalModifier)
 	{
-		TemperatureModifierSetEvent event = new TemperatureModifierSetEvent(id, originalValue);
+		TemperatureModifierSetEvent event = new TemperatureModifierSetEvent(originalModifier);
 		if (MinecraftForge.EVENT_BUS.post(event))
 		{
-			return 0;
+			return originalModifier.setMod(0);
 		}
 		return event.getModifier();
 	}

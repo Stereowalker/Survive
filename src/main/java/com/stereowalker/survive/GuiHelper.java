@@ -12,7 +12,6 @@ import com.stereowalker.survive.core.TempDisplayMode;
 import com.stereowalker.survive.needs.IRoastedEntity;
 import com.stereowalker.survive.needs.NutritionData;
 import com.stereowalker.survive.world.effect.SEffects;
-import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.util.ScreenHelper;
 import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 
@@ -85,24 +84,24 @@ public class GuiHelper {
 			RenderSystem.setShaderTexture(0, GUI_ICONS);
 		}
 		double rawTemperature = SurviveEntityStats.getTemperatureStats(playerentity).getTemperatureLevel();
-		double tempLocation = rawTemperature - Survive.DEFAULT_TEMP;
-		double displayTemp = 0;
-		if (tempLocation > 0) {
-			double maxTemp = 0.0D;
-			if (playerentity.getAttribute(SAttributes.HEAT_RESISTANCE) != null) {
-				maxTemp = playerentity.getAttributeValue(SAttributes.HEAT_RESISTANCE);
-			}
-			double div = tempLocation / maxTemp;
-			displayTemp = Mth.clamp(div, 0, 1.0D+(28.0D/63.0D));
-		}
-		if (tempLocation < 0) {
-			double maxTemp = 0.0D;
-			if (playerentity.getAttribute(SAttributes.COLD_RESISTANCE) != null) {
-				maxTemp = playerentity.getAttributeValue(SAttributes.COLD_RESISTANCE);
-			}
-			double div = tempLocation / maxTemp;
-			displayTemp = Mth.clamp(div, -1.0D-(28.0D/63.0D), 0);
-		}
+//		double tempLocation = rawTemperature - Survive.DEFAULT_TEMP;
+		double displayTemp = SurviveEntityStats.getTemperatureStats(playerentity).getDisplayTemperature();
+//		if (tempLocation > 0) {
+//			double maxTemp = 0.0D;
+//			if (playerentity.getAttribute(SAttributes.HEAT_RESISTANCE) != null) {
+//				maxTemp = playerentity.getAttributeValue(SAttributes.HEAT_RESISTANCE);
+//			}
+//			double div = tempLocation / maxTemp;
+//			displayTemp = Mth.clamp(div, 0, 1.0D+(28.0D/63.0D));
+//		}
+//		if (tempLocation < 0) {
+//			double maxTemp = 0.0D;
+//			if (playerentity.getAttribute(SAttributes.COLD_RESISTANCE) != null) {
+//				maxTemp = playerentity.getAttributeValue(SAttributes.COLD_RESISTANCE);
+//			}
+//			double div = tempLocation / maxTemp;
+//			displayTemp = Mth.clamp(div, -1.0D-(28.0D/63.0D), 0);
+//		}
 		//For Numbers
 		int temp = (int) (rawTemperature*100);
 		double temperaure = ((double)temp) / 100.0D;

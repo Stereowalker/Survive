@@ -29,7 +29,7 @@ public abstract class BlockMixin extends BlockBehaviour implements ItemLike, net
 		super(properties);
 	}
 
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = {"playerDestroy"})
+	@Redirect(method = "playerDestroy", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"))
 	public void exhaustStaminaWhenBreakingBlock(Player player, float value, Level worldIn, Player player2, BlockPos pos, BlockState state, @Nullable BlockEntity te, ItemStack stack) {
 		if (Survive.CONFIG.enable_stamina) {
 			StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);

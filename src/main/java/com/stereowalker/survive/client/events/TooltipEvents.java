@@ -6,7 +6,7 @@ import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.world.DataMaps;
-import com.stereowalker.survive.world.temperature.TemperatureChangeInstance;
+import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

@@ -12,6 +12,7 @@ import com.stereowalker.survive.needs.WellbeingData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.player.Player;
 
 public class SurviveEntityStats {
@@ -122,7 +123,7 @@ public class SurviveEntityStats {
 		getModNBT(entity).put(energyStatsID, compound2);
 	}
 	
-	public static void setTemperatureStats(LivingEntity entity, TemperatureData temperatureStats) {
+	public static void setTemperatureStats(Entity entity, TemperatureData temperatureStats) {
 		CompoundTag compound2 = new CompoundTag();
 		temperatureStats.write(compound2);
 		getModNBT(entity).put(temperatureStatsID, compound2);
@@ -169,6 +170,18 @@ public class SurviveEntityStats {
 			return true;
 		}
 		return false;
+	}
+	
+	public static void addStatsOnSpawn(ItemFrame frame) {
+		if (frame != null) {
+			CompoundTag compound;
+			compound = getOrCreateModNBT(frame);
+			if(frame.isAlive()) {
+				if (!compound.contains(temperatureStatsID)) {
+					setTemperatureStats(frame, new TemperatureData());
+				}
+			}
+		}
 	}
 
 	public static void addStatsOnSpawn(Player player) {

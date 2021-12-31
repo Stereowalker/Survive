@@ -12,8 +12,8 @@ import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.seasons.Seasons;
-import com.stereowalker.survive.world.temperature.TemperatureChangeCondition;
-import com.stereowalker.survive.world.temperature.TemperatureChangeConditions;
+import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeCondition;
+import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeConditions;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;

@@ -1,4 +1,4 @@
-package com.stereowalker.survive.world.temperature;
+package com.stereowalker.survive.world.temperature.conditions;
 
 import com.google.gson.JsonObject;
 

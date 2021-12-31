@@ -4,7 +4,6 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.needs.SDamageSource;
 import com.stereowalker.survive.needs.StaminaData;
-import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.WaterData;
 
 import net.minecraft.server.level.ServerPlayer;
@@ -38,14 +37,6 @@ public class SEffect extends MobEffect {
 			if ((!((Player)entityLivingBaseIn).isSleeping() || !Survive.TEMPERATURE_CONFIG.hyp_allow_sleep) && flag) {
 				entityLivingBaseIn.hurt(SDamageSource.HYPERTHERMIA, 0.4F);
 			}
-		} else if (this == SEffects.CHILLED && entityLivingBaseIn instanceof ServerPlayer) {
-			TemperatureData stats = SurviveEntityStats.getTemperatureStats((ServerPlayer) entityLivingBaseIn);
-			TemperatureData.setTemperatureModifier(entityLivingBaseIn, "survive:chilled_effect", -(0.05F * (float)(amplifier + 1)));
-			SurviveEntityStats.setTemperatureStats((ServerPlayer) entityLivingBaseIn, stats);
-		} else if (this == SEffects.HEATED && entityLivingBaseIn instanceof ServerPlayer) {
-			TemperatureData stats = SurviveEntityStats.getTemperatureStats((ServerPlayer) entityLivingBaseIn);
-			TemperatureData.setTemperatureModifier(entityLivingBaseIn, "survive:heated_effect", +(0.05F * (float)(amplifier + 1)));
-			SurviveEntityStats.setTemperatureStats((ServerPlayer) entityLivingBaseIn, stats);
 		} else if (this == SEffects.ENERGIZED && entityLivingBaseIn instanceof ServerPlayer) {
 			StaminaData energyStats = SurviveEntityStats.getEnergyStats(entityLivingBaseIn);
 			energyStats.addStats(1);
