@@ -1,4 +1,8 @@
 {
+	"conditions": [{
+		"type": "survive:module_enabled",
+		"module": "hygiene"
+	}],
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {

@@ -3,6 +3,7 @@ package com.stereowalker.survive.core.cauldron;
 import java.util.Map;
 
 import com.stereowalker.survive.world.item.CanteenItem;
+import com.stereowalker.survive.world.item.HygieneItems;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.level.block.SBlocks;
 
@@ -52,9 +53,9 @@ public interface SCauldronInteraction extends CauldronInteraction {
 			}, SoundEvents.BUCKET_FILL);
 		});
 		//Potash Solution Interactions
-		fillEmptyCauldron(SItems.POTASH_SOLUTION, new ItemStack(Items.GLASS_BOTTLE), SBlocks.POTASH_CAULDRON.defaultBlockState(), SoundEvents.BOTTLE_EMPTY);
-		addToCauldron(POTASH, SItems.POTASH_SOLUTION, new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
-		takeFromCauldron(POTASH, Items.GLASS_BOTTLE, new ItemStack(SItems.POTASH_SOLUTION), SoundEvents.BOTTLE_FILL);
+		fillEmptyCauldron(HygieneItems.POTASH_SOLUTION, new ItemStack(Items.GLASS_BOTTLE), SBlocks.POTASH_CAULDRON.defaultBlockState(), SoundEvents.BOTTLE_EMPTY);
+		addToCauldron(POTASH, HygieneItems.POTASH_SOLUTION, new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
+		takeFromCauldron(POTASH, Items.GLASS_BOTTLE, new ItemStack(HygieneItems.POTASH_SOLUTION), SoundEvents.BOTTLE_FILL);
 		//Water Bowl Interactions
 		takeFromCauldron(WATER, Items.BOWL, new ItemStack(SItems.WATER_BOWL), SoundEvents.BOTTLE_FILL);
 		addToCauldron(WATER, SItems.WATER_BOWL, new ItemStack(Items.BOWL), SoundEvents.BOTTLE_EMPTY);

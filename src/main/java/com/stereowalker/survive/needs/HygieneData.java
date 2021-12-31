@@ -138,6 +138,6 @@ public class HygieneData extends SurviveData {
 
 	@Override
 	public boolean shouldTick() {
-		return Survive.HYGIENE_CONFIG.enable;
+		return Survive.HYGIENE_CONFIG.enabled;
 	}
 }

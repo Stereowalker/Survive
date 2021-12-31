@@ -7,9 +7,9 @@ import com.stereowalker.survive.world.effect.SEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
 import com.stereowalker.survive.world.item.crafting.SRecipeSerializer;
+import com.stereowalker.survive.world.item.crafting.conditions.ModuleEnabledCondition;
 import com.stereowalker.survive.world.item.enchantment.SEnchantments;
 import com.stereowalker.survive.world.level.block.SBlocks;
-import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.seasons.Seasons;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeCondition;
@@ -27,11 +27,11 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -68,6 +68,7 @@ public class SurviveRegistryEvents
 		event.add(EntityType.PLAYER, SAttributes.HEAT_RESISTANCE);
 	}
 
+	@SuppressWarnings("resource")
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public static void registerParticleFactories(ParticleFactoryRegisterEvent event) {
@@ -80,11 +81,6 @@ public class SurviveRegistryEvents
 	public static void registerParticles(final RegistryEvent.Register<ParticleType<?>> event) {
 		SParticleTypes.registerAll(event.getRegistry());
 	}
-
-//	@SubscribeEvent
-//	public static void registerItems(final RegistryEvent.Register<Item> event) {
-//		SItems.registerAll(event.getRegistry());
-//	}
 
 	@SubscribeEvent
 	public static void registerEffects(final RegistryEvent.Register<MobEffect> event) {
@@ -103,6 +99,7 @@ public class SurviveRegistryEvents
 	}
 	@SubscribeEvent
 	public static void registerRecipeSerializers(final RegistryEvent.Register<RecipeSerializer<?>> event) {
+		CraftingHelper.register(ModuleEnabledCondition.Serializer.INSTANCE);
 		SRecipeSerializer.registerAll(event.getRegistry());
 	}
 	

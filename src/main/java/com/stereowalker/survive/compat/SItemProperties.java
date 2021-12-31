@@ -14,7 +14,7 @@ public class SItemProperties {
 	public static void registerAll() {
 		ItemProperties.register(SItems.THERMOMETER, new ResourceLocation("temperature"), (stack, level, livingentity, count) -> {
 			Entity entity = (Entity)(livingentity != null ? livingentity : stack.getEntityRepresentation());
-			if (entity == null) {
+			if (entity == null || level == null) {
 				return 0.0f;
 			}
 			float environmentalMods = 0;

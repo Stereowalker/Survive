@@ -36,6 +36,7 @@ import com.stereowalker.survive.resource.PotionDrinkDataManager;
 import com.stereowalker.survive.spell.SSpells;
 import com.stereowalker.survive.stat.SStats;
 import com.stereowalker.survive.world.DataMaps;
+import com.stereowalker.survive.world.item.HygieneItems;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.level.CGameRules;
 import com.stereowalker.survive.world.level.material.SFluids;
@@ -67,13 +68,13 @@ public class Survive extends MinecraftMod {
 
 	public static final float DEFAULT_TEMP = 37.0F;
 	public static final String MOD_ID = "survive";
-	
+
 	public static final Config CONFIG = new Config();
 	public static final HygieneConfig HYGIENE_CONFIG = new HygieneConfig();
 	public static final TemperatureConfig TEMPERATURE_CONFIG = new TemperatureConfig();
 	public static final ThirstConfig THIRST_CONFIG = new ThirstConfig();
 	public static final WellbeingConfig WELLBEING_CONFIG = new WellbeingConfig();
-	
+
 	public static boolean isPrimalWinterLoaded;
 	public static final ItemConsummableDataManager consummableReloader = new ItemConsummableDataManager();
 	public static final PotionDrinkDataManager potionReloader = new PotionDrinkDataManager();
@@ -82,14 +83,14 @@ public class Survive extends MinecraftMod {
 	public static final BiomeTemperatureDataManager biomeReloader = new BiomeTemperatureDataManager();
 	public static final EntityTemperatureDataManager entityReloader = new EntityTemperatureDataManager();
 	private static Survive instance;
-	
+
 	public static boolean isCombatLoaded() {
 		return ModList.get().isLoaded("combat");
 	}
 	public static boolean isOriginsLoaded() {
 		return ModList.get().isLoaded("origins");
 	}
-	
+
 	public Survive() 
 	{
 		super("survive", new ResourceLocation(MOD_ID, "textures/icon.png"), LoadType.BOTH);
@@ -103,7 +104,7 @@ public class Survive extends MinecraftMod {
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::clientRegistries);
-//		MinecraftForge.EVENT_BUS.register(this);
+		//		MinecraftForge.EVENT_BUS.register(this);
 		isPrimalWinterLoaded = ModList.get().isLoaded("primalwinter");
 		if (isCombatLoaded()) {
 			SSpells.registerAll(modEventBus);
@@ -113,12 +114,15 @@ public class Survive extends MinecraftMod {
 			OriginsCompat.initOriginsPatcher();
 		}
 	}
-	
+
 	@Override
 	public List<Class<?>> getRegistries() {
-		return Lists.newArrayList(SFluids.class, SItems.class);
+		List<Class<?>> defaultRegs = Lists.newArrayList(SFluids.class, SItems.class);
+		//		if (HYGIENE_CONFIG.enabled)
+		defaultRegs.add(HygieneItems.class);
+		return defaultRegs;
 	}
-	
+
 	@Override
 	public void registerMessages(SimpleChannel channel) {
 		int netID = -1;
@@ -130,7 +134,7 @@ public class Survive extends MinecraftMod {
 		channel.registerMessage(netID++, ServerboundEnergyTaxPacket.class, ServerboundEnergyTaxPacket::encode, ServerboundEnergyTaxPacket::decode, ServerboundEnergyTaxPacket::handle);
 		channel.registerMessage(netID++, ClientboundArmorDataTransferPacket.class, ClientboundArmorDataTransferPacket::encode, ClientboundArmorDataTransferPacket::decode, ClientboundArmorDataTransferPacket::handle);
 	}
-	
+
 	//TODO: FInd Somewhere to put all these
 	public static void registerDrinkDataForItem(ResourceLocation location, FoodJsonHolder drinkData) {
 		DataMaps.Server.consummableItem.put(location, drinkData);
@@ -164,10 +168,10 @@ public class Survive extends MinecraftMod {
 	private void setup(final FMLCommonSetupEvent event)
 	{
 		SCauldronInteraction.bootStrap();
-//		BrewingRecipes.addBrewingRecipes();
+		//		BrewingRecipes.addBrewingRecipes();
 		CGameRules.init();
 		SurviveEvents.registerHeatMap();
-		
+
 		for(Item item : ForgeRegistries.ITEMS) {
 			if (item.isEdible())
 				DataMaps.Server.defaultFood.put(item.getRegistryName(), item.getFoodProperties());
@@ -190,7 +194,7 @@ public class Survive extends MinecraftMod {
 		dims.add("minecraft:the_end,0.0");
 		return dims;
 	}
-	
+
 	public static List<String> defaultArmorMods(){
 		List<String> armorTemps = new ArrayList<String>();
 		//Ars Nouveau
@@ -208,21 +212,21 @@ public class Survive extends MinecraftMod {
 		armorTemps.add("ars_nouveau:archmage_boots,3.0");
 		return armorTemps;
 	}
-	
+
 	public static List<String> defaultWaterContainers() {
 		List<String> water = new ArrayList<String>();
-//		water.add("minecraft:sweet_berries,-2");
+		//		water.add("minecraft:sweet_berries,-2");
 		water.add("farmersdelight:milk_bottle,4");
-//		water.add("minecraft:pumpkin_pie,-4");
+		//		water.add("minecraft:pumpkin_pie,-4");
 		return water;
 	}
-	
+
 	public static List<String> defaultThirstContainers() {
 		List<String> thirst = new ArrayList<String>();
-//		thirst.add("minecraft:honey_bottle,1");
-//		thirst.add("minecraft:pufferfish,-8");
-//		thirst.add("minecraft:rotten_flesh,-4");
-//		thirst.add("minecraft:poisonous_potato,-8");
+		//		thirst.add("minecraft:honey_bottle,1");
+		//		thirst.add("minecraft:pufferfish,-8");
+		//		thirst.add("minecraft:rotten_flesh,-4");
+		//		thirst.add("minecraft:poisonous_potato,-8");
 		thirst.add("minecraft:spider_eye,-8");
 		thirst.add("minecraft:bread,-6");
 		thirst.add("minecraft:cookie,-1");
@@ -237,10 +241,10 @@ public class Survive extends MinecraftMod {
 		thirst.add("farmersdelight:cooked_rice,-4");
 		return thirst;
 	}
-	
+
 	public static List<String> defaultChilledContainers() {
 		List<String> chilled = new ArrayList<String>();
-//		chilled.add("minecraft:beetroot_soup,3");
+		//		chilled.add("minecraft:beetroot_soup,3");
 		chilled.add("minecraft:potato,0");
 		chilled.add("minecraft:carrot,0");
 		chilled.add("create:builders_tea,8");
@@ -254,7 +258,7 @@ public class Survive extends MinecraftMod {
 		chilled.add("farmersdelight:mixed_salad,0");
 		return chilled;
 	}
-	
+
 	public static List<String> defaultHeatedContainers(){
 		List<String> heated = new ArrayList<String>(); 
 		heated.add("minecraft:rabbit_stew,0");

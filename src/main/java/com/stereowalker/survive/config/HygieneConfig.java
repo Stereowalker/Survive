@@ -10,7 +10,7 @@ public class HygieneConfig implements ConfigObject {
 
 	@UnionConfig.Entry(name = "Enable Hygiene (Beta)", type = Type.COMMON)
 	@UnionConfig.Comment(comment = {"Disabling this will disable this mods hygiene system","The hygiene system might be pretty buggy, so proceed with caution"})
-	public boolean enable = false;
+	public boolean enabled = false;
 	
 	@UnionConfig.Entry(name = "Dirty Tick Rate", type = Type.COMMON)
 	@UnionConfig.Comment(comment = {"How many ticks should pass before the players grime counter increases by one","Setting this to -1 prevents the player from getting dirty this way"})

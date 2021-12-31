@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.function.Predicate;
 
 import com.stereowalker.survive.core.cauldron.SCauldronInteraction;
-import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.survive.world.item.HygieneItems;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -40,7 +40,7 @@ public class PotashCauldronBlock extends LayeredCauldronBlock {
 	@Override
 	public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, Random random) {
 		if (worldIn.getMaxLocalRawBrightness(pos.above()) >= 12 && random.nextInt(10) == 0) {
-			worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(SItems.POTASH)));
+			worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(HygieneItems.POTASH)));
 			lowerFillLevel(state, worldIn, pos);
 		}
 	}

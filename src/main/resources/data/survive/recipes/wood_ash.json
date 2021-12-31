@@ -1,8 +1,12 @@
 {
-  "type": "minecraft:smelting",
-  "ingredient": {
-    "item": "minecraft:charcoal"
-  },
-  "result": "survive:wood_ash",
-  "cookingtime": 100
+	"conditions": [{
+		"type": "survive:module_enabled",
+		"module": "hygiene"
+	}],
+	"type": "minecraft:smelting",
+	"ingredient": {
+		"item": "minecraft:charcoal"
+	},
+	"result": "survive:wood_ash",
+	"cookingtime": 100
 }
