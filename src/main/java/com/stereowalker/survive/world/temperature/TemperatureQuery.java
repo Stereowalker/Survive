@@ -20,9 +20,9 @@ import net.minecraft.world.level.Level;
  */
 @FunctionalInterface
 public interface TemperatureQuery {
-	public static Map<ResourceLocation,Tuple<TemperatureQuery, ContributingFactor>> environmentQuerys = Maps.newHashMap();
+	public static Map<ResourceLocation,Tuple<TemperatureQuery, ContributingFactor>> queries = Maps.newHashMap();
 	public static void registerQuery(ResourceLocation id, ContributingFactor factor, TemperatureQuery query) {
-		environmentQuerys.put(id, new Tuple<>(query, factor));
+		queries.put(id, new Tuple<>(query, factor));
 	}
 	public static void registerQuery(String id, ContributingFactor factor, TemperatureQuery query) {
 		registerQuery(new ResourceLocation(id), factor, query);

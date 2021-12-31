@@ -5,8 +5,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class SItemGroup {
-	public static final CreativeModeTab MAIN = (new CreativeModeTab("survive") {
+public class SCreativeModeTab {
+	public static final CreativeModeTab TAB_MAIN = (new CreativeModeTab("survive") {
 		@OnlyIn(Dist.CLIENT)
 		@Override
 		public ItemStack makeIcon() {

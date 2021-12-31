@@ -268,9 +268,9 @@ public class SurviveEvents {
 	public static void updateEnvTemperature(LivingUpdateEvent event) {
 		if (event.getEntityLiving() != null && event.getEntityLiving() instanceof ServerPlayer) {
 			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
-			for (ResourceLocation queryId : TemperatureQuery.environmentQuerys.keySet()) {
-				double queryValue = TemperatureQuery.environmentQuerys.get(queryId).getA().run(player, SurviveEntityStats.getTemperatureStats(player).getTemperatureLevel(), player.level, player.blockPosition());
-				TemperatureData.setTemperatureModifier(player, queryId, queryValue, TemperatureQuery.environmentQuerys.get(queryId).getB());
+			for (ResourceLocation queryId : TemperatureQuery.queries.keySet()) {
+				double queryValue = TemperatureQuery.queries.get(queryId).getA().run(player, SurviveEntityStats.getTemperatureStats(player).getTemperatureLevel(), player.level, player.blockPosition());
+				TemperatureData.setTemperatureModifier(player, queryId, queryValue, TemperatureQuery.queries.get(queryId).getB());
 			}
 		}
 	}

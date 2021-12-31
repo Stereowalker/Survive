@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.stereowalker.survive.compat.OriginsCompat;
+import com.stereowalker.survive.compat.SItemProperties;
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.config.HygieneConfig;
 import com.stereowalker.survive.config.ServerConfig;
@@ -179,6 +180,7 @@ public class Survive extends MinecraftMod {
 		ItemBlockRenderTypes.setRenderLayer(SFluids.PURIFIED_WATER, frendertype);
 		ItemBlockRenderTypes.setRenderLayer(SFluids.FLOWING_PURIFIED_WATER, frendertype);
 		GuiHelper.registerOverlays();
+		SItemProperties.registerAll();
 	}
 
 	public static List<String> defaultDimensionMods() {
