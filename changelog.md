@@ -1,3 +1,7 @@
+[6.1.1]
+- Update zh_cn.json (Thanks to StarchierOrb)
+- Updated translation files to include the depreciated hypo/hyperthermia effect
+
 [6.1.0]
 - Temperature, Thirst & Stamina overlay is now handled by the forge overlay system
 - Removed an extra pixel in the energy bars
