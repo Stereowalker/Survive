@@ -1,3 +1,6 @@
+[6.1.2]
+- Made ice cubes drop only when pickaxes are used
+
 [6.1.1]
 - Update zh_cn.json (Thanks to StarchierOrb)
 - Updated translation files to include the depreciated hypo/hyperthermia effect
