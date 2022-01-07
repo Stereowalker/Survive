@@ -32,6 +32,8 @@
 ///////////////////////////////////////////////////////////[POTIONS_&_EFFECTS]///////////////////////////////////////////////////////////
 	"effect.survive.thirst": "Жажда",
 	"effect.survive.tiredness": "Усталость",
+	"effect.survive.depreciated_hypothermia": "Гипотермия",
+	"effect.survive.depreciated_hyperthermia": "Гипертермия",
 	"effect.survive.hypothermia": "Гипотермия",
 	"effect.survive.hyperthermia": "Гипертермия",
 	"effect.survive.heated": "Нагревание",

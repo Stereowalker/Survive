@@ -52,6 +52,8 @@
 ///////////////////////////////////////////////////////////[药水_&_效果]///////////////////////////////////////////////////////////
 	"effect.survive.thirst": "口渴",
 	"effect.survive.tiredness": "疲劳",
+	"effect.survive.depreciated_hypothermia": "低温",
+	"effect.survive.depreciated_hyperthermia": "中暑",
 	"effect.survive.hypothermia": "低温",
 	"effect.survive.hyperthermia": "中暑",
 	"effect.survive.heated": "暖和",

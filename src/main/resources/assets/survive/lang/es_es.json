@@ -48,6 +48,8 @@
 ///////////////////////////////////////////////////////////[POTIONS_&_EFFECTS]///////////////////////////////////////////////////////////
 	"effect.survive.thirst": "Sed",
 	"effect.survive.tiredness": "Cansancio",
+	"effect.survive.depreciated_hypothermia": "Hipotermia",
+	"effect.survive.depreciated_hyperthermia": "Hipertermia",
 	"effect.survive.hypothermia": "Hipotermia",
 	"effect.survive.hyperthermia": "Hipertermia",
 	"effect.survive.heated": "Acalorado",

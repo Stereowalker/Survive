@@ -54,6 +54,8 @@
 ///////////////////////////////////////////////////////////[POTIONS_&_EFFECTS]///////////////////////////////////////////////////////////
 	"effect.survive.thirst": "Khát nước",
 	"effect.survive.tiredness": "Mệt mỏi",
+	"effect.survive.depreciated_hypothermia": "Hạ thân nhiệt",
+	"effect.survive.depreciated_hyperthermia": "Tăng thân nhiệt",
 	"effect.survive.hypothermia": "Hạ thân nhiệt",
 	"effect.survive.hyperthermia": "Tăng thân nhiệt",
 	"effect.survive.heated": "Đun nóng",

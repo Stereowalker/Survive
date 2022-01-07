@@ -48,6 +48,8 @@
 ///////////////////////////////////////////////////////////[POTIONS_&_EFFECTS]///////////////////////////////////////////////////////////
 	"effect.survive.thirst": "Durst",
 	"effect.survive.tiredness": "Müdigkeit",
+	"effect.survive.depreciated_hypothermia": "Unterkühlung",
+	"effect.survive.depreciated_hyperthermia": "Überhitzung",
 	"effect.survive.hypothermia": "Unterkühlung",
 	"effect.survive.hyperthermia": "Überhitzung",
 	"effect.survive.heated": "Aufgewärmt",

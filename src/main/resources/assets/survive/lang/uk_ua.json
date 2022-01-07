@@ -48,6 +48,8 @@
 ///////////////////////////////////////////////////////////[POTIONS_&_EFFECTS]///////////////////////////////////////////////////////////
 	"effect.survive.thirst": "Спрага",
 	"effect.survive.tiredness": "Втома",
+	"effect.survive.depreciated_hypothermia": "Переохолодження",
+	"effect.survive.depreciated_hyperthermia": "Перегрів",
 	"effect.survive.hypothermia": "Переохолодження",
 	"effect.survive.hyperthermia": "Перегрів",
 	"effect.survive.heated": "Зігрітий",
