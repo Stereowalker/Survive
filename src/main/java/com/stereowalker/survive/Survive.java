@@ -118,7 +118,6 @@ public class Survive extends MinecraftMod {
 	@Override
 	public List<Class<?>> getRegistries() {
 		List<Class<?>> defaultRegs = Lists.newArrayList(SFluids.class, SItems.class);
-		//		if (HYGIENE_CONFIG.enabled)
 		defaultRegs.add(HygieneItems.class);
 		return defaultRegs;
 	}
