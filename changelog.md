@@ -1,3 +1,8 @@
+[6.1.4]
+- Added a recipe for the thermometer
+- Getting wet in a cold ocean will lower your temperature by an extra 50%
+- Getting wet in a frozen ocean, frozen peaks, frozen river, ice spikes and any of the vanilla snowy biomes will drop your temperature twice as fast
+
 [6.1.3]
 - Made getting wet in a desert less effective
 - Allowed the modifier for wetness to be adjustable via datapacks
