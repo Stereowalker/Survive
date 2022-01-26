@@ -22,28 +22,29 @@ public class BiomeTemperatureJsonHolder extends JsonHolder {
 
 	private ResourceLocation biomeID;
 	private final float temperature;
+	private final float wetnessModifier;
 	private final Pair<Float, Float> altitude_level_modifier;
 	private final Map<Season,Float> seasonModifiers;
 
 	public BiomeTemperatureJsonHolder(ResourceLocation biomeID, JsonObject object) {
 		super(object);
-		String NOTHING = "nothing";
-		String TEMPERATURE = "temperature";
 		String ALTITUDE_LEVEL_MODIFIER = "altitude_level_modifier";
 		String SEASON_MODIFIER = "season_modifier";
 
 		float temperatureIn = 0;
+		float wetnessModiIn = 1;
 		Pair<Float, Float> altitude_level_modifierIn = Pair.of(1.0f, 1.0f);
 		Map<Season,Float> seasonModifiersIn = Maps.newHashMap();
 
 		this.biomeID = biomeID;
 		if(object.entrySet().size() != 0) {
-			String workingOn = NOTHING;
 			try {
-				if(this.hasMemberAndIsPrimitive(TEMPERATURE, object)) {
-					workingOn = TEMPERATURE;
-					temperatureIn = object.get(TEMPERATURE).getAsFloat();
-					workingOn = NOTHING;
+				stopWorking();
+				if(this.hasMemberAndIsPrimitive("temperature", object)) {
+					temperatureIn = workOnFloat("temperature", object);
+				}
+				if(this.hasMemberAndIsPrimitive("wetness_modifier", object)) {
+					wetnessModiIn = workOnFloat("wetness_modifier", object);
 				}
 				if(this.hasMemberAndIsObject(SEASON_MODIFIER, object)) {
 					workingOn = SEASON_MODIFIER;
@@ -61,23 +62,23 @@ public class BiomeTemperatureJsonHolder extends JsonHolder {
 							Survive.getInstance().getLogger().error("Error loading biome data {} from JSON: The season {} does not exist", biomeID,  new ResourceLocation(elem.getKey()));
 						}
 					}
-					workingOn = NOTHING;
+					stopWorking();
 				}
 				if (this.hasMemberAndIsObject(ALTITUDE_LEVEL_MODIFIER, object)) {
 					workingOn = ALTITUDE_LEVEL_MODIFIER;
 					JsonObject sea = object.getAsJsonObject(ALTITUDE_LEVEL_MODIFIER);
 					if(sea.entrySet().size() != 0) {
-						workingOn = NOTHING;
+						stopWorking();
 						try {
 							if(this.hasMemberAndIsPrimitive("upper", sea)) {
 								workingOn = "upper";
 								altitude_level_modifierIn = Pair.of(sea.get("upper").getAsFloat(), altitude_level_modifierIn.getSecond());
-								workingOn = NOTHING;
+								stopWorking();
 							}
 							if (this.hasMemberAndIsPrimitive("lower", object)) {
 								workingOn = "lower";
 								altitude_level_modifierIn = Pair.of(altitude_level_modifierIn.getFirst(), sea.get("lower").getAsFloat());
-								workingOn = NOTHING;
+								stopWorking();
 							}
 						} catch (ClassCastException e) {
 							Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was wrong type!", e, biomeID, workingOn);
@@ -85,7 +86,7 @@ public class BiomeTemperatureJsonHolder extends JsonHolder {
 							Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was an invalid number!", e, biomeID, workingOn);
 						}
 					}
-					workingOn = NOTHING;
+					stopWorking();
 				}
 			} catch (ClassCastException e) {
 				Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was wrong type!", e, biomeID, workingOn);
@@ -101,6 +102,7 @@ public class BiomeTemperatureJsonHolder extends JsonHolder {
 		}
 		this.seasonModifiers = seasonModifiersIn;
 		this.temperature = temperatureIn;
+		this.wetnessModifier = wetnessModiIn;
 		this.altitude_level_modifier = altitude_level_modifierIn;
 	}
 
@@ -113,6 +115,10 @@ public class BiomeTemperatureJsonHolder extends JsonHolder {
 	 */
 	public float getTemperature() {
 		return temperature;
+	}
+	
+	public float getWetnessModifier() {
+		return wetnessModifier;
 	}
 
 	public Pair<Float, Float> getAltitudeLevelModifier() {

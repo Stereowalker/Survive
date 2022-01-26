@@ -575,7 +575,12 @@ public class SurviveEvents {
 		});
 		//Internal
 		TemperatureQuery.registerQuery("survive:wetness", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
-			return (double)(SurviveEntityStats.getWetTime(player)) / -1800.0D;
+			if (DataMaps.Server.biomeTemperature.containsKey(level.getBiome(pos).getRegistryName())) {
+				float f = DataMaps.Server.biomeTemperature.get(level.getBiome(pos).getRegistryName()).getWetnessModifier();
+				return ((double)(SurviveEntityStats.getWetTime(player)) / -1800.0D) * f;
+			} else {
+				return (double)(SurviveEntityStats.getWetTime(player)) / -1800.0D;
+			}
 		});
 		TemperatureQuery.registerQuery("survive:cooling_enchantment", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
 			double coolingMod = 0.0D;
