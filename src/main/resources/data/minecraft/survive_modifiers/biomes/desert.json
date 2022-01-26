@@ -1,0 +1,17 @@
+{
+	"temperature": 2.0,
+	"wetness_modifier": 0.8,
+	"altitude_level_modifier": {
+		"upper": 1.0,
+		"lower": 1.0
+	},
+	"season_modifier": 
+	{
+		"survive:dry_begin": 0.1,
+		"survive:dry_midst": 0.2,
+		"survive:dry_close": 0.1,
+		"survive:wet_begin": -0.1,
+		"survive:wet_midst": -0.2,
+		"survive:wet_close": -0.1
+	}
+}
