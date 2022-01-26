@@ -25,8 +25,6 @@ import net.minecraftforge.registries.ForgeRegistries;
  * @author Stereowalker
  */
 public class ArmorDataManager implements IResourceReloadListener<Map<ResourceLocation, ArmorJsonHolder>> {
-	private static final JsonParser parser = new JsonParser();
-
 	@Override
 	public CompletableFuture<Map<ResourceLocation, ArmorJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
@@ -44,7 +42,7 @@ public class ArmorDataManager implements IResourceReloadListener<Map<ResourceLoc
 						try (InputStream stream = resource.getInputStream(); 
 								InputStreamReader reader = new InputStreamReader(stream)) {
 							
-							JsonObject object = parser.parse(reader).getAsJsonObject();
+							JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
 							ArmorJsonHolder drinkData = new ArmorJsonHolder(drinkId, object);
 							Survive.getInstance().getLogger().info("Found armor modifier for the item {}", drinkId);
 							

@@ -29,8 +29,6 @@ import net.minecraftforge.registries.ForgeRegistries;
  * @author Stereowalker
  */
 public class ItemConsummableDataManager implements IResourceReloadListener<Map<ResourceLocation, FoodJsonHolder>> {
-	private static final JsonParser parser = new JsonParser();
-
 	@Override
 	public CompletableFuture<Map<ResourceLocation, FoodJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
@@ -48,7 +46,7 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 						try (InputStream stream = resource.getInputStream(); 
 								InputStreamReader reader = new InputStreamReader(stream)) {
 
-							JsonObject object = parser.parse(reader).getAsJsonObject();
+							JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
 							FoodJsonHolder drinkData = new FoodJsonHolder(drinkId, object);
 
 							//Overrides the current food if it is edible. Omitting any modifiers will set that modifier to what is is by default

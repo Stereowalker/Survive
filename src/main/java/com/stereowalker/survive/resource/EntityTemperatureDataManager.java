@@ -24,8 +24,6 @@ import net.minecraftforge.registries.ForgeRegistries;
  * @author Stereowalker
  */
 public class EntityTemperatureDataManager implements IResourceReloadListener<Map<ResourceLocation, EntityTemperatureJsonHolder>> {
-	private static final JsonParser parser = new JsonParser();
-
 	@Override
 	public CompletableFuture<Map<ResourceLocation, EntityTemperatureJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
@@ -43,7 +41,7 @@ public class EntityTemperatureDataManager implements IResourceReloadListener<Map
 						try (InputStream stream = resource.getInputStream(); 
 								InputStreamReader reader = new InputStreamReader(stream)) {
 							
-							JsonObject object = parser.parse(reader).getAsJsonObject();
+							JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
 							EntityTemperatureJsonHolder blockData = new EntityTemperatureJsonHolder(entityId, object);
 							Survive.getInstance().getLogger().info("Found entity temperature modifier for the entity "+entityId);
 							

@@ -24,8 +24,6 @@ import net.minecraftforge.registries.ForgeRegistries;
  * @author Stereowalker
  */
 public class BlockTemperatureDataManager implements IResourceReloadListener<Map<ResourceLocation, BlockTemperatureJsonHolder>> {
-	private static final JsonParser parser = new JsonParser();
-
 	@Override
 	public CompletableFuture<Map<ResourceLocation, BlockTemperatureJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
@@ -43,7 +41,7 @@ public class BlockTemperatureDataManager implements IResourceReloadListener<Map<
 						try (InputStream stream = resource.getInputStream(); 
 								InputStreamReader reader = new InputStreamReader(stream)) {
 							
-							JsonObject object = parser.parse(reader).getAsJsonObject();
+							JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
 							BlockTemperatureJsonHolder blockData = new BlockTemperatureJsonHolder(blockId, object);
 							Survive.getInstance().getLogger().info("Found block temperature modifier for the item "+blockId);
 							

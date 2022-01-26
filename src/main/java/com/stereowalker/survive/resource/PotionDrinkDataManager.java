@@ -24,8 +24,6 @@ import net.minecraftforge.registries.ForgeRegistries;
  * @author Hunternif
  */
 public class PotionDrinkDataManager implements IResourceReloadListener<Map<ResourceLocation, PotionJsonHolder>> {
-	private static final JsonParser parser = new JsonParser();
-
 	@Override
 	public CompletableFuture<Map<ResourceLocation, PotionJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
@@ -43,7 +41,7 @@ public class PotionDrinkDataManager implements IResourceReloadListener<Map<Resou
 						try (InputStream stream = resource.getInputStream(); 
 								InputStreamReader reader = new InputStreamReader(stream)) {
 							
-							JsonObject object = parser.parse(reader).getAsJsonObject();
+							JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
 							PotionJsonHolder drinkData = new PotionJsonHolder(drinkId, object);
 							Survive.getInstance().getLogger().info("Found potion drink data for "+drinkId);
 							

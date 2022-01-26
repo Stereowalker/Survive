@@ -24,8 +24,6 @@ import net.minecraftforge.registries.ForgeRegistries;
  * @author Stereowalker
  */
 public class BiomeTemperatureDataManager implements IResourceReloadListener<Map<ResourceLocation, BiomeTemperatureJsonHolder>> {
-	private static final JsonParser parser = new JsonParser();
-
 	@Override
 	public CompletableFuture<Map<ResourceLocation, BiomeTemperatureJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
@@ -43,7 +41,7 @@ public class BiomeTemperatureDataManager implements IResourceReloadListener<Map<
 						try (InputStream stream = resource.getInputStream(); 
 								InputStreamReader reader = new InputStreamReader(stream)) {
 							
-							JsonObject object = parser.parse(reader).getAsJsonObject();
+							JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
 							BiomeTemperatureJsonHolder biomeData = new BiomeTemperatureJsonHolder(blockId, object);
 							Survive.getInstance().getLogger().info("Found biome temperature modifier for the biome "+blockId);
 							
