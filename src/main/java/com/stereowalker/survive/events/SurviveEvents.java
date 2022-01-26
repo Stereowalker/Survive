@@ -240,7 +240,7 @@ public class SurviveEvents {
 	public static void regulateWetness(LivingUpdateEvent event) {
 		if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
 			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
-			SurviveEntityStats.addWetTime(player, player.isInWaterOrRain() ? 1 : -2);
+			SurviveEntityStats.addWetTime(player, player.isUnderWater() ? 2 : player.isInWaterOrRain() ? 1 : -2);
 		}
 	}
 
