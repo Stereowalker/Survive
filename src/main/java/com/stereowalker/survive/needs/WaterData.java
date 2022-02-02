@@ -67,6 +67,7 @@ public class WaterData extends SurviveData {
 	/**
 	 * Handles the water game logic.
 	 */
+	//TODO: Figure out something else that hydration can do apart from healing
 	public void tick(Player player) {
 		Difficulty difficulty = player.level.getDifficulty();
 		this.prevWaterLevel = this.waterLevel;
@@ -84,14 +85,14 @@ public class WaterData extends SurviveData {
 			++this.waterTimer;
 			if (this.waterTimer >= 10) {
 				float f = Math.min(this.waterHydrationLevel, 6.0F);
-				player.heal(f / 12.0F);
+				//player.heal(f / 12.0F);
 				this.addExhaustion(f);
 				this.waterTimer = 0;
 			}
 		} else if (flag && this.waterLevel >= 18 && player.isHurt()) {
 			++this.waterTimer;
 			if (this.waterTimer >= 80) {
-				player.heal(0.5F);
+				//player.heal(0.5F);
 				this.addExhaustion(6.0F);
 				this.waterTimer = 0;
 			}
