@@ -27,7 +27,7 @@ public class HygieneData extends SurviveData {
 	 */
 	public void clean(int cleanLevelIn, boolean isSkinnyDipping) {
 		if ((this.uncleanLevel > 12 && isSkinnyDipping) || !isSkinnyDipping)
-			this.uncleanLevel = Math.max(cleanLevelIn - this.uncleanLevel, 0);
+			this.uncleanLevel = Math.max(this.uncleanLevel - cleanLevelIn, 0);
 	}
 
 	/**
@@ -41,7 +41,6 @@ public class HygieneData extends SurviveData {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void clientTick(AbstractClientPlayer player) {
-		System.out.println(this.uncleanLevel);
 		if (this.needsABath()) {
 			Random rand = new Random();
 			for(int i = 0; i < ((this.uncleanLevel-25)/10)+2; ++i) {

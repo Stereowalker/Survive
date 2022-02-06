@@ -50,7 +50,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
             property 'mixin.env.remapRefMap', 'true'
 			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-			args '--username', 'CodeHexIO', '--uuid', 'c5751ce1d50e4d47ca120e1ea1c75542'
+			args '--username', 'CodeHexIO', '--uuid', "$System.env.MINECRAFTUUIDSTEREOWALKER"
 
             mods {
                 modId {
