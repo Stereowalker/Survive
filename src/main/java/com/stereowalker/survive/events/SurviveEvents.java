@@ -184,10 +184,10 @@ public class SurviveEvents {
 	@SubscribeEvent
 	public static void allowSleep(SleepingTimeCheckEvent event) {
 		if (Survive.CONFIG.enable_sleep) {
-			if (!event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
+			if (event.getEntityLiving() instanceof ServerPlayer) {
 				ServerPlayer player = (ServerPlayer)event.getEntityLiving();
 				SleepData stats = SurviveEntityStats.getSleepStats(player);
-				if (stats.getAwakeTimer() > time(0) - 5000 && (Survive.CONFIG.canSleepDuringDay || !player.level.isDay())) {
+				if (stats.getAwakeTimer() > time(0) - 5000 && Survive.CONFIG.canSleepDuringDay) {
 					event.setResult(Result.ALLOW);
 				}
 			}
