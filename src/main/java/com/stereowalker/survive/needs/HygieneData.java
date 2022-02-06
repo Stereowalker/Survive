@@ -26,7 +26,7 @@ public class HygieneData extends SurviveData {
 	 * @param cleanLevelIn - Caps at zero
 	 */
 	public void clean(int cleanLevelIn, boolean isSkinnyDipping) {
-		if ((this.uncleanLevel > 12 && isSkinnyDipping) || !isSkinnyDipping)
+		if ((this.uncleanLevel > 7 && isSkinnyDipping) || !isSkinnyDipping)
 			this.uncleanLevel = Math.max(this.uncleanLevel - cleanLevelIn, 0);
 	}
 
@@ -106,7 +106,7 @@ public class HygieneData extends SurviveData {
 	 * Get whether the player is plenty clean.
 	 */
 	public boolean isSqueakyClean() {
-		return this.uncleanLevel < 10;
+		return this.uncleanLevel < 5;
 	}
 
 	/**
