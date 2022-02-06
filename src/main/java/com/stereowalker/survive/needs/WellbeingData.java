@@ -16,8 +16,8 @@ public class WellbeingData extends SurviveData {
 	public boolean isWell;
 	public int timeUntilUnwell = 0;
 	public int timeUntilWell = 0;
-	public int timeUntilHypothermia = 0;
-	public int timeUntilHyperthermia = 0;
+	public int timeUntilHypothermia;
+	public int timeUntilHyperthermia;
 
 	public void setTimer(int min, int max) {
 		if (this.timeUntilUnwell == 0 && this.isWell && this.shouldTick())
@@ -27,6 +27,8 @@ public class WellbeingData extends SurviveData {
 	public WellbeingData() {
 		super();
 		this.isWell = true;
+		this.timeUntilHyperthermia = 6000;
+		this.timeUntilHyperthermia = 6000;
 	}
 
 	@Override
