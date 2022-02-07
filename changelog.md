@@ -1,3 +1,15 @@
+[6.1.5]
+- Fix the player becoming instantly clean when wet
+- Made the squeaky clean status last for a lesser amount of time
+- Fixed immediately getting hyp(o/er)thermia in experimental settings
+- Updated ru_ru.json (Credits to mirkiv224)
+- Charcoal filtering recipes are now shown in JEI
+- Used a shapeless recipe instead of a charcoal filter one for purified water buckets and bowls
+- Fixed potions being smeltable in a furnace
+- Fixed purified water block model
+- Cause sickness in the player if too much bad water is consumed
+- Fix experimental hyp(o/er)thermia not dealing damage. It should now reduce health up to 1/4 of your max health
+
 [6.1.4]
 - Added a recipe for the thermometer
 - Getting wet in a cold ocean will lower your temperature by an extra 50%
