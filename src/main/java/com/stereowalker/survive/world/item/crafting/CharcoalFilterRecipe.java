@@ -34,8 +34,6 @@ public class CharcoalFilterRecipe extends CustomRecipe {
 				waterBottle++;
 			} else if (stack.getItem() == SItems.WATER_CANTEEN) {
 				waterBottle++;
-			} else if (stack.getItem() == Items.WATER_BUCKET) {
-				waterBottle++;
 			} else if (!stack.isEmpty()){
 				return false;
 			}
@@ -56,8 +54,6 @@ public class CharcoalFilterRecipe extends CustomRecipe {
 				return new ItemStack(SItems.PURIFIED_WATER_BOWL);
 			} else if (stack.getItem() == SItems.WATER_CANTEEN) {
 				return CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.PURIFIED_WATER_CANTEEN), ((CanteenItem)stack.getItem()).getDrinksLeft(stack));
-			} else if (stack.getItem() == Items.WATER_BUCKET) {
-				return new ItemStack(SItems.PURIFIED_WATER_BUCKET);
 			}
 		}
 		return ItemStack.EMPTY;

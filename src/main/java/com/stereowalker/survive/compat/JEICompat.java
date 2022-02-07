@@ -56,12 +56,12 @@ public class JEICompat implements IModPlugin {
 //			public NonNullList<Ingredient> getIngredients() {
 //				NonNullList<Ingredient> ingredients = NonNullList.create();
 //				ingredients.add(0, Ingredient.of(SItems.CHARCOAL_FILTER));
-//				ingredients.add(1, Ingredient.of(Items.WATER_BUCKET));
+//				ingredients.add(1, Ingredient.of(SItems.WATER_BOWL));
 //				return ingredients;
 //			}
 //			@Override
 //			public ItemStack getResultItem() {
-//				return new ItemStack(SItems.PURIFIED_WATER_BUCKET);
+//				return new ItemStack(SItems.PURIFIED_WATER_BOWL);
 //			}
 //		});
 //		registration.addRecipes(collection, VanillaRecipeCategoryUid.CRAFTING);
@@ -84,14 +84,6 @@ public class JEICompat implements IModPlugin {
 					public void setIngredients(IIngredients ingredients) {
 						ingredients.setOutput(VanillaTypes.ITEM, new ItemStack(SItems.PURIFIED_WATER_BOWL));
 						ingredients.setInputIngredients(Lists.newArrayList(Ingredient.of(SItems.CHARCOAL_FILTER), Ingredient.of(SItems.WATER_BOWL)));
-					}};
-			}
-			else if (a.getId().equals(Survive.getInstance().location("purified_water_bucket_from_charcoal_filtering"))) {
-				return new ICraftingCategoryExtension() {
-					@Override
-					public void setIngredients(IIngredients ingredients) {
-						ingredients.setOutput(VanillaTypes.ITEM, new ItemStack(SItems.PURIFIED_WATER_BUCKET));
-						ingredients.setInputIngredients(Lists.newArrayList(Ingredient.of(SItems.CHARCOAL_FILTER), Ingredient.of(Items.WATER_BUCKET)));
 					}};
 			}
 			else {
