@@ -1,6 +1,6 @@
 {
     "textures": {
-        "particle": "combat:block/purified_water_still"
+        "particle": "survive:block/purified_water_still"
     }
 }
 
