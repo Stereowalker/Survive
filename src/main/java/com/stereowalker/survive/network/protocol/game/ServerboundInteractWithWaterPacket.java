@@ -93,7 +93,6 @@ public class ServerboundInteractWithWaterPacket {
 							WaterData waterStats = SurviveEntityStats.getWaterStats(sender);
 							if (waterStats.needWater()) {
 								boolean flag = false;
-								if (addThirst)WaterData.applyThirst(sender, 0.5f/*TODO MAKE BIOMES HAVE DIFFERENT THIRST CHANCES*/);
 								if (block.getBlock() == Blocks.WATER_CAULDRON) {
 									LayeredCauldronBlock.lowerFillLevel(block, sender.level, pos);
 									flag = true;
@@ -106,7 +105,7 @@ public class ServerboundInteractWithWaterPacket {
 									flag = true;
 								}
 								if (flag) {
-									waterStats.addStats((int) waterAmount, (float) hydrationAmount);
+									waterStats.addStats((int) waterAmount, (float) hydrationAmount, addThirst ? WaterData.applyThirst(sender, 0.5f/*TODO MAKE BIOMES HAVE DIFFERENT THIRST CHANCES*/) : false);
 								}
 								Survive.getInstance().channel.sendTo(new ClientboundDrinkSoundPacket(pos, sender.getUUID()), sender.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 							}

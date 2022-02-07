@@ -19,6 +19,11 @@ public class WellbeingData extends SurviveData {
 	public int timeUntilHypothermia;
 	public int timeUntilHyperthermia;
 
+	/**
+	 * Sets the time (in ticks) before the player becomes unwell
+	 * @param min - The minimum amount of ticks
+	 * @param max - The maximum amount of ticks
+	 */
 	public void setTimer(int min, int max) {
 		if (this.timeUntilUnwell == 0 && this.isWell && this.shouldTick())
 			this.timeUntilUnwell = min+this.rng.nextInt(max-min);

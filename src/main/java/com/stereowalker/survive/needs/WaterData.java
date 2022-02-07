@@ -42,6 +42,7 @@ public class WaterData extends SurviveData {
 	private int waterTimer;
 	@SuppressWarnings("unused")
 	private int prevWaterLevel = 20;
+	private int uncleanComsumption = 0;
 
 	public WaterData() {
 		this.waterHydrationLevel = 5.0F;
@@ -50,16 +51,19 @@ public class WaterData extends SurviveData {
 	/**
 	 * Add water stats.
 	 */
-	public void addStats(int waterLevelIn, float waterHydrationModifier) {
+	public void addStats(int waterLevelIn, float waterHydrationModifier, boolean isUnclean) {
 		this.waterLevel = Math.min(waterLevelIn + this.waterLevel, 20);
 		this.waterHydrationLevel = Math.min(this.waterHydrationLevel + (float)waterLevelIn * waterHydrationModifier * 2.0F, (float)this.waterLevel);
+		if (isUnclean) {
+			uncleanComsumption++;
+		}
 	}
 
 	//TODO: Change This
 	public void consume(Item maybeFood, ItemStack stack) {
 		if (maybeFood.isEdible()) {
 			FoodProperties food = maybeFood.getFoodProperties();
-			this.addStats(food.getNutrition(), food.getSaturationModifier());
+//			this.addStats(food.getNutrition(), food.getSaturationModifier());
 		}
 
 	}
@@ -107,6 +111,15 @@ public class WaterData extends SurviveData {
 			}
 		} else {
 			this.waterTimer = 0;
+		}
+		
+		if (Survive.WELLBEING_CONFIG.enabled) {
+			WellbeingData wellbeing = SurviveEntityStats.getWellbeingStats(player);
+			//Essentially causes the player to get ill when drinking bad water
+			if (uncleanComsumption >= 3) {
+				wellbeing.setTimer(2400, 6000);
+				uncleanComsumption = 0;
+			}
 		}
 
 	}
@@ -268,16 +281,14 @@ public class WaterData extends SurviveData {
 			
 			if (event.getItem().getItem() == Items.POTION && DataMaps.Server.potionDrink.containsKey(PotionUtils.getPotion(event.getItem()).getRegistryName())) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(PotionUtils.getPotion(event.getItem()).getRegistryName());
-				stats.addStats(drinkData.getThirstAmount(), drinkData.getHydrationAmount());
-				applyThirst(event.getEntityLiving(), drinkData.getThirstChance());
+				stats.addStats(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(event.getEntityLiving(), drinkData.getThirstChance()));
 				if (drinkData.isHeated())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.HEATED, 30*20));
 				if (drinkData.isChilled())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.CHILLED, 30*20));
 				if (drinkData.isEnergizing())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.ENERGIZED, 60*20*5));
 			}
 			else if (DataMaps.Server.consummableItem.containsKey(event.getItem().getItem().getRegistryName())) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.consummableItem.get(event.getItem().getItem().getRegistryName());
-				stats.addStats(drinkData.getThirstAmount(), drinkData.getHydrationAmount());
-				applyThirst(event.getEntityLiving(), drinkData.getThirstChance());
+				stats.addStats(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(event.getEntityLiving(), drinkData.getThirstChance()));
 				if (drinkData.isHeated())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.HEATED, 30*20));
 				if (drinkData.isChilled())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.CHILLED, 30*20));
 				if (drinkData.isEnergizing())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.ENERGIZED, 60*20*5));
@@ -288,12 +299,14 @@ public class WaterData extends SurviveData {
 		}
 	}
 
-	public static void applyThirst(LivingEntity entity, float probabiltiy) {
+	public static boolean applyThirst(LivingEntity entity, float probabiltiy) {
 		if (probabiltiy > 0) {
 			Random rand = new Random();
 			if (rand.nextFloat() < probabiltiy) {
 				entity.addEffect(new MobEffectInstance(SEffects.THIRST, 30*20));
+				return true;
 			}
 		}
+		return false;
 	}
 }
