@@ -42,7 +42,7 @@ public class SItems {
 	@RegistryHolder("thermometer")
 	public static final Item THERMOMETER = new Item((new Item.Properties()).tab(SCreativeModeTab.TAB_MAIN));
 	@RegistryHolder("charcoal_filter")
-	public static final Item CHARCOAL_FILTER = new Item(new Item.Properties().tab(SCreativeModeTab.TAB_MAIN).stacksTo(16));
+	public static final Item CHARCOAL_FILTER = new Item(new Item.Properties().tab(SCreativeModeTab.TAB_MAIN).defaultDurability(10));
 	@RegistryHolder("purified_water_bucket")
 	public static final Item PURIFIED_WATER_BUCKET = new BucketItem(() -> SFluids.PURIFIED_WATER, (new Item.Properties()).craftRemainder(Items.BUCKET).stacksTo(1).tab(SCreativeModeTab.TAB_MAIN));
 	@RegistryHolder("magma_paste")
