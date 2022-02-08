@@ -15,7 +15,8 @@ public class SRecipeSerializer {
 
 	public static final SimpleRecipeSerializer<CharcoalFilterRecipe> CRAFTING_SPECIAL_CHARCOAL_FILTERING = register("crafting_charcoal_filter", new SimpleRecipeSerializer<>(CharcoalFilterRecipe::new));
 	public static final WaterBottleCookingSerializer PURIFIED_WATER_BOTTLE = register("purified_water_bottle", new WaterBottleCookingSerializer(WaterBottleSmeltingRecipe::new, 200));
-	
+	public static final RecipeSerializer<NoRemainderShaplessRecipe> NO_REMAINDER_SHAPELESS_RECIPE = register("no_remainder_crafting_shapeless", new NoRemainderShaplessRecipe.Serializer());
+	   
 	public static void registerAll(IForgeRegistry<RecipeSerializer<?>> registry) {
 		for(RecipeSerializer<?> effect : RECIPES) {
 			registry.register(effect);

@@ -3,7 +3,7 @@
 		"type": "survive:module_enabled",
 		"module": "hygiene"
 	}],
-  "type": "minecraft:crafting_shapeless",
+  "type": "survive:no_remainder_crafting_shapeless",
   "ingredients": [
     {
       "item": "survive:purified_water_bottle"
