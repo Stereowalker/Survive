@@ -79,12 +79,6 @@ public class CharcoalFilterRecipe extends CustomRecipe {
 					nonnulllist.set(i, filterClone);
 				}
 			}
-//			else if (itemstack.getItem() == Items.WATER_BUCKET) {
-//				nonnulllist.set(i, ItemStack.EMPTY);
-//			}
-//			else if (itemstack.getItem() == Items.POTION) {
-//				nonnulllist.set(i, ItemStack.EMPTY);
-//			}
 		}
 
 		return nonnulllist;
