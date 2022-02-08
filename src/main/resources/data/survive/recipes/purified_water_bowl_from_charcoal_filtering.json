@@ -1,14 +1,3 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "survive:charcoal_filter"
-    },
-    {
-      "item": "survive:water_bowl"
-    }
-  ],
-  "result": {
-    "item": "survive:purified_water_bowl"
-  }
+  "type": "survive:crafting_charcoal_filter"
 }

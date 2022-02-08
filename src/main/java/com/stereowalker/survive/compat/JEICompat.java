@@ -51,7 +51,7 @@ public class JEICompat implements IModPlugin {
 //				return CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.PURIFIED_WATER_CANTEEN), 1);
 //			}
 //		});
-//		collection.add(new CharcoalFilterRecipe(Survive.getInstance().location("purified_water_bucket_from_charcoal_filtering_test")) {
+//		collection.add(new CharcoalFilterRecipe(Survive.getInstance().location("purified_water_bottle_from_charcoal_filtering_test")) {
 //			@Override
 //			public NonNullList<Ingredient> getIngredients() {
 //				NonNullList<Ingredient> ingredients = NonNullList.create();
@@ -62,6 +62,32 @@ public class JEICompat implements IModPlugin {
 //			@Override
 //			public ItemStack getResultItem() {
 //				return new ItemStack(SItems.PURIFIED_WATER_BOTTLE);
+//			}
+//		});
+//		collection.add(new CharcoalFilterRecipe(Survive.getInstance().location("purified_water_bucket_from_charcoal_filtering")) {
+//			@Override
+//			public NonNullList<Ingredient> getIngredients() {
+//				NonNullList<Ingredient> ingredients = NonNullList.create();
+//				ingredients.add(0, Ingredient.of(SItems.CHARCOAL_FILTER));
+//				ingredients.add(1, Ingredient.of(Items.WATER_BUCKET));
+//				return ingredients;
+//			}
+//			@Override
+//			public ItemStack getResultItem() {
+//				return new ItemStack(SItems.PURIFIED_WATER_BUCKET);
+//			}
+//		});
+//		collection.add(new CharcoalFilterRecipe(Survive.getInstance().location("purified_water_bowl_from_charcoal_filtering_test")) {
+//			@Override
+//			public NonNullList<Ingredient> getIngredients() {
+//				NonNullList<Ingredient> ingredients = NonNullList.create();
+//				ingredients.add(0, Ingredient.of(SItems.CHARCOAL_FILTER));
+//				ingredients.add(1, Ingredient.of(SItems.WATER_BOWL));
+//				return ingredients;
+//			}
+//			@Override
+//			public ItemStack getResultItem() {
+//				return new ItemStack(SItems.PURIFIED_WATER_BOWL);
 //			}
 //		});
 //		registration.addRecipes(collection, VanillaRecipeCategoryUid.CRAFTING);
@@ -78,13 +104,29 @@ public class JEICompat implements IModPlugin {
 						ingredients.setInputIngredients(Lists.newArrayList(Ingredient.of(SItems.CHARCOAL_FILTER), Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER))));
 					}};
 			}
+			else if (a.getId().equals(Survive.getInstance().location("purified_water_bucket_from_charcoal_filtering"))) {
+				return new ICraftingCategoryExtension() {
+					@Override
+					public void setIngredients(IIngredients ingredients) {
+						ingredients.setOutput(VanillaTypes.ITEM, new ItemStack(SItems.PURIFIED_WATER_BUCKET));
+						ingredients.setInputIngredients(Lists.newArrayList(Ingredient.of(SItems.CHARCOAL_FILTER), Ingredient.of(Items.WATER_BUCKET)));
+					}};
+			}
+			else if (a.getId().equals(Survive.getInstance().location("purified_water_bowl_from_charcoal_filtering"))) {
+				return new ICraftingCategoryExtension() {
+					@Override
+					public void setIngredients(IIngredients ingredients) {
+						ingredients.setOutput(VanillaTypes.ITEM, new ItemStack(SItems.PURIFIED_WATER_BOWL));
+						ingredients.setInputIngredients(Lists.newArrayList(Ingredient.of(SItems.CHARCOAL_FILTER), Ingredient.of(SItems.WATER_BOWL)));
+					}};
+			}
 			else {
 				return new ICraftingCategoryExtension() {
-				@Override
-				public void setIngredients(IIngredients ingredients) {
-					ingredients.setOutput(VanillaTypes.ITEM, CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.PURIFIED_WATER_CANTEEN), 1));
-					ingredients.setInputIngredients(Lists.newArrayList(Ingredient.of(SItems.CHARCOAL_FILTER), Ingredient.of(CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.PURIFIED_WATER_CANTEEN), 1))));
-				}};
+					@Override
+					public void setIngredients(IIngredients ingredients) {
+						ingredients.setOutput(VanillaTypes.ITEM, CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.PURIFIED_WATER_CANTEEN), 1));
+						ingredients.setInputIngredients(Lists.newArrayList(Ingredient.of(SItems.CHARCOAL_FILTER), Ingredient.of(CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.PURIFIED_WATER_CANTEEN), 1))));
+					}};
 			}
 		});
 	}
