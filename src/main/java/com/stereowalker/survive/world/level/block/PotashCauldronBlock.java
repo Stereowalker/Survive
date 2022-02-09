@@ -40,11 +40,11 @@ public class PotashCauldronBlock extends LayeredCauldronBlock {
 	@Override
 	public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, Random random) {
 		if (isUnderSun(state, worldIn, pos) && random.nextInt(2) == 0) {
-			worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(HygieneItems.POTASH)));
+			worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, new ItemStack(HygieneItems.POTASH), 0, 0, 0));
 			lowerFillLevel(state, worldIn, pos);
 		}
 		else if (!worldIn.isClientSide && worldIn.getMaxLocalRawBrightness(pos.above()) >= 12 && random.nextInt(10) == 0) {
-			worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(HygieneItems.POTASH)));
+			worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, new ItemStack(HygieneItems.POTASH), 0, 0, 0));
 			lowerFillLevel(state, worldIn, pos);
 		}
 	}
