@@ -26,25 +26,26 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 public class TooltipEvents {
 
 	@OnlyIn(Dist.CLIENT)
-	public static void accessoryTooltip(Player player, ItemStack stack, List<Component> tooltip) {
+	public static void accessoryTooltip(Player player, ItemStack stack, List<Component> tooltip, boolean displayWeight, boolean displayTemp) {
 		if (DataMaps.Client.armor.containsKey(stack.getItem().getRegistryName())) {
 			float kg = SurviveEvents.getArmorWeightClient(stack);
 			float rawPound = kg*2.205f;
 			int poundInt = (int)(rawPound*1000);
 			float pound = poundInt/1000.0F;
-			tooltip.add(1, new TranslatableComponent("tooltip.survive.weight", Survive.CONFIG.displayWeightInPounds ? pound : kg, Survive.CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
-			for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Client.armor.get(stack.getItem().getRegistryName()).getTemperatureModifier()) {
-				if (instance.getSecond().shouldChangeTemperature(player)) {
-					if (instance.getSecond().getAdditionalContext() != null)
-						tooltip.add(2, new TranslatableComponent("tooltip.survive.temperature", instance.getSecond().getTemperature()).append(instance.getSecond().getAdditionalContext()).withStyle(ChatFormatting.DARK_PURPLE));
-					else
-						tooltip.add(2, new TranslatableComponent("tooltip.survive.temperature", instance.getSecond().getTemperature()).withStyle(ChatFormatting.DARK_PURPLE));
-					break;
+			if (displayWeight) tooltip.add(1, new TranslatableComponent("tooltip.survive.weight", Survive.CONFIG.displayWeightInPounds ? pound : kg, Survive.CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
+			if (displayTemp)
+				for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Client.armor.get(stack.getItem().getRegistryName()).getTemperatureModifier()) {
+					if (instance.getSecond().shouldChangeTemperature(player)) {
+						if (instance.getSecond().getAdditionalContext() != null)
+							tooltip.add(2, new TranslatableComponent("tooltip.survive.temperature", instance.getSecond().getTemperature()).append(instance.getSecond().getAdditionalContext()).withStyle(ChatFormatting.DARK_PURPLE));
+						else
+							tooltip.add(2, new TranslatableComponent("tooltip.survive.temperature", instance.getSecond().getTemperature()).withStyle(ChatFormatting.DARK_PURPLE));
+						break;
+					}
 				}
-			}
 		} else {
-			tooltip.add(1, new TranslatableComponent("tooltip.survive.weight", 0, Survive.CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
-			tooltip.add(2, new TranslatableComponent("tooltip.survive.temperature", 0).withStyle(ChatFormatting.DARK_PURPLE));
+			if (displayWeight) tooltip.add(1, new TranslatableComponent("tooltip.survive.weight", 0, Survive.CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
+			if (displayTemp) tooltip.add(2, new TranslatableComponent("tooltip.survive.temperature", 0).withStyle(ChatFormatting.DARK_PURPLE));
 
 		}
 	}
@@ -52,17 +53,20 @@ public class TooltipEvents {
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void tooltips(ItemTooltipEvent event) {
-		if (Survive.CONFIG.enable_weights) {
-			boolean showWeight = false;
+		boolean showWeight = false;
+		boolean showTemp = false;
+		if ((Survive.CONFIG.enable_stamina && Survive.CONFIG.enable_weights) || Survive.TEMPERATURE_CONFIG.enabled) {
 			for(EquipmentSlot type : EquipmentSlot.values()) {
 				if (event.getPlayer() != null && event.getItemStack().canEquip(type, event.getPlayer()) && type.getType() == Type.ARMOR) {
-					showWeight = true;
+					showWeight = Survive.CONFIG.enable_stamina && Survive.CONFIG.enable_weights;
+					showTemp = Survive.TEMPERATURE_CONFIG.enabled;
 					break;
 				}
 			}
-			if (showWeight) {
-				accessoryTooltip(event.getPlayer(), event.getItemStack(), event.getToolTip());
-			}
+		}
+
+		if (showWeight || showTemp) {
+			accessoryTooltip(event.getPlayer(), event.getItemStack(), event.getToolTip(), showWeight, showTemp);
 		}
 	}
 }
