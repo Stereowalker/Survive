@@ -39,6 +39,7 @@ public class BodyCleaningItem extends Item {
 			playerIn.getItemInHand(handIn).hurtAndBreak(1, playerIn, (anim) ->{
 				anim.broadcastBreakEvent(EquipmentSlot.MAINHAND);
 			});
+			stats.save(playerIn);
 		} else {
 			playerIn.getItemInHand(handIn).hurtAndBreak(2, playerIn, (anim) ->{
 				anim.broadcastBreakEvent(EquipmentSlot.MAINHAND);
