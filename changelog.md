@@ -1,3 +1,11 @@
+[6.1.6]
+- Fix Potash Solution crafting duplicating Glass Bottles
+- Gave the Charcoal Filter a durability of 10
+- Restore previous charcoal filtering recipe for the bucket and bowl
+- Increased Potash drop chance when left under the sun
+- Fix Potash not spawning in the middle of the cauldron
+- Fix washcloths and sponges not actually cleaning the player
+
 [6.1.5]
 - Fix the player becoming instantly clean when wet
 - Made the squeaky clean status last for a lesser amount of time
