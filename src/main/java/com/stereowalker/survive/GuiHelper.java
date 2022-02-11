@@ -64,7 +64,7 @@ public class GuiHelper {
 		});
 		OverlayRegistry.registerOverlayAbove(ForgeIngameGui.FOOD_LEVEL_ELEMENT, "Stamina Level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
-			if (Survive.CONFIG.enable_stamina && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
+			if (Survive.STAMINA_CONFIG.enabled && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
 			{
 				gui.setupOverlayRenderState(true, false, GUI_ICONS);
 				int left = screenWidth / 2 + 91;

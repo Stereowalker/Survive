@@ -31,9 +31,9 @@ public abstract class BlockMixin extends BlockBehaviour implements ItemLike, net
 
 	@Redirect(method = "playerDestroy", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"))
 	public void exhaustStaminaWhenBreakingBlock(Player player, float value, Level worldIn, Player player2, BlockPos pos, BlockState state, @Nullable BlockEntity te, ItemStack stack) {
-		if (Survive.CONFIG.enable_stamina) {
+		if (Survive.STAMINA_CONFIG.enabled) {
 			StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
-			energyStats.addExhaustion(player, Survive.CONFIG.stamina_drain_from_breaking_blocks_with_tool, "Player broke block");
+			energyStats.addExhaustion(player, Survive.STAMINA_CONFIG.stamina_drain_from_breaking_blocks_with_tool, "Player broke block");
 			//TODO: Fix THIS
 //			if (ForgeHooks.canHarvestBlock(state, player2, worldIn, pos)) {
 //			} else {

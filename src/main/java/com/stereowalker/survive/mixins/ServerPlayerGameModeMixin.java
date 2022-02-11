@@ -26,7 +26,7 @@ public abstract class ServerPlayerGameModeMixin {
 	public void mixinBlockInteraction(ServerPlayer playerIn, Level worldIn, ItemStack stackIn, InteractionHand handIn, BlockHitResult blockRaytraceResultIn, CallbackInfoReturnable<InteractionResult> cir) {
 		if (cir.getReturnValue().consumesAction()) {
 			StaminaData energyStats = SurviveEntityStats.getEnergyStats(playerIn);
-			energyStats.addExhaustion(playerIn, Survive.CONFIG.stamina_drain_from_using_blocks, "used an item on something");
+			energyStats.addExhaustion(playerIn, Survive.STAMINA_CONFIG.stamina_drain_from_using_blocks, "used an item on something");
 			SurviveEntityStats.setStaminaStats(playerIn, energyStats);
 		}
 	}
@@ -37,7 +37,7 @@ public abstract class ServerPlayerGameModeMixin {
 	@Inject(at = @At(value = "RETURN"), method = "useItem")
 	public void mixinItemInteraction(ServerPlayer player, Level worldIn, ItemStack stack, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
 		StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
-		energyStats.addExhaustion(player, Survive.CONFIG.stamina_drain_from_items, "Used item in air");
+		energyStats.addExhaustion(player, Survive.STAMINA_CONFIG.stamina_drain_from_items, "Used item in air");
 		SurviveEntityStats.setStaminaStats(player, energyStats);
 	}
 }

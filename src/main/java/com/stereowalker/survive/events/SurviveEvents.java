@@ -114,7 +114,7 @@ public class SurviveEvents {
 		for (EquipmentSlot slot : EquipmentSlot.values()) {
 			if (slot.getType() == Type.ARMOR) {
 				ItemStack stack = player.getItemBySlot(slot);
-				if (Survive.CONFIG.enable_weights) {
+				if (Survive.STAMINA_CONFIG.enable_weights) {
 					totalWeight += getArmorWeight(stack);
 				}
 			}

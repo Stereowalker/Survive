@@ -107,7 +107,7 @@ public abstract class GuiMixin extends GuiComponent {
 				moveUp.add(10);
 			}
 			//Energy
-			if (Survive.CONFIG.enable_stamina) {
+			if (Survive.STAMINA_CONFIG.enabled) {
 				GuiHelper.renderEnergyBars((Gui)(Object)this, pPoseStack, moveUp, j1, k1, false);
 			}
 			RenderSystem.enableBlend();

@@ -132,6 +132,7 @@
 	"config.survive.temperature.file": "Temperature Config",
 	"config.survive.thirst.file": "Thirst Config",
 	"config.survive.wellbeing.file": "Wellbeing Config",
+	"config.survive.stamina.file": "Stamina Config",
 	
 	"subtitles.entity.player.roast_hurt": "Player bakes",
 	"gamerule.roastDamage": "Deal roast damage"

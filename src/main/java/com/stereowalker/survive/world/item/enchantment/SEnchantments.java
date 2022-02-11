@@ -29,7 +29,7 @@ public class SEnchantments {
 	}
 	
 	public static Enchantment registerStami(String name, Enchantment enchantment) {
-		if (Survive.CONFIG.enable_stamina) {
+		if (Survive.STAMINA_CONFIG.enabled) {
 			return register(name, enchantment);
 		} else {
 			return enchantment;

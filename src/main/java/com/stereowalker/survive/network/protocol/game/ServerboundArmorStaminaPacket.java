@@ -25,11 +25,11 @@ public class ServerboundArmorStaminaPacket extends ServerboundUnionPacket {
 
 	@Override
 	public boolean handleOnServer(ServerPlayer sender) {
-		if (Survive.CONFIG.enable_stamina) {
+		if (Survive.STAMINA_CONFIG.enabled) {
 			StaminaData stats = SurviveEntityStats.getEnergyStats(sender);
-			float moveMul = (SurviveEvents.getTotalArmorWeight(sender)/Survive.CONFIG.max_weight)*0.1F;
+			float moveMul = (SurviveEvents.getTotalArmorWeight(sender)/Survive.STAMINA_CONFIG.max_weight)*0.1F;
 
-			if (SurviveEvents.getTotalArmorWeight(sender)/Survive.CONFIG.max_weight > 1.0F) moveMul += (SurviveEvents.getTotalArmorWeight(sender)/Survive.CONFIG.max_weight) - 1.0F;
+			if (SurviveEvents.getTotalArmorWeight(sender)/Survive.STAMINA_CONFIG.max_weight > 1.0F) moveMul += (SurviveEvents.getTotalArmorWeight(sender)/Survive.STAMINA_CONFIG.max_weight) - 1.0F;
 
 			if (moveMul > 0) stats.addExhaustion(sender, moveMul*2.0f, "Armor weight");
 			SurviveEntityStats.setStaminaStats(sender, stats);

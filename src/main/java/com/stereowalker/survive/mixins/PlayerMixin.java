@@ -30,7 +30,7 @@ public abstract class PlayerMixin extends LivingEntity {
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = {"jumpFromGround", "actuallyHurt", "checkMovementStatistics"})
 	public void morphExhaustion(Player player, float value) {
-		if (Survive.CONFIG.enable_stamina) {
+		if (Survive.STAMINA_CONFIG.enabled) {
 			StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
 			energyStats.addExhaustion(player, value*2.5f, "Jumped, Got hurt or moved");
 		}
@@ -45,7 +45,7 @@ public abstract class PlayerMixin extends LivingEntity {
 	
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = "attack")
 	public void morphStaminaDuringAttack(Player player, float value) {
-		if (Survive.CONFIG.enable_stamina) {
+		if (Survive.STAMINA_CONFIG.enabled) {
 			StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
 			energyStats.addExhaustion(player, 1.25f, "Player Attacked");
 			energyStats.save(player);

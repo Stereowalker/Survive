@@ -12,7 +12,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 public class SAttributes {
 	public static List<Attribute> ATTRIBUTE = new ArrayList<Attribute>();
 	
-	public static final Attribute MAX_STAMINA = registerTemp("generic.max_stamina", new RangedAttribute("attribute.name.survive.max_stamina", Survive.CONFIG.max_stamina, 1.0D, 1024.0D)).setSyncable(true);
+	public static final Attribute MAX_STAMINA = registerTemp("generic.max_stamina", new RangedAttribute("attribute.name.survive.max_stamina", Survive.STAMINA_CONFIG.max_stamina, 1.0D, 1024.0D)).setSyncable(true);
 	public static final Attribute COLD_RESISTANCE = registerTemp("generic.cold_resistance", new RangedAttribute("attribute.name.survive.coldResistance", 2.0D, 0.0D, 1024.0D)).setSyncable(true);
 	public static final Attribute HEAT_RESISTANCE = registerTemp("generic.heat_resistance", new RangedAttribute("attribute.name.survive.heatResistance", 2.0D, 0.0D, 1024.0D)).setSyncable(true);
 	

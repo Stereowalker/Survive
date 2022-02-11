@@ -41,7 +41,7 @@ public class ServerboundEnergyTaxPacket {
 			final float exhaustion = msg.exhaustion;
 			final UUID uuid = msg.uuid;
 			if (uuid.equals(Player.createPlayerUUID(sender.getGameProfile()))) {
-				if (Survive.CONFIG.enable_stamina) {
+				if (Survive.STAMINA_CONFIG.enabled) {
 					StaminaData stats = SurviveEntityStats.getEnergyStats(sender);
 					stats.addExhaustion(sender, exhaustion, "Energy from client");
 					SurviveEntityStats.setStaminaStats(sender, stats);

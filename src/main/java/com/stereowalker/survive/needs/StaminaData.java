@@ -58,7 +58,7 @@ public class StaminaData extends SurviveData {
 	 * Handles the water game logic.
 	 */
 	public void tick(Player player) {
-		if (Survive.CONFIG.enable_stamina) {
+		if (Survive.STAMINA_CONFIG.enabled) {
 			this.maxStamina = Mth.floor(player.getAttributeValue(SAttributes.MAX_STAMINA));
 			Difficulty difficulty = player.level.getDifficulty();
 			this.prevEnergyLevel = this.energyLevel;
@@ -189,7 +189,7 @@ public class StaminaData extends SurviveData {
 	
 	@Override
 	public boolean shouldTick() {
-		return Survive.CONFIG.enable_stamina;
+		return Survive.STAMINA_CONFIG.enabled;
 	}
 
 	/////-----------EVENTS-----------/////
@@ -221,12 +221,12 @@ public class StaminaData extends SurviveData {
 	public static void passivelyIncreaseEnergy(LivingUpdateEvent event) {
 		if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
 			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
-			if (Survive.CONFIG.enable_stamina) {
+			if (Survive.STAMINA_CONFIG.enabled) {
 				StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
 				if (player.isSleeping() && player.tickCount%20 == 19) {
 					energyStats.addStats(1, player.getAttributeValue(SAttributes.MAX_STAMINA));
 				}
-				if ((Survive.CONFIG.stamina_recovery_ticks == 0 || player.tickCount%Survive.CONFIG.stamina_recovery_ticks == Survive.CONFIG.stamina_recovery_ticks-1) && energyStats.isTired()) {
+				if ((Survive.STAMINA_CONFIG.stamina_recovery_ticks == 0 || player.tickCount%Survive.STAMINA_CONFIG.stamina_recovery_ticks == Survive.STAMINA_CONFIG.stamina_recovery_ticks-1) && energyStats.isTired()) {
 					if (Survive.CONFIG.nutrition_enabled) {
 						NutritionData nutritionStats = SurviveEntityStats.getNutritionStats(player);
 						if (nutritionStats.getCarbLevel() >= 2) {
@@ -235,7 +235,7 @@ public class StaminaData extends SurviveData {
 						}
 						nutritionStats.save(player);
 					} else {
-						if (player.getFoodData().getFoodLevel() > 15 && SurviveEvents.getTotalArmorWeight(player)/Survive.CONFIG.max_weight < 1.0F) {
+						if (player.getFoodData().getFoodLevel() > 15 && SurviveEvents.getTotalArmorWeight(player)/Survive.STAMINA_CONFIG.max_weight < 1.0F) {
 							energyStats.addStats(1, player.getAttributeValue(SAttributes.MAX_STAMINA));
 							player.getFoodData().addExhaustion(1.0F);
 						}

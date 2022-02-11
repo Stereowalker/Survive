@@ -32,7 +32,7 @@ public class TooltipEvents {
 			float rawPound = kg*2.205f;
 			int poundInt = (int)(rawPound*1000);
 			float pound = poundInt/1000.0F;
-			if (displayWeight) tooltip.add(1, new TranslatableComponent("tooltip.survive.weight", Survive.CONFIG.displayWeightInPounds ? pound : kg, Survive.CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
+			if (displayWeight) tooltip.add(1, new TranslatableComponent("tooltip.survive.weight", Survive.STAMINA_CONFIG.displayWeightInPounds ? pound : kg, Survive.STAMINA_CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
 			if (displayTemp)
 				for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Client.armor.get(stack.getItem().getRegistryName()).getTemperatureModifier()) {
 					if (instance.getSecond().shouldChangeTemperature(player)) {
@@ -44,7 +44,7 @@ public class TooltipEvents {
 					}
 				}
 		} else {
-			if (displayWeight) tooltip.add(1, new TranslatableComponent("tooltip.survive.weight", 0, Survive.CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
+			if (displayWeight) tooltip.add(1, new TranslatableComponent("tooltip.survive.weight", 0, Survive.STAMINA_CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
 			if (displayTemp) tooltip.add(2, new TranslatableComponent("tooltip.survive.temperature", 0).withStyle(ChatFormatting.DARK_PURPLE));
 
 		}
@@ -55,10 +55,10 @@ public class TooltipEvents {
 	public static void tooltips(ItemTooltipEvent event) {
 		boolean showWeight = false;
 		boolean showTemp = false;
-		if ((Survive.CONFIG.enable_stamina && Survive.CONFIG.enable_weights) || Survive.TEMPERATURE_CONFIG.enabled) {
+		if ((Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights) || Survive.TEMPERATURE_CONFIG.enabled) {
 			for(EquipmentSlot type : EquipmentSlot.values()) {
 				if (event.getPlayer() != null && event.getItemStack().canEquip(type, event.getPlayer()) && type.getType() == Type.ARMOR) {
-					showWeight = Survive.CONFIG.enable_stamina && Survive.CONFIG.enable_weights;
+					showWeight = Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights;
 					showTemp = Survive.TEMPERATURE_CONFIG.enabled;
 					break;
 				}
