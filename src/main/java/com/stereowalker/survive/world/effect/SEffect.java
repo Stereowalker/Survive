@@ -5,6 +5,7 @@ import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.needs.SDamageSource;
 import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.needs.WaterData;
+import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -39,7 +40,7 @@ public class SEffect extends MobEffect {
 			}
 		} else if (this == SEffects.ENERGIZED && entityLivingBaseIn instanceof ServerPlayer) {
 			StaminaData energyStats = SurviveEntityStats.getEnergyStats(entityLivingBaseIn);
-			energyStats.addStats(1);
+			energyStats.addStats(1, entityLivingBaseIn.getAttributeValue(SAttributes.MAX_STAMINA));
 			energyStats.save(entityLivingBaseIn);
 			if (entityLivingBaseIn.hasEffect(SEffects.TIREDNESS)) {
 				entityLivingBaseIn.removeEffect(SEffects.TIREDNESS);

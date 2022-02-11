@@ -66,6 +66,7 @@ public class SurviveRegistryEvents
 	public static void registerAttributes(EntityAttributeModificationEvent event) {
 		event.add(EntityType.PLAYER, SAttributes.COLD_RESISTANCE);
 		event.add(EntityType.PLAYER, SAttributes.HEAT_RESISTANCE);
+		event.add(EntityType.PLAYER, SAttributes.MAX_STAMINA);
 	}
 
 	@SuppressWarnings("resource")

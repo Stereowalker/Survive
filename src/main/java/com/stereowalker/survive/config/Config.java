@@ -92,6 +92,11 @@ public class Config implements ConfigObject {
 	@UnionConfig.Range(min = 0.0D, max = 10000.0D)
 	public float max_weight = 21.0F;
 	
+	@UnionConfig.Entry(group = "Stamina" , name = "Maximum Stamina", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"The maximum stamina the player has","If you want to modify this, you'll need to first restart the world then kill all the players in your world to have the changes applied to all the players"})
+	@UnionConfig.Range(min = 0.0D, max = 100.0D)
+	public float max_stamina = 20.0F;
+	
 	//
 	//Nutrition
 	@UnionConfig.Entry(group = "Nutrition" , name = "Enable Nutrition (Beta)", type = Type.COMMON)

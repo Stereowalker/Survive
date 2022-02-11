@@ -8,6 +8,7 @@ import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.WaterData;
 import com.stereowalker.survive.needs.WellbeingData;
+import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -37,7 +38,7 @@ public class SurviveEntityStats {
 	}
 	
 	public static StaminaData getEnergyStats(LivingEntity entity) {
-		StaminaData stats = new StaminaData();
+		StaminaData stats = new StaminaData(entity.getAttributeValue(SAttributes.MAX_STAMINA));
 		if(entity != null) {
 			if (getModNBT(entity) != null && getModNBT(entity).contains(energyStatsID, 10)) {
 				stats.read(getModNBT(entity).getCompound(energyStatsID));
@@ -194,7 +195,7 @@ public class SurviveEntityStats {
 					setWaterStats(player, new WaterData());
 				}
 				if (!compound.contains(energyStatsID)) {
-					setStaminaStats(player, new StaminaData());
+					setStaminaStats(player, new StaminaData(player.getAttributeValue(SAttributes.MAX_STAMINA)));
 				}
 				if (!compound.contains(temperatureStatsID)) {
 					setTemperatureStats(player, new TemperatureData());
