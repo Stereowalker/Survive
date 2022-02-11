@@ -27,6 +27,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.client.gui.OverlayRegistry;
 
 @OnlyIn(Dist.CLIENT)
@@ -50,7 +51,7 @@ public class GuiHelper {
 				GuiHelper.renderTemperature(gui, ScreenOffset.TOP, gui.getCameraPlayer(), mStack, true);
 			}
 		});
-		OverlayRegistry.registerOverlayTop("Thirst Level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+		OverlayRegistry.registerOverlayAbove(ForgeIngameGui.FOOD_LEVEL_ELEMENT, "Thirst Level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
 			if (Survive.THIRST_CONFIG.enabled && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
 			{
@@ -61,7 +62,7 @@ public class GuiHelper {
 				gui.right_height += 10;
 			}
 		});
-		OverlayRegistry.registerOverlayTop("Stamina Level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+		OverlayRegistry.registerOverlayAbove(ForgeIngameGui.FOOD_LEVEL_ELEMENT, "Stamina Level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
 			if (Survive.CONFIG.enable_stamina && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
 			{
