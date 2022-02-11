@@ -1,3 +1,10 @@
+[6.1.7]
+- Gave stamina its dedicated config folder
+- Fix stink particles showing in creative and spectator
+- Fix thirst and stamina overlays covering chat
+- Fix Potash Solution color in cauldron not reflecting the bottles color
+- Made Max Stamina configurable as an attribute
+
 [6.1.6]
 - Fix Potash Solution crafting duplicating Glass Bottles
 - Gave the Charcoal Filter a durability of 10
