@@ -55,13 +55,16 @@ public class SurviveRegistryEvents
 		event.getBlockColors().register((state, displayReader, blockPos, tintIndex) -> {
 			return 0x41d3f8;
 		}, SBlocks.PURIFIED_WATER, SBlocks.PURIFIED_WATER_CAULDRON);
+		event.getBlockColors().register((state, displayReader, blockPos, tintIndex) -> {
+			return 0x483c35;
+		}, SBlocks.POTASH_CAULDRON);
 	}
 
 	@SubscribeEvent
 	public static void registerAttributes(final RegistryEvent.Register<Attribute> event) {
 		SAttributes.registerAll(event.getRegistry());
 	}
-	
+
 	@SubscribeEvent
 	public static void registerAttributes(EntityAttributeModificationEvent event) {
 		event.add(EntityType.PLAYER, SAttributes.COLD_RESISTANCE);
@@ -88,7 +91,7 @@ public class SurviveRegistryEvents
 		SEffects.registerAll(event.getRegistry());
 		MobEffects.FIRE_RESISTANCE.addAttributeModifier(SAttributes.HEAT_RESISTANCE, "795606d6-4ac6-4ae7-8311-63ccdb293eb4", 5.0D, AttributeModifier.Operation.ADDITION);
 	}
-	
+
 	@SubscribeEvent
 	public static void registerPotions(final RegistryEvent.Register<Potion> event) {
 		SPotions.registerAll(event.getRegistry());
@@ -103,24 +106,24 @@ public class SurviveRegistryEvents
 		CraftingHelper.register(ModuleEnabledCondition.Serializer.INSTANCE);
 		SRecipeSerializer.registerAll(event.getRegistry());
 	}
-	
+
 	@SubscribeEvent
 	public static void registerSurviveRegistries(final RegistryEvent.NewRegistry event) {
 		new RegistryBuilder<TemperatureChangeCondition<?>>().setName(Survive.getInstance().location("temperature_change_condition")).setType(c(TemperatureChangeCondition.class)).setMaxID(MAX_VARINT).create();
 		new RegistryBuilder<Season>().setName(Survive.getInstance().location("season")).setType(c(Season.class)).setMaxID(MAX_VARINT).create();
-		}
+	}
 
 	//Custom Survive Registries
 	@SubscribeEvent
 	public static void registerTemperatureChangeConditions(final RegistryEvent.Register<TemperatureChangeCondition<?>> event) {
 		TemperatureChangeConditions.registerAll(event.getRegistry());
 	}
-	
+
 	@SubscribeEvent
 	public static void registerSeasons(final RegistryEvent.Register<Season> event) {
 		Seasons.registerAll(event.getRegistry());
 	}
-	
+
 	@SuppressWarnings("unchecked") //Ugly hack to let us pass in a typed Class object. Remove when we remove type specific references.
-    private static <T> Class<T> c(Class<?> cls) { return (Class<T>)cls; }
+	private static <T> Class<T> c(Class<?> cls) { return (Class<T>)cls; }
 }
