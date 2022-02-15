@@ -4,6 +4,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.api.world.level.block.TemperatureEmitter;
 import com.stereowalker.survive.compat.SereneSeasonsCompat;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.core.SurviveEntityStats;
@@ -20,8 +21,8 @@ import com.stereowalker.survive.world.effect.SEffects;
 import com.stereowalker.survive.world.item.enchantment.SEnchantmentHelper;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.seasons.Season;
-import com.stereowalker.survive.world.temperature.TemperatureQuery;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
+import com.stereowalker.survive.world.temperature.TemperatureQuery;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
 import com.stereowalker.unionlib.state.properties.UBlockStateProperties;
 import com.stereowalker.unionlib.util.ModHelper;
@@ -133,7 +134,7 @@ public class SurviveEvents {
 		}
 		return totalWeight;
 	}
-	
+
 	@OnlyIn(Dist.CLIENT)
 	public static float getArmorWeightClient(ItemStack piece) {
 		float totalWeight = 0.0F;
@@ -316,11 +317,20 @@ public class SurviveEvents {
 						BlockPos heatSource = new BlockPos(pos.getX()+x, pos.getY()+y, pos.getZ()+z);
 						float blockLight = world.getChunkSource().getLightEngine().getLayerListener(LightLayer.BLOCK).getLightValue(heatSource);
 						BlockState heatState = world.getBlockState(heatSource);
-						int sourceRange = DataMaps.Server.blockTemperature.containsKey(heatState.getBlock().getRegistryName()) ? DataMaps.Server.blockTemperature.get(heatState.getBlock().getRegistryName()).getRange() : 5;
+						float sourceRange;
+						if (heatState.getBlock() instanceof TemperatureEmitter) {
+							sourceRange = ((TemperatureEmitter)heatState.getBlock()).getModificationRange(heatState);
+						} else {
+							sourceRange = DataMaps.Server.blockTemperature.containsKey(heatState.getBlock().getRegistryName()) ? DataMaps.Server.blockTemperature.get(heatState.getBlock().getRegistryName()).getRange() : 5;
+						}
 
 						if (pos.closerThan(heatSource, sourceRange)) {
 							blockTemp += blockLight/500.0F;
-							if (DataMaps.Server.blockTemperature.containsKey(heatState.getBlock().getRegistryName())) {
+							//Radiator Override
+							if (heatState.getBlock() instanceof TemperatureEmitter) {
+								blockTemp = ((TemperatureEmitter)heatState.getBlock()).getTemperatureModification(heatState);
+							}
+							else if (DataMaps.Server.blockTemperature.containsKey(heatState.getBlock().getRegistryName())) {
 								BlockTemperatureJsonHolder blockTemperatureData = DataMaps.Server.blockTemperature.get(heatState.getBlock().getRegistryName());
 								if (blockTemperatureData.usesLitOrActiveProperty()) {
 									boolean litOrActive = false;
@@ -525,7 +535,7 @@ public class SurviveEvents {
 		event.addListener(Survive.biomeReloader);
 		event.addListener(Survive.entityReloader);
 	}
-	
+
 	@SubscribeEvent
 	public static void addReload(WorldEvent.Load event) {
 		System.out.println("Resistering Temperature Queries");
