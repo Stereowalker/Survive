@@ -145,7 +145,7 @@ public class SurviveEntityStats {
 	public static void setWellbeingStats(LivingEntity entity, WellbeingData wellbeingStats) {
 		CompoundTag compound2 = new CompoundTag();
 		wellbeingStats.write(compound2);
-		getModNBT(entity).put(nutritionStatsID, compound2);
+		getModNBT(entity).put(wellbeingStatsID, compound2);
 	}
 	
 	public static void setSleepStats(LivingEntity entity, SleepData sleepStats) {
