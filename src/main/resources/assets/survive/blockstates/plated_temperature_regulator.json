@@ -1,0 +1,238 @@
+{
+    "multipart": [
+        {   "when": { "facing" : "down" },
+            "apply": { "model": "survive:block/empty_regulator", "x": 180 }
+        },
+		{   "when": { "facing" : "up" },
+            "apply": { "model": "survive:block/empty_regulator" }
+        },
+		{   "when": { "facing" : "north" },
+            "apply": { "model": "survive:block/empty_regulator", "x": 90 }
+        },
+		{   "when": { "facing" : "east" },
+            "apply": { "model": "survive:block/empty_regulator", "x": 90, "y": 90 }
+        },
+		{   "when": { "facing" : "south" },
+            "apply": { "model": "survive:block/empty_regulator", "x": 90, "y": 180 }
+        },
+		{   "when": { "facing" : "west" },
+            "apply": { "model": "survive:block/empty_regulator", "x": 90, "y": 270 }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "small", "facing" : "down" },
+            "apply": { "model": "survive:block/temperature_regulator_1_small_plates", "x": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "medium", "facing" : "down" },
+            "apply": { "model": "survive:block/temperature_regulator_1_medium_plates", "x": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "large", "facing" : "down" },
+            "apply": { "model": "survive:block/temperature_regulator_1_large_plates", "x": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "small", "facing" : "down" },
+            "apply": { "model": "survive:block/temperature_regulator_2_small_plates", "x": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "medium", "facing" : "down" },
+            "apply": { "model": "survive:block/temperature_regulator_2_medium_plates", "x": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "large", "facing" : "down" },
+            "apply": { "model": "survive:block/temperature_regulator_2_large_plates", "x": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "small", "facing" : "down" },
+            "apply": { "model": "survive:block/temperature_regulator_3_small_plates", "x": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "medium", "facing" : "down" },
+            "apply": { "model": "survive:block/temperature_regulator_3_medium_plates", "x": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "large", "facing" : "down" },
+            "apply": { "model": "survive:block/temperature_regulator_3_large_plates", "x": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "small", "facing" : "down" },
+            "apply": { "model": "survive:block/temperature_regulator_4_small_plates", "x": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "medium", "facing" : "down" },
+            "apply": { "model": "survive:block/temperature_regulator_4_medium_plates", "x": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "large", "facing" : "down" },
+            "apply": { "model": "survive:block/temperature_regulator_4_large_plates", "x": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "small", "facing" : "up" },
+            "apply": { "model": "survive:block/temperature_regulator_1_small_plates", "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "medium", "facing" : "up" },
+            "apply": { "model": "survive:block/temperature_regulator_1_medium_plates", "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "large", "facing" : "up" },
+            "apply": { "model": "survive:block/temperature_regulator_1_large_plates", "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "small", "facing" : "up" },
+            "apply": { "model": "survive:block/temperature_regulator_2_small_plates", "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "medium", "facing" : "up" },
+            "apply": { "model": "survive:block/temperature_regulator_2_medium_plates", "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "large", "facing" : "up" },
+            "apply": { "model": "survive:block/temperature_regulator_2_large_plates", "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "small", "facing" : "up" },
+            "apply": { "model": "survive:block/temperature_regulator_3_small_plates", "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "medium", "facing" : "up" },
+            "apply": { "model": "survive:block/temperature_regulator_3_medium_plates", "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "large", "facing" : "up" },
+            "apply": { "model": "survive:block/temperature_regulator_3_large_plates", "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "small", "facing" : "up" },
+            "apply": { "model": "survive:block/temperature_regulator_4_small_plates", "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "medium", "facing" : "up" },
+            "apply": { "model": "survive:block/temperature_regulator_4_medium_plates", "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "large", "facing" : "up" },
+            "apply": { "model": "survive:block/temperature_regulator_4_large_plates", "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "small", "facing" : "north" },
+            "apply": { "model": "survive:block/temperature_regulator_1_small_plates", "x": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "medium", "facing" : "north" },
+            "apply": { "model": "survive:block/temperature_regulator_1_medium_plates", "x": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "large", "facing" : "north" },
+            "apply": { "model": "survive:block/temperature_regulator_1_large_plates", "x": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "small", "facing" : "north" },
+            "apply": { "model": "survive:block/temperature_regulator_2_small_plates", "x": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "medium", "facing" : "north" },
+            "apply": { "model": "survive:block/temperature_regulator_2_medium_plates", "x": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "large", "facing" : "north" },
+            "apply": { "model": "survive:block/temperature_regulator_2_large_plates", "x": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "small", "facing" : "north" },
+            "apply": { "model": "survive:block/temperature_regulator_3_small_plates", "x": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "medium", "facing" : "north" },
+            "apply": { "model": "survive:block/temperature_regulator_3_medium_plates", "x": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "large", "facing" : "north" },
+            "apply": { "model": "survive:block/temperature_regulator_3_large_plates", "x": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "small", "facing" : "north" },
+            "apply": { "model": "survive:block/temperature_regulator_4_small_plates", "x": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "medium", "facing" : "north" },
+            "apply": { "model": "survive:block/temperature_regulator_4_medium_plates", "x": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "large", "facing" : "north" },
+            "apply": { "model": "survive:block/temperature_regulator_4_large_plates", "x": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "small", "facing" : "east" },
+            "apply": { "model": "survive:block/temperature_regulator_1_small_plates", "x": 90, "y": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "medium", "facing" : "east" },
+            "apply": { "model": "survive:block/temperature_regulator_1_medium_plates", "x": 90, "y": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "large", "facing" : "east" },
+            "apply": { "model": "survive:block/temperature_regulator_1_large_plates", "x": 90, "y": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "small", "facing" : "east" },
+            "apply": { "model": "survive:block/temperature_regulator_2_small_plates", "x": 90, "y": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "medium", "facing" : "east" },
+            "apply": { "model": "survive:block/temperature_regulator_2_medium_plates", "x": 90, "y": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "large", "facing" : "east" },
+            "apply": { "model": "survive:block/temperature_regulator_2_large_plates", "x": 90, "y": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "small", "facing" : "east" },
+            "apply": { "model": "survive:block/temperature_regulator_3_small_plates", "x": 90, "y": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "medium", "facing" : "east" },
+            "apply": { "model": "survive:block/temperature_regulator_3_medium_plates", "x": 90, "y": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "large", "facing" : "east" },
+            "apply": { "model": "survive:block/temperature_regulator_3_large_plates", "x": 90, "y": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "small", "facing" : "east" },
+            "apply": { "model": "survive:block/temperature_regulator_4_small_plates", "x": 90, "y": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "medium", "facing" : "east" },
+            "apply": { "model": "survive:block/temperature_regulator_4_medium_plates", "x": 90, "y": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "large", "facing" : "east" },
+            "apply": { "model": "survive:block/temperature_regulator_4_large_plates", "x": 90, "y": 90, "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "small", "facing" : "south" },
+            "apply": { "model": "survive:block/temperature_regulator_1_small_plates", "x": 90, "y": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "medium", "facing" : "south" },
+            "apply": { "model": "survive:block/temperature_regulator_1_medium_plates", "x": 90, "y": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "large", "facing" : "south" },
+            "apply": { "model": "survive:block/temperature_regulator_1_large_plates", "x": 90, "y": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "small", "facing" : "south" },
+            "apply": { "model": "survive:block/temperature_regulator_2_small_plates", "x": 90, "y": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "medium", "facing" : "south" },
+            "apply": { "model": "survive:block/temperature_regulator_2_medium_plates", "x": 90, "y": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "large", "facing" : "south" },
+            "apply": { "model": "survive:block/temperature_regulator_2_large_plates", "x": 90, "y": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "small", "facing" : "south" },
+            "apply": { "model": "survive:block/temperature_regulator_3_small_plates", "x": 90, "y": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "medium", "facing" : "south" },
+            "apply": { "model": "survive:block/temperature_regulator_3_medium_plates", "x": 90, "y": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "large", "facing" : "south" },
+            "apply": { "model": "survive:block/temperature_regulator_3_large_plates", "x": 90, "y": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "small", "facing" : "south" },
+            "apply": { "model": "survive:block/temperature_regulator_4_small_plates", "x": 90, "y": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "medium", "facing" : "south" },
+            "apply": { "model": "survive:block/temperature_regulator_4_medium_plates", "x": 90, "y": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "large", "facing" : "south" },
+            "apply": { "model": "survive:block/temperature_regulator_4_large_plates", "x": 90, "y": 180, "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "small", "facing" : "west" },
+            "apply": { "model": "survive:block/temperature_regulator_1_small_plates", "x": 90, "y": 270, "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "medium", "facing" : "west" },
+            "apply": { "model": "survive:block/temperature_regulator_1_medium_plates", "x": 90, "y": 270, "uvlock": true }
+        },
+        {   "when": { "plate_count": 1, "temperature_regulation_size" : "large", "facing" : "west" },
+            "apply": { "model": "survive:block/temperature_regulator_1_large_plates", "x": 90, "y": 270, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "small", "facing" : "west" },
+            "apply": { "model": "survive:block/temperature_regulator_2_small_plates", "x": 90, "y": 270, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "medium", "facing" : "west" },
+            "apply": { "model": "survive:block/temperature_regulator_2_medium_plates", "x": 90, "y": 270, "uvlock": true }
+        },
+        {   "when": { "plate_count": 2, "temperature_regulation_size" : "large", "facing" : "west" },
+            "apply": { "model": "survive:block/temperature_regulator_2_large_plates", "x": 90, "y": 270, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "small", "facing" : "west" },
+            "apply": { "model": "survive:block/temperature_regulator_3_small_plates", "x": 90, "y": 270, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "medium", "facing" : "west" },
+            "apply": { "model": "survive:block/temperature_regulator_3_medium_plates", "x": 90, "y": 270, "uvlock": true }
+        },
+        {   "when": { "plate_count": 3, "temperature_regulation_size" : "large", "facing" : "west" },
+            "apply": { "model": "survive:block/temperature_regulator_3_large_plates", "x": 90, "y": 270, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "small", "facing" : "west" },
+            "apply": { "model": "survive:block/temperature_regulator_4_small_plates", "x": 90, "y": 270, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "medium", "facing" : "west" },
+            "apply": { "model": "survive:block/temperature_regulator_4_medium_plates", "x": 90, "y": 270, "uvlock": true }
+        },
+        {   "when": { "plate_count": 4, "temperature_regulation_size" : "large", "facing" : "west" },
+            "apply": { "model": "survive:block/temperature_regulator_4_large_plates", "x": 90, "y": 270, "uvlock": true }
+        }
+    ]
+}

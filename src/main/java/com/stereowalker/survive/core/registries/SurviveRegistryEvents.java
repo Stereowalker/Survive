@@ -5,10 +5,13 @@ import com.stereowalker.survive.client.particle.HygieneParticle;
 import com.stereowalker.survive.core.particles.SParticleTypes;
 import com.stereowalker.survive.world.effect.SEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
+import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.survive.world.item.TemperatureRegulatorPlateItem;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
 import com.stereowalker.survive.world.item.crafting.SRecipeSerializer;
 import com.stereowalker.survive.world.item.crafting.conditions.ModuleEnabledCondition;
 import com.stereowalker.survive.world.item.enchantment.SEnchantments;
+import com.stereowalker.survive.world.level.block.PlatedTemperatureRegulatorBlock;
 import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.seasons.Seasons;
@@ -58,6 +61,17 @@ public class SurviveRegistryEvents
 		event.getBlockColors().register((state, displayReader, blockPos, tintIndex) -> {
 			return 0x483c35;
 		}, SBlocks.POTASH_CAULDRON);
+		event.getBlockColors().register((state, displayReader, blockPos, tintIndex) -> {
+			return PlatedTemperatureRegulatorBlock.getColor(state);
+		}, SBlocks.PLATED_TEMPERATURE_REGULATOR);
+	}
+	
+	@SubscribeEvent
+	@OnlyIn(Dist.CLIENT)
+	public static void registerItemColors(ColorHandlerEvent.Item event) {
+		event.getItemColors().register((stack, tintIndex) -> {
+			return TemperatureRegulatorPlateItem.getColor(stack);
+		}, SItems.LARGE_HEATING_PLATE, SItems.LARGE_COOLING_PLATE, SItems.MEDIUM_HEATING_PLATE, SItems.MEDIUM_COOLING_PLATE, SItems.SMALL_HEATING_PLATE, SItems.SMALL_COOLING_PLATE);
 	}
 
 	@SubscribeEvent

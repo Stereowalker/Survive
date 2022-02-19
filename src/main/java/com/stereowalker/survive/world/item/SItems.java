@@ -1,11 +1,14 @@
 package com.stereowalker.survive.world.item;
 
-import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.world.level.block.SBlocks;
+import com.stereowalker.survive.world.level.block.state.properties.TempRegulationPlateSize;
+import com.stereowalker.survive.world.level.block.state.properties.TempRegulationPlateType;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.unionlib.registries.RegistryHolder;
 
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -14,7 +17,6 @@ import net.minecraft.world.level.material.Fluids;
 
 @RegistryHolder("survive")
 public class SItems {
-	//Miscellaneous
 	@RegistryHolder("wool_hat")
 	public static final Item WOOL_HAT = new ArmorItem(SArmorMaterial.WOOL, EquipmentSlot.HEAD, new Item.Properties().tab(SCreativeModeTab.TAB_MAIN));
 	@RegistryHolder("wool_jacket")
@@ -41,6 +43,32 @@ public class SItems {
 	public static final Item ICE_CUBE = new Item(new Item.Properties().tab(SCreativeModeTab.TAB_MAIN));
 	@RegistryHolder("thermometer")
 	public static final Item THERMOMETER = new Item((new Item.Properties()).tab(SCreativeModeTab.TAB_MAIN));
+	@RegistryHolder("temperature_regulator")
+	public static final Item TEMPERATURE_REGULATOR = new BlockItem(SBlocks.TEMPERATURE_REGULATOR, (new Item.Properties()).tab(SCreativeModeTab.TAB_MAIN)) {
+		@Override
+		public void registerBlocks(java.util.Map<Block, Item> map, Item self) {
+			super.registerBlocks(map, self);
+			map.put(SBlocks.PLATED_TEMPERATURE_REGULATOR, self);
+		}
+
+		@Override
+		public void removeFromBlockToItemMap(java.util.Map<Block, Item> map, Item self) {
+			super.removeFromBlockToItemMap(map, self);
+			map.remove(SBlocks.PLATED_TEMPERATURE_REGULATOR);
+		}
+	};
+	@RegistryHolder("large_heating_plate")
+	public static final Item LARGE_HEATING_PLATE = new TemperatureRegulatorPlateItem(TempRegulationPlateType.HEATER, TempRegulationPlateSize.LARGE, new Item.Properties().tab(SCreativeModeTab.TAB_MAIN).stacksTo(64));
+	@RegistryHolder("large_cooling_plate")
+	public static final Item LARGE_COOLING_PLATE = new TemperatureRegulatorPlateItem(TempRegulationPlateType.CHILLER, TempRegulationPlateSize.LARGE, new Item.Properties().tab(SCreativeModeTab.TAB_MAIN).stacksTo(64));
+	@RegistryHolder("medium_heating_plate")
+	public static final Item MEDIUM_HEATING_PLATE = new TemperatureRegulatorPlateItem(TempRegulationPlateType.HEATER, TempRegulationPlateSize.MEDIUM, new Item.Properties().tab(SCreativeModeTab.TAB_MAIN).stacksTo(64));
+	@RegistryHolder("medium_cooling_plate")
+	public static final Item MEDIUM_COOLING_PLATE = new TemperatureRegulatorPlateItem(TempRegulationPlateType.CHILLER, TempRegulationPlateSize.MEDIUM, new Item.Properties().tab(SCreativeModeTab.TAB_MAIN).stacksTo(64));
+	@RegistryHolder("small_heating_plate")
+	public static final Item SMALL_HEATING_PLATE = new TemperatureRegulatorPlateItem(TempRegulationPlateType.HEATER, TempRegulationPlateSize.SMALL, new Item.Properties().tab(SCreativeModeTab.TAB_MAIN).stacksTo(64));
+	@RegistryHolder("small_cooling_plate")
+	public static final Item SMALL_COOLING_PLATE = new TemperatureRegulatorPlateItem(TempRegulationPlateType.CHILLER, TempRegulationPlateSize.SMALL, new Item.Properties().tab(SCreativeModeTab.TAB_MAIN).stacksTo(64));
 	@RegistryHolder("charcoal_filter")
 	public static final Item CHARCOAL_FILTER = new Item(new Item.Properties().tab(SCreativeModeTab.TAB_MAIN).defaultDurability(10));
 	@RegistryHolder("purified_water_bucket")
@@ -57,35 +85,4 @@ public class SItems {
 	public static final Item STIFFENED_HONEY_LEGGINGS = new ArmorItem(SArmorMaterial.STIFFENED_HONEY, EquipmentSlot.LEGS, new Item.Properties().tab(SCreativeModeTab.TAB_MAIN));
 	@RegistryHolder("stiffened_honey_boots")
 	public static final Item STIFFENED_HONEY_BOOTS = new ArmorItem(SArmorMaterial.STIFFENED_HONEY, EquipmentSlot.FEET, new Item.Properties().tab(SCreativeModeTab.TAB_MAIN));
-	
-	
-	//	private static Item register(Block block) {
-	//		return register(new BlockItem(block, new Item.Properties()));
-	//	}
-
-//	private static Item register(Block block, ItemGroup itemGroup) {
-//		return register(new BlockItem(block, (new Item.Properties()).tab(itemGroup)));
-//	}
-
-//	private static Item register(BlockItem p_221543_0_) {
-//		return register(p_221543_0_.getBlock(), p_221543_0_);
-//	}
-
-	protected static Item register(Block block, Item p_221546_1_) {
-		return register(block.getRegistryName().getPath(), p_221546_1_);
-	}
-
-	private static Item register(String name, Item item) {
-		item.setRegistryName(Survive.getInstance().location(name));
-//		SItems.ITEMS.add(item);
-		return item;
-	}
-
-//	public static void registerAll(IForgeRegistry<Item> registry) {
-//		for(Item item : ITEMS) {
-//			registry.register(item);
-//			Survive.getInstance().debug("Item: \""+item.getRegistryName().toString()+"\" registered");
-//		}
-//		Survive.getInstance().debug("All Items Registered");
-//	}
 }

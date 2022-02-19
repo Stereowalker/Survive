@@ -1,0 +1,53 @@
+{
+  "credit": "Made with Blockbench",
+  	"textures": {
+    	"0": "survive:block/radiator_plate_template",
+    	"particle": "survive:block/radiator_plate_template"
+  	},
+  "elements": [
+    {
+      "from": [ 3, 2, 3 ],
+      "to": [ 13, 4, 13 ],
+      "faces": {
+        "north": {
+          "uv": [ 1, 14, 11, 16 ],
+          "texture": "#0",
+		  "tintindex": 0 
+        },
+        "east": {
+          "uv": [ 1, 14, 11, 16 ],
+          "texture": "#0",
+		  "tintindex": 0 
+        },
+        "south": {
+          "uv": [ 1, 14, 11, 16 ],
+          "texture": "#0",
+		  "tintindex": 0 
+        },
+        "west": {
+          "uv": [ 1, 14, 11, 16 ],
+          "texture": "#0",
+		  "tintindex": 0 
+        },
+        "up": {
+          "uv": [ 1, 1, 11, 11 ],
+          "texture": "#0",
+		  "tintindex": 0 
+        },
+        "down": {
+          "uv": [ 1, 1, 11, 11 ],
+          "texture": "#0",
+		  "tintindex": 0 
+        }
+      }
+    }
+  ],
+  "groups": [
+    {
+      "name": "plates",
+      "origin": [ 8, 8, 8 ],
+      "color": 0,
+      "children": [ 0 ]
+    }
+  ]
+}
