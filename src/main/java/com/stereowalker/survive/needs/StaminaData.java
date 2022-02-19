@@ -109,6 +109,7 @@ public class StaminaData extends SurviveData {
 	 */
 	public void read(CompoundTag compound) {
 		if (compound.contains("energyLevel", 99)) {
+			this.maxStamina = compound.getInt("maxStamina");
 			this.energyLevel = compound.getInt("energyLevel");
 			this.energyTimer = compound.getInt("energyTickTimer");
 			this.energyReserveLevel = compound.getInt("energyReserveLevel");
@@ -121,6 +122,7 @@ public class StaminaData extends SurviveData {
 	 * Writes the water data for the player.
 	 */
 	public void write(CompoundTag compound) {
+		compound.putInt("maxStamina", this.maxStamina);
 		compound.putInt("energyLevel", this.energyLevel);
 		compound.putInt("energyTickTimer", this.energyTimer);
 		compound.putInt("energyReserveLevel", this.energyReserveLevel);
