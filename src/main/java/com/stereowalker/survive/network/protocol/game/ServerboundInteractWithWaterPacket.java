@@ -105,7 +105,7 @@ public class ServerboundInteractWithWaterPacket {
 									flag = true;
 								}
 								if (flag) {
-									waterStats.addStats((int) waterAmount, (float) hydrationAmount, addThirst ? WaterData.applyThirst(sender, 0.5f/*TODO MAKE BIOMES HAVE DIFFERENT THIRST CHANCES*/) : false);
+									waterStats.drink((int) waterAmount, (float) hydrationAmount, addThirst ? WaterData.applyThirst(sender, 0.5f/*TODO MAKE BIOMES HAVE DIFFERENT THIRST CHANCES*/) : false);
 								}
 								Survive.getInstance().channel.sendTo(new ClientboundDrinkSoundPacket(pos, sender.getUUID()), sender.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 							}

@@ -40,7 +40,7 @@ public class SEffect extends MobEffect {
 			}
 		} else if (this == SEffects.ENERGIZED && entityLivingBaseIn instanceof ServerPlayer) {
 			StaminaData energyStats = SurviveEntityStats.getEnergyStats(entityLivingBaseIn);
-			energyStats.addStats(1, entityLivingBaseIn.getAttributeValue(SAttributes.MAX_STAMINA));
+			energyStats.relax(1, entityLivingBaseIn.getAttributeValue(SAttributes.MAX_STAMINA));
 			energyStats.save(entityLivingBaseIn);
 			if (entityLivingBaseIn.hasEffect(SEffects.TIREDNESS)) {
 				entityLivingBaseIn.removeEffect(SEffects.TIREDNESS);

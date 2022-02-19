@@ -51,7 +51,7 @@ public class WaterData extends SurviveData {
 	/**
 	 * Add water stats.
 	 */
-	public void addStats(int waterLevelIn, float waterHydrationModifier, boolean isUnclean) {
+	public void drink(int waterLevelIn, float waterHydrationModifier, boolean isUnclean) {
 		this.waterLevel = Math.min(waterLevelIn + this.waterLevel, 20);
 		this.waterHydrationLevel = Math.min(this.waterHydrationLevel + (float)waterLevelIn * waterHydrationModifier * 2.0F, (float)this.waterLevel);
 		if (isUnclean) {
@@ -281,14 +281,14 @@ public class WaterData extends SurviveData {
 			
 			if (event.getItem().getItem() == Items.POTION && DataMaps.Server.potionDrink.containsKey(PotionUtils.getPotion(event.getItem()).getRegistryName())) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(PotionUtils.getPotion(event.getItem()).getRegistryName());
-				stats.addStats(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(event.getEntityLiving(), drinkData.getThirstChance()));
+				stats.drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(event.getEntityLiving(), drinkData.getThirstChance()));
 				if (drinkData.isHeated())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.HEATED, 30*20));
 				if (drinkData.isChilled())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.CHILLED, 30*20));
 				if (drinkData.isEnergizing())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.ENERGIZED, 60*20*5));
 			}
 			else if (DataMaps.Server.consummableItem.containsKey(event.getItem().getItem().getRegistryName())) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.consummableItem.get(event.getItem().getItem().getRegistryName());
-				stats.addStats(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(event.getEntityLiving(), drinkData.getThirstChance()));
+				stats.drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(event.getEntityLiving(), drinkData.getThirstChance()));
 				if (drinkData.isHeated())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.HEATED, 30*20));
 				if (drinkData.isChilled())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.CHILLED, 30*20));
 				if (drinkData.isEnergizing())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.ENERGIZED, 60*20*5));

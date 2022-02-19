@@ -45,7 +45,7 @@ public class StaminaData extends SurviveData {
 	/**
 	 * Add water stats.
 	 */
-	public void addStats(int energyLevelIn, double maxStamina) {
+	public void relax(int energyLevelIn, double maxStamina) {
 		int remaining = 0;;
 		remaining = (this.energyReserveLevel + energyLevelIn) - 6;
 		this.energyReserveLevel = Math.min(energyLevelIn + this.energyReserveLevel, 6);
@@ -110,19 +110,19 @@ public class StaminaData extends SurviveData {
 		}
 		//Moved from the event. Find a way to mesh all this with what is above you
 		if (player.isSleeping() && player.tickCount%20 == 19) {
-			this.addStats(1, this.maxStamina);
+			this.relax(1, this.maxStamina);
 		}
 		if ((Survive.STAMINA_CONFIG.stamina_recovery_ticks == 0 || player.tickCount%Survive.STAMINA_CONFIG.stamina_recovery_ticks == Survive.STAMINA_CONFIG.stamina_recovery_ticks-1) && this.isTired()) {
 			if (Survive.CONFIG.nutrition_enabled) {
 				NutritionData nutritionStats = SurviveEntityStats.getNutritionStats(player);
 				if (nutritionStats.getCarbLevel() >= 2) {
-					this.addStats(1, player.getAttributeValue(SAttributes.MAX_STAMINA));
+					this.relax(1, player.getAttributeValue(SAttributes.MAX_STAMINA));
 					nutritionStats.removeCarbs(2);
 				}
 				nutritionStats.save(player);
 			} else {
 				if (player.getFoodData().getFoodLevel() > 15 && SurviveEvents.getTotalArmorWeight(player)/Survive.STAMINA_CONFIG.max_weight < 1.0F) {
-					this.addStats(1, this.maxStamina);
+					this.relax(1, this.maxStamina);
 					player.getFoodData().addExhaustion(1.0F);
 				}
 			}
@@ -253,7 +253,7 @@ public class StaminaData extends SurviveData {
 	public static void replenishEnergyOnSleep(SleepFinishedTimeEvent event) {
 		for (Player player : event.getWorld().players()) {
 			StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
-			energyStats.addStats(energyStats.maxStamina, player.getAttributeValue(SAttributes.MAX_STAMINA));
+			energyStats.relax(energyStats.maxStamina, player.getAttributeValue(SAttributes.MAX_STAMINA));
 			SurviveEntityStats.setStaminaStats(player, energyStats);
 		}
 	}
@@ -264,7 +264,7 @@ public class StaminaData extends SurviveData {
 			if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
 				ServerPlayer player = (ServerPlayer)event.getEntityLiving();
 				StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
-				energyStats.addStats(DataMaps.Server.consummableItem.get(event.getItem().getItem().getRegistryName()).getEnergyAmount(), player.getAttributeValue(SAttributes.MAX_STAMINA));
+				energyStats.relax(DataMaps.Server.consummableItem.get(event.getItem().getItem().getRegistryName()).getEnergyAmount(), player.getAttributeValue(SAttributes.MAX_STAMINA));
 				SurviveEntityStats.setStaminaStats(player, energyStats);
 			}
 		}

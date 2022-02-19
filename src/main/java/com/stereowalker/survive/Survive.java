@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.stereowalker.survive.commands.SCommands;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.compat.SItemProperties;
 import com.stereowalker.survive.config.Config;
@@ -55,6 +56,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -107,6 +110,7 @@ public class Survive extends MinecraftMod {
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::clientRegistries);
+		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		//		MinecraftForge.EVENT_BUS.register(this);
 		isPrimalWinterLoaded = ModList.get().isLoaded("primalwinter");
 		if (isCombatLoaded()) {
@@ -116,6 +120,10 @@ public class Survive extends MinecraftMod {
 		if (isOriginsLoaded()) {
 			OriginsCompat.initOriginsPatcher();
 		}
+	}
+
+	public void registerCommands(RegisterCommandsEvent event) {
+		SCommands.registerCommands(event.getDispatcher());
 	}
 
 	@Override
