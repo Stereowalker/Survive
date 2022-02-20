@@ -146,6 +146,17 @@ task deobfJar(type: Jar) {
 	classifier = "deobf"
 }
 
+
+task apiJar(type: Jar) {
+    from(sourceSets.main.allJava) {
+        include 'com/stereowalker/survive/api/**'
+    }
+    from (sourceSets.main.output) {
+        include 'com/stereowalker/survive/api/**'
+    }
+	classifier = 'api'
+}
+
 curseforge {
     project {
     	id = modCurseId
@@ -161,6 +172,7 @@ curseforge {
 			displayName = modFilename+"-$project.version"
 		}
 		addArtifact deobfJar
+		addArtifact apiJar
 		addArtifact sourcesJar
 	}
 	options {
@@ -182,6 +194,7 @@ publishing {
         mavenJava(MavenPublication) {
         	afterEvaluate {
                 artifact project.jar
+                artifact project.apiJar
                 artifact project.sourcesJar
             }
         
@@ -205,5 +218,5 @@ publishing {
 artifacts {
 	archives sourcesJar
 	archives deobfJar
-	//archives apiJar
+	archives apiJar
 }

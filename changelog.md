@@ -1,3 +1,14 @@
+[6.1.8]
+- Formally created an API and added a TemperatureEmmiter interface
+- Added an icon for the Slowness Illness effect
+- Added Temperature Regulator block and Regulator plates
+- Fix stamina not regenerating over time
+- Fix the wellbeing module saving into the nutrition module
+- Added a needs command
+- Riding a stationary entity increases stamina by 1 every 20 seconds
+- Riding a moving entity decreases stamina every 20 seconds
+- Fix incompatibility with Quark
+
 [6.1.7]
 - Gave stamina its dedicated config folder
 - Fix stink particles showing in creative and spectator
