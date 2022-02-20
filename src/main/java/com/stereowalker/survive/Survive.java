@@ -3,6 +3,7 @@ package com.stereowalker.survive;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.stereowalker.survive.commands.SCommands;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.config.Config;
 import com.stereowalker.survive.config.ServerConfig;
@@ -45,6 +46,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -85,6 +88,7 @@ public class Survive extends UnionMod {
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::clientRegistries);
 //		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		isPrimalWinterLoaded = ModList.get().isLoaded("primalwinter");
 		if (isCombatLoaded()) {
 			SSpells.registerAll(modEventBus);
@@ -131,6 +135,10 @@ public class Survive extends UnionMod {
 	@OnlyIn(Dist.CLIENT)
 	public Screen getConfigScreen(Minecraft mc, Screen previousScreen) {
 		return new ConfigScreen(previousScreen, Config.class, new TranslationTextComponent("gui.survive.config.title"));
+	}
+	
+	public void registerCommands(RegisterCommandsEvent event) {
+		SCommands.registerCommands(event.getDispatcher());
 	}
 
 	public void debug(Object message) {
