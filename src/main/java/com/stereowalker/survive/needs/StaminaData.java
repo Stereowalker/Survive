@@ -56,8 +56,11 @@ public class StaminaData extends SurviveData {
 
 	@Override
 	public void clientTick(AbstractClientPlayer player) {
-		if (player.isPassenger() && player.getVehicle().getDeltaMovement().x == 0 && player.getVehicle().getDeltaMovement().z == 0 && player.tickCount%400 == 399) {
-			new ServerboundRelaxPacket(1).send();
+		if (player.isPassenger() && player.tickCount%400 == 399) {
+			if (player.getVehicle().getDeltaMovement().x == 0 && player.getVehicle().getDeltaMovement().z == 0)
+				new ServerboundRelaxPacket(1).send();
+			else
+				new ServerboundStaminaExhaustionPacket(0.0312F).send();
 		}
 		if (player.tickCount%90 == 89) {
 			if (player.level.getDifficulty() != Difficulty.PEACEFUL) {
