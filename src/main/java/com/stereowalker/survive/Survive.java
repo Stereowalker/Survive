@@ -28,6 +28,7 @@ import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPa
 import com.stereowalker.survive.network.protocol.game.ServerboundArmorStaminaPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundEnergyTaxPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWaterPacket;
+import com.stereowalker.survive.network.protocol.game.ServerboundRelaxPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
 import com.stereowalker.survive.resource.ArmorDataManager;
 import com.stereowalker.survive.resource.BiomeTemperatureDataManager;
@@ -143,6 +144,7 @@ public class Survive extends MinecraftMod {
 		channel.registerMessage(netID++, ClientboundDrinkSoundPacket.class, ClientboundDrinkSoundPacket::encode, ClientboundDrinkSoundPacket::decode, ClientboundDrinkSoundPacket::handle);
 		channel.registerMessage(netID++, ServerboundEnergyTaxPacket.class, ServerboundEnergyTaxPacket::encode, ServerboundEnergyTaxPacket::decode, ServerboundEnergyTaxPacket::handle);
 		channel.registerMessage(netID++, ClientboundArmorDataTransferPacket.class, ClientboundArmorDataTransferPacket::encode, ClientboundArmorDataTransferPacket::decode, ClientboundArmorDataTransferPacket::handle);
+		PacketRegistry.registerMessage(channel, netID++, ServerboundRelaxPacket.class, (packetBuffer) -> {return new ServerboundRelaxPacket(packetBuffer);});
 	}
 
 	//TODO: FInd Somewhere to put all these

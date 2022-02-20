@@ -5,6 +5,7 @@ import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.network.protocol.game.ServerboundArmorStaminaPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundEnergyTaxPacket;
+import com.stereowalker.survive.network.protocol.game.ServerboundRelaxPacket;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
@@ -53,9 +54,12 @@ public class StaminaData extends SurviveData {
 			this.energyLevel = Math.min(remaining + this.energyLevel, Mth.floor(maxStamina));
 		}
 	}
-	
+
 	@Override
 	public void clientTick(AbstractClientPlayer player) {
+		if (player.getVehicle() != null && player.getVehicle().getDeltaMovement().x == 0 && player.getVehicle().getDeltaMovement().z == 0 && player.tickCount%200 == 199) {
+			new ServerboundRelaxPacket(1).send();
+		}
 		if (player.tickCount%90 == 89) {
 			if (player.level.getDifficulty() != Difficulty.PEACEFUL) {
 				new ServerboundArmorStaminaPacket().send();
