@@ -1,5 +1,6 @@
 package com.stereowalker.survive.client.events;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.mojang.datafixers.util.Pair;
@@ -27,27 +28,29 @@ public class TooltipEvents {
 
 	@OnlyIn(Dist.CLIENT)
 	public static void accessoryTooltip(Player player, ItemStack stack, List<Component> tooltip, boolean displayWeight, boolean displayTemp) {
+		List<Component> tooltipsToAdd = new ArrayList<Component>();
 		if (DataMaps.Client.armor.containsKey(stack.getItem().getRegistryName())) {
 			float kg = SurviveEvents.getArmorWeightClient(stack);
 			float rawPound = kg*2.205f;
 			int poundInt = (int)(rawPound*1000);
 			float pound = poundInt/1000.0F;
-			if (displayWeight) tooltip.add(1, new TranslatableComponent("tooltip.survive.weight", Survive.STAMINA_CONFIG.displayWeightInPounds ? pound : kg, Survive.STAMINA_CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
+			if (displayWeight) tooltipsToAdd.add(new TranslatableComponent("tooltip.survive.weight", Survive.STAMINA_CONFIG.displayWeightInPounds ? pound : kg, Survive.STAMINA_CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
 			if (displayTemp)
 				for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Client.armor.get(stack.getItem().getRegistryName()).getTemperatureModifier()) {
 					if (instance.getSecond().shouldChangeTemperature(player)) {
 						if (instance.getSecond().getAdditionalContext() != null)
-							tooltip.add(2, new TranslatableComponent("tooltip.survive.temperature", instance.getSecond().getTemperature()).append(instance.getSecond().getAdditionalContext()).withStyle(ChatFormatting.DARK_PURPLE));
+							tooltipsToAdd.add(new TranslatableComponent("tooltip.survive.temperature", instance.getSecond().getTemperature()).append(instance.getSecond().getAdditionalContext()).withStyle(ChatFormatting.DARK_PURPLE));
 						else
-							tooltip.add(2, new TranslatableComponent("tooltip.survive.temperature", instance.getSecond().getTemperature()).withStyle(ChatFormatting.DARK_PURPLE));
+							tooltipsToAdd.add(new TranslatableComponent("tooltip.survive.temperature", instance.getSecond().getTemperature()).withStyle(ChatFormatting.DARK_PURPLE));
 						break;
 					}
 				}
 		} else {
-			if (displayWeight) tooltip.add(1, new TranslatableComponent("tooltip.survive.weight", 0, Survive.STAMINA_CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
-			if (displayTemp) tooltip.add(2, new TranslatableComponent("tooltip.survive.temperature", 0).withStyle(ChatFormatting.DARK_PURPLE));
-
+			if (displayWeight) tooltipsToAdd.add(new TranslatableComponent("tooltip.survive.weight", 0, Survive.STAMINA_CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
+			if (displayTemp) tooltipsToAdd.add(new TranslatableComponent("tooltip.survive.temperature", 0).withStyle(ChatFormatting.DARK_PURPLE));
 		}
+		
+		tooltip.addAll(1, tooltipsToAdd);
 	}
 
 	@OnlyIn(Dist.CLIENT)
