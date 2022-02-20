@@ -26,7 +26,7 @@ import com.stereowalker.survive.network.protocol.game.ClientboundArmorDataTransf
 import com.stereowalker.survive.network.protocol.game.ClientboundDrinkSoundPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundArmorStaminaPacket;
-import com.stereowalker.survive.network.protocol.game.ServerboundEnergyTaxPacket;
+import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhaustionPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWaterPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundRelaxPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
@@ -142,7 +142,7 @@ public class Survive extends MinecraftMod {
 		channel.registerMessage(netID++, ServerboundThirstMovementPacket.class, ServerboundThirstMovementPacket::encode, ServerboundThirstMovementPacket::decode, ServerboundThirstMovementPacket::handle);
 		channel.registerMessage(netID++, ServerboundInteractWithWaterPacket.class, ServerboundInteractWithWaterPacket::encode, ServerboundInteractWithWaterPacket::decode, ServerboundInteractWithWaterPacket::handle);
 		channel.registerMessage(netID++, ClientboundDrinkSoundPacket.class, ClientboundDrinkSoundPacket::encode, ClientboundDrinkSoundPacket::decode, ClientboundDrinkSoundPacket::handle);
-		channel.registerMessage(netID++, ServerboundEnergyTaxPacket.class, ServerboundEnergyTaxPacket::encode, ServerboundEnergyTaxPacket::decode, ServerboundEnergyTaxPacket::handle);
+		PacketRegistry.registerMessage(channel, netID++, ServerboundStaminaExhaustionPacket.class, (packetBuffer) -> {return new ServerboundStaminaExhaustionPacket(packetBuffer);});
 		channel.registerMessage(netID++, ClientboundArmorDataTransferPacket.class, ClientboundArmorDataTransferPacket::encode, ClientboundArmorDataTransferPacket::decode, ClientboundArmorDataTransferPacket::handle);
 		PacketRegistry.registerMessage(channel, netID++, ServerboundRelaxPacket.class, (packetBuffer) -> {return new ServerboundRelaxPacket(packetBuffer);});
 	}

@@ -4,7 +4,7 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.network.protocol.game.ServerboundArmorStaminaPacket;
-import com.stereowalker.survive.network.protocol.game.ServerboundEnergyTaxPacket;
+import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhaustionPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundRelaxPacket;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
@@ -25,7 +25,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.network.NetworkDirection;
 
 @EventBusSubscriber
 public class StaminaData extends SurviveData {
@@ -57,7 +56,7 @@ public class StaminaData extends SurviveData {
 
 	@Override
 	public void clientTick(AbstractClientPlayer player) {
-		if (player.getVehicle() != null && player.getVehicle().getDeltaMovement().x == 0 && player.getVehicle().getDeltaMovement().z == 0 && player.tickCount%200 == 199) {
+		if (player.isPassenger() && player.getVehicle().getDeltaMovement().x == 0 && player.getVehicle().getDeltaMovement().z == 0 && player.tickCount%400 == 399) {
 			new ServerboundRelaxPacket(1).send();
 		}
 		if (player.tickCount%90 == 89) {
@@ -240,16 +239,14 @@ public class StaminaData extends SurviveData {
 	@SubscribeEvent
 	public static void rightClickEmpty(PlayerInteractEvent.RightClickEmpty clickItem) {
 		if(!clickItem.isCanceled() && clickItem.getPlayer() instanceof LocalPlayer && clickItem.getCancellationResult().consumesAction()) {
-			LocalPlayer player = (LocalPlayer)clickItem.getPlayer();
-			Survive.getInstance().channel.sendTo(new ServerboundEnergyTaxPacket(0.3125F, player.getUUID()), player.connection.getConnection(), NetworkDirection.PLAY_TO_SERVER);
+			new ServerboundStaminaExhaustionPacket(0.3125F).send();
 		}
 	}
 
 	@SubscribeEvent
 	public static void leftClickEmpty(PlayerInteractEvent.LeftClickEmpty clickItem) {
 		if(!clickItem.isCanceled() && clickItem.getPlayer() instanceof LocalPlayer && clickItem.getCancellationResult().consumesAction()) {
-			LocalPlayer player = (LocalPlayer)clickItem.getPlayer();
-			Survive.getInstance().channel.sendTo(new ServerboundEnergyTaxPacket(0.3125F, player.getUUID()), player.connection.getConnection(), NetworkDirection.PLAY_TO_SERVER);
+			new ServerboundStaminaExhaustionPacket(0.3125F).send();
 		}
 	}
 
