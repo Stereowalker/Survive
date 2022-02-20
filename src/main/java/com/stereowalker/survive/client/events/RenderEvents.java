@@ -56,7 +56,7 @@ public class RenderEvents {
 
 	@SuppressWarnings("deprecation")
 	@SubscribeEvent
-	public static void renderGameOverlay(RenderGameOverlayEvent event) {
+	public static void renderGameOverlay(RenderGameOverlayEvent.Post event) {
 		Random rand = new Random();
 		//Render Mana Bar
 		PlayerEntity playerentity = gui().getRenderViewPlayer();
