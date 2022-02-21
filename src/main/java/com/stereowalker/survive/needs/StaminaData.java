@@ -55,6 +55,7 @@ public class StaminaData extends SurviveData {
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void clientTick(AbstractClientPlayer player) {
 		if (player.isPassenger() && player.tickCount%400 == 399) {
 			if (player.getVehicle().getDeltaMovement().x == 0 && player.getVehicle().getDeltaMovement().z == 0)
