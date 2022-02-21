@@ -1,3 +1,6 @@
+[6.1.9]
+- Fix failure to load on dedicated servers
+
 [6.1.8]
 - Formally created an API and added a TemperatureEmmiter interface
 - Added an icon for the Slowness Illness effect
