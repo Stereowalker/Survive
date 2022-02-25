@@ -1,3 +1,8 @@
+[6.1.10]
+- Made JsonHolder an interface and moved it to the API
+- Re-enabled brewing recipes
+- updated ru_ru.json (Credits to jolopapina)
+
 [6.1.9]
 - Fix failure to load on dedicated servers
 
