@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.api.json.JsonHolder;
 import com.stereowalker.survive.core.registries.SurviveRegistries;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeCondition;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
@@ -18,7 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 
-public class ArmorJsonHolder extends JsonHolder {
+public class ArmorJsonHolder implements JsonHolder {
     private static final Marker ARMOR_DATA = MarkerManager.getMarker("ARMOR_DATA");
     
 	private ResourceLocation itemID;
@@ -26,7 +27,6 @@ public class ArmorJsonHolder extends JsonHolder {
 	private final float weightModifier;
 	
 	public ArmorJsonHolder(CompoundTag nbt) {
-		super(nbt);
 		this.itemID = new ResourceLocation(nbt.getString("id"));
 		this.weightModifier = nbt.getFloat("weight_modifier");
 		this.temperatureModifier = Lists.newArrayList();
@@ -38,19 +38,14 @@ public class ArmorJsonHolder extends JsonHolder {
 	}
 	
 	public ArmorJsonHolder(ResourceLocation itemID, JsonObject object) {
-		super(object);
-		String NOTHING = "nothing";
-		
 		List<Pair<String,TemperatureChangeInstance>> temperatureModifierIn = Lists.newArrayList();
 		float weightModifierIn = 0;
 		
 		this.itemID = itemID;
 		if(object.entrySet().size() != 0) {
-			String workingOn = NOTHING;
 			try {
-				
 				if(this.hasMemberAndIsJsonArray("temperature_modifiers", object)) {
-					workingOn = "temperature_modifiers";
+					setWorkingOn("temperature_modifiers");
 					for (JsonElement elem : object.get("temperature_modifiers").getAsJsonArray()) {
 						if (elem.isJsonObject()) {
 							JsonObject object2 = elem.getAsJsonObject();
@@ -58,32 +53,30 @@ public class ArmorJsonHolder extends JsonHolder {
 
 							if(object2 != null && object2.entrySet().size() != 0) {
 								if(object2.has("condition") && object2.get("condition").isJsonPrimitive()) {
-									workingOn = "condition";
+									setWorkingOn("condition");
 									condition = SurviveRegistries.CONDITION.getValue(new ResourceLocation(object2.get("condition").getAsString()));
 									if (condition != null) {
 										temperatureModifierIn.add(Pair.of(object2.get("condition").getAsString(), condition.createInstance(object2)));
 									} else {
 										Survive.getInstance().getLogger().error("Error loading armor data {} from JSON: The condition {} does not exist", itemID,  new ResourceLocation(object2.get("condition").getAsString()));
 									}
-									workingOn = NOTHING;
+									stopWorking();
 								}
 							}
 						} else {
 							Survive.getInstance().getLogger().error("Error loading armor data {} from JSON: The conditions for {} aren't a json object", itemID,  elem);
 						}
 					}
-					workingOn = NOTHING;
+					stopWorking();
 				}
 				
 				if(object.has("weight_modifier") && object.get("weight_modifier").isJsonPrimitive()) {
-					workingOn = "weight_modifier";
-					weightModifierIn = object.get("weight_modifier").getAsFloat();
-					workingOn = NOTHING;
+					weightModifierIn = workOnFloat("weight_modifier", object);
 				}
 			} catch (ClassCastException e) {
-				Survive.getInstance().getLogger().warn(ARMOR_DATA, "Error loading armor data {} from JSON: Parsing element {}: element was wrong type!", itemID, workingOn);
+				Survive.getInstance().getLogger().warn(ARMOR_DATA, "Error loading armor data {} from JSON: Parsing element {}: element was wrong type!", itemID, getworkingOn());
 			} catch (NumberFormatException e) {
-				Survive.getInstance().getLogger().warn(ARMOR_DATA, "Error loading armor data {} from JSON: Parsing element {}: element was an invalid number!", itemID, workingOn);
+				Survive.getInstance().getLogger().warn(ARMOR_DATA, "Error loading armor data {} from JSON: Parsing element {}: element was an invalid number!", itemID, getworkingOn());
 			}
 		}
 		
@@ -128,5 +121,17 @@ public class ArmorJsonHolder extends JsonHolder {
 		});
 		nbt.put("temperature_modifiers", list);
 		return nbt;
+	}
+
+	String wo = "NOTHING";
+	
+	@Override
+	public String getworkingOn() {
+		return wo;
+	}
+
+	@Override
+	public void setWorkingOn(String member) {
+		this.wo = member;
 	}
 }
