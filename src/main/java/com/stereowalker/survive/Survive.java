@@ -26,9 +26,9 @@ import com.stereowalker.survive.network.protocol.game.ClientboundArmorDataTransf
 import com.stereowalker.survive.network.protocol.game.ClientboundDrinkSoundPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundArmorStaminaPacket;
-import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhaustionPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWaterPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundRelaxPacket;
+import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhaustionPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
 import com.stereowalker.survive.resource.ArmorDataManager;
 import com.stereowalker.survive.resource.BiomeTemperatureDataManager;
@@ -41,6 +41,7 @@ import com.stereowalker.survive.stat.SStats;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.item.HygieneItems;
 import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.survive.world.item.alchemy.BrewingRecipes;
 import com.stereowalker.survive.world.level.CGameRules;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsScreen;
@@ -180,7 +181,7 @@ public class Survive extends MinecraftMod {
 	private void setup(final FMLCommonSetupEvent event)
 	{
 		SCauldronInteraction.bootStrap();
-		//		BrewingRecipes.addBrewingRecipes();
+		BrewingRecipes.addBrewingRecipes();
 		CGameRules.init();
 		SurviveEvents.registerHeatMap();
 
