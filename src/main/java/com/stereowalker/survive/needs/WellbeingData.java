@@ -71,24 +71,22 @@ public class WellbeingData extends SurviveData {
 		//This should be logic for hypothermia
 		if (Survive.TEMPERATURE_CONFIG.useExperimentalTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
 			TemperatureData data = SurviveEntityStats.getTemperatureStats(player);
-			if (data.getTemperatureLevel() > 0.7f) {
+			if (data.getTemperatureLevel() > 0.7f && !player.hasEffect(SEffects.HYPERTHERMIA)) {
 				this.timeUntilHyperthermia--;
 			} else {
 				this.timeUntilHyperthermia = 6000;
 			}
 
-			if (data.getTemperatureLevel() < -0.7f) {
+			if (data.getTemperatureLevel() < -0.7f && !player.hasEffect(SEffects.HYPOTHERMIA)) {
 				this.timeUntilHypothermia--;
 			} else {
 				this.timeUntilHypothermia = 6000;
 			}
 
 			if (this.timeUntilHyperthermia <= 0) {
-				this.timeUntilHyperthermia = 0;
 				if (!player.hasEffect(SEffects.HYPERTHERMIA))player.addEffect(new MobEffectInstance(SEffects.HYPERTHERMIA, 6000));
 			}
 			if (this.timeUntilHypothermia <= 0) {
-				this.timeUntilHypothermia = 0;
 				if (!player.hasEffect(SEffects.HYPOTHERMIA))player.addEffect(new MobEffectInstance(SEffects.HYPOTHERMIA, 6000));
 			}
 		}
