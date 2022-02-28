@@ -1,6 +1,10 @@
 package com.stereowalker.survive.world.level.block;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
+
+import org.apache.commons.compress.utils.Lists;
 
 import com.stereowalker.survive.api.world.level.block.TemperatureEmitter;
 import com.stereowalker.survive.world.item.SItems;
@@ -20,6 +24,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.storage.loot.LootContext.Builder;
 
 public class PlatedTemperatureRegulatorBlock extends AbstractTemperatureRegulatorBlock implements TemperatureEmitter {
 	public static final EnumProperty<TempRegulationPlateType> TEMP_REG_TYPE = SBlockStateProperties.TEMP_REG_TYPE;
@@ -43,6 +48,16 @@ public class PlatedTemperatureRegulatorBlock extends AbstractTemperatureRegulato
 		} else if (!hasPowerInEitherDirection(pLevel, pPos, pState.getValue(FACING)) && pState.getValue(POWERED)) {
 			pLevel.setBlockAndUpdate(pPos, pState.setValue(POWERED, false));
 		}
+	}
+	
+	@Override
+	public List<ItemStack> getDrops(BlockState pState, Builder pBuilder) {
+		List<ItemStack> drops = Lists.newArrayList();
+		drops.addAll(super.getDrops(pState, pBuilder));
+		for (int i = 0; i < pState.getValue(AbstractTemperatureRegulatorBlock.PLATE_COUNT); i++) {
+			drops.add(getPlateStack(pState));
+		}
+		return drops;
 	}
 	
 	public static boolean hasPowerInEitherDirection(Level pLevel, BlockPos pPos, Direction pDirection) {
