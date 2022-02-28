@@ -1,3 +1,8 @@
+[6.1.11]
+- If the experimental temperature system is enabled, the hyperthermia and hypothermia timers should reset if the player already has the effect and the timers will no longer tick down
+- Fixed plated temp regulator not dropping itself or the plates inside
+- Moved ru_ru.json to its correct spot
+
 [6.1.10]
 - Made JsonHolder an interface and moved it to the API
 - Re-enabled brewing recipes
