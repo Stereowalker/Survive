@@ -138,7 +138,7 @@ public class Survive extends MinecraftMod {
 	@Override
 	public void registerServerboundPackets(SimpleChannel channel) {
 		PacketRegistry.registerMessage(channel, 0, ServerboundArmorStaminaPacket.class, (packetBuffer) -> {return new ServerboundArmorStaminaPacket(packetBuffer);});
-		channel.registerMessage(1, ServerboundThirstMovementPacket.class, ServerboundThirstMovementPacket::encode, ServerboundThirstMovementPacket::decode, ServerboundThirstMovementPacket::handle);
+		PacketRegistry.registerMessage(channel, 1, ServerboundThirstMovementPacket.class, (packetBuffer) -> {return new ServerboundThirstMovementPacket(packetBuffer);});
 		channel.registerMessage(2, ServerboundInteractWithWaterPacket.class, ServerboundInteractWithWaterPacket::encode, ServerboundInteractWithWaterPacket::decode, ServerboundInteractWithWaterPacket::handle);
 		PacketRegistry.registerMessage(channel, 3, ServerboundStaminaExhaustionPacket.class, (packetBuffer) -> {return new ServerboundStaminaExhaustionPacket(packetBuffer);});
 		PacketRegistry.registerMessage(channel, 4, ServerboundRelaxPacket.class, (packetBuffer) -> {return new ServerboundRelaxPacket(packetBuffer);});

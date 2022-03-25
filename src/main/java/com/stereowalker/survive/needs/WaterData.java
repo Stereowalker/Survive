@@ -32,7 +32,6 @@ import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.network.NetworkDirection;
 
 @EventBusSubscriber
 public class WaterData extends SurviveData {
@@ -231,7 +230,7 @@ public class WaterData extends SurviveData {
 			LocalPlayer player = (LocalPlayer)event.getEntityLiving();
 			if (player.tickCount%290 == 288) {
 				if (player.level.getDifficulty() != Difficulty.PEACEFUL) {
-					Survive.getInstance().channel.sendTo(new ServerboundThirstMovementPacket(player.input.forwardImpulse, player.input.leftImpulse, player.input.jumping, player.getUUID()), player.connection.getConnection(), NetworkDirection.PLAY_TO_SERVER);
+					new ServerboundThirstMovementPacket(player.input.forwardImpulse, player.input.leftImpulse, player.input.jumping).send();
 				}
 			}
 		}
