@@ -1,10 +1,9 @@
 package com.stereowalker.survive.world.level.block;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
-
-import org.apache.commons.compress.utils.Lists;
 
 import com.stereowalker.survive.api.world.level.block.TemperatureEmitter;
 import com.stereowalker.survive.world.item.SItems;
@@ -52,7 +51,7 @@ public class PlatedTemperatureRegulatorBlock extends AbstractTemperatureRegulato
 	
 	@Override
 	public List<ItemStack> getDrops(BlockState pState, Builder pBuilder) {
-		List<ItemStack> drops = Lists.newArrayList();
+		List<ItemStack> drops = new ArrayList<ItemStack>();
 		drops.addAll(super.getDrops(pState, pBuilder));
 		for (int i = 0; i < pState.getValue(AbstractTemperatureRegulatorBlock.PLATE_COUNT); i++) {
 			drops.add(getPlateStack(pState));
