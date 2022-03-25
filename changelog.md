@@ -1,3 +1,8 @@
+[6.1.12]
+- Updated to work with latest UnionLib version
+- Fix crash when breaking a temperature regulator with a plate inside
+- Optimized the ServerboundThirstMovementPacket
+
 [6.1.11]
 - If the experimental temperature system is enabled, the hyperthermia and hypothermia timers should reset if the player already has the effect and the timers will no longer tick down
 - Fixed plated temp regulator not dropping itself or the plates inside
