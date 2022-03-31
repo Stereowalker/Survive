@@ -78,7 +78,7 @@ public abstract class EntityMixin extends net.minecraftforge.common.capabilities
 	
 	@Override
 	public boolean canRoast() {
-		return !EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES.contains(this.getType());
+		return !this.getType().is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES);
 	}
 
 }

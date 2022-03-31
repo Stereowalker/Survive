@@ -2,7 +2,7 @@ package com.stereowalker.survive.needs;
 
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
-import com.stereowalker.survive.world.effect.SEffects;
+import com.stereowalker.survive.world.effect.SMobEffects;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,8 +43,8 @@ public class SleepData extends SurviveData {
 	}
 
 	public void addTiredEffect(ServerPlayer player) {
-		if (tirednessAmplifier(player) >= 0 && !player.hasEffect(SEffects.ENERGIZED)) {
-			player.addEffect(new MobEffectInstance(SEffects.TIREDNESS, 200, Math.min(tirednessAmplifier(player), Survive.CONFIG.tiredTimeStacks), false, false, true));
+		if (tirednessAmplifier(player) >= 0 && !player.hasEffect(SMobEffects.ENERGIZED)) {
+			player.addEffect(new MobEffectInstance(SMobEffects.TIREDNESS, 200, Math.min(tirednessAmplifier(player), Survive.CONFIG.tiredTimeStacks), false, false, true));
 		}
 	}
 

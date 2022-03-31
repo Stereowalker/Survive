@@ -3,12 +3,10 @@ package com.stereowalker.survive.core.registries;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.client.particle.HygieneParticle;
 import com.stereowalker.survive.core.particles.SParticleTypes;
-import com.stereowalker.survive.world.effect.SEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.TemperatureRegulatorPlateItem;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
-import com.stereowalker.survive.world.item.crafting.SRecipeSerializer;
 import com.stereowalker.survive.world.item.crafting.conditions.ModuleEnabledCondition;
 import com.stereowalker.survive.world.item.enchantment.SEnchantments;
 import com.stereowalker.survive.world.level.block.PlatedTemperatureRegulatorBlock;
@@ -29,7 +27,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -39,6 +36,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegistryBuilder;
 
 @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
@@ -46,12 +44,6 @@ public class SurviveRegistryEvents
 {
 	private static final int MAX_VARINT = Integer.MAX_VALUE - 1;
 	//Game Object Registries
-	@SubscribeEvent
-	public static void registerBlocks(final RegistryEvent.Register<Block> event) 
-	{
-		SBlocks.registerAll(event.getRegistry());
-	}
-
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public static void registerItemColors(ColorHandlerEvent.Block event) {
@@ -72,11 +64,6 @@ public class SurviveRegistryEvents
 		event.getItemColors().register((stack, tintIndex) -> {
 			return TemperatureRegulatorPlateItem.getColor(stack);
 		}, SItems.LARGE_HEATING_PLATE, SItems.LARGE_COOLING_PLATE, SItems.MEDIUM_HEATING_PLATE, SItems.MEDIUM_COOLING_PLATE, SItems.SMALL_HEATING_PLATE, SItems.SMALL_COOLING_PLATE);
-	}
-
-	@SubscribeEvent
-	public static void registerAttributes(final RegistryEvent.Register<Attribute> event) {
-		SAttributes.registerAll(event.getRegistry());
 	}
 
 	@SubscribeEvent
@@ -102,7 +89,6 @@ public class SurviveRegistryEvents
 
 	@SubscribeEvent
 	public static void registerEffects(final RegistryEvent.Register<MobEffect> event) {
-		SEffects.registerAll(event.getRegistry());
 		MobEffects.FIRE_RESISTANCE.addAttributeModifier(SAttributes.HEAT_RESISTANCE, "795606d6-4ac6-4ae7-8311-63ccdb293eb4", 5.0D, AttributeModifier.Operation.ADDITION);
 	}
 
@@ -118,13 +104,12 @@ public class SurviveRegistryEvents
 	@SubscribeEvent
 	public static void registerRecipeSerializers(final RegistryEvent.Register<RecipeSerializer<?>> event) {
 		CraftingHelper.register(ModuleEnabledCondition.Serializer.INSTANCE);
-		SRecipeSerializer.registerAll(event.getRegistry());
 	}
 
 	@SubscribeEvent
-	public static void registerSurviveRegistries(final RegistryEvent.NewRegistry event) {
-		new RegistryBuilder<TemperatureChangeCondition<?>>().setName(Survive.getInstance().location("temperature_change_condition")).setType(c(TemperatureChangeCondition.class)).setMaxID(MAX_VARINT).create();
-		new RegistryBuilder<Season>().setName(Survive.getInstance().location("season")).setType(c(Season.class)).setMaxID(MAX_VARINT).create();
+	public static void registerSurviveRegistries(final NewRegistryEvent event) {
+		event.create(new RegistryBuilder<TemperatureChangeCondition<?>>().setName(Survive.getInstance().location("temperature_change_condition")).setType(c(TemperatureChangeCondition.class)).setMaxID(MAX_VARINT));
+		event.create(new RegistryBuilder<Season>().setName(Survive.getInstance().location("season")).setType(c(Season.class)).setMaxID(MAX_VARINT));
 	}
 
 	//Custom Survive Registries

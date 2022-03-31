@@ -3,7 +3,6 @@ package com.stereowalker.survive;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import com.stereowalker.survive.commands.SCommands;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.compat.SItemProperties;
@@ -39,13 +38,18 @@ import com.stereowalker.survive.resource.PotionDrinkDataManager;
 import com.stereowalker.survive.spell.SSpells;
 import com.stereowalker.survive.stat.SStats;
 import com.stereowalker.survive.world.DataMaps;
+import com.stereowalker.survive.world.effect.SMobEffects;
+import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.item.HygieneItems;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.alchemy.BrewingRecipes;
+import com.stereowalker.survive.world.item.crafting.SRecipeSerializer;
 import com.stereowalker.survive.world.level.CGameRules;
+import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsScreen;
 import com.stereowalker.unionlib.config.ConfigBuilder;
+import com.stereowalker.unionlib.mod.IPacketHolder;
 import com.stereowalker.unionlib.mod.MinecraftMod;
 import com.stereowalker.unionlib.network.PacketRegistry;
 
@@ -70,7 +74,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(value = "survive")
-public class Survive extends MinecraftMod {
+public class Survive extends MinecraftMod implements IPacketHolder {
 
 	public static final float DEFAULT_TEMP = 37.0F;
 	public static final String MOD_ID = "survive";
@@ -100,7 +104,7 @@ public class Survive extends MinecraftMod {
 
 	public Survive() 
 	{
-		super("survive", new ResourceLocation(MOD_ID, "textures/icon.png"), LoadType.BOTH, true, true);
+		super("survive", new ResourceLocation(MOD_ID, "textures/icon.png"), LoadType.BOTH);
 		instance = this;
 		ConfigBuilder.registerConfig(ServerConfig.class);
 		ConfigBuilder.registerConfig(CONFIG);
@@ -129,12 +133,18 @@ public class Survive extends MinecraftMod {
 	}
 
 	@Override
-	public List<Class<?>> getRegistries() {
-		List<Class<?>> defaultRegs = Lists.newArrayList(SFluids.class, SItems.class);
-		defaultRegs.add(HygieneItems.class);
-		return defaultRegs;
+	public IRegistries getRegistries() {
+		return (reg)-> {
+			reg.add(SBlocks.class);
+			reg.add(SFluids.class);
+			reg.add(SItems.class);
+			reg.add(HygieneItems.class);
+			reg.add(SRecipeSerializer.class);
+			reg.add(SAttributes.class);
+			reg.add(SMobEffects.class);
+		};
 	}
-	
+
 	@Override
 	public void registerServerboundPackets(SimpleChannel channel) {
 		PacketRegistry.registerMessage(channel, 0, ServerboundArmorStaminaPacket.class, (packetBuffer) -> {return new ServerboundArmorStaminaPacket(packetBuffer);});
@@ -142,13 +152,13 @@ public class Survive extends MinecraftMod {
 		channel.registerMessage(2, ServerboundInteractWithWaterPacket.class, ServerboundInteractWithWaterPacket::encode, ServerboundInteractWithWaterPacket::decode, ServerboundInteractWithWaterPacket::handle);
 		PacketRegistry.registerMessage(channel, 3, ServerboundStaminaExhaustionPacket.class, (packetBuffer) -> {return new ServerboundStaminaExhaustionPacket(packetBuffer);});
 		PacketRegistry.registerMessage(channel, 4, ServerboundRelaxPacket.class, (packetBuffer) -> {return new ServerboundRelaxPacket(packetBuffer);});
+	}
+
+	@Override
+	public void registerClientboundPackets(SimpleChannel channel) {
 		channel.registerMessage(5, ClientboundSurvivalStatsPacket.class, ClientboundSurvivalStatsPacket::encode, ClientboundSurvivalStatsPacket::decode, ClientboundSurvivalStatsPacket::handle);
 		channel.registerMessage(6, ClientboundDrinkSoundPacket.class, ClientboundDrinkSoundPacket::encode, ClientboundDrinkSoundPacket::decode, ClientboundDrinkSoundPacket::handle);
 		channel.registerMessage(7, ClientboundArmorDataTransferPacket.class, ClientboundArmorDataTransferPacket::encode, ClientboundArmorDataTransferPacket::decode, ClientboundArmorDataTransferPacket::handle);
-	}
-	
-	@Override
-	public void registerClientboundPackets(SimpleChannel channel) {
 	}
 
 	//TODO: FInd Somewhere to put all these

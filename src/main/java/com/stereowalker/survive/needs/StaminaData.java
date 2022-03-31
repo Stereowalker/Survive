@@ -2,10 +2,10 @@ package com.stereowalker.survive.needs;
 
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
-import com.stereowalker.survive.events.SurviveEvents;
+import com.stereowalker.survive.core.WeightHandler;
 import com.stereowalker.survive.network.protocol.game.ServerboundArmorStaminaPacket;
-import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhaustionPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundRelaxPacket;
+import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhaustionPacket;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
@@ -128,7 +128,7 @@ public class StaminaData extends SurviveData {
 				}
 				nutritionStats.save(player);
 			} else {
-				if (player.getFoodData().getFoodLevel() > 15 && SurviveEvents.getTotalArmorWeight(player)/Survive.STAMINA_CONFIG.max_weight < 1.0F) {
+				if (player.getFoodData().getFoodLevel() > 15 && WeightHandler.getTotalArmorWeight(player)/Survive.STAMINA_CONFIG.max_weight < 1.0F) {
 					this.relax(1, this.maxStamina);
 					player.getFoodData().addExhaustion(1.0F);
 				}

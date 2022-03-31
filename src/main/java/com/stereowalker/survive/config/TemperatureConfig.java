@@ -1,7 +1,7 @@
 package com.stereowalker.survive.config;
 
 import com.stereowalker.survive.core.TempDisplayMode;
-import com.stereowalker.survive.events.SurviveEvents.TempMode;
+import com.stereowalker.survive.core.TempMode;
 import com.stereowalker.unionlib.config.ConfigObject;
 import com.stereowalker.unionlib.config.UnionConfig;
 

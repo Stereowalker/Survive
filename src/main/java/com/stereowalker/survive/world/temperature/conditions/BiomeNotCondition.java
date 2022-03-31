@@ -44,10 +44,12 @@ public class BiomeNotCondition extends TemperatureChangeCondition<BiomeNotCondit
 			super(temperatureIn);
 			this.biome = biomeIn;
 		}
-
+		
 		@Override
 		public boolean shouldChangeTemperature(Player player) {
-			return !RegistryHelper.matchesRegistryKey(this.biome, player.level.getBiomeName(player.blockPosition()).get());
+			if (player.level.getBiome(player.blockPosition()).unwrapKey().isPresent())
+				return !RegistryHelper.matchesRegistryKey(this.biome, player.level.getBiome(player.blockPosition()).unwrapKey().get());
+			else return true;
 		}
 
 		@Override

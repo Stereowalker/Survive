@@ -4,7 +4,7 @@ import java.util.Random;
 
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
-import com.stereowalker.survive.world.effect.SEffects;
+import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
 import net.minecraft.nbt.CompoundTag;
@@ -54,9 +54,9 @@ public class WellbeingData extends SurviveData {
 			this.timeUntilWell = 6000;
 			int rgn = new Random().nextInt(2);
 			if (rgn == 0)
-				player.addEffect(new MobEffectInstance(SEffects.SLOWNESS_ILLNESS, 6000));
+				player.addEffect(new MobEffectInstance(SMobEffects.SLOWNESS_ILLNESS, 6000));
 			else
-				player.addEffect(new MobEffectInstance(SEffects.WEAKNESS_ILLNESS, 6000));
+				player.addEffect(new MobEffectInstance(SMobEffects.WEAKNESS_ILLNESS, 6000));
 		}
 		//As long as the player is not well
 		else if (this.timeUntilWell > 1 && !this.isWell) {
@@ -93,23 +93,23 @@ public class WellbeingData extends SurviveData {
 				f = Mth.clamp(div, -1.0D-(28.0D/63.0D), 0);
 			}
 			
-			if (f > 0.7f && !player.hasEffect(SEffects.HYPERTHERMIA)) {
+			if (f > 0.7f && !player.hasEffect(SMobEffects.HYPERTHERMIA)) {
 				this.timeUntilHyperthermia--;
 			} else {
 				this.timeUntilHyperthermia = 6000;
 			}
 
-			if (f < -0.7f && !player.hasEffect(SEffects.HYPOTHERMIA)) {
+			if (f < -0.7f && !player.hasEffect(SMobEffects.HYPOTHERMIA)) {
 				this.timeUntilHypothermia--;
 			} else {
 				this.timeUntilHypothermia = 6000;
 			}
 
 			if (this.timeUntilHyperthermia <= 0) {
-				if (!player.hasEffect(SEffects.HYPERTHERMIA))player.addEffect(new MobEffectInstance(SEffects.HYPERTHERMIA, 6000));
+				if (!player.hasEffect(SMobEffects.HYPERTHERMIA))player.addEffect(new MobEffectInstance(SMobEffects.HYPERTHERMIA, 6000));
 			}
 			if (this.timeUntilHypothermia <= 0) {
-				if (!player.hasEffect(SEffects.HYPOTHERMIA))player.addEffect(new MobEffectInstance(SEffects.HYPOTHERMIA, 6000));
+				if (!player.hasEffect(SMobEffects.HYPOTHERMIA))player.addEffect(new MobEffectInstance(SMobEffects.HYPOTHERMIA, 6000));
 			}
 		}
 	}

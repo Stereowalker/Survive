@@ -1,41 +1,18 @@
 package com.stereowalker.survive.world.entity.ai.attributes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.stereowalker.survive.Survive;
+import com.stereowalker.unionlib.core.registries.RegistryHolder;
+import com.stereowalker.unionlib.core.registries.RegistryObject;
 
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
-import net.minecraftforge.registries.IForgeRegistry;
 
+@RegistryHolder(registry = Attribute.class)
 public class SAttributes {
-	public static List<Attribute> ATTRIBUTE = new ArrayList<Attribute>();
-	
-	public static final Attribute MAX_STAMINA = registerTemp("generic.max_stamina", new RangedAttribute("attribute.name.survive.max_stamina", Survive.STAMINA_CONFIG.max_stamina, 1.0D, 1024.0D)).setSyncable(true);
-	public static final Attribute COLD_RESISTANCE = registerTemp("generic.cold_resistance", new RangedAttribute("attribute.name.survive.coldResistance", 2.0D, 0.0D, 1024.0D)).setSyncable(true);
-	public static final Attribute HEAT_RESISTANCE = registerTemp("generic.heat_resistance", new RangedAttribute("attribute.name.survive.heatResistance", 2.0D, 0.0D, 1024.0D)).setSyncable(true);
-	
-	public static Attribute registerTemp(String name, Attribute attribute) {
-		if (Survive.TEMPERATURE_CONFIG.enabled) {
-			return register(name, attribute);
-		} else {
-			return attribute;
-		}
-	}
-	
-	public static Attribute register(String name, Attribute attribute) {
-		attribute.setRegistryName(Survive.getInstance().location(name));
-		ATTRIBUTE.add(attribute);
-		return attribute;
-	}
-	
-	public static void registerAll(IForgeRegistry<Attribute> registry) {
-		for(Attribute attribute : ATTRIBUTE) {
-			registry.register(attribute);
-			Survive.getInstance().debug("Attribute: \""+attribute.getRegistryName().toString()+"\" registered");
-		}
-		Survive.getInstance().debug("All Attributes Registered");
-	}
-	
+	@RegistryObject("generic.max_stamina")
+	public static final Attribute MAX_STAMINA = new RangedAttribute("attribute.name.survive.max_stamina", Survive.STAMINA_CONFIG.max_stamina, 1.0D, 1024.0D).setSyncable(true);
+	@RegistryObject("generic.cold_resistance")
+	public static final Attribute COLD_RESISTANCE = new RangedAttribute("attribute.name.survive.coldResistance", 2.0D, 0.0D, 1024.0D).setSyncable(true);
+	@RegistryObject("generic.heat_resistance")
+	public static final Attribute HEAT_RESISTANCE = new RangedAttribute("attribute.name.survive.heatResistance", 2.0D, 0.0D, 1024.0D).setSyncable(true);
 }

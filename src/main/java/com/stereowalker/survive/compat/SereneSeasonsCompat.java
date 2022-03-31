@@ -1,31 +1,25 @@
 package com.stereowalker.survive.compat;
 
-import com.stereowalker.survive.core.registries.SurviveRegistries;
-import com.stereowalker.survive.needs.TemperatureUtil;
 import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.seasons.Seasons;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import sereneseasons.api.season.SeasonHelper;
-import sereneseasons.config.BiomeConfig;
 
 public class SereneSeasonsCompat {
 
 	public static boolean snowsHere(Level world, BlockPos pos) {
-		if (world.getBiomeName(pos).isPresent() && !sereneseasons.config.BiomeConfig.usesTropicalSeasons(world.getBiomeName(pos).get())) {
+		if (world.getBiome(pos).isBound() && !sereneseasons.config.BiomeConfig.usesTropicalSeasons(world.getBiome(pos))) {
 			return SeasonHelper.getSeasonState(world).getSeason() == sereneseasons.api.season.Season.WINTER;
 		}
 		return false;
 	}
 
 	public static Season modifyTemperatureBySeason(Level world, BlockPos pos) {
-		if (world.getBiomeName(pos) != null &&
-				world.getBiomeName(pos).isPresent()) {
-			if (sereneseasons.config.BiomeConfig.usesTropicalSeasons(world.getBiomeName(pos).get())) {
+		if (world.getBiome(pos) != null &&
+				world.getBiome(pos).isBound()) {
+			if (sereneseasons.config.BiomeConfig.usesTropicalSeasons(world.getBiome(pos))) {
 				switch (SeasonHelper.getSeasonState(world).getTropicalSeason()) {
 				case EARLY_DRY: return Seasons.DRY_BEGIN;
 				case MID_DRY: return Seasons.DRY_MIDST;

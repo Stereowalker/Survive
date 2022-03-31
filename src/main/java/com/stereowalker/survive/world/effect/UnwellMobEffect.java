@@ -19,11 +19,11 @@ public class UnwellMobEffect extends MobEffect {
 
 	@Override
 	public void applyEffectTick(LivingEntity entityLivingBaseIn, int amplifier) {
-		if (this == SEffects.HYPOTHERMIA && entityLivingBaseIn instanceof Player) {
+		if (this == SMobEffects.HYPOTHERMIA && entityLivingBaseIn instanceof Player) {
 			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/4.0F) {
 				entityLivingBaseIn.hurt(SDamageSource.HYPOTHERMIA, 1.0F);
 	         }
-		} else if (this == SEffects.HYPERTHERMIA && entityLivingBaseIn instanceof Player) {
+		} else if (this == SMobEffects.HYPERTHERMIA && entityLivingBaseIn instanceof Player) {
 			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/4.0F) {
 				entityLivingBaseIn.hurt(SDamageSource.HYPERTHERMIA, 1.0F);
 	         }
@@ -33,14 +33,14 @@ public class UnwellMobEffect extends MobEffect {
 
 	@Override
 	public boolean isDurationEffectTick(int duration, int amplifier) {
-		if (this == SEffects.HYPOTHERMIA) {
+		if (this == SMobEffects.HYPOTHERMIA) {
 			int k = 120 >> amplifier;
 			if (k > 0) {
 				return duration % k == 0;
 			} else {
 				return true;
 			}
-		} else if (this == SEffects.HYPERTHERMIA) {
+		} else if (this == SMobEffects.HYPERTHERMIA) {
 			int k = 120 >> amplifier;
 			if (k > 0) {
 				return duration % k == 0;

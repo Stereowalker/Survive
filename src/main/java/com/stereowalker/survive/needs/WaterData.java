@@ -9,7 +9,7 @@ import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.json.ConsummableJsonHolder;
 import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
 import com.stereowalker.survive.world.DataMaps;
-import com.stereowalker.survive.world.effect.SEffects;
+import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.client.player.LocalPlayer;
@@ -281,16 +281,16 @@ public class WaterData extends SurviveData {
 			if (event.getItem().getItem() == Items.POTION && DataMaps.Server.potionDrink.containsKey(PotionUtils.getPotion(event.getItem()).getRegistryName())) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(PotionUtils.getPotion(event.getItem()).getRegistryName());
 				stats.drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(event.getEntityLiving(), drinkData.getThirstChance()));
-				if (drinkData.isHeated())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.HEATED, 30*20));
-				if (drinkData.isChilled())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.CHILLED, 30*20));
-				if (drinkData.isEnergizing())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.ENERGIZED, 60*20*5));
+				if (drinkData.isHeated())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
+				if (drinkData.isChilled())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
+				if (drinkData.isEnergizing())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.ENERGIZED, 60*20*5));
 			}
 			else if (DataMaps.Server.consummableItem.containsKey(event.getItem().getItem().getRegistryName())) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.consummableItem.get(event.getItem().getItem().getRegistryName());
 				stats.drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(event.getEntityLiving(), drinkData.getThirstChance()));
-				if (drinkData.isHeated())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.HEATED, 30*20));
-				if (drinkData.isChilled())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.CHILLED, 30*20));
-				if (drinkData.isEnergizing())event.getEntityLiving().addEffect(new MobEffectInstance(SEffects.ENERGIZED, 60*20*5));
+				if (drinkData.isHeated())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
+				if (drinkData.isChilled())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
+				if (drinkData.isEnergizing())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.ENERGIZED, 60*20*5));
 			}
 			
 			
@@ -302,7 +302,7 @@ public class WaterData extends SurviveData {
 		if (probabiltiy > 0) {
 			Random rand = new Random();
 			if (rand.nextFloat() < probabiltiy) {
-				entity.addEffect(new MobEffectInstance(SEffects.THIRST, 30*20));
+				entity.addEffect(new MobEffectInstance(SMobEffects.THIRST, 30*20));
 				return true;
 			}
 		}
