@@ -2,7 +2,10 @@ package com.stereowalker.survive;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.stereowalker.survive.commands.SCommands;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.compat.SItemProperties;
@@ -59,6 +62,9 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -146,10 +152,17 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 	}
 
 	@Override
+	public Map<EntityType<? extends LivingEntity>, List<Attribute>> appendAttributesWithoutValues() {
+		Map<EntityType<? extends LivingEntity>, List<Attribute>> map = Maps.newHashMap();
+		map.put(EntityType.PLAYER, Lists.newArrayList(SAttributes.COLD_RESISTANCE, SAttributes.HEAT_RESISTANCE, SAttributes.MAX_STAMINA));
+		return map;
+	}
+
+	@Override
 	public void registerServerboundPackets(SimpleChannel channel) {
 		PacketRegistry.registerMessage(channel, 0, ServerboundArmorStaminaPacket.class, (packetBuffer) -> {return new ServerboundArmorStaminaPacket(packetBuffer);});
 		PacketRegistry.registerMessage(channel, 1, ServerboundThirstMovementPacket.class, (packetBuffer) -> {return new ServerboundThirstMovementPacket(packetBuffer);});
-		channel.registerMessage(2, ServerboundInteractWithWaterPacket.class, ServerboundInteractWithWaterPacket::encode, ServerboundInteractWithWaterPacket::decode, ServerboundInteractWithWaterPacket::handle);
+		PacketRegistry.registerMessage(channel, 2, ServerboundInteractWithWaterPacket.class, (packetBuffer) -> {return new ServerboundInteractWithWaterPacket(packetBuffer);});
 		PacketRegistry.registerMessage(channel, 3, ServerboundStaminaExhaustionPacket.class, (packetBuffer) -> {return new ServerboundStaminaExhaustionPacket(packetBuffer);});
 		PacketRegistry.registerMessage(channel, 4, ServerboundRelaxPacket.class, (packetBuffer) -> {return new ServerboundRelaxPacket(packetBuffer);});
 	}

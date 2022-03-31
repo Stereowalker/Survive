@@ -21,7 +21,6 @@ import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -32,7 +31,6 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.NewRegistryEvent;
@@ -63,13 +61,6 @@ public class SurviveRegistryEvents
 		event.getItemColors().register((stack, tintIndex) -> {
 			return TemperatureRegulatorPlateItem.getColor(stack);
 		}, SItems.LARGE_HEATING_PLATE, SItems.LARGE_COOLING_PLATE, SItems.MEDIUM_HEATING_PLATE, SItems.MEDIUM_COOLING_PLATE, SItems.SMALL_HEATING_PLATE, SItems.SMALL_COOLING_PLATE);
-	}
-
-	@SubscribeEvent
-	public static void registerAttributes(EntityAttributeModificationEvent event) {
-		event.add(EntityType.PLAYER, SAttributes.COLD_RESISTANCE);
-		event.add(EntityType.PLAYER, SAttributes.HEAT_RESISTANCE);
-		event.add(EntityType.PLAYER, SAttributes.MAX_STAMINA);
 	}
 
 	@SuppressWarnings("resource")

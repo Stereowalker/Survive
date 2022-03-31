@@ -36,7 +36,6 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -410,11 +409,11 @@ public class SurviveEvents {
 			//Source Block Of Water
 			Fluid fluid = event.getWorld().getFluidState(blockpos).getType();
 			if (FLUID_THIRST_MAP.containsKey(fluid) && FLUID_THIRSTY_MAP.containsKey(fluid) && FLUID_HYDRATION_MAP.containsKey(fluid)) {
-				Survive.getInstance().channel.sendTo(new ServerboundInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand(), event.getPlayer().getUUID()), ((LocalPlayer)event.getPlayer()).connection.getConnection(), NetworkDirection.PLAY_TO_SERVER);
+				new ServerboundInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand()).send();
 			}
 			//Air Block
 			if (event.getWorld().isRainingAt(blockpos)) {
-				Survive.getInstance().channel.sendTo(new ServerboundInteractWithWaterPacket(event.getPos(), false, 1.0D, 0.5D, event.getHand(), event.getPlayer().getUUID()), ((LocalPlayer)event.getPlayer()).connection.getConnection(), NetworkDirection.PLAY_TO_SERVER);
+				new ServerboundInteractWithWaterPacket(event.getPos(), false, 1.0D, 0.5D, event.getHand()).send();
 			}
 		}
 	}
@@ -432,7 +431,7 @@ public class SurviveEvents {
 			if (FLUID_THIRST_MAP.containsKey(fluid) && FLUID_THIRSTY_MAP.containsKey(fluid) && FLUID_HYDRATION_MAP.containsKey(fluid)) {
 				event.setCanceled(true);
 				event.setCancellationResult(InteractionResult.SUCCESS);
-				Survive.getInstance().channel.sendTo(new ServerboundInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand(), event.getPlayer().getUUID()), ((LocalPlayer)event.getPlayer()).connection.getConnection(), NetworkDirection.PLAY_TO_SERVER);
+				new ServerboundInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand()).send();
 			}
 			//Cauldron
 			if (state.getBlock() == Blocks.WATER_CAULDRON) {
@@ -441,10 +440,10 @@ public class SurviveEvents {
 					event.setCanceled(true);
 					event.setCancellationResult(InteractionResult.SUCCESS);
 					if (stateUnder.getBlock() == Blocks.CAMPFIRE && stateUnder.getValue(BlockStateProperties.LIT)) {
-						Survive.getInstance().channel.sendTo(new ServerboundInteractWithWaterPacket(event.getPos(), false, 4.0D, event.getHand(), event.getPlayer().getUUID()), ((LocalPlayer)event.getPlayer()).connection.getConnection(), NetworkDirection.PLAY_TO_SERVER);
+						new ServerboundInteractWithWaterPacket(event.getPos(), false, 4.0D, event.getHand()).send();
 					}
 					else {
-						Survive.getInstance().channel.sendTo(new ServerboundInteractWithWaterPacket(event.getPos(), true, 4.0D, event.getHand(), event.getPlayer().getUUID()), ((LocalPlayer)event.getPlayer()).connection.getConnection(), NetworkDirection.PLAY_TO_SERVER);
+						new ServerboundInteractWithWaterPacket(event.getPos(), true, 4.0D, event.getHand()).send();
 					}
 				}
 			}
