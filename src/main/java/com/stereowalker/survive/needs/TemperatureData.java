@@ -171,7 +171,7 @@ public class TemperatureData extends SurviveData {
 			this.displayTemperature = Mth.clamp(div, -1.0D-(28.0D/63.0D), 0);
 		}
 
-		if(!(player.isCreative() || player.isSpectator()) && !Survive.TEMPERATURE_CONFIG.useExperimentalTemperatureSystem) {
+		if(!(player.isCreative() || player.isSpectator()) && Survive.TEMPERATURE_CONFIG.useLegacyTemperatureSystem) {
 			double maxHeat1 = TemperatureUtil.firstHeat(player);
 			double maxHeat2 = TemperatureUtil.secondHeat(player);
 			double maxHeat3 = TemperatureUtil.maxHeat(player);

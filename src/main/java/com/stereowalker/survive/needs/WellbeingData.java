@@ -71,7 +71,7 @@ public class WellbeingData extends SurviveData {
 		}
 
 		//This should be logic for hypothermia
-		if (Survive.TEMPERATURE_CONFIG.useExperimentalTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
+		if (!Survive.TEMPERATURE_CONFIG.useLegacyTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
 			TemperatureData data = SurviveEntityStats.getTemperatureStats(player);
 			
 			double tempLocation = data.getTemperatureLevel() - Survive.DEFAULT_TEMP;
