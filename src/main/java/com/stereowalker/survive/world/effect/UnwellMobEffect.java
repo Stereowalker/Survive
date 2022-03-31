@@ -3,7 +3,9 @@ package com.stereowalker.survive.world.effect;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.needs.SDamageSource;
+import com.stereowalker.survive.needs.StaminaData;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -19,29 +21,33 @@ public class UnwellMobEffect extends MobEffect {
 
 	@Override
 	public void applyEffectTick(LivingEntity entityLivingBaseIn, int amplifier) {
+		StaminaData energyStats = SurviveEntityStats.getEnergyStats(entityLivingBaseIn);
 		if (this == SMobEffects.HYPOTHERMIA && entityLivingBaseIn instanceof Player) {
 			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/4.0F) {
 				entityLivingBaseIn.hurt(SDamageSource.HYPOTHERMIA, 1.0F);
+				energyStats.addExhaustion((Player) entityLivingBaseIn, (0.1F * (float)(amplifier + 1)), "Hypothermia effect");
 	         }
 		} else if (this == SMobEffects.HYPERTHERMIA && entityLivingBaseIn instanceof Player) {
 			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/4.0F) {
 				entityLivingBaseIn.hurt(SDamageSource.HYPERTHERMIA, 1.0F);
+				energyStats.addExhaustion((Player) entityLivingBaseIn, (0.1F * (float)(amplifier + 1)), "Hyperthermia effect");
 	         }
 		}
+		energyStats.save(entityLivingBaseIn);
 		super.applyEffectTick(entityLivingBaseIn, amplifier);
 	}
 
 	@Override
 	public boolean isDurationEffectTick(int duration, int amplifier) {
 		if (this == SMobEffects.HYPOTHERMIA) {
-			int k = 120 >> amplifier;
+			int k = 140 >> amplifier;
 			if (k > 0) {
 				return duration % k == 0;
 			} else {
 				return true;
 			}
 		} else if (this == SMobEffects.HYPERTHERMIA) {
-			int k = 120 >> amplifier;
+			int k = 140 >> amplifier;
 			if (k > 0) {
 				return duration % k == 0;
 			} else {
