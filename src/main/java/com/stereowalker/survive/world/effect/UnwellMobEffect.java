@@ -23,13 +23,13 @@ public class UnwellMobEffect extends MobEffect {
 	public void applyEffectTick(LivingEntity entityLivingBaseIn, int amplifier) {
 		StaminaData energyStats = SurviveEntityStats.getEnergyStats(entityLivingBaseIn);
 		if (this == SMobEffects.HYPOTHERMIA && entityLivingBaseIn instanceof Player) {
-			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/4.0F) {
-				entityLivingBaseIn.hurt(SDamageSource.HYPOTHERMIA, 1.0F);
+			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/3.5F) {
+				entityLivingBaseIn.hurt(SDamageSource.HYPOTHERMIA, 0.8F);
 				energyStats.addExhaustion((Player) entityLivingBaseIn, (0.1F * (float)(amplifier + 1)), "Hypothermia effect");
 	         }
 		} else if (this == SMobEffects.HYPERTHERMIA && entityLivingBaseIn instanceof Player) {
-			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/4.0F) {
-				entityLivingBaseIn.hurt(SDamageSource.HYPERTHERMIA, 1.0F);
+			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/3.5F) {
+				entityLivingBaseIn.hurt(SDamageSource.HYPERTHERMIA, 0.8F);
 				energyStats.addExhaustion((Player) entityLivingBaseIn, (0.1F * (float)(amplifier + 1)), "Hyperthermia effect");
 	         }
 		}
@@ -40,14 +40,14 @@ public class UnwellMobEffect extends MobEffect {
 	@Override
 	public boolean isDurationEffectTick(int duration, int amplifier) {
 		if (this == SMobEffects.HYPOTHERMIA) {
-			int k = 140 >> amplifier;
+			int k = 160 >> amplifier;
 			if (k > 0) {
 				return duration % k == 0;
 			} else {
 				return true;
 			}
 		} else if (this == SMobEffects.HYPERTHERMIA) {
-			int k = 140 >> amplifier;
+			int k = 160 >> amplifier;
 			if (k > 0) {
 				return duration % k == 0;
 			} else {
