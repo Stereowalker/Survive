@@ -104,8 +104,8 @@
 	"effect.survive.depreciated_hyperthermia": "Гипертермия",
 	"effect.survive.hypothermia": "Гипотермия",
 	"effect.survive.hyperthermia": "Гипертермия",
-	"effect.survive.heated": "Горячо",
-	"effect.survive.chilled": "Холодно",
+	"effect.survive.heated": "Тепло",
+	"effect.survive.chilled": "Прохлада",
 	"effect.survive.energized": "Энергично",
 	"effect.survive.heat_resistance": "Сопротивление теплу",
 	"item.minecraft.tipped_arrow.effect.heat_resistance": "Стрела сопротивления теплу",
@@ -132,14 +132,14 @@
 	"enchantment.survive.weightless.desc": "Снимает вес части брони",
 	"_comment05_": "///////////////////////////////////////////////[DEATH_MESSAGES]///////////////////////////////////////////////",
 	"death.attack.hypothermia": "%1$s окочурился",
-	"death.attack.hypothermia.player": "%1$s замёрз до смерти при попытке побега от %2$s",
+	"death.attack.hypothermia.player": "%1$s окочурился, убегая от %2$s",
 	"death.attack.hyperthermia": "%1$s сварился",
-	"death.attack.hyperthermia.player": "%1$s сварился при попытке побега от %2$s",
+	"death.attack.hyperthermia.player": "%1$s сварился, убегая от %2$s",
 	"death.attack.dehydrate": "%1$s высох",
-	"death.attack.dehydrate.player": "%1$s высох при попытке побега от %2$s",
+	"death.attack.dehydrate.player": "%1$s высох, убегая от %2$s",
 	"death.attack.overwork": "%1$s перетрудился до смерти",
-	"death.attack.roast": "%1$s запёкся",
-  	"death.attack.roast.player": "%1$s запечён %2$s",
+	"death.attack.roast": "%1$s cпёкся",
+  	"death.attack.roast.player": "%1$s cпёкся, убегая от %2$s",
 	"_comment06_": "///////////////////////////////////////////////[SPELLS]///////////////////////////////////////////////",
 	"spell.survive.heat": "Тепло",
 	"spell.survive.heat.desc": "Повышает температуру вашего тела",
@@ -176,5 +176,5 @@
 	"config.survive.stamina.file": "Настр. стамины",
 	
 	"subtitles.entity.player.roast_hurt": "Игрок запекается",
-	"gamerule.roastDamage": "Жарка наносит урон"
+	"gamerule.roastDamage": "Жар наносит урон"
 }
