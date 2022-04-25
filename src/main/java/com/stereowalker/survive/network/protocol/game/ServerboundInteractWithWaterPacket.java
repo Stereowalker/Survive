@@ -99,13 +99,6 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 					}
 					waterStats.save(sender);
 				}
-			} else if (heldItem.getItem() == SItems.CANTEEN) {
-				if (isValidContainerSource(waterAmount)) {
-					int i = Survive.THIRST_CONFIG.canteen_fill_amount;
-					heldItem.shrink(1);
-					if (addThirst) sender.addItem(CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.WATER_CANTEEN), i));
-					else sender.addItem(CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.PURIFIED_WATER_CANTEEN), i));
-				}
 			} else if (heldItem.getItem() == Items.GLASS_BOTTLE) {
 				if (isValidContainerSource(waterAmount)) {
 					if (!addThirst) {
