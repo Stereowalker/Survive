@@ -172,7 +172,6 @@ curseforge {
 			displayName = modFilename+"-$project.version"
 		}
 		addArtifact deobfJar
-		addArtifact apiJar
 		addArtifact sourcesJar
 	}
 	options {

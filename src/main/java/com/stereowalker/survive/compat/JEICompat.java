@@ -1,7 +1,6 @@
 package com.stereowalker.survive.compat;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.stereowalker.survive.Survive;
@@ -11,20 +10,17 @@ import com.stereowalker.survive.world.item.crafting.CharcoalFilterRecipe;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.ingredient.ICraftingGridHelper;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategoryExtension;
-import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 
 @JeiPlugin
 public class JEICompat implements IModPlugin {
@@ -96,36 +92,41 @@ public class JEICompat implements IModPlugin {
 	@Override
 	public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration registration) {
 		registration.getCraftingCategory().addCategoryExtension(CharcoalFilterRecipe.class, (a)-> {
+			List<ItemStack> filter = Lists.newArrayList(new ItemStack(SItems.CHARCOAL_FILTER));
 			if (a.getId().equals(Survive.getInstance().location("purified_water_bottle_from_charcoal_filtering"))) {
 				return new ICraftingCategoryExtension() {
 					@Override
-					public void setIngredients(IIngredients ingredients) {
-						ingredients.setOutput(VanillaTypes.ITEM, new ItemStack(SItems.PURIFIED_WATER_BOTTLE));
-						ingredients.setInputIngredients(Lists.newArrayList(Ingredient.of(SItems.CHARCOAL_FILTER), Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER))));
+					public void setRecipe(IRecipeLayoutBuilder builder, ICraftingGridHelper craftingGridHelper, IFocusGroup focuses) {
+						List<ItemStack> fluid = Lists.newArrayList(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER));
+						craftingGridHelper.setInputs(builder, VanillaTypes.ITEM, Lists.newArrayList(filter, fluid), 0, 0);
+						craftingGridHelper.setOutputs(builder, VanillaTypes.ITEM, Lists.newArrayList(new ItemStack(SItems.PURIFIED_WATER_BOTTLE)));
 					}};
 			}
 			else if (a.getId().equals(Survive.getInstance().location("purified_water_bucket_from_charcoal_filtering"))) {
 				return new ICraftingCategoryExtension() {
 					@Override
-					public void setIngredients(IIngredients ingredients) {
-						ingredients.setOutput(VanillaTypes.ITEM, new ItemStack(SItems.PURIFIED_WATER_BUCKET));
-						ingredients.setInputIngredients(Lists.newArrayList(Ingredient.of(SItems.CHARCOAL_FILTER), Ingredient.of(Items.WATER_BUCKET)));
+					public void setRecipe(IRecipeLayoutBuilder builder, ICraftingGridHelper craftingGridHelper, IFocusGroup focuses) {
+						List<ItemStack> fluid = Lists.newArrayList(new ItemStack(Items.WATER_BUCKET));
+						craftingGridHelper.setInputs(builder, VanillaTypes.ITEM, Lists.newArrayList(filter, fluid), 0, 0);
+						craftingGridHelper.setOutputs(builder, VanillaTypes.ITEM, Lists.newArrayList(new ItemStack(SItems.PURIFIED_WATER_BUCKET)));
 					}};
 			}
 			else if (a.getId().equals(Survive.getInstance().location("purified_water_bowl_from_charcoal_filtering"))) {
 				return new ICraftingCategoryExtension() {
 					@Override
-					public void setIngredients(IIngredients ingredients) {
-						ingredients.setOutput(VanillaTypes.ITEM, new ItemStack(SItems.PURIFIED_WATER_BOWL));
-						ingredients.setInputIngredients(Lists.newArrayList(Ingredient.of(SItems.CHARCOAL_FILTER), Ingredient.of(SItems.WATER_BOWL)));
+					public void setRecipe(IRecipeLayoutBuilder builder, ICraftingGridHelper craftingGridHelper, IFocusGroup focuses) {
+						List<ItemStack> fluid = Lists.newArrayList(new ItemStack(SItems.WATER_BOWL));
+						craftingGridHelper.setInputs(builder, VanillaTypes.ITEM, Lists.newArrayList(filter, fluid), 0, 0);
+						craftingGridHelper.setOutputs(builder, VanillaTypes.ITEM, Lists.newArrayList(new ItemStack(SItems.PURIFIED_WATER_BOWL)));
 					}};
 			}
 			else {
 				return new ICraftingCategoryExtension() {
 					@Override
-					public void setIngredients(IIngredients ingredients) {
-						ingredients.setOutput(VanillaTypes.ITEM, CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.PURIFIED_WATER_CANTEEN), 1));
-						ingredients.setInputIngredients(Lists.newArrayList(Ingredient.of(SItems.CHARCOAL_FILTER), Ingredient.of(CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.PURIFIED_WATER_CANTEEN), 1))));
+					public void setRecipe(IRecipeLayoutBuilder builder, ICraftingGridHelper craftingGridHelper, IFocusGroup focuses) {
+						List<ItemStack> fluid = Lists.newArrayList(CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.WATER_CANTEEN), 1));
+						craftingGridHelper.setInputs(builder, VanillaTypes.ITEM, Lists.newArrayList(filter, fluid), 0, 0);
+						craftingGridHelper.setOutputs(builder, VanillaTypes.ITEM, Lists.newArrayList(CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.PURIFIED_WATER_CANTEEN), 1)));
 					}};
 			}
 		});
