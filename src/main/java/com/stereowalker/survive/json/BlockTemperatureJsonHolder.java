@@ -6,7 +6,7 @@ import org.apache.logging.log4j.MarkerManager;
 import com.google.gson.JsonObject;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.api.json.JsonHolder;
-import com.stereowalker.unionlib.state.properties.UBlockStateProperties;
+import com.stereowalker.unionlib.world.level.block.state.properties.UBlockStateProperties;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;

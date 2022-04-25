@@ -25,10 +25,10 @@ import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
 import com.stereowalker.survive.world.temperature.TemperatureQuery;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
-import com.stereowalker.unionlib.state.properties.UBlockStateProperties;
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.math.UnionMathHelper;
+import com.stereowalker.unionlib.world.level.block.state.properties.UBlockStateProperties;
 
 //import io.github.apace100.origins.integration.OriginEventsArchitectury;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;

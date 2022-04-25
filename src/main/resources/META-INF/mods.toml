@@ -19,7 +19,7 @@ Adds new survival mechanics like thirst, body temperature, sleep management and 
 [[dependencies.survive]] #optional
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[40,)" #mandatory
+    versionRange="[40.1,)" #mandatory
     ordering="NONE"
     side="BOTH"
 # Here's another dependency
@@ -33,7 +33,7 @@ Adds new survival mechanics like thirst, body temperature, sleep management and 
 [[dependencies.survive]]
     modId="unionlib"
     mandatory=true
-    versionRange="[7.0,7.1)"
+    versionRange="[7.1.1,7.2.0)"
     ordering="NONE"
     side="BOTH"
 	
