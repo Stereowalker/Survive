@@ -23,15 +23,15 @@ public class UnwellMobEffect extends MobEffect {
 	public void applyEffectTick(LivingEntity entityLivingBaseIn, int amplifier) {
 		StaminaData energyStats = SurviveEntityStats.getEnergyStats(entityLivingBaseIn);
 		if (this == SMobEffects.HYPOTHERMIA && entityLivingBaseIn instanceof Player) {
-			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/3.5F) {
+			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/3.5F)
 				entityLivingBaseIn.hurt(SDamageSource.HYPOTHERMIA, 0.8F);
-				energyStats.addExhaustion((Player) entityLivingBaseIn, (0.1F * (float)(amplifier + 1)), "Hypothermia effect");
-	         }
+			if ((float)energyStats.getEnergyLevel() > ((float)energyStats.getEnergyLevel())*0.3)
+				energyStats.addExhaustion((Player) entityLivingBaseIn, (1.0F * (float)(amplifier + 1)), "Hypothermia effect");
 		} else if (this == SMobEffects.HYPERTHERMIA && entityLivingBaseIn instanceof Player) {
-			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/3.5F) {
+			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/3.5F)
 				entityLivingBaseIn.hurt(SDamageSource.HYPERTHERMIA, 0.8F);
-				energyStats.addExhaustion((Player) entityLivingBaseIn, (0.1F * (float)(amplifier + 1)), "Hyperthermia effect");
-	         }
+			if ((float)energyStats.getEnergyLevel() > ((float)energyStats.getEnergyLevel())*0.3)
+				energyStats.addExhaustion((Player) entityLivingBaseIn, (1.0F * (float)(amplifier + 1)), "Hyperthermia effect");
 		}
 		energyStats.save(entityLivingBaseIn);
 		super.applyEffectTick(entityLivingBaseIn, amplifier);

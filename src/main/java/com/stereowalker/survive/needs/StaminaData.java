@@ -167,7 +167,7 @@ public class StaminaData extends SurviveData {
 	}
 
 	/**
-	 * Get the player's water level.
+	 * Get the player's stamina level.
 	 */
 	public int getEnergyLevel() {
 		return this.energyLevel;

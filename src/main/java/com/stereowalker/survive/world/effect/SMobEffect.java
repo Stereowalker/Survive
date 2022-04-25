@@ -14,9 +14,9 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-public class SEffect extends MobEffect {
+public class SMobEffect extends MobEffect {
 
-	public SEffect(MobEffectCategory effectType, int liquidColorIn) {
+	public SMobEffect(MobEffectCategory effectType, int liquidColorIn) {
 		super(effectType, liquidColorIn);
 	}
 
