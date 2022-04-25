@@ -53,9 +53,9 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 	public void encode(final FriendlyByteBuf byteBuf) {
 		byteBuf.writeBlockPos(pos);
 		byteBuf.writeBoolean(addThirst);
+		byteBuf.writeEnum(hand);
 		byteBuf.writeDouble(waterAmount);
 		byteBuf.writeDouble(hydrationAmount);
-		byteBuf.writeEnum(hand);
 	}
 	
 	public static boolean canDrinkThis(FluidState fluid, boolean canDrinkFlowingIfInfinite) {
