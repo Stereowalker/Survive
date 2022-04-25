@@ -1,3 +1,9 @@
+[7.0.2]
+- Fixed inability to collect/drink from water block
+- Added a purified water fluid tag
+- Canteen fill is now handled by the empty canteen item code and not packets
+- Hyp(o/er)thermia consumes 10x more stamina and stops consuming stamina at 30% energy
+
 [7.0.1]
 - Updated UnionLib to 7.1.1
 - Updated Forge to 4.1.0
