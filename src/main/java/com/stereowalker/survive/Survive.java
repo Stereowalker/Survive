@@ -2,8 +2,10 @@ package com.stereowalker.survive;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.stereowalker.survive.commands.SCommands;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.compat.SItemProperties;
@@ -26,9 +28,9 @@ import com.stereowalker.survive.network.protocol.game.ClientboundArmorDataTransf
 import com.stereowalker.survive.network.protocol.game.ClientboundDrinkSoundPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundArmorStaminaPacket;
-import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhaustionPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWaterPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundRelaxPacket;
+import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhaustionPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
 import com.stereowalker.survive.resource.ArmorDataManager;
 import com.stereowalker.survive.resource.BiomeTemperatureDataManager;
@@ -38,13 +40,20 @@ import com.stereowalker.survive.resource.ItemConsummableDataManager;
 import com.stereowalker.survive.resource.PotionDrinkDataManager;
 import com.stereowalker.survive.spell.SSpells;
 import com.stereowalker.survive.stat.SStats;
+import com.stereowalker.survive.tags.FluidSTags;
 import com.stereowalker.survive.world.DataMaps;
+import com.stereowalker.survive.world.effect.SMobEffects;
+import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.item.HygieneItems;
 import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.survive.world.item.alchemy.BrewingRecipes;
+import com.stereowalker.survive.world.item.crafting.SRecipeSerializer;
 import com.stereowalker.survive.world.level.CGameRules;
+import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsScreen;
 import com.stereowalker.unionlib.config.ConfigBuilder;
+import com.stereowalker.unionlib.mod.IPacketHolder;
 import com.stereowalker.unionlib.mod.MinecraftMod;
 import com.stereowalker.unionlib.network.PacketRegistry;
 
@@ -54,6 +63,9 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -69,7 +81,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(value = "survive")
-public class Survive extends MinecraftMod {
+public class Survive extends MinecraftMod implements IPacketHolder {
 
 	public static final float DEFAULT_TEMP = 37.0F;
 	public static final String MOD_ID = "survive";
@@ -108,6 +120,7 @@ public class Survive extends MinecraftMod {
 		ConfigBuilder.registerConfig(THIRST_CONFIG);
 		ConfigBuilder.registerConfig(WELLBEING_CONFIG);
 		ConfigBuilder.registerConfig(STAMINA_CONFIG);
+		new FluidSTags();
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::clientRegistries);
@@ -128,23 +141,39 @@ public class Survive extends MinecraftMod {
 	}
 
 	@Override
-	public List<Class<?>> getRegistries() {
-		List<Class<?>> defaultRegs = Lists.newArrayList(SFluids.class, SItems.class);
-		defaultRegs.add(HygieneItems.class);
-		return defaultRegs;
+	public IRegistries getRegistries() {
+		return (reg)-> {
+			reg.add(SBlocks.class);
+			reg.add(SFluids.class);
+			reg.add(SItems.class);
+			reg.add(HygieneItems.class);
+			reg.add(SRecipeSerializer.class);
+			reg.add(SAttributes.class);
+			reg.add(SMobEffects.class);
+		};
 	}
 
 	@Override
-	public void registerMessages(SimpleChannel channel) {
-		int netID = -1;
-		PacketRegistry.registerMessage(channel, netID++, ServerboundArmorStaminaPacket.class, (packetBuffer) -> {return new ServerboundArmorStaminaPacket(packetBuffer);});
-		channel.registerMessage(netID++, ClientboundSurvivalStatsPacket.class, ClientboundSurvivalStatsPacket::encode, ClientboundSurvivalStatsPacket::decode, ClientboundSurvivalStatsPacket::handle);
-		channel.registerMessage(netID++, ServerboundThirstMovementPacket.class, ServerboundThirstMovementPacket::encode, ServerboundThirstMovementPacket::decode, ServerboundThirstMovementPacket::handle);
-		channel.registerMessage(netID++, ServerboundInteractWithWaterPacket.class, ServerboundInteractWithWaterPacket::encode, ServerboundInteractWithWaterPacket::decode, ServerboundInteractWithWaterPacket::handle);
-		channel.registerMessage(netID++, ClientboundDrinkSoundPacket.class, ClientboundDrinkSoundPacket::encode, ClientboundDrinkSoundPacket::decode, ClientboundDrinkSoundPacket::handle);
-		PacketRegistry.registerMessage(channel, netID++, ServerboundStaminaExhaustionPacket.class, (packetBuffer) -> {return new ServerboundStaminaExhaustionPacket(packetBuffer);});
-		channel.registerMessage(netID++, ClientboundArmorDataTransferPacket.class, ClientboundArmorDataTransferPacket::encode, ClientboundArmorDataTransferPacket::decode, ClientboundArmorDataTransferPacket::handle);
-		PacketRegistry.registerMessage(channel, netID++, ServerboundRelaxPacket.class, (packetBuffer) -> {return new ServerboundRelaxPacket(packetBuffer);});
+	public Map<EntityType<? extends LivingEntity>, List<Attribute>> appendAttributesWithoutValues() {
+		Map<EntityType<? extends LivingEntity>, List<Attribute>> map = Maps.newHashMap();
+		map.put(EntityType.PLAYER, Lists.newArrayList(SAttributes.COLD_RESISTANCE, SAttributes.HEAT_RESISTANCE, SAttributes.MAX_STAMINA));
+		return map;
+	}
+
+	@Override
+	public void registerServerboundPackets(SimpleChannel channel) {
+		PacketRegistry.registerMessage(channel, 0, ServerboundArmorStaminaPacket.class, (packetBuffer) -> {return new ServerboundArmorStaminaPacket(packetBuffer);});
+		PacketRegistry.registerMessage(channel, 1, ServerboundThirstMovementPacket.class, (packetBuffer) -> {return new ServerboundThirstMovementPacket(packetBuffer);});
+		PacketRegistry.registerMessage(channel, 2, ServerboundInteractWithWaterPacket.class, (packetBuffer) -> {return new ServerboundInteractWithWaterPacket(packetBuffer);});
+		PacketRegistry.registerMessage(channel, 3, ServerboundStaminaExhaustionPacket.class, (packetBuffer) -> {return new ServerboundStaminaExhaustionPacket(packetBuffer);});
+		PacketRegistry.registerMessage(channel, 4, ServerboundRelaxPacket.class, (packetBuffer) -> {return new ServerboundRelaxPacket(packetBuffer);});
+	}
+
+	@Override
+	public void registerClientboundPackets(SimpleChannel channel) {
+		channel.registerMessage(5, ClientboundSurvivalStatsPacket.class, ClientboundSurvivalStatsPacket::encode, ClientboundSurvivalStatsPacket::decode, ClientboundSurvivalStatsPacket::handle);
+		channel.registerMessage(6, ClientboundDrinkSoundPacket.class, ClientboundDrinkSoundPacket::encode, ClientboundDrinkSoundPacket::decode, ClientboundDrinkSoundPacket::handle);
+		channel.registerMessage(7, ClientboundArmorDataTransferPacket.class, ClientboundArmorDataTransferPacket::encode, ClientboundArmorDataTransferPacket::decode, ClientboundArmorDataTransferPacket::handle);
 	}
 
 	//TODO: FInd Somewhere to put all these
@@ -180,7 +209,7 @@ public class Survive extends MinecraftMod {
 	private void setup(final FMLCommonSetupEvent event)
 	{
 		SCauldronInteraction.bootStrap();
-		//		BrewingRecipes.addBrewingRecipes();
+		BrewingRecipes.addBrewingRecipes();
 		CGameRules.init();
 		SurviveEvents.registerHeatMap();
 

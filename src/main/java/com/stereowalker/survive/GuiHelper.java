@@ -11,7 +11,7 @@ import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
 import com.stereowalker.survive.needs.IRoastedEntity;
 import com.stereowalker.survive.needs.NutritionData;
-import com.stereowalker.survive.world.effect.SEffects;
+import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.util.ScreenHelper;
 import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
@@ -36,7 +36,7 @@ public class GuiHelper {
 	@OnlyIn(Dist.CLIENT)
 	public static void registerOverlays() {
 		OverlayRegistry.registerOverlayTop("Tired", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
-			if (Survive.CONFIG.tired_overlay && gui.minecraft.player.hasEffect(SEffects.TIREDNESS)) {
+			if (Survive.CONFIG.tired_overlay && gui.minecraft.player.hasEffect(SMobEffects.TIREDNESS)) {
 				gui.setupOverlayRenderState(true, false);
 				GuiHelper.renderTiredOverlay(gui);
 			}
@@ -79,8 +79,8 @@ public class GuiHelper {
 	@SuppressWarnings("resource")
 	@OnlyIn(Dist.CLIENT)
 	public static void renderTemperature(Gui gui, ScreenOffset position, Player playerentity, PoseStack matrixStack, boolean forgeOverlay) {
-		int x = ScreenHelper.getXOffset(position) + Survive.TEMPERATURE_CONFIG.tempXLoc;
-		int y = ScreenHelper.getYOffset(position) + Survive.TEMPERATURE_CONFIG.tempYLoc;
+		int x = ScreenHelper.getXOffset(position, gui.minecraft) + Survive.TEMPERATURE_CONFIG.tempXLoc;
+		int y = ScreenHelper.getYOffset(position, gui.minecraft) + Survive.TEMPERATURE_CONFIG.tempYLoc;
 		Minecraft.getInstance().getProfiler().push("temperature");
 		if (!forgeOverlay) {
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -175,7 +175,7 @@ public class GuiHelper {
 			int i7 = k1;
 			int k7 = 16;
 			int i8 = 0;
-			if (player.hasEffect(SEffects.THIRST)) {
+			if (player.hasEffect(SMobEffects.THIRST)) {
 				k7 += 36;
 				i8 = 13;
 			}
@@ -253,7 +253,7 @@ public class GuiHelper {
 	@OnlyIn(Dist.CLIENT)
 	public static void renderTiredOverlay(Gui gui) {
 		Minecraft.getInstance().getProfiler().push("tired");
-		int amplifier = Minecraft.getInstance().player.getEffect(SEffects.TIREDNESS).getAmplifier() + 1;
+		int amplifier = Minecraft.getInstance().player.getEffect(SMobEffects.TIREDNESS).getAmplifier() + 1;
 		amplifier/=(Survive.CONFIG.tiredTimeStacks/5);
 		amplifier = Mth.clamp(amplifier, 0, 4);
 		gui.renderTextureOverlay(Survive.getInstance().location("textures/misc/sleep_overlay_"+(amplifier)+".png"), 0.5F);

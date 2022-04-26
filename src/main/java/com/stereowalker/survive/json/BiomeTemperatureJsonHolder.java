@@ -11,13 +11,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.api.json.JsonHolder;
 import com.stereowalker.survive.core.registries.SurviveRegistries;
 import com.stereowalker.survive.world.seasons.Season;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
-public class BiomeTemperatureJsonHolder extends JsonHolder {
+public class BiomeTemperatureJsonHolder implements JsonHolder {
 	private static final Marker BLOCK_TEMPERATURE_DATA = MarkerManager.getMarker("BLOCK_TEMPERATURE_DATA");
 
 	private ResourceLocation biomeID;
@@ -27,7 +28,6 @@ public class BiomeTemperatureJsonHolder extends JsonHolder {
 	private final Map<Season,Float> seasonModifiers;
 
 	public BiomeTemperatureJsonHolder(ResourceLocation biomeID, JsonObject object) {
-		super(object);
 		String ALTITUDE_LEVEL_MODIFIER = "altitude_level_modifier";
 		String SEASON_MODIFIER = "season_modifier";
 
@@ -47,10 +47,10 @@ public class BiomeTemperatureJsonHolder extends JsonHolder {
 					wetnessModiIn = workOnFloat("wetness_modifier", object);
 				}
 				if(this.hasMemberAndIsObject(SEASON_MODIFIER, object)) {
-					workingOn = SEASON_MODIFIER;
+					setWorkingOn(SEASON_MODIFIER);
 					for (Entry<String, JsonElement> elem : object.get(SEASON_MODIFIER).getAsJsonObject().entrySet()) {
 						Season season = null;
-						workingOn = elem.getKey();
+						setWorkingOn(elem.getKey());
 						season = SurviveRegistries.SEASON.getValue(new ResourceLocation(elem.getKey()));
 						if (season != null) {
 							if(elem.getValue().isJsonPrimitive()) {
@@ -65,33 +65,33 @@ public class BiomeTemperatureJsonHolder extends JsonHolder {
 					stopWorking();
 				}
 				if (this.hasMemberAndIsObject(ALTITUDE_LEVEL_MODIFIER, object)) {
-					workingOn = ALTITUDE_LEVEL_MODIFIER;
+					setWorkingOn(ALTITUDE_LEVEL_MODIFIER);
 					JsonObject sea = object.getAsJsonObject(ALTITUDE_LEVEL_MODIFIER);
 					if(sea.entrySet().size() != 0) {
 						stopWorking();
 						try {
 							if(this.hasMemberAndIsPrimitive("upper", sea)) {
-								workingOn = "upper";
+								setWorkingOn("upper");
 								altitude_level_modifierIn = Pair.of(sea.get("upper").getAsFloat(), altitude_level_modifierIn.getSecond());
 								stopWorking();
 							}
 							if (this.hasMemberAndIsPrimitive("lower", object)) {
-								workingOn = "lower";
+								setWorkingOn("lower");
 								altitude_level_modifierIn = Pair.of(altitude_level_modifierIn.getFirst(), sea.get("lower").getAsFloat());
 								stopWorking();
 							}
 						} catch (ClassCastException e) {
-							Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was wrong type!", e, biomeID, workingOn);
+							Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was wrong type!", e, biomeID, getworkingOn());
 						} catch (NumberFormatException e) {
-							Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was an invalid number!", e, biomeID, workingOn);
+							Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was an invalid number!", e, biomeID, getworkingOn());
 						}
 					}
 					stopWorking();
 				}
 			} catch (ClassCastException e) {
-				Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was wrong type!", e, biomeID, workingOn);
+				Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was wrong type!", e, biomeID, getworkingOn());
 			} catch (NumberFormatException e) {
-				Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was an invalid number!", e, biomeID, workingOn);
+				Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: Parsing element %s: element was an invalid number!", e, biomeID, getworkingOn());
 			}
 		}
 
@@ -131,7 +131,18 @@ public class BiomeTemperatureJsonHolder extends JsonHolder {
 
 	@Override
 	public CompoundTag serialize() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	String wo = "NOTHING";
+	
+	@Override
+	public String getworkingOn() {
+		return wo;
+	}
+
+	@Override
+	public void setWorkingOn(String member) {
+		this.wo = member;
 	}
 }

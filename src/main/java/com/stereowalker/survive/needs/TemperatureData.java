@@ -7,7 +7,7 @@ import com.google.common.collect.Maps;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.hooks.SurviveHooks;
-import com.stereowalker.survive.world.effect.SEffects;
+import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.temperature.TemperatureModifier;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
@@ -171,7 +171,7 @@ public class TemperatureData extends SurviveData {
 			this.displayTemperature = Mth.clamp(div, -1.0D-(28.0D/63.0D), 0);
 		}
 
-		if(!(player.isCreative() || player.isSpectator()) && !Survive.TEMPERATURE_CONFIG.useExperimentalTemperatureSystem) {
+		if(!(player.isCreative() || player.isSpectator()) && Survive.TEMPERATURE_CONFIG.useLegacyTemperatureSystem) {
 			double maxHeat1 = TemperatureUtil.firstHeat(player);
 			double maxHeat2 = TemperatureUtil.secondHeat(player);
 			double maxHeat3 = TemperatureUtil.maxHeat(player);
@@ -183,25 +183,25 @@ public class TemperatureData extends SurviveData {
 				if (this.hypTimer > 0) {
 					this.hypTimer--;
 				} else if (this.hypTimer == 0) {
-					if (!player.hasEffect(SEffects.DEPRECIATED_HYPERTHERMIA) && !player.hasEffect(SEffects.DEPRECIATED_HYPOTHERMIA)) {
+					if (!player.hasEffect(SMobEffects.DEPRECIATED_HYPERTHERMIA) && !player.hasEffect(SMobEffects.DEPRECIATED_HYPOTHERMIA)) {
 						if (this.temperatureLevel > maxHeat1 && this.temperatureLevel <= maxHeat2) {
-							player.addEffect(new MobEffectInstance(SEffects.DEPRECIATED_HYPERTHERMIA, 100, 0));
+							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPERTHERMIA, 100, 0));
 						}
 						else if (this.temperatureLevel > maxHeat2 && this.temperatureLevel <= maxHeat3) {
-							player.addEffect(new MobEffectInstance(SEffects.DEPRECIATED_HYPERTHERMIA, 100, 1));
+							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPERTHERMIA, 100, 1));
 						}
 						else if (this.temperatureLevel > maxHeat3) {
-							player.addEffect(new MobEffectInstance(SEffects.DEPRECIATED_HYPERTHERMIA, 100, 2));
+							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPERTHERMIA, 100, 2));
 						}
 
 						if (this.temperatureLevel < maxCold1 && this.temperatureLevel >= maxCold2) {
-							player.addEffect(new MobEffectInstance(SEffects.DEPRECIATED_HYPOTHERMIA, 100, 0));
+							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPOTHERMIA, 100, 0));
 						}
 						else if (this.temperatureLevel < maxCold2 && this.temperatureLevel >= maxCold3) {
-							player.addEffect(new MobEffectInstance(SEffects.DEPRECIATED_HYPOTHERMIA, 100, 1));
+							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPOTHERMIA, 100, 1));
 						}
 						else if (this.temperatureLevel < maxCold3) {
-							player.addEffect(new MobEffectInstance(SEffects.DEPRECIATED_HYPOTHERMIA, 100, 2));
+							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPOTHERMIA, 100, 2));
 						}
 					}
 				}

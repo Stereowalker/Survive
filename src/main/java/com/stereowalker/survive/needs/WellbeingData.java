@@ -4,9 +4,11 @@ import java.util.Random;
 
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
-import com.stereowalker.survive.world.effect.SEffects;
+import com.stereowalker.survive.world.effect.SMobEffects;
+import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -52,9 +54,9 @@ public class WellbeingData extends SurviveData {
 			this.timeUntilWell = 6000;
 			int rgn = new Random().nextInt(2);
 			if (rgn == 0)
-				player.addEffect(new MobEffectInstance(SEffects.SLOWNESS_ILLNESS, 6000));
+				player.addEffect(new MobEffectInstance(SMobEffects.SLOWNESS_ILLNESS, 6000));
 			else
-				player.addEffect(new MobEffectInstance(SEffects.WEAKNESS_ILLNESS, 6000));
+				player.addEffect(new MobEffectInstance(SMobEffects.WEAKNESS_ILLNESS, 6000));
 		}
 		//As long as the player is not well
 		else if (this.timeUntilWell > 1 && !this.isWell) {
@@ -69,27 +71,45 @@ public class WellbeingData extends SurviveData {
 		}
 
 		//This should be logic for hypothermia
-		if (Survive.TEMPERATURE_CONFIG.useExperimentalTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
+		if (!Survive.TEMPERATURE_CONFIG.useLegacyTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
 			TemperatureData data = SurviveEntityStats.getTemperatureStats(player);
-			if (data.getTemperatureLevel() > 0.7f) {
+			
+			double tempLocation = data.getTemperatureLevel() - Survive.DEFAULT_TEMP;
+			double f = 0;
+			if (tempLocation > 0) {
+				double maxTemp = 0.0D;
+				if (player.getAttribute(SAttributes.HEAT_RESISTANCE) != null) {
+					maxTemp = player.getAttributeValue(SAttributes.HEAT_RESISTANCE);
+				}
+				double div = tempLocation / maxTemp;
+				f = Mth.clamp(div, 0, 1.0D+(28.0D/63.0D));
+			}
+			if (tempLocation < 0) {
+				double maxTemp = 0.0D;
+				if (player.getAttribute(SAttributes.COLD_RESISTANCE) != null) {
+					maxTemp = player.getAttributeValue(SAttributes.COLD_RESISTANCE);
+				}
+				double div = tempLocation / maxTemp;
+				f = Mth.clamp(div, -1.0D-(28.0D/63.0D), 0);
+			}
+			
+			if (f > 0.7f && !player.hasEffect(SMobEffects.HYPERTHERMIA)) {
 				this.timeUntilHyperthermia--;
 			} else {
 				this.timeUntilHyperthermia = 6000;
 			}
 
-			if (data.getTemperatureLevel() < -0.7f) {
+			if (f < -0.7f && !player.hasEffect(SMobEffects.HYPOTHERMIA)) {
 				this.timeUntilHypothermia--;
 			} else {
 				this.timeUntilHypothermia = 6000;
 			}
 
 			if (this.timeUntilHyperthermia <= 0) {
-				this.timeUntilHyperthermia = 0;
-				if (!player.hasEffect(SEffects.HYPERTHERMIA))player.addEffect(new MobEffectInstance(SEffects.HYPERTHERMIA, 6000));
+				if (!player.hasEffect(SMobEffects.HYPERTHERMIA))player.addEffect(new MobEffectInstance(SMobEffects.HYPERTHERMIA, 6000));
 			}
 			if (this.timeUntilHypothermia <= 0) {
-				this.timeUntilHypothermia = 0;
-				if (!player.hasEffect(SEffects.HYPOTHERMIA))player.addEffect(new MobEffectInstance(SEffects.HYPOTHERMIA, 6000));
+				if (!player.hasEffect(SMobEffects.HYPOTHERMIA))player.addEffect(new MobEffectInstance(SMobEffects.HYPOTHERMIA, 6000));
 			}
 		}
 	}

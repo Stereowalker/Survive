@@ -39,7 +39,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 	public boolean aiStep_hurt_redirect(LivingEntity living, DamageSource pSource, float pAmount) {
 		float amount = pAmount;
 		
-		if ((LivingEntity)(Object)this instanceof Player && Survive.TEMPERATURE_CONFIG.useExperimentalTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
+		if ((LivingEntity)(Object)this instanceof Player && !Survive.TEMPERATURE_CONFIG.useLegacyTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
 			double maxCold1 = TemperatureUtil.firstCold((Player)(Object)this);
 			double maxCold2 = TemperatureUtil.secondCold((Player)(Object)this);
 			double maxCold3 = TemperatureUtil.maxCold((Player)(Object)this);
@@ -60,7 +60,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	@Redirect(method = "aiStep", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/LivingEntity;isInPowderSnow:Z"))
 	public boolean aiStep_isInPowderSnow_redirect(LivingEntity living) {
-		if ((LivingEntity)(Object)this instanceof Player && Survive.TEMPERATURE_CONFIG.useExperimentalTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
+		if ((LivingEntity)(Object)this instanceof Player && !Survive.TEMPERATURE_CONFIG.useLegacyTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
 			TemperatureData data = SurviveEntityStats.getTemperatureStats((LivingEntity)(Object)this);
 			return data.getTemperatureLevel() < TemperatureUtil.firstCold((Player)(Object)this) || this.isInPowderSnow;
 		}
@@ -70,7 +70,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 	@Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getTicksFrozen()I"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void aiStep_inject_1(CallbackInfo ci) {
 		int i = this.getTicksRoasted();
-		if (this.canRoast() && (LivingEntity)(Object)this instanceof Player && Survive.TEMPERATURE_CONFIG.useExperimentalTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
+		if (this.canRoast() && (LivingEntity)(Object)this instanceof Player && !Survive.TEMPERATURE_CONFIG.useLegacyTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
 			this.setTicksRoasted(Math.min(this.getTicksRequiredToRoast(), i + 1));
 		} else {
 			this.setTicksRoasted(Math.max(0, i - 2));
@@ -84,7 +84,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 			
 			float amount = (float)j;
 			
-			if ((LivingEntity)(Object)this instanceof Player && Survive.TEMPERATURE_CONFIG.useExperimentalTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
+			if ((LivingEntity)(Object)this instanceof Player && !Survive.TEMPERATURE_CONFIG.useLegacyTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
 				double maxHeat1 = TemperatureUtil.firstHeat((Player)(Object)this);
 				double maxHeat2 = TemperatureUtil.secondHeat((Player)(Object)this);
 				double maxHeat3 = TemperatureUtil.maxHeat((Player)(Object)this);
@@ -109,7 +109,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 		if (this.isSpectator()) {
 			return false;
 		} else {
-			if ((LivingEntity)(Object)this instanceof Player && Survive.TEMPERATURE_CONFIG.useExperimentalTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
+			if ((LivingEntity)(Object)this instanceof Player && !Survive.TEMPERATURE_CONFIG.useLegacyTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
 				TemperatureData data = SurviveEntityStats.getTemperatureStats((LivingEntity)(Object)this);
 				return data.getTemperatureLevel() < TemperatureUtil.firstCold((Player)(Object)this) && super.canFreeze();
 			} else {
@@ -124,7 +124,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 		if (this.isSpectator()) {
 			return false;
 		} else {
-			if ((LivingEntity)(Object)this instanceof Player && Survive.TEMPERATURE_CONFIG.useExperimentalTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
+			if ((LivingEntity)(Object)this instanceof Player && !Survive.TEMPERATURE_CONFIG.useLegacyTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
 				TemperatureData data = SurviveEntityStats.getTemperatureStats((LivingEntity)(Object)this);
 				return data.getTemperatureLevel() > TemperatureUtil.firstHeat((Player)(Object)this) && super.canRoast();
 			} else {

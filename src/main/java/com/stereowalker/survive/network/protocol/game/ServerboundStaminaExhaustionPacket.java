@@ -8,7 +8,7 @@ import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
-public class ServerboundStaminaExhaustionPacket extends ServerboundUnionPacket{
+public class ServerboundStaminaExhaustionPacket extends ServerboundUnionPacket {
 	private float exhaustion;
 	
 	public ServerboundStaminaExhaustionPacket(final float exhaustion) {

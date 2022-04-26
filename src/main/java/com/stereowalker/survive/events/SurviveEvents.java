@@ -8,6 +8,7 @@ import com.stereowalker.survive.api.world.level.block.TemperatureEmitter;
 import com.stereowalker.survive.compat.SereneSeasonsCompat;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.core.SurviveEntityStats;
+import com.stereowalker.survive.core.TempMode;
 import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.survive.needs.SleepData;
@@ -17,17 +18,17 @@ import com.stereowalker.survive.network.protocol.game.ClientboundArmorDataTransf
 import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWaterPacket;
 import com.stereowalker.survive.world.DataMaps;
-import com.stereowalker.survive.world.effect.SEffects;
+import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.item.enchantment.SEnchantmentHelper;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
 import com.stereowalker.survive.world.temperature.TemperatureQuery;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
-import com.stereowalker.unionlib.state.properties.UBlockStateProperties;
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.math.UnionMathHelper;
+import com.stereowalker.unionlib.world.level.block.state.properties.UBlockStateProperties;
 
 //import io.github.apace100.origins.integration.OriginEventsArchitectury;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
@@ -35,7 +36,6 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -47,7 +47,6 @@ import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
@@ -108,44 +107,6 @@ public class SurviveEvents {
 		FLUID_THIRST_MAP.put(fluid, thirst);
 		FLUID_HYDRATION_MAP.put(fluid, hydration);
 		FLUID_THIRSTY_MAP.put(fluid, shouldGiveThirst);
-	}
-
-	public static float getTotalArmorWeight(LivingEntity player) {
-		float totalWeight = 0.124F;
-		for (EquipmentSlot slot : EquipmentSlot.values()) {
-			if (slot.getType() == Type.ARMOR) {
-				ItemStack stack = player.getItemBySlot(slot);
-				if (Survive.STAMINA_CONFIG.enable_weights) {
-					totalWeight += getArmorWeight(stack);
-				}
-			}
-		}
-		return totalWeight;
-	}
-
-	public static float getArmorWeight(ItemStack piece) {
-		float totalWeight = 0.0F;
-		if (!piece.isEmpty()) {
-			if (DataMaps.Server.armor.containsKey(piece.getItem().getRegistryName()) && !SEnchantmentHelper.hasWeightless(piece)) {
-				int i = SEnchantmentHelper.getFeatherweightModifier(piece);
-				//Reduces the total weight of that armor piece by 18% for each level
-				totalWeight += DataMaps.Server.armor.get(piece.getItem().getRegistryName()).getWeightModifier() * (1 - i*0.18);
-			}
-		}
-		return totalWeight;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public static float getArmorWeightClient(ItemStack piece) {
-		float totalWeight = 0.0F;
-		if (!piece.isEmpty()) {
-			if (DataMaps.Client.armor.containsKey(piece.getItem().getRegistryName()) && !SEnchantmentHelper.hasWeightless(piece)) {
-				int i = SEnchantmentHelper.getFeatherweightModifier(piece);
-				//Reduces the total weight of that armor piece by 18% for each level
-				totalWeight += DataMaps.Client.armor.get(piece.getItem().getRegistryName()).getWeightModifier() * (1 - i*0.18);
-			}
-		}
-		return totalWeight;
 	}
 
 	@SubscribeEvent
@@ -257,7 +218,7 @@ public class SurviveEvents {
 		} else if (world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, position).getY() > position.getY()) {
 			return false;
 		} else {
-			Biome biome = world.getBiome(position);
+			Biome biome = world.getBiome(position).value();
 			return biome.getPrecipitation() == Biome.Precipitation.SNOW || 
 					biome.getTemperature(position) <= 0.15F || 
 					ModHelper.isPrimalWinterLoaded() || 
@@ -300,7 +261,7 @@ public class SurviveEvents {
 			else return -1.0F * 5.0F;
 
 		case BIOME:
-			float biomeTemp = (TemperatureUtil.getTemperature(world.getBiome(pos), pos)*2)-2;
+			float biomeTemp = (TemperatureUtil.getTemperature(world.getBiome(pos).value(), pos)*2)-2;
 			if (ModHelper.isPrimalWinterLoaded()) {
 				biomeTemp = -0.7F;
 			}
@@ -402,9 +363,6 @@ public class SurviveEvents {
 		public String getName() {
 			return name;
 		}
-		public int getTickInterval() {
-			return tickInterval;
-		}
 		public double getReductionAmount() {
 			return reductionAmount;
 		}
@@ -442,10 +400,6 @@ public class SurviveEvents {
 		return temp/((float)tempAmount);
 	}
 
-	public enum TempMode {
-		BLEND, NORMAL;
-	}
-
 	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickEmpty event) {
@@ -455,11 +409,11 @@ public class SurviveEvents {
 			//Source Block Of Water
 			Fluid fluid = event.getWorld().getFluidState(blockpos).getType();
 			if (FLUID_THIRST_MAP.containsKey(fluid) && FLUID_THIRSTY_MAP.containsKey(fluid) && FLUID_HYDRATION_MAP.containsKey(fluid)) {
-				Survive.getInstance().channel.sendTo(new ServerboundInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand(), event.getPlayer().getUUID()), ((LocalPlayer)event.getPlayer()).connection.getConnection(), NetworkDirection.PLAY_TO_SERVER);
+				new ServerboundInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand()).send();
 			}
 			//Air Block
 			if (event.getWorld().isRainingAt(blockpos)) {
-				Survive.getInstance().channel.sendTo(new ServerboundInteractWithWaterPacket(event.getPos(), false, 1.0D, 0.5D, event.getHand(), event.getPlayer().getUUID()), ((LocalPlayer)event.getPlayer()).connection.getConnection(), NetworkDirection.PLAY_TO_SERVER);
+				new ServerboundInteractWithWaterPacket(event.getPos(), false, 1.0D, 0.5D, event.getHand()).send();
 			}
 		}
 	}
@@ -477,7 +431,7 @@ public class SurviveEvents {
 			if (FLUID_THIRST_MAP.containsKey(fluid) && FLUID_THIRSTY_MAP.containsKey(fluid) && FLUID_HYDRATION_MAP.containsKey(fluid)) {
 				event.setCanceled(true);
 				event.setCancellationResult(InteractionResult.SUCCESS);
-				Survive.getInstance().channel.sendTo(new ServerboundInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand(), event.getPlayer().getUUID()), ((LocalPlayer)event.getPlayer()).connection.getConnection(), NetworkDirection.PLAY_TO_SERVER);
+				new ServerboundInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand()).send();
 			}
 			//Cauldron
 			if (state.getBlock() == Blocks.WATER_CAULDRON) {
@@ -486,10 +440,10 @@ public class SurviveEvents {
 					event.setCanceled(true);
 					event.setCancellationResult(InteractionResult.SUCCESS);
 					if (stateUnder.getBlock() == Blocks.CAMPFIRE && stateUnder.getValue(BlockStateProperties.LIT)) {
-						Survive.getInstance().channel.sendTo(new ServerboundInteractWithWaterPacket(event.getPos(), false, 4.0D, event.getHand(), event.getPlayer().getUUID()), ((LocalPlayer)event.getPlayer()).connection.getConnection(), NetworkDirection.PLAY_TO_SERVER);
+						new ServerboundInteractWithWaterPacket(event.getPos(), false, 4.0D, event.getHand()).send();
 					}
 					else {
-						Survive.getInstance().channel.sendTo(new ServerboundInteractWithWaterPacket(event.getPos(), true, 4.0D, event.getHand(), event.getPlayer().getUUID()), ((LocalPlayer)event.getPlayer()).connection.getConnection(), NetworkDirection.PLAY_TO_SERVER);
+						new ServerboundInteractWithWaterPacket(event.getPos(), true, 4.0D, event.getHand()).send();
 					}
 				}
 			}
@@ -562,8 +516,8 @@ public class SurviveEvents {
 			float seasonMod = 0;
 			if (ModHelper.isSereneSeasonsLoaded()) {
 				Season season = SereneSeasonsCompat.modifyTemperatureBySeason(level, pos);
-				if (DataMaps.Server.biomeTemperature.containsKey(level.getBiome(pos).getRegistryName())) {
-					seasonMod = DataMaps.Server.biomeTemperature.get(level.getBiome(pos).getRegistryName()).getSeasonModifiers().get(season);
+				if (DataMaps.Server.biomeTemperature.containsKey(level.getBiome(pos).value().getRegistryName())) {
+					seasonMod = DataMaps.Server.biomeTemperature.get(level.getBiome(pos).value().getRegistryName()).getSeasonModifiers().get(season);
 				} else {
 					seasonMod = season.getModifier();
 				}
@@ -585,8 +539,8 @@ public class SurviveEvents {
 		});
 		//Internal
 		TemperatureQuery.registerQuery("survive:wetness", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
-			if (DataMaps.Server.biomeTemperature.containsKey(level.getBiome(pos).getRegistryName())) {
-				float f = DataMaps.Server.biomeTemperature.get(level.getBiome(pos).getRegistryName()).getWetnessModifier();
+			if (DataMaps.Server.biomeTemperature.containsKey(level.getBiome(pos).value().getRegistryName())) {
+				float f = DataMaps.Server.biomeTemperature.get(level.getBiome(pos).value().getRegistryName()).getWetnessModifier();
 				return ((double)(SurviveEntityStats.getWetTime(player)) / -1800.0D) * f;
 			} else {
 				return (double)(SurviveEntityStats.getWetTime(player)) / -1800.0D;
@@ -652,14 +606,14 @@ public class SurviveEvents {
 			return armorMod;
 		});
 		TemperatureQuery.registerQuery("survive:chilled_effect", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
-			if (player.hasEffect(SEffects.CHILLED))
-				return -(0.05F * (float)(player.getEffect(SEffects.CHILLED).getAmplifier() + 1));
+			if (player.hasEffect(SMobEffects.CHILLED))
+				return -(0.05F * (float)(player.getEffect(SMobEffects.CHILLED).getAmplifier() + 1));
 			else
 				return 0;
 		});
 		TemperatureQuery.registerQuery("survive:heated_effect", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
-			if (player.hasEffect(SEffects.CHILLED))
-				return +(0.05F * (float)(player.getEffect(SEffects.CHILLED).getAmplifier() + 1));
+			if (player.hasEffect(SMobEffects.CHILLED))
+				return +(0.05F * (float)(player.getEffect(SMobEffects.CHILLED).getAmplifier() + 1));
 			else
 				return 0;
 		});

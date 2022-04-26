@@ -1,7 +1,7 @@
 package com.stereowalker.survive.config;
 
 import com.stereowalker.survive.core.TempDisplayMode;
-import com.stereowalker.survive.events.SurviveEvents.TempMode;
+import com.stereowalker.survive.core.TempMode;
 import com.stereowalker.unionlib.config.ConfigObject;
 import com.stereowalker.unionlib.config.UnionConfig;
 
@@ -52,9 +52,8 @@ public class TemperatureConfig implements ConfigObject {
 	@UnionConfig.Range(min = 0.0001D, max = 1.0D)
 	public double tempChangeSpeed = 0.001D;
 	
-	@UnionConfig.Entry(name = "Use Experimental Temperature System", type = Type.COMMON)
-	@UnionConfig.Comment(comment = {"This is intended for users who want to try out the newer temperature system","Proceed with extreme caution and back up your worlds you want to enable this"})
-	@UnionConfig.Range(min = 0.0001D, max = 1.0D)
-	public boolean useExperimentalTemperatureSystem = false;
+	@UnionConfig.Entry(name = "Use Legacy Temperature System", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"This is intended for users who want to use the older temperature system","This feature will be removed in a later version of the mod"})
+	public boolean useLegacyTemperatureSystem = false;
 
 }

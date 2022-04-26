@@ -96,21 +96,21 @@ dependencies {
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
 	implementation fg.deobf("com.stereowalker.unionlib:UnionLib:"+modMinecraftVersion+"-"+unionLibVersion+"-"+modLoader+"")
 	
-	implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:"+clothConfigVersion)
+	//implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:"+clothConfigVersion)
 	
 	compileOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+":api")
-    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
+    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.18.1"+/*modMinecraftVersion+*/"-"+caelusVersion+"") 
 	
 	runtimeOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+"")
-	runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
+	runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.18.1"+/*modMinecraftVersion+*/"-"+caelusVersion+"") 
 	
 	implementation fg.deobf("curse.maven:biomes-o-plenty-220318:"+bopID)
 	implementation fg.deobf("curse.maven:terrablender-563928:"+terrablenderID)
 	implementation fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
 	//implementation fg.deobf("curse.maven:origins-474438:"+originsID)
-	implementation fg.deobf("curse.maven:architectury-419699:"+architecturyID)
-	implementation fg.deobf("curse.maven:create-328085:"+createID)
-	implementation fg.deobf("curse.maven:flywheel-486392:"+flywheelID)
+	//implementation fg.deobf("curse.maven:architectury-419699:"+architecturyID)
+	//implementation fg.deobf("curse.maven:create-328085:"+createID)
+	//implementation fg.deobf("curse.maven:flywheel-486392:"+flywheelID)
 	
 	implementation fg.deobf("curse.maven:combat-api-320729:"+combatAPIID)
 	

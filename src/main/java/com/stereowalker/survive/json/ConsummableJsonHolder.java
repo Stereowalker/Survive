@@ -5,6 +5,7 @@ import org.apache.logging.log4j.MarkerManager;
 
 import com.google.gson.JsonObject;
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.api.json.JsonHolder;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -13,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
  * @author Stereowalker
  *
  */
-public class ConsummableJsonHolder extends JsonHolder {
+public class ConsummableJsonHolder implements JsonHolder {
     private static final Marker DRINK_DATA = MarkerManager.getMarker("DRINK_DATA");
     
 	private ResourceLocation itemID;
@@ -40,8 +41,6 @@ public class ConsummableJsonHolder extends JsonHolder {
 	private boolean overwritesDefaultHungerChance = false;
 	
 	public ConsummableJsonHolder(ResourceLocation itemID, JsonObject object) {
-		super(object);
-		String NOTHING = "nothing";
 		String THIRST = "thirst";
 		String HYDRATION = "hydration";
 		String THIRSTY = "thirst_chance";
@@ -56,74 +55,74 @@ public class ConsummableJsonHolder extends JsonHolder {
 		
 		this.itemID = itemID;
 		if(object.entrySet().size() != 0) {
-			String workingOn = NOTHING;
+			stopWorking();
 			try {
 				
 				if(this.hasMemberAndIsPrimitive(THIRST, object)) {
-					workingOn = THIRST;
+					setWorkingOn(THIRST);
 					thirstAmount = object.get(THIRST).getAsInt();
-					workingOn = NOTHING;
+					stopWorking();
 				}
 
 				if(this.hasMemberAndIsPrimitive(HYDRATION, object)) {
-					workingOn = HYDRATION;
+					setWorkingOn(HYDRATION);
 					hydrationAmount = object.get(HYDRATION).getAsFloat();
-					workingOn = NOTHING;
+					stopWorking();
 				}
 				
 				if(this.hasMemberAndIsPrimitive(THIRSTY, object)) {
-					workingOn = THIRSTY;
+					setWorkingOn(THIRSTY);
 					thirstChance = object.get(THIRSTY).getAsFloat();
-					workingOn = NOTHING;
+					stopWorking();
 				}
 				
 				if(this.hasMemberAndIsPrimitive(HUNGER, object)) {
-					workingOn = HUNGER;
+					setWorkingOn(HUNGER);
 					hungerAmount = object.get(HUNGER).getAsInt();
 					overwritesDefaultHunger = true;
-					workingOn = NOTHING;
+					stopWorking();
 				}
 
 				if(this.hasMemberAndIsPrimitive(SATURATION, object)) {
-					workingOn = SATURATION;
+					setWorkingOn(SATURATION);
 					saturationAmount = object.get(SATURATION).getAsFloat();
 					overwritesDefaultSaturation = true;
-					workingOn = NOTHING;
+					stopWorking();
 				}
 				
 				if(this.hasMemberAndIsPrimitive(HUNGERY, object)) {
-					workingOn = HUNGERY;
+					setWorkingOn(HUNGERY);
 					hungerChance = object.get(HUNGERY).getAsFloat();
 					overwritesDefaultHungerChance = true;
-					workingOn = NOTHING;
+					stopWorking();
 				}
 				
 				if(this.hasMemberAndIsPrimitive(ENERGY, object)) {
-					workingOn = ENERGY;
+					setWorkingOn(ENERGY);
 					energyAmount = object.get(ENERGY).getAsInt();
-					workingOn = NOTHING;
+					stopWorking();
 				}
 				
 				if(this.hasMemberAndIsPrimitive(CHILLED, object)) {
-					workingOn = CHILLED;
+					setWorkingOn(CHILLED);
 					isChilled = object.get(CHILLED).getAsBoolean();
-					workingOn = NOTHING;
+					stopWorking();
 				}
 				
 				if(this.hasMemberAndIsPrimitive(HEATED, object)) {
-					workingOn = HEATED;
+					setWorkingOn(HEATED);
 					isHeated = object.get(HEATED).getAsBoolean();
-					workingOn = NOTHING;
+					stopWorking();
 				}
 				
 				if(this.hasMemberAndIsPrimitive(ENERGIZING, object)) {
-					workingOn = ENERGIZING;
+					setWorkingOn(ENERGIZING);
 					isEnergizing = object.get(ENERGIZING).getAsBoolean();
-					workingOn = NOTHING;
+					stopWorking();
 				}
 				
 				if(this.hasMemberAndIsObject(NUTRITION, object)) {
-					workingOn = NUTRITION;
+					setWorkingOn(NUTRITION);
 					JsonObject object2 = object.get(NUTRITION).getAsJsonObject();
 					String CARB_RATIO = "carbohydrate_ratio";
 					String PROTEIN_RATIO = "protein_ratio";
@@ -131,30 +130,30 @@ public class ConsummableJsonHolder extends JsonHolder {
 						try {
 							
 							if(this.hasMemberAndIsPrimitive(CARB_RATIO, object2)) {
-								workingOn = CARB_RATIO;
+								setWorkingOn(CARB_RATIO);
 								carbohydrateRatio = object.get(CARB_RATIO).getAsInt();
-								workingOn = NOTHING;
+								stopWorking();
 							}
 							
 							if(this.hasMemberAndIsPrimitive(PROTEIN_RATIO, object2)) {
-								workingOn = PROTEIN_RATIO;
+								setWorkingOn(PROTEIN_RATIO);
 								proteinRatio = object.get(PROTEIN_RATIO).getAsInt();
-								workingOn = NOTHING;
+								stopWorking();
 							}
 							
 						} catch (ClassCastException e) {
-							Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was wrong type!", e, itemID, workingOn);
+							Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was wrong type!", e, itemID, getworkingOn());
 						} catch (NumberFormatException e) {
-							Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was an invalid number!", e, itemID, workingOn);
+							Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was an invalid number!", e, itemID, getworkingOn());
 						}
 					}
-					workingOn = NOTHING;
+					stopWorking();
 				}
 				
 			} catch (ClassCastException e) {
-				Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was wrong type!", e, itemID, workingOn);
+				Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was wrong type!", e, itemID, getworkingOn());
 			} catch (NumberFormatException e) {
-				Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was an invalid number!", e, itemID, workingOn);
+				Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was an invalid number!", e, itemID, getworkingOn());
 			}
 		}
 	}
@@ -258,5 +257,12 @@ public class ConsummableJsonHolder extends JsonHolder {
 		return null;
 	}
 	
-	
+	String wo = "NOTHING";
+	@Override
+	public String getworkingOn() {return wo;}
+
+	@Override
+	public void setWorkingOn(String member) {
+		this.wo = member;
+	}
 }

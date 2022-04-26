@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.events.SurviveEvents;
+import com.stereowalker.survive.core.WeightHandler;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
 
@@ -30,7 +30,7 @@ public class TooltipEvents {
 	public static void accessoryTooltip(Player player, ItemStack stack, List<Component> tooltip, boolean displayWeight, boolean displayTemp) {
 		List<Component> tooltipsToAdd = new ArrayList<Component>();
 		if (DataMaps.Client.armor.containsKey(stack.getItem().getRegistryName())) {
-			float kg = SurviveEvents.getArmorWeightClient(stack);
+			float kg = WeightHandler.getArmorWeightClient(stack);
 			float rawPound = kg*2.205f;
 			int poundInt = (int)(rawPound*1000);
 			float pound = poundInt/1000.0F;
