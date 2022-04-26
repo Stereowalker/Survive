@@ -17,6 +17,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.GameRules;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -265,7 +267,8 @@ public class StaminaData extends SurviveData {
 
 	@SubscribeEvent
 	public static void eatFood(LivingEntityUseItemEvent.Finish event) {
-		if (event.getResultStack().isEdible() && DataMaps.Server.consummableItem.containsKey(event.getItem().getItem().getRegistryName())) {
+		if (event.getResultStack().isEdible() && DataMaps.Server.consummableItem.containsKey(event.getItem().getItem().getRegistryName()) || 
+				event.getItem().getItem() == Items.POTION && DataMaps.Server.potionDrink.containsKey(PotionUtils.getPotion(event.getItem()).getRegistryName())) {
 			if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
 				ServerPlayer player = (ServerPlayer)event.getEntityLiving();
 				StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
