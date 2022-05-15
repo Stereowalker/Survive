@@ -21,7 +21,7 @@ public class ThirstConfig implements ConfigObject {
 	public boolean shouldRemoveSourceWaterBlock = false;
 	
 	@UnionConfig.Entry(name = "Idle Thirst Exhaustion", type = Type.COMMON)
-	@UnionConfig.Comment(comment = {"Enabling this will remove the water source block when it is drunk"})
+	@UnionConfig.Comment(comment = {"The amount of thirst exaustion added to the player regardless of what the player is doing"})
 	@UnionConfig.Range(min = 0.0D, max = 4.0D)
 	public float idle_thirst_exhaustion = 0.1125F;
 	
