@@ -19,7 +19,6 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -61,7 +60,7 @@ public class WaterData extends SurviveData {
 	//TODO: Change This
 	public void consume(Item maybeFood, ItemStack stack) {
 		if (maybeFood.isEdible()) {
-			FoodProperties food = maybeFood.getFoodProperties();
+//			FoodProperties food = maybeFood.getFoodProperties();
 //			this.addStats(food.getNutrition(), food.getSaturationModifier());
 		}
 

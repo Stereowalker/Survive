@@ -41,6 +41,7 @@ import com.stereowalker.survive.resource.PotionDrinkDataManager;
 import com.stereowalker.survive.spell.SSpells;
 import com.stereowalker.survive.stat.SStats;
 import com.stereowalker.survive.tags.FluidSTags;
+import com.stereowalker.survive.tags.ItemSTags;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
@@ -121,6 +122,7 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		ConfigBuilder.registerConfig(WELLBEING_CONFIG);
 		ConfigBuilder.registerConfig(STAMINA_CONFIG);
 		new FluidSTags();
+		new ItemSTags();
 		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		modEventBus.addListener(this::setup);
 		modEventBus.addListener(this::clientRegistries);

@@ -9,7 +9,7 @@
       "item": "survive:potash"
     },
     {
-      "item": "survive:animal_fat"
+      "tag": "minecraft:animal_fat"
     },
     {
       "item": "minecraft:glass_bottle"

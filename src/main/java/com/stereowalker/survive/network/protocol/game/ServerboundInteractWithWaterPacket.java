@@ -3,7 +3,6 @@ package com.stereowalker.survive.network.protocol.game;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.needs.WaterData;
-import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
 
