@@ -208,6 +208,7 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		if (CONFIG.debugMode)getLogger().debug(message);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void setup(final FMLCommonSetupEvent event)
 	{
 		SCauldronInteraction.bootStrap();

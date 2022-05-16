@@ -28,7 +28,10 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.3
+          "chance": 0.7
+        },
+        {
+          "condition": "survive:animal_fat_config"
         }
       ]
     }

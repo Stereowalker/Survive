@@ -11,6 +11,7 @@ import com.stereowalker.survive.world.item.crafting.conditions.ModuleEnabledCond
 import com.stereowalker.survive.world.item.enchantment.SEnchantments;
 import com.stereowalker.survive.world.level.block.PlatedTemperatureRegulatorBlock;
 import com.stereowalker.survive.world.level.block.SBlocks;
+import com.stereowalker.survive.world.level.storage.loot.predicates.SLootItemConditions;
 import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.seasons.Seasons;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeCondition;
@@ -30,6 +31,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -91,11 +93,17 @@ public class SurviveRegistryEvents
 	public static void registerEnchantments(final RegistryEvent.Register<Enchantment> event) {
 		SEnchantments.registerAll(event.getRegistry());
 	}
+	
 	@SubscribeEvent
 	public static void registerRecipeSerializers(final RegistryEvent.Register<RecipeSerializer<?>> event) {
 		CraftingHelper.register(ModuleEnabledCondition.Serializer.INSTANCE);
 	}
-
+	
+	@SubscribeEvent
+	public static void registerLootConditions(final RegistryEvent.Register<GlobalLootModifierSerializer<?>> event) {
+		new SLootItemConditions();
+	}
+	
 	@SubscribeEvent
 	public static void registerSurviveRegistries(final NewRegistryEvent event) {
 		event.create(new RegistryBuilder<TemperatureChangeCondition<?>>().setName(Survive.getInstance().location("temperature_change_condition")).setType(c(TemperatureChangeCondition.class)).setMaxID(MAX_VARINT));
