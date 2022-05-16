@@ -1,3 +1,10 @@
+[7.0.3]
+- Used newer JEI methods
+- Updated ru_ru.json (Credits to jolopapina)
+- Corrected the comment on "Idle Thirst Exhaustion"
+- Added animal fat to the "minecraft:animal_fat" tag and used it in soap crafting
+- Animal fat drops from animals can be disabled in the server config
+
 [7.0.2]
 - Fixed inability to collect/drink from water block
 - Added a purified water fluid tag
