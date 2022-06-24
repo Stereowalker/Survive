@@ -38,8 +38,6 @@ import com.stereowalker.survive.resource.BlockTemperatureDataManager;
 import com.stereowalker.survive.resource.EntityTemperatureDataManager;
 import com.stereowalker.survive.resource.ItemConsummableDataManager;
 import com.stereowalker.survive.resource.PotionDrinkDataManager;
-import com.stereowalker.survive.spell.SSpells;
-import com.stereowalker.survive.stat.SStats;
 import com.stereowalker.survive.tags.FluidSTags;
 import com.stereowalker.survive.tags.ItemSTags;
 import com.stereowalker.survive.world.DataMaps;
@@ -52,6 +50,7 @@ import com.stereowalker.survive.world.item.crafting.SRecipeSerializer;
 import com.stereowalker.survive.world.level.CGameRules;
 import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.SFluids;
+import com.stereowalker.survive.world.spellcraft.SSpells;
 import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsScreen;
 import com.stereowalker.unionlib.config.ConfigBuilder;
 import com.stereowalker.unionlib.mod.IPacketHolder;
@@ -131,7 +130,6 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		isPrimalWinterLoaded = ModList.get().isLoaded("primalwinter");
 		if (isCombatLoaded()) {
 			SSpells.registerAll(modEventBus);
-			SStats.registerAll(modEventBus);
 		}
 		if (isOriginsLoaded()) {
 			OriginsCompat.initOriginsPatcher();

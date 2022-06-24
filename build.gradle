@@ -99,10 +99,13 @@ dependencies {
 	//implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:"+clothConfigVersion)
 	
 	compileOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+":api")
+	compileOnly fg.deobf("com.stereowalker.combat:C.O.M.B.A.T:"+modMinecraftVersion+"-"+combatVersion+":api")
     compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.18.1"+/*modMinecraftVersion+*/"-"+caelusVersion+"") 
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:"+modMinecraftVersion+"-"+patchouliVersion+":api")
 	
 	runtimeOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+"")
 	runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.18.1"+/*modMinecraftVersion+*/"-"+caelusVersion+"") 
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:"+modMinecraftVersion+"-"+patchouliVersion+"")
 	
 	implementation fg.deobf("curse.maven:biomes-o-plenty-220318:"+bopID)
 	implementation fg.deobf("curse.maven:terrablender-563928:"+terrablenderID)
@@ -111,9 +114,6 @@ dependencies {
 	//implementation fg.deobf("curse.maven:architectury-419699:"+architecturyID)
 	//implementation fg.deobf("curse.maven:create-328085:"+createID)
 	//implementation fg.deobf("curse.maven:flywheel-486392:"+flywheelID)
-	
-	implementation fg.deobf("curse.maven:combat-api-320729:"+combatAPIID)
-	
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -162,6 +162,7 @@ curseforge {
     	id = modCurseId
 		apiKey = "$System.env.CURSEFORGEKEY"
 		changelog = file('changelog.md')
+		changelogType = "markdown"
 		releaseType = 'release'
 		addGameVersion(modMinecraftVersion)
         addGameVersion("Forge")

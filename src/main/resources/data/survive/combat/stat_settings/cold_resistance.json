@@ -2,9 +2,11 @@
 	"enabled": true,
 	"limitable": false,
 	"default_points": 100,
-	"maximum_points": 1000,
 	"maximum_points_earned_per_level": 10,
 	"minimum_points_earned_per_level": 5,
+	"upgrade_points_earned_per_level": 5,
+	"effort_stat": "minecraft:damage_taken",
+	"effort_value": 100,
 	"attributes": [
 		{
 			"attribute": "survive:generic.cold_resistance",
