@@ -117,6 +117,7 @@ public class WaterData extends SurviveData {
 			if (uncleanComsumption >= 3) {
 				wellbeing.setTimer(2400, 6000);
 				uncleanComsumption = 0;
+				wellbeing.save(player);
 			}
 		}
 
@@ -131,6 +132,7 @@ public class WaterData extends SurviveData {
 			this.waterTimer = compound.getInt("waterTickTimer");
 			this.waterHydrationLevel = compound.getFloat("waterHydrationLevel");
 			this.waterExhaustionLevel = compound.getFloat("waterExhaustionLevel");
+			this.uncleanComsumption = compound.getInt("uncleanComsumption");
 		}
 
 	}
@@ -143,6 +145,7 @@ public class WaterData extends SurviveData {
 		compound.putInt("waterTickTimer", this.waterTimer);
 		compound.putFloat("waterHydrationLevel", this.waterHydrationLevel);
 		compound.putFloat("waterExhaustionLevel", this.waterExhaustionLevel);
+		compound.putInt("uncleanComsumption", this.uncleanComsumption);
 	}
 
 	/**

@@ -117,16 +117,17 @@ public class WellbeingData extends SurviveData {
 	@Override
 	public void read(CompoundTag compound) {
 		if (compound.contains("timeUntilUnwell", 99)) {
-			this.timeUntilUnwell = compound.getInt("timeUntilUnwell");
 			this.timeUntilWell = compound.getInt("timeUntilWell");
+			this.timeUntilUnwell = compound.getInt("timeUntilUnwell");
 			this.timeUntilHypothermia = compound.getInt("timeUntilHypothermia");
 			this.timeUntilHyperthermia = compound.getInt("timeUntilHyperthermia");
-			this.isWell = compound.getBoolean("timeUntilWell");
+			this.isWell = compound.getBoolean("isWell");
 		}
 	}
 
 	@Override
 	public void write(CompoundTag compound) {
+		compound.putInt("timeUntilWell", this.timeUntilWell);
 		compound.putInt("timeUntilUnwell", this.timeUntilUnwell);
 		compound.putInt("timeUntilHypothermia", this.timeUntilHypothermia);
 		compound.putInt("timeUntilHyperthermia", this.timeUntilHyperthermia);

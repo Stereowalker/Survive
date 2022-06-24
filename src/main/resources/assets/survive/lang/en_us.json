@@ -108,6 +108,8 @@
 	"effect.survive.chilled": "Chilled",
 	"effect.survive.energized": "Energized",
 	"effect.survive.heat_resistance": "Heat Resistance",
+	"effect.survive.slowness_illness": "Slowness Illness",
+	"effect.survive.weakness_illness": "Weakness Illness",
 	"item.minecraft.tipped_arrow.effect.heat_resistance": "Arrow of Heat Resistance",
 	"item.minecraft.potion.effect.heat_resistance": "Potion of Heat Resistance",
 	"item.minecraft.splash_potion.effect.heat_resistance": "Splash Potion of Heat Resistance",
