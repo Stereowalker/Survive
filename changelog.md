@@ -1,3 +1,9 @@
+[7.0.4]
+- Updated C.O.M.B.A.T Spells and Stats
+- Changed the default textures for the temperature bars
+- Fix drinking unclean water not triggering the wellbeing debuffs
+- Added the Survival Guide (Use Patchouli to see the book)
+
 [7.0.3]
 - Used newer JEI methods
 - Updated ru_ru.json (Credits to jolopapina)
