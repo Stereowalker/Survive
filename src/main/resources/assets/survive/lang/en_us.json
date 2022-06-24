@@ -50,6 +50,7 @@
 	"item.survive.medium_cooling_plate": "Medium Cooling Plate",
 	"item.survive.small_heating_plate": "Small Heating Plate",
 	"item.survive.small_cooling_plate": "Small Cooling Plate",
+	"item.survive.survival_guide": "Survival Guide",
 ///////////////////////////////////////////////////////////[BLOCKS]///////////////////////////////////////////////////////////
 	"block.survive.potash_cauldron": "Potash Cauldron",
 	"block.survive.temperature_regulator": "Temperature Regulator",
