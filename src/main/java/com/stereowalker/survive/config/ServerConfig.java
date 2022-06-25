@@ -33,11 +33,12 @@ public class ServerConfig {
 	
 	//
 	//Misc
-	@UnionConfig.Entry(group = "Miscellaneous" , name = "Should Purified Water Cauldron Revert", type = Type.SERVER)
+	static final String MISC = "Miscellaneous";
+	@UnionConfig.Entry(group = MISC , name = "Should Purified Water Cauldron Revert", type = Type.SERVER)
 	@UnionConfig.Comment(comment = {"Should the purified water cauldron revert back to a water cauldron when no longer underneath a campfire?"})
 	public static boolean purifiedCauldronRevert = false;
 	
-	@UnionConfig.Entry(group = "Micellaneous" , name = "Animal Fat Drops", type = Type.SERVER)
+	@UnionConfig.Entry(group = MISC , name = "Animal Fat Drops", type = Type.SERVER)
 	@UnionConfig.Comment(comment = {"Should Animal Fat drop from animals upon death?"})
 	public static boolean animalFatDrops = true;
 }
