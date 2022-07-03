@@ -1,3 +1,7 @@
+[7.0.5]
+- Reduced the amount of resistance gained per point from C.O.M.B.A.T Stats
+- Re-enabled Origins compatibility and added a Cold Blooded power to the Merling Origin
+
 [7.0.4]
 - Updated C.O.M.B.A.T Spells and Stats
 - Changed the default textures for the temperature bars
