@@ -48,6 +48,7 @@ public class ClientboundDrinkSoundPacket {
 		context.setPacketHandled(true);
 	}
 	
+	@SuppressWarnings("resource")
 	@OnlyIn(Dist.CLIENT)
 	public static void update(final BlockPos pos, final UUID uuid) {
 		if (uuid.equals(Player.createPlayerUUID(Minecraft.getInstance().player.getGameProfile()))) {

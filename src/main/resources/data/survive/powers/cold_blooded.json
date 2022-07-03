@@ -1,0 +1,17 @@
+{
+  "type": "origins:attribute",
+  "modifiers": [
+    {
+      "name": "Improved Cold Resistance",
+      "attribute": "survive:generic.cold_resistance",
+      "value": 2,
+      "operation": "addition"
+    },
+    {
+      "name": "Improved Heat Resistance",
+      "attribute": "survive:generic.heat_resistance",
+      "value": 2,
+      "operation": "addition"
+    }
+  ]
+}

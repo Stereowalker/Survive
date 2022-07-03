@@ -73,5 +73,9 @@ public class Config implements ConfigObject {
 	@UnionConfig.Entry(group = "Other" , name = "Origins Heat Resistant Races", type = Type.COMMON)
 	@UnionConfig.Comment(comment = {"If you have the origins mod, specify the names of races to add heat resistance to. Comma separated list"})
 	public String originsHeat = "origins:blazeborn";
+	
+	@UnionConfig.Entry(group = "Other" , name = "Origins Cold Blooded Races", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {"If you have the origins mod, specify the names of races to add cold bloodedness to. Comma separated list"})
+	public String originsCold = "origins:merling";
 
 }
