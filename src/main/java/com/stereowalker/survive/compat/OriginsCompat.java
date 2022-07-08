@@ -31,8 +31,7 @@ public class OriginsCompat {
 						origin.getImpact(),
 						origin.getName(),
 						origin.getDescription(),
-						origin.getUpgrades(),
-						origin.isSpecial()));
+						origin.getUpgrades(), origin.isSpecial()));
 			}
 		}
 		if (Lists.newArrayList(Survive.CONFIG.originsCold.split(",")).contains(event.getRegistryName().toString())) {
@@ -46,8 +45,21 @@ public class OriginsCompat {
 						origin.getImpact(),
 						origin.getName(),
 						origin.getDescription(),
-						origin.getUpgrades(),
-						origin.isSpecial()));
+						origin.getUpgrades(), origin.isSpecial()));
+			}
+		}
+		if (Lists.newArrayList(Survive.CONFIG.originsAirFromCanteen.split(",")).contains(event.getRegistryName().toString())) {
+			if (origin.getPowers() != null) {
+				Survive.getInstance().getLogger().info("Gave "+event.getRegistryName()+" the Air From Canteen power");
+				event.setNewEntry(new Origin(
+						new ImmutableSet.Builder<ResourceLocation>().addAll(origin.getPowers()).add(Survive.getInstance().location("air_from_canteen")).build(),
+						origin.getIcon(),
+						origin.isUnchoosable(),
+						origin.getOrder(),
+						origin.getImpact(),
+						origin.getName(),
+						origin.getDescription(),
+						origin.getUpgrades(), origin.isSpecial()));
 			}
 		}
 		

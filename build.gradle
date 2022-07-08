@@ -25,7 +25,8 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
 
 mixin {
-    add sourceSets.main, modId+".refmap.json"
+    add sourceSets.main, "${modFilename}-refmap.json"
+    config "${modId}.mixins.json"
 }
 
 version = modMinecraftVersion + "-" +modVersion
@@ -45,7 +46,6 @@ minecraft {
         client {
             workingDirectory project.file('run/client')
             property 'forge.logging.markers', 'REGISTRIES'
-			arg "-mixin.config="+modId+".mixins.json"
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
             property 'mixin.env.remapRefMap', 'true'
@@ -62,7 +62,6 @@ minecraft {
         server {
             workingDirectory project.file('run/server')
             property 'forge.logging.markers', 'REGISTRIES'
-			arg "-mixin.config="+modId+".mixins.json"
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
             property 'mixin.env.remapRefMap', 'true'
@@ -96,8 +95,6 @@ dependencies {
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
 	implementation fg.deobf("com.stereowalker.unionlib:UnionLib:"+modMinecraftVersion+"-"+unionLibVersion+"-"+modLoader+"")
 	
-	//implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:"+clothConfigVersion)
-	
 	compileOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+":api")
 	compileOnly fg.deobf("com.stereowalker.combat:C.O.M.B.A.T:"+modMinecraftVersion+"-"+combatVersion+":api")
     compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.18.1"+/*modMinecraftVersion+*/"-"+caelusVersion+"") 
@@ -111,9 +108,8 @@ dependencies {
 	implementation fg.deobf("curse.maven:terrablender-563928:"+terrablenderID)
 	implementation fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
 	implementation fg.deobf("curse.maven:origins-474438:"+originsID)
-	//implementation fg.deobf("curse.maven:architectury-419699:"+architecturyID)
-	//implementation fg.deobf("curse.maven:create-328085:"+createID)
-	//implementation fg.deobf("curse.maven:flywheel-486392:"+flywheelID)
+	implementation fg.deobf("curse.maven:create-328085:"+createID)
+	implementation fg.deobf("curse.maven:flywheel-486392:"+flywheelID)
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -172,7 +168,6 @@ curseforge {
 		mainArtifact(jar) {
 			displayName = modFilename+"-$project.version"
 		}
-		addArtifact deobfJar
 		addArtifact sourcesJar
 	}
 	options {

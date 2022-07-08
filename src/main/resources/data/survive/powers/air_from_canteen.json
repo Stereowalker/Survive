@@ -1,0 +1,14 @@
+{
+  "item_condition": {
+    "ingredient": {
+      "item": "survive:water_canteen"
+    },
+    "type": "apoli:ingredient"
+  },
+  "entity_action": {
+    "value": 60,
+    "type": "apoli:gain_air"
+  },
+  "hidden": true,
+  "type": "apoli:action_on_item_use"
+}
