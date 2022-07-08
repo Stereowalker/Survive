@@ -86,8 +86,8 @@ public class SurviveEvents {
 
 	public static void registerHeatMap() {
 		registerFluidDrinkStats(Fluids.WATER, 4, 1.0F, true);
-		registerFluidDrinkStats(SFluids.PURIFIED_WATER, 6, 3.0F, true);
-		registerFluidDrinkStats(Fluids.FLOWING_WATER, 4, 1.0F, false);
+		registerFluidDrinkStats(SFluids.PURIFIED_WATER, 6, 3.0F, false);
+		registerFluidDrinkStats(Fluids.FLOWING_WATER, 4, 1.0F, true);
 		registerFluidDrinkStats(SFluids.FLOWING_PURIFIED_WATER, 6, 3.0F, false);
 	}
 
