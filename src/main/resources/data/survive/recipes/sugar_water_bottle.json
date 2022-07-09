@@ -1,18 +1,31 @@
 {
-  "type": "crafting_shaped",
-  "pattern": [
-    "XXX",
-    "XOX",
-    "XXX"
-  ],
-  "key": {
-    "X": {
+  "type": "survive:crafting_shapeless_with_purified_water",
+  "ingredients": [
+    {
       "item": "minecraft:sugar"
     },
-    "O": {
-      "item": "survive:purified_water_bottle"
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:sugar"
     }
-  },
+  ],
   "result": {
     "item": "survive:sugar_water_bottle"
   }

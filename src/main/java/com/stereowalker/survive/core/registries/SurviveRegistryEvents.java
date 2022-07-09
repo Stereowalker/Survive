@@ -1,5 +1,9 @@
 package com.stereowalker.survive.core.registries;
 
+import java.util.List;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.client.particle.HygieneParticle;
 import com.stereowalker.survive.core.particles.SParticleTypes;
@@ -11,6 +15,7 @@ import com.stereowalker.survive.world.item.crafting.conditions.ModuleEnabledCond
 import com.stereowalker.survive.world.item.enchantment.SEnchantments;
 import com.stereowalker.survive.world.level.block.PlatedTemperatureRegulatorBlock;
 import com.stereowalker.survive.world.level.block.SBlocks;
+import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.level.storage.loot.predicates.SLootItemConditions;
 import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.seasons.Seasons;
@@ -26,8 +31,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -49,7 +57,7 @@ public class SurviveRegistryEvents
 	@OnlyIn(Dist.CLIENT)
 	public static void registerItemColors(ColorHandlerEvent.Block event) {
 		event.getBlockColors().register((state, displayReader, blockPos, tintIndex) -> {
-			return 0x41d3f8;
+			return Survive.PURIFIED_WATER_COLOR;
 		}, SBlocks.PURIFIED_WATER, SBlocks.PURIFIED_WATER_CAULDRON);
 		event.getBlockColors().register((state, displayReader, blockPos, tintIndex) -> {
 			return 0x483c35;
@@ -92,6 +100,10 @@ public class SurviveRegistryEvents
 	@SubscribeEvent
 	public static void registerPotions(final RegistryEvent.Register<Potion> event) {
 		SPotions.registerAll(event.getRegistry());
+		Survive.POTION_FLUID_MAP = 
+		new ImmutableMap.Builder<Potion, List<Fluid>>()
+		.put(Potions.WATER, Lists.newArrayList(Fluids.FLOWING_WATER, Fluids.WATER))
+		.put(SPotions.PURIFIED_WATER, Lists.newArrayList(SFluids.FLOWING_PURIFIED_WATER, SFluids.PURIFIED_WATER)).build();
 	}
 
 	@SubscribeEvent

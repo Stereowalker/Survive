@@ -14,7 +14,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Fluids;
 
 @RegistryHolder(registry = Item.class)
 public class SItems {
@@ -30,10 +29,8 @@ public class SItems {
 	public static final Item SUGAR_WATER_BOTTLE = new WaterBottleItem(new Item.Properties().tab(SCreativeModeTab.TAB_MAIN).stacksTo(1));
 	@RegistryObject("canteen")
 	public static final Item CANTEEN = new EmptyCanteenItem(new Item.Properties().tab(SCreativeModeTab.TAB_MAIN).stacksTo(1));
-	@RegistryObject("water_canteen")
-	public static final Item WATER_CANTEEN = new CanteenItem(new Item.Properties().craftRemainder(CANTEEN).stacksTo(1).tab(SCreativeModeTab.TAB_MAIN), Fluids.FLOWING_WATER, Fluids.WATER);
-	@RegistryObject("purified_water_canteen")
-	public static final Item PURIFIED_WATER_CANTEEN = new CanteenItem(new Item.Properties().craftRemainder(CANTEEN).stacksTo(1).tab(SCreativeModeTab.TAB_MAIN), SFluids.FLOWING_PURIFIED_WATER, SFluids.PURIFIED_WATER);
+	@RegistryObject("filled_canteen")
+	public static final Item FILLED_CANTEEN = new CanteenItem(new Item.Properties().craftRemainder(CANTEEN).stacksTo(1).tab(SCreativeModeTab.TAB_MAIN));
 	@RegistryObject("water_bowl")
 	public static final Item WATER_BOWL = new WaterBowlItem(new Item.Properties().tab(SCreativeModeTab.TAB_MAIN).stacksTo(1));
 	@RegistryObject("purified_water_bowl")

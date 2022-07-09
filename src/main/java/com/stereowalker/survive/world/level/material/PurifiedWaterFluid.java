@@ -94,7 +94,7 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
 				.density(10)
 				.viscosity(10)
 				.luminosity(1)
-				.color(Survive.PURIFIED_WATER_COLOR)
+				.color(0xff000000+Survive.PURIFIED_WATER_COLOR)
 				.build(this);
 	}
 

@@ -86,24 +86,24 @@ public interface SCauldronInteraction extends CauldronInteraction {
 	         }
 	      });
 		//This will most likely override the default potion action. Anybody messing with this will cause this mod's to not work
-		EMPTY.put(Items.POTION, (p_175732_, p_175733_, p_175734_, p_175735_, p_175736_, p_175737_) -> {
+		EMPTY.put(Items.POTION, (blockstate, level, pos, player, interactionHand, p_175737_) -> {
 			if (PotionUtils.getPotion(p_175737_) != Potions.WATER && PotionUtils.getPotion(p_175737_) != SPotions.PURIFIED_WATER) {
 				return InteractionResult.PASS;
 			} else {
-				if (!p_175733_.isClientSide) {
+				if (!level.isClientSide) {
 					Item item = p_175737_.getItem();
-					p_175735_.setItemInHand(p_175736_, ItemUtils.createFilledResult(p_175737_, p_175735_, new ItemStack(Items.GLASS_BOTTLE)));
-					p_175735_.awardStat(Stats.USE_CAULDRON);
-					p_175735_.awardStat(Stats.ITEM_USED.get(item));
+					player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175737_, player, new ItemStack(Items.GLASS_BOTTLE)));
+					player.awardStat(Stats.USE_CAULDRON);
+					player.awardStat(Stats.ITEM_USED.get(item));
 					if (PotionUtils.getPotion(p_175737_) == Potions.WATER)
-						p_175733_.setBlockAndUpdate(p_175734_, Blocks.WATER_CAULDRON.defaultBlockState());
+						level.setBlockAndUpdate(pos, Blocks.WATER_CAULDRON.defaultBlockState());
 					else
-						p_175733_.setBlockAndUpdate(p_175734_, SBlocks.PURIFIED_WATER_CAULDRON.defaultBlockState());
-					p_175733_.playSound((Player)null, p_175734_, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-					p_175733_.gameEvent((Entity)null, GameEvent.FLUID_PLACE, p_175734_);
+						level.setBlockAndUpdate(pos, SBlocks.PURIFIED_WATER_CAULDRON.defaultBlockState());
+					level.playSound((Player)null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+					level.gameEvent((Entity)null, GameEvent.FLUID_PLACE, pos);
 				}
 
-				return InteractionResult.sidedSuccess(p_175733_.isClientSide);
+				return InteractionResult.sidedSuccess(level.isClientSide);
 			}
 		});
 
@@ -111,7 +111,7 @@ public interface SCauldronInteraction extends CauldronInteraction {
 		WATER.put(SItems.CANTEEN, (blockstate, level, pos, player, interactionHand, p_175723_) -> {
 			if (!level.isClientSide) {
 				Item item = p_175723_.getItem();
-				player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175723_, player, CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.WATER_CANTEEN), blockstate.getValue(LayeredCauldronBlock.LEVEL))));
+				player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175723_, player, CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), blockstate.getValue(LayeredCauldronBlock.LEVEL), Potions.WATER)));
 				player.awardStat(Stats.USE_CAULDRON);
 				player.awardStat(Stats.ITEM_USED.get(item));
 				level.setBlockAndUpdate(pos, Blocks.CAULDRON.defaultBlockState());
@@ -125,7 +125,7 @@ public interface SCauldronInteraction extends CauldronInteraction {
 		PURIFIED_WATER.put(SItems.CANTEEN, (blockstate, level, pos, player, interactionHand, p_175723_) -> {
 			if (!level.isClientSide) {
 				Item item = p_175723_.getItem();
-				player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175723_, player, CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.PURIFIED_WATER_CANTEEN), blockstate.getValue(LayeredCauldronBlock.LEVEL))));
+				player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175723_, player, CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), blockstate.getValue(LayeredCauldronBlock.LEVEL), SPotions.PURIFIED_WATER)));
 				player.awardStat(Stats.USE_CAULDRON);
 				player.awardStat(Stats.ITEM_USED.get(item));
 				level.setBlockAndUpdate(pos, Blocks.CAULDRON.defaultBlockState());
@@ -136,42 +136,30 @@ public interface SCauldronInteraction extends CauldronInteraction {
 			return InteractionResult.sidedSuccess(level.isClientSide);
 		});
 
-		EMPTY.put(SItems.WATER_CANTEEN, (blockstate, level, pos, player, interactionHand, p_175737_) -> {
-			if (!level.isClientSide) {
-				CanteenItem item = (CanteenItem) p_175737_.getItem();
-				int drinksLeft = item.getDrinksLeft(p_175737_);
-				if (drinksLeft > 3) {
-					player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175737_, player, CanteenItem.addPropertiesToCanteen(p_175737_.copy(), drinksLeft - 3)));
-				} else {
-					player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175737_, player, new ItemStack(SItems.CANTEEN)));
+		EMPTY.put(SItems.FILLED_CANTEEN, (blockstate, level, pos, player, interactionHand, p_175737_) -> {
+			if (PotionUtils.getPotion(p_175737_) != Potions.WATER && PotionUtils.getPotion(p_175737_) != SPotions.PURIFIED_WATER) {
+				return InteractionResult.PASS;
+			} else {
+				if (!level.isClientSide) {
+					CanteenItem item = (CanteenItem) p_175737_.getItem();
+					int drinksLeft = item.getDrinksLeft(p_175737_);
+					if (drinksLeft > 3) {
+						player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175737_, player, CanteenItem.addToCanteen(p_175737_.copy(), drinksLeft - 3, PotionUtils.getPotion(p_175737_))));
+					} else {
+						player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175737_, player, new ItemStack(SItems.CANTEEN)));
+					}
+					player.awardStat(Stats.USE_CAULDRON);
+					player.awardStat(Stats.ITEM_USED.get(item));
+					if (PotionUtils.getPotion(p_175737_) == Potions.WATER)
+						level.setBlockAndUpdate(pos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, Math.min(drinksLeft, 3)));
+					else
+						level.setBlockAndUpdate(pos, SBlocks.PURIFIED_WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, Math.min(drinksLeft, 3)));
+					level.playSound((Player)null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+					level.gameEvent((Entity)null, GameEvent.FLUID_PLACE, pos);
 				}
-				player.awardStat(Stats.USE_CAULDRON);
-				player.awardStat(Stats.ITEM_USED.get(item));
-				level.setBlockAndUpdate(pos, Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, Math.min(drinksLeft, 3)));
-				level.playSound((Player)null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-				level.gameEvent((Entity)null, GameEvent.FLUID_PLACE, pos);
+
+				return InteractionResult.sidedSuccess(level.isClientSide);
 			}
-
-			return InteractionResult.sidedSuccess(level.isClientSide);
-		});
-
-		EMPTY.put(SItems.PURIFIED_WATER_CANTEEN, (blockstate, level, pos, player, interactionHand, p_175737_) -> {
-			if (!level.isClientSide) {
-				CanteenItem item = (CanteenItem) p_175737_.getItem();
-				int drinksLeft = item.getDrinksLeft(p_175737_);
-				if (drinksLeft > 3) {
-					player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175737_, player, CanteenItem.addPropertiesToCanteen(p_175737_.copy(), drinksLeft - 3)));
-				} else {
-					player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175737_, player, new ItemStack(SItems.CANTEEN)));
-				}
-				player.awardStat(Stats.USE_CAULDRON);
-				player.awardStat(Stats.ITEM_USED.get(item));
-				level.setBlockAndUpdate(pos, SBlocks.PURIFIED_WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, Math.min(drinksLeft, 3)));
-				level.playSound((Player)null, pos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-				level.gameEvent((Entity)null, GameEvent.FLUID_PLACE, pos);
-			}
-
-			return InteractionResult.sidedSuccess(level.isClientSide);
 		});
 	}
 

@@ -10,6 +10,7 @@ import com.stereowalker.survive.json.ConsummableJsonHolder;
 import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
+import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.client.player.LocalPlayer;
@@ -280,7 +281,7 @@ public class WaterData extends SurviveData {
 			ServerPlayer player = (ServerPlayer) event.getEntityLiving();
 			WaterData stats = SurviveEntityStats.getWaterStats(player);
 			
-			if (event.getItem().getItem() == Items.POTION && DataMaps.Server.potionDrink.containsKey(PotionUtils.getPotion(event.getItem()).getRegistryName())) {
+			if ((event.getItem().getItem() == Items.POTION || event.getItem().getItem() == SItems.FILLED_CANTEEN) && DataMaps.Server.potionDrink.containsKey(PotionUtils.getPotion(event.getItem()).getRegistryName())) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(PotionUtils.getPotion(event.getItem()).getRegistryName());
 				stats.drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(event.getEntityLiving(), drinkData.getThirstChance()));
 				if (drinkData.isHeated())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));

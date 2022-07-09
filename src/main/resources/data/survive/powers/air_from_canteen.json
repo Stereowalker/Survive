@@ -1,7 +1,7 @@
 {
   "item_condition": {
     "ingredient": {
-      "item": "survive:water_canteen"
+      "item": "survive:filled_canteen"
     },
     "type": "apoli:ingredient"
   },

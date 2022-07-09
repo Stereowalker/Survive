@@ -1,6 +1,5 @@
 package com.stereowalker.survive.world.item;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.stereowalker.survive.Survive;
@@ -8,6 +7,8 @@ import com.stereowalker.survive.Survive;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -18,53 +19,58 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class CanteenItem extends Item {
-	private final Fluid[] validFluids;
 
-	public CanteenItem(Properties properties, Fluid... fluids) {
+	public CanteenItem(Properties properties) {
 		super(properties);
-		this.validFluids = fluids;
 	}
-	
+
 	public static CompoundTag canteenTag(int drinks) {
 		CompoundTag nbt = new CompoundTag();
 		nbt.putInt("DrinksLeft", drinks);
 		return nbt;
 	}
 
-	public static ItemStack addPropertiesToCanteen(ItemStack stack, int drinks) {
+	public static ItemStack addToCanteen(ItemStack stack, int drinks, Potion potion) {
 		stack.setTag(canteenTag(drinks));
+		PotionUtils.setPotion(stack, potion);
 		return stack;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public ItemStack getDefaultInstance() {
-		return addPropertiesToCanteen(new ItemStack(this), Survive.THIRST_CONFIG.canteen_fill_amount);
+		return addToCanteen(super.getDefaultInstance(), Survive.THIRST_CONFIG.canteen_fill_amount, Potions.WATER);
 	}
-	
+
 	public int getDrinksLeft(ItemStack stack) {
 		return stack.getOrCreateTag().getInt("DrinksLeft");
 	}
-	
+
 	public void setDrinksLeft(ItemStack stack, int drinks) {
 		stack.getOrCreateTag().putInt("DrinksLeft", Mth.clamp(drinks, 0, Survive.THIRST_CONFIG.canteen_fill_amount));
 	}
-	
+
 	public void decrementDrinks(ItemStack stack) {
 		setDrinksLeft(stack, getDrinksLeft(stack) - 1);
 	}
@@ -74,39 +80,50 @@ public class CanteenItem extends Item {
 	 * the Item before the action is complete.
 	 */
 	@Override
-	public ItemStack finishUsingItem(ItemStack stack, Level worldIn, LivingEntity entityLiving) {
-		Player entityplayer = entityLiving instanceof Player ? (Player)entityLiving : null;
-		if (entityplayer instanceof ServerPlayer) {
-			CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer)entityplayer, stack);
+	public ItemStack finishUsingItem(ItemStack pStack, Level pLevel, LivingEntity pEntityLiving) {
+		Player player = pEntityLiving instanceof Player ? (Player)pEntityLiving : null;
+		if (player instanceof ServerPlayer) {
+			CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer)player, pStack);
 		}
-		
-		if (entityplayer != null) {
-			entityplayer.awardStat(Stats.ITEM_USED.get(this));
+
+		if (!pLevel.isClientSide) {
+			for(MobEffectInstance mobeffectinstance : PotionUtils.getMobEffects(pStack)) {
+				if (mobeffectinstance.getEffect().isInstantenous()) {
+					mobeffectinstance.getEffect().applyInstantenousEffect(player, player, pEntityLiving, mobeffectinstance.getAmplifier(), 1.0D);
+				} else {
+					pEntityLiving.addEffect(new MobEffectInstance(mobeffectinstance));
+				}
+			}
 		}
-		
-		if (getDrinksLeft(stack) <= 1) {
-			if (entityplayer == null || !entityplayer.getAbilities().instabuild) {
-				stack.shrink(1);
+
+		if (player != null) {
+			player.awardStat(Stats.ITEM_USED.get(this));
+		}
+
+		if (getDrinksLeft(pStack) <= 1) {
+			if (player == null || !player.getAbilities().instabuild) {
+				pStack.shrink(1);
 			}
 
-			if (entityplayer == null || !entityplayer.getAbilities().instabuild) {
-				if (stack.isEmpty()) {
+			if (player == null || !player.getAbilities().instabuild) {
+				if (pStack.isEmpty()) {
 					return new ItemStack(SItems.CANTEEN);
 				}
 
-				if (entityplayer != null) {
-					entityplayer.getInventory().add(new ItemStack(SItems.CANTEEN));
+				if (player != null) {
+					player.getInventory().add(new ItemStack(SItems.CANTEEN));
 				}
 			}
 		}
-		
-		if (getDrinksLeft(stack) > 1) {
-			if (entityplayer == null || !entityplayer.getAbilities().instabuild) {
-				decrementDrinks(stack);
+
+		if (getDrinksLeft(pStack) > 1) {
+			if (player == null || !player.getAbilities().instabuild) {
+				decrementDrinks(pStack);
 			}
 		}
 
-		return stack;
+		pLevel.gameEvent(pEntityLiving, GameEvent.DRINKING_FINISH, pEntityLiving.eyeBlockPosition());
+		return pStack;
 	}
 
 	/**
@@ -130,26 +147,52 @@ public class CanteenItem extends Item {
 	 * {@link #onItemUse}.
 	 */
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
-		ItemStack stack = playerIn.getItemInHand(handIn);
-		if (getDrinksLeft(stack) < Survive.THIRST_CONFIG.canteen_fill_amount) {
-			HitResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.SOURCE_ONLY);
-			BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
-			if (worldIn.getFluidState(blockpos).is(FluidTags.WATER) && Arrays.asList(this.validFluids).contains(worldIn.getFluidState(blockpos).getType())) {
-				setDrinksLeft(stack, Survive.THIRST_CONFIG.canteen_fill_amount);
+	public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
+		ItemStack stack = pPlayer.getItemInHand(pHand);
+		if (Survive.POTION_FLUID_MAP.containsKey(PotionUtils.getPotion(stack))) {
+			if (getDrinksLeft(stack) < Survive.THIRST_CONFIG.canteen_fill_amount) {
+				HitResult raytraceresult = getPlayerPOVHitResult(pLevel, pPlayer, ClipContext.Fluid.SOURCE_ONLY);
+				BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
+				if (pLevel.getFluidState(blockpos).is(FluidTags.WATER) && Survive.POTION_FLUID_MAP.get(PotionUtils.getPotion(stack)).contains(pLevel.getFluidState(blockpos).getType())) {
+					setDrinksLeft(stack, Survive.THIRST_CONFIG.canteen_fill_amount);
+				}
+			}
+			pPlayer.startUsingItem(pHand);
+			return new InteractionResultHolder<>(InteractionResult.SUCCESS, pPlayer.getItemInHand(pHand));
+		} else {
+			return ItemUtils.startUsingInstantly(pLevel, pPlayer, pHand);
+		}
+	}
+
+	@Override
+	public void appendHoverText(ItemStack pStack, Level worldIn, List<Component> pTooltip, TooltipFlag flagIn) {
+		pTooltip.add(new TranslatableComponent("tooltip.drinks_left").append(": "+getDrinksLeft(pStack)).withStyle(ChatFormatting.AQUA));
+		if (Survive.POTION_FLUID_MAP.containsKey(PotionUtils.getPotion(pStack)))
+			pTooltip.add(new TranslatableComponent(PotionUtils.getPotion(pStack).getName(this.getDescriptionId()+".effect.")).withStyle(ChatFormatting.YELLOW));
+		else
+			pTooltip.add(new TranslatableComponent(PotionUtils.getPotion(pStack).getName("item.minecraft.potion.effect.")).withStyle(ChatFormatting.GOLD));
+		PotionUtils.addPotionTooltip(pStack, pTooltip, 1.0F);
+	}
+
+
+	@Override
+	public boolean isFoil(ItemStack pStack) {
+		return super.isFoil(pStack) || !PotionUtils.getMobEffects(pStack).isEmpty();
+	}
+
+	/**
+	 * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
+	 */
+	@Override
+	public void fillItemCategory(CreativeModeTab pGroup, NonNullList<ItemStack> pItems) {
+		if (this.allowdedIn(pGroup)) {
+			for(Potion potion : Registry.POTION) {
+				if (potion != Potions.EMPTY) {
+					pItems.add(addToCanteen(new ItemStack(this), Survive.THIRST_CONFIG.canteen_fill_amount, potion));
+				}
 			}
 		}
-		playerIn.startUsingItem(handIn);
-		return new InteractionResultHolder<>(InteractionResult.SUCCESS, playerIn.getItemInHand(handIn));
-	}
-	
-	@Override
-	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent("tooltip.drinks_left").append(": "+getDrinksLeft(stack)).withStyle(ChatFormatting.AQUA));
-		if (this == SItems.PURIFIED_WATER_CANTEEN)
-			tooltip.add(new TranslatableComponent("tooltip.drink_purified").withStyle(ChatFormatting.AQUA));
-		if (this == SItems.WATER_CANTEEN)
-			tooltip.add(new TranslatableComponent("tooltip.drink_not_purified").withStyle(ChatFormatting.RED));
+
 	}
 
 }

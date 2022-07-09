@@ -3,11 +3,8 @@
 		"type": "survive:module_enabled",
 		"module": "hygiene"
 	}],
-  "type": "unionlib:no_remainder_crafting_shapeless",
+  "type": "survive:crafting_shapeless_with_purified_water",
   "ingredients": [
-    {
-      "item": "survive:purified_water_bottle"
-    },
     {
       "item": "survive:wood_ash"
     }

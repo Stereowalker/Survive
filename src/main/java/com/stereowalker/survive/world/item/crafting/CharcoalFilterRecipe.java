@@ -35,7 +35,7 @@ public class CharcoalFilterRecipe extends CustomRecipe {
 				waterBottle++;
 			} else if (stack.getItem() == Items.WATER_BUCKET) {
 				waterBottle++;
-			} else if (stack.getItem() == SItems.WATER_CANTEEN) {
+			} else if (stack.getItem() == SItems.FILLED_CANTEEN && PotionUtils.getPotion(stack) == Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY) {
 				waterBottle++;
 			} else if (stack.getItem() == SItems.WATER_BOWL) {
 				waterBottle++;
@@ -57,8 +57,8 @@ public class CharcoalFilterRecipe extends CustomRecipe {
 				return PotionUtils.setPotion(stack.copy(), SPotions.PURIFIED_WATER);
 			} else if (stack.getItem() == SItems.WATER_BOWL) {
 				return new ItemStack(SItems.PURIFIED_WATER_BOWL);
-			} else if (stack.getItem() == SItems.WATER_CANTEEN) {
-				return CanteenItem.addPropertiesToCanteen(new ItemStack(SItems.PURIFIED_WATER_CANTEEN), ((CanteenItem)stack.getItem()).getDrinksLeft(stack));
+			} else if (stack.getItem() == SItems.FILLED_CANTEEN && PotionUtils.getPotion(stack) == Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY) {
+				return PotionUtils.setPotion(stack.copy(), SPotions.PURIFIED_WATER);
 			} else if (stack.getItem() == Items.WATER_BUCKET) {
 				return new ItemStack(SItems.PURIFIED_WATER_BUCKET);
 			}

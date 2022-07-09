@@ -1,11 +1,11 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    { "item": "survive:purified_water_bucket" },
+    { "item": "minecraft:water_bucket" },
     { "item": "survive:canteen" }
   ],
   "result": {
     "item": "survive:filled_canteen",
-    "nbt": { "DrinksLeft": 3, "Potion": "survive:purified_water" }
+    "nbt": { "DrinksLeft": 3, "Potion": "minecraft:water" }
   }
 }
