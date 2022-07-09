@@ -5,6 +5,7 @@ import java.util.Map;
 import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.HygieneItems;
 import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.survive.world.item.alchemy.SPotions;
 import com.stereowalker.survive.world.level.block.SBlocks;
 
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -19,6 +20,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -65,9 +68,45 @@ public interface SCauldronInteraction extends CauldronInteraction {
 		addToCauldron(PURIFIED_WATER, SItems.PURIFIED_WATER_BOWL, new ItemStack(Items.BOWL), SoundEvents.BOTTLE_EMPTY);
 		fillEmptyCauldron(SItems.PURIFIED_WATER_BOWL, new ItemStack(Items.BOWL), SBlocks.PURIFIED_WATER_CAULDRON.defaultBlockState(), SoundEvents.BOTTLE_EMPTY);
 		//Glass bottle Interactions
-		takeFromCauldron(PURIFIED_WATER, Items.GLASS_BOTTLE, new ItemStack(SItems.PURIFIED_WATER_BOTTLE), SoundEvents.BOTTLE_FILL);
-		addToCauldron(PURIFIED_WATER, SItems.PURIFIED_WATER_BOTTLE, new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
-		fillEmptyCauldron(SItems.PURIFIED_WATER_BOTTLE, new ItemStack(Items.GLASS_BOTTLE), SBlocks.PURIFIED_WATER_CAULDRON.defaultBlockState(), SoundEvents.BOTTLE_EMPTY);
+		takeFromCauldron(PURIFIED_WATER, Items.GLASS_BOTTLE, PotionUtils.setPotion(new ItemStack(Items.POTION), SPotions.PURIFIED_WATER), SoundEvents.BOTTLE_FILL);
+		PURIFIED_WATER.put(Items.POTION, (p_175704_, p_175705_, p_175706_, p_175707_, p_175708_, p_175709_) -> {
+	         if (p_175704_.getValue(LayeredCauldronBlock.LEVEL) != 3 && PotionUtils.getPotion(p_175709_) == SPotions.PURIFIED_WATER) {
+	            if (!p_175705_.isClientSide) {
+	               p_175707_.setItemInHand(p_175708_, ItemUtils.createFilledResult(p_175709_, p_175707_, new ItemStack(Items.GLASS_BOTTLE)));
+	               p_175707_.awardStat(Stats.USE_CAULDRON);
+	               p_175707_.awardStat(Stats.ITEM_USED.get(p_175709_.getItem()));
+	               p_175705_.setBlockAndUpdate(p_175706_, p_175704_.cycle(LayeredCauldronBlock.LEVEL));
+	               p_175705_.playSound((Player)null, p_175706_, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+	               p_175705_.gameEvent((Entity)null, GameEvent.FLUID_PLACE, p_175706_);
+	            }
+
+	            return InteractionResult.sidedSuccess(p_175705_.isClientSide);
+	         } else {
+	            return InteractionResult.PASS;
+	         }
+	      });
+		//This will most likely override the default potion action. Anybody messing with this will cause this mod's to not work
+		EMPTY.put(Items.POTION, (p_175732_, p_175733_, p_175734_, p_175735_, p_175736_, p_175737_) -> {
+			if (PotionUtils.getPotion(p_175737_) != Potions.WATER && PotionUtils.getPotion(p_175737_) != SPotions.PURIFIED_WATER) {
+				return InteractionResult.PASS;
+			} else {
+				if (!p_175733_.isClientSide) {
+					Item item = p_175737_.getItem();
+					p_175735_.setItemInHand(p_175736_, ItemUtils.createFilledResult(p_175737_, p_175735_, new ItemStack(Items.GLASS_BOTTLE)));
+					p_175735_.awardStat(Stats.USE_CAULDRON);
+					p_175735_.awardStat(Stats.ITEM_USED.get(item));
+					if (PotionUtils.getPotion(p_175737_) == Potions.WATER)
+						p_175733_.setBlockAndUpdate(p_175734_, Blocks.WATER_CAULDRON.defaultBlockState());
+					else
+						p_175733_.setBlockAndUpdate(p_175734_, SBlocks.PURIFIED_WATER_CAULDRON.defaultBlockState());
+					p_175733_.playSound((Player)null, p_175734_, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+					p_175733_.gameEvent((Entity)null, GameEvent.FLUID_PLACE, p_175734_);
+				}
+
+				return InteractionResult.sidedSuccess(p_175733_.isClientSide);
+			}
+		});
+
 		//Canteen Interactions
 		WATER.put(SItems.CANTEEN, (blockstate, level, pos, player, interactionHand, p_175723_) -> {
 			if (!level.isClientSide) {

@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.survive.world.item.alchemy.SPotions;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
@@ -53,7 +54,7 @@ public class CharcoalFilterRecipe extends CustomRecipe {
 		for (int i = 0; i < inv.getContainerSize(); i++) {
 			ItemStack stack = inv.getItem(i);
 			if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) == Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY) {
-				return new ItemStack(SItems.PURIFIED_WATER_BOTTLE);
+				return PotionUtils.setPotion(stack.copy(), SPotions.PURIFIED_WATER);
 			} else if (stack.getItem() == SItems.WATER_BOWL) {
 				return new ItemStack(SItems.PURIFIED_WATER_BOWL);
 			} else if (stack.getItem() == SItems.WATER_CANTEEN) {

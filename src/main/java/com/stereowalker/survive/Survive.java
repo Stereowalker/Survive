@@ -84,6 +84,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class Survive extends MinecraftMod implements IPacketHolder {
 
 	public static final float DEFAULT_TEMP = 37.0F;
+	public static final int PURIFIED_WATER_COLOR = 0x41d3f8;
 	public static final String MOD_ID = "survive";
 
 	public static final Config CONFIG = new Config();

@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "com.stereowalker.survive.mixins",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "survive.refmap.json",
+  "refmap": "Survive-refmap.json",
   "mixins": [
   	"AbstractVillagerMixin",
   	"PlayerMixin",
@@ -16,7 +16,8 @@
 	"EntityMixin",
 	"CowMixin",
 	"PigMixin",
-	"IceBlockMixin"
+	"IceBlockMixin",
+	"BottleItemMixin"
   ],
   "client": [
   	"GuiMixin"

@@ -23,7 +23,9 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.api.distmarker.Dist;
@@ -60,6 +62,9 @@ public class SurviveRegistryEvents
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public static void registerItemColors(ColorHandlerEvent.Item event) {
+		event.getItemColors().register((stack, tintIndex) -> {
+			return tintIndex > 0 ? -1 : PotionUtils.getPotion(stack) == SPotions.PURIFIED_WATER ? Survive.PURIFIED_WATER_COLOR : PotionUtils.getColor(stack);
+	      }, Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION);
 		event.getItemColors().register((stack, tintIndex) -> {
 			return TemperatureRegulatorPlateItem.getColor(stack);
 		}, SItems.LARGE_HEATING_PLATE, SItems.LARGE_COOLING_PLATE, SItems.MEDIUM_HEATING_PLATE, SItems.MEDIUM_COOLING_PLATE, SItems.SMALL_HEATING_PLATE, SItems.SMALL_COOLING_PLATE);

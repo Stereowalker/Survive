@@ -98,13 +98,6 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 					}
 					waterStats.save(sender);
 				}
-			} else if (heldItem.getItem() == Items.GLASS_BOTTLE) {
-				if (isValidContainerSource(waterAmount)) {
-					if (!addThirst) {
-						heldItem.shrink(1);
-						sender.addItem(new ItemStack(SItems.PURIFIED_WATER_BOTTLE));
-					}
-				}
 			} else if (heldItem.getItem() == Items.BOWL) {
 				if (isValidContainerSource(waterAmount)) {
 					heldItem.shrink(1);

@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.survive.world.item.alchemy.SPotions;
 import com.stereowalker.survive.world.item.crafting.CharcoalFilterRecipe;
 
 import mezz.jei.api.IModPlugin;
@@ -99,7 +100,7 @@ public class JEICompat implements IModPlugin {
 					public void setRecipe(IRecipeLayoutBuilder builder, ICraftingGridHelper craftingGridHelper, IFocusGroup focuses) {
 						List<ItemStack> fluid = Lists.newArrayList(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER));
 						craftingGridHelper.setInputs(builder, VanillaTypes.ITEM, Lists.newArrayList(filter, fluid), 0, 0);
-						craftingGridHelper.setOutputs(builder, VanillaTypes.ITEM, Lists.newArrayList(new ItemStack(SItems.PURIFIED_WATER_BOTTLE)));
+						craftingGridHelper.setOutputs(builder, VanillaTypes.ITEM, Lists.newArrayList(PotionUtils.setPotion(new ItemStack(Items.POTION), SPotions.PURIFIED_WATER)));
 					}};
 			}
 			else if (a.getId().equals(Survive.getInstance().location("purified_water_bucket_from_charcoal_filtering"))) {

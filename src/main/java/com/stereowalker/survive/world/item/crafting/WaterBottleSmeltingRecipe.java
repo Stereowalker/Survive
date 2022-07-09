@@ -1,6 +1,6 @@
 package com.stereowalker.survive.world.item.crafting;
 
-import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.survive.world.item.alchemy.SPotions;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 public class WaterBottleSmeltingRecipe extends SmeltingRecipe {
 
 	public WaterBottleSmeltingRecipe(ResourceLocation pId, String pGroup, Ingredient pIngredient, ItemStack pResult, float pExperience, int pCookingTime) {
-		super(pId, pGroup, Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER)), new ItemStack(SItems.PURIFIED_WATER_BOTTLE), pExperience, pCookingTime);
+		super(pId, pGroup, Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER)), PotionUtils.setPotion(new ItemStack(Items.POTION), SPotions.PURIFIED_WATER), pExperience, pCookingTime);
 	}
 
 	@Override

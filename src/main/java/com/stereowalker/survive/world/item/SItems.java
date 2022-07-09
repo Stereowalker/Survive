@@ -26,8 +26,6 @@ public class SItems {
 	public static final Item WOOL_PANTS = new ArmorItem(SArmorMaterial.WOOL, EquipmentSlot.LEGS, new Item.Properties().tab(SCreativeModeTab.TAB_MAIN));
 	@RegistryObject("wool_boots")
 	public static final Item WOOL_BOOTS = new ArmorItem(SArmorMaterial.WOOL, EquipmentSlot.FEET, new Item.Properties().tab(SCreativeModeTab.TAB_MAIN));
-	@RegistryObject("purified_water_bottle")
-	public static final Item PURIFIED_WATER_BOTTLE = new WaterBottleItem(new Item.Properties().tab(SCreativeModeTab.TAB_MAIN).craftRemainder(Items.GLASS_BOTTLE).stacksTo(1));
 	@RegistryObject("sugar_water_bottle")
 	public static final Item SUGAR_WATER_BOTTLE = new WaterBottleItem(new Item.Properties().tab(SCreativeModeTab.TAB_MAIN).stacksTo(1));
 	@RegistryObject("canteen")
