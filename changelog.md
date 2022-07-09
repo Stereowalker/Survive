@@ -1,3 +1,10 @@
+[7.0.6]
+- Merlings regain air when drinking from a canteen
+- Fixed drinking from purified water source still causing the thirst effect
+- Converted the Purified Water Bottle into a potion
+- Fix purified water fluid not using the correct color everywhere else but the block
+- The canteen can now store any potion
+
 [7.0.5]
 - Reduced the amount of resistance gained per point from C.O.M.B.A.T Stats
 - Re-enabled Origins compatibility and added a Cold Blooded power to the Merling Origin

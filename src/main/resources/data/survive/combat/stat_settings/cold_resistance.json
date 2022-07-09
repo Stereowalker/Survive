@@ -10,7 +10,7 @@
 	"attributes": [
 		{
 			"attribute": "survive:generic.cold_resistance",
-			"modifier_per_point": 10.0
+			"modifier_per_point": 5.0
 		}
 	]
 }
