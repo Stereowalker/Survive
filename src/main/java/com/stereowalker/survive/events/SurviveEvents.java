@@ -612,8 +612,8 @@ public class SurviveEvents {
 				return 0;
 		});
 		TemperatureQuery.registerQuery("survive:heated_effect", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
-			if (player.hasEffect(SMobEffects.CHILLED))
-				return +(0.05F * (float)(player.getEffect(SMobEffects.CHILLED).getAmplifier() + 1));
+			if (player.hasEffect(SMobEffects.HEATED))
+				return +(0.05F * (float)(player.getEffect(SMobEffects.HEATED).getAmplifier() + 1));
 			else
 				return 0;
 		});
