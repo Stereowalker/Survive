@@ -6,7 +6,7 @@ buildscript {
     }
 	
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
 		classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
@@ -57,7 +57,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
             property 'mixin.env.remapRefMap', 'true'
 			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-			args '--username', 'CodeHexIO', '--uuid', 'c5751ce1d50e4d47ca120e1ea1c75542'
+			args '--username', 'CodeHexIO', '--uuid', '$System.env.MINECRAFTUUIDSTEREOWALKER'
 
             mods {
                 modId {
@@ -92,10 +92,10 @@ minecraft {
 dependencies {
 	minecraft 'net.minecraftforge:forge:' + modMinecraftVersion + '-' + modForgeVersion
 	annotationProcessor 'org.spongepowered:mixin:0.8:processor'
-	compile 'org.spongepowered:mixin:0.8'
-	compile fileTree(include: ['*.jar'], dir: 'libs')
+	implementation 'org.spongepowered:mixin:0.8'
+	implementation fileTree(include: ['*.jar'], dir: 'libs')
 	
-	compile fg.deobf("me.shedaniel.cloth:cloth-config-forge:"+clothConfigVersion)
+	implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:"+clothConfigVersion)
 	
 	compileOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+":api")
     compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
@@ -103,16 +103,16 @@ dependencies {
 	runtimeOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+"")
 	runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
 	
-	compile fg.deobf("curse.maven:unionlib-367806:"+unionLibID)
-	compile fg.deobf("curse.maven:biomes-o-plenty-220318:"+bopID)
-	compile fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
-	compile fg.deobf("curse.maven:better-weather-400714:"+betterWeatherID)
-	compile fg.deobf("curse.maven:origins-474438:"+originsID)
-	compile fg.deobf("curse.maven:architectury-419699:"+architecturyID)
-	compile fg.deobf("curse.maven:create-328085:"+createID)
-	compile fg.deobf("curse.maven:flywheel-486392:"+flywheelID)
+	implementation fg.deobf("curse.maven:unionlib-367806:"+unionLibID)
+	implementation fg.deobf("curse.maven:biomes-o-plenty-220318:"+bopID)
+	implementation fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
+	implementation fg.deobf("curse.maven:better-weather-400714:"+betterWeatherID)
+	implementation fg.deobf("curse.maven:origins-474438:"+originsID)
+	implementation fg.deobf("curse.maven:architectury-419699:"+architecturyID)
+	implementation fg.deobf("curse.maven:create-328085:"+createID)
+	implementation fg.deobf("curse.maven:flywheel-486392:"+flywheelID)
 	
-	compile fg.deobf("curse.maven:combat-api-320729:"+combatAPIID)
+	implementation fg.deobf("curse.maven:combat-api-320729:"+combatAPIID)
 	
 }
 // Process resources on build
