@@ -25,6 +25,7 @@ import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.survive.json.FoodJsonHolder;
 import com.stereowalker.survive.json.PotionJsonHolder;
+import com.stereowalker.survive.json.property.BlockPropertyHandlerImpl;
 import com.stereowalker.survive.network.protocol.game.ClientboundArmorDataTransferPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundDrinkSoundPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPacket;
@@ -142,6 +143,7 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		if (isOriginsLoaded()) {
 			OriginsCompat.initOriginsPatcher();
 		}
+		BlockPropertyHandlerImpl.init();
 	}
 
 	public void registerCommands(RegisterCommandsEvent event) {

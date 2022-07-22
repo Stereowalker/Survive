@@ -1,9 +1,15 @@
 package com.stereowalker.survive.events;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.tuple.Triple;
 
 import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.api.IBlockPropertyHandler;
+import com.stereowalker.survive.api.IBlockPropertyHandler.PropertyPair;
 import com.stereowalker.survive.api.world.level.block.TemperatureEmitter;
 import com.stereowalker.survive.compat.SereneSeasonsCompat;
 import com.stereowalker.survive.config.ServerConfig;
@@ -30,7 +36,6 @@ import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.math.UnionMathHelper;
 import com.stereowalker.unionlib.world.level.block.state.properties.UBlockStateProperties;
 
-//import io.github.apace100.origins.integration.OriginEventsArchitectury;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
@@ -293,27 +298,51 @@ public class SurviveEvents {
 							}
 							else if (DataMaps.Server.blockTemperature.containsKey(heatState.getBlock().getRegistryName())) {
 								BlockTemperatureJsonHolder blockTemperatureData = DataMaps.Server.blockTemperature.get(heatState.getBlock().getRegistryName());
-								if (blockTemperatureData.usesLitOrActiveProperty()) {
-									boolean litOrActive = false;
-									if (heatState.hasProperty(BlockStateProperties.LIT) && heatState.getValue(BlockStateProperties.LIT)) litOrActive = true;
-									if (heatState.hasProperty(UBlockStateProperties.ACTIVE) && heatState.getValue(UBlockStateProperties.ACTIVE)) litOrActive = true;
-									if (litOrActive) blockTemp += blockTemperatureData.getTemperatureModifier();
+								if (blockTemperatureData.getStateChangeProperty() != null) {
+									boolean setTemp = false;
+									List<Triple<IBlockPropertyHandler<?>,List<PropertyPair<?>>,Map<String,Float>>> changeProperty = blockTemperatureData.getStateChangeProperty();
+									first:
+										for (Triple<IBlockPropertyHandler<?>, List<PropertyPair<?>>, Map<String, Float>> handler : changeProperty) {
+											boolean meets = true;
+											for (PropertyPair<?> requirements : handler.getMiddle()) {
+												if (!heatState.getValue(requirements.getFirst()).equals(requirements.getSecond())) {
+													meets = false;
+													break;
+												}
+											}
+											if (meets)
+												for (String prop2 : handler.getRight().keySet())
+													if (heatState.getValue(handler.getLeft().derivedProperty()).equals(handler.getLeft().getValue(prop2))) {
+														blockTemp += handler.getRight().get(prop2);
+														setTemp = true;
+														break first;
+													}
+										}
+									if (!setTemp) blockTemp += blockTemperatureData.getTemperatureModifier();
 								}
-								else
-									blockTemp += blockTemperatureData.getTemperatureModifier();
+								else {
+									if (blockTemperatureData.usesLitOrActiveProperty()) {
+										boolean litOrActive = false;
+										if (heatState.hasProperty(BlockStateProperties.LIT) && heatState.getValue(BlockStateProperties.LIT)) litOrActive = true;
+										if (heatState.hasProperty(UBlockStateProperties.ACTIVE) && heatState.getValue(UBlockStateProperties.ACTIVE)) litOrActive = true;
+										if (litOrActive) blockTemp += blockTemperatureData.getTemperatureModifier();
+									}
+									else
+										blockTemp += blockTemperatureData.getTemperatureModifier();
 
-								if (blockTemperatureData.usesLevelProperty()) {
-									if (heatState.hasProperty(BlockStateProperties.LEVEL)) {
-										blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL)+1)/16;
-									}
-									else if (heatState.hasProperty(BlockStateProperties.LEVEL_COMPOSTER)) {
-										blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_COMPOSTER)+1)/9;
-									}
-									else if (heatState.hasProperty(BlockStateProperties.LEVEL_FLOWING)) {
-										blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_FLOWING))/8;
-									}
-									else if (heatState.hasProperty(BlockStateProperties.LEVEL_CAULDRON)) {
-										blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_CAULDRON)+1)/4;
+									if (blockTemperatureData.usesLevelProperty()) {
+										if (heatState.hasProperty(BlockStateProperties.LEVEL)) {
+											blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL)+1)/16;
+										}
+										else if (heatState.hasProperty(BlockStateProperties.LEVEL_COMPOSTER)) {
+											blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_COMPOSTER)+1)/9;
+										}
+										else if (heatState.hasProperty(BlockStateProperties.LEVEL_FLOWING)) {
+											blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_FLOWING))/8;
+										}
+										else if (heatState.hasProperty(BlockStateProperties.LEVEL_CAULDRON)) {
+											blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_CAULDRON)+1)/4;
+										}
 									}
 								}
 							}
@@ -348,14 +377,12 @@ public class SurviveEvents {
 	}
 
 	private enum TempType {
-		BIOME("biome", 10, 7, false), BLOCK("block", 10, 9, true), ENTITY("entity", 10, 9, true), SHADE("shade", 10, 200, true), SUN("sun", 10, 200, true);
+		BIOME("biome", 7, false), BLOCK("block", 9, true), ENTITY("entity", 9, true), SHADE("shade", 200, true), SUN("sun", 200, true);
 
 		String name;
-		int tickInterval;
 		double reductionAmount;
 		boolean usingExact;
-		private TempType(String name, int tickIntervalIn, double reductionAmountIn, boolean usingExactIn) {
-			this.tickInterval = tickIntervalIn;
+		private TempType(String name, double reductionAmountIn, boolean usingExactIn) {
 			this.reductionAmount = reductionAmountIn;
 			this.usingExact = usingExactIn;
 			this.name = name;
