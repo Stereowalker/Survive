@@ -1,6 +1,7 @@
 {
 	"temperature": -3.4,
 	"wetness_modifier": 2.0,
+	"sun_intensity": 3.0,
 	"altitude_level_modifier": {
 		"upper": 1.0,
 		"lower": 1.0
