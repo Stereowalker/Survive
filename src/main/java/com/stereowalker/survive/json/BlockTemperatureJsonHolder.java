@@ -34,13 +34,12 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 	private final List<Triple<IBlockPropertyHandler<?>,List<PropertyPair<?>>,Map<String,Float>>> statePropertyOverride;
 
 	public BlockTemperatureJsonHolder(ResourceLocation blockID, JsonObject object) {
-		String TEMPERATURE_MODIFIER = "temperature_modifier";
 		String CHANGE_PROPERTY = "blockstate_property_overrides";
 		String LIT_PROPERTY = "uses_lit_or_active_property";
 		String LEVEL_PROPERTY = "uses_level_property";
 		String RANGE = "range";
 
-		float temperatureModifierIn = 0;
+		float temperatureIn = 0;
 		boolean usesLitOrActivePropertyIn = false;
 		boolean usesLevelPropertyIn = false;
 		//
@@ -52,10 +51,8 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 		if(object.entrySet().size() != 0) {
 			stopWorking();
 			try {
-				if(this.hasMemberAndIsPrimitive(TEMPERATURE_MODIFIER, object)) {
-					setWorkingOn(TEMPERATURE_MODIFIER);
-					temperatureModifierIn = object.get(TEMPERATURE_MODIFIER).getAsFloat();
-					stopWorking();
+				if(this.hasMemberAndIsPrimitive("temperature_modifier", object)) {
+					temperatureIn = workOnFloat("temperature_modifier", object);
 				}
 
 				if(this.hasMemberAndIsPrimitive(LIT_PROPERTY, object)) {
@@ -136,7 +133,7 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 			usesLitOrActivePropertyIn = false;
 		}
 
-		this.temperatureModifier = temperatureModifierIn;
+		this.temperatureModifier = temperatureIn;
 		this.usesLitOrActiveProperty = usesLitOrActivePropertyIn;
 		this.usesLevelProperty = usesLevelPropertyIn;
 

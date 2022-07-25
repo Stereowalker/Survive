@@ -262,8 +262,12 @@ public class SurviveEvents {
 
 		switch (type) {
 		case SUN:
-			if (skyLight > 5.0F) return gameTime*5.0F;
-			else return -1.0F * 5.0F;
+			float sunIntensity = 5.0f;
+			if (DataMaps.Server.biomeTemperature.containsKey(world.getBiome(pos).value().getRegistryName())) {
+				sunIntensity = DataMaps.Server.biomeTemperature.get(world.getBiome(pos).value().getRegistryName()).getSunIntensity();
+			}
+			if (skyLight > 5.0F) return gameTime*sunIntensity;
+			else return -1.0F * sunIntensity;
 
 		case BIOME:
 			float biomeTemp = (TemperatureUtil.getTemperature(world.getBiome(pos).value(), pos)*2)-2;
