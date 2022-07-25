@@ -9,6 +9,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
+import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.IRoastedEntity;
 import com.stereowalker.survive.needs.NutritionData;
 import com.stereowalker.survive.world.effect.SMobEffects;
@@ -165,7 +166,8 @@ public class GuiHelper {
 	@OnlyIn(Dist.CLIENT)
 	public static void renderThirst(Gui gui, PoseStack matrixStack, MutableInt moveUp, int j1, int k1, boolean forgeOverlay) {
 		Player player = (Player)gui.minecraft.getCameraEntity();
-		int waterL = (int) SurviveEntityStats.getWaterStats(player).getWaterLevel();
+		IRealisticEntity realisticPlayer = (IRealisticEntity)player;
+		int waterL = (int) realisticPlayer.getWaterData().getWaterLevel();
 		gui.minecraft.getProfiler().push("thirst");
 		if (!forgeOverlay) {
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -180,7 +182,7 @@ public class GuiHelper {
 				i8 = 13;
 			}
 
-			if (SurviveEntityStats.getWaterStats(player).getHydrationLevel() <= 0.0F && gui.tickCount % (waterL * 3 + 1) == 0) {
+			if (realisticPlayer.getWaterData().getHydrationLevel() <= 0.0F && gui.tickCount % (waterL * 3 + 1) == 0) {
 				i7 = k1 + (gui.random.nextInt(3) - 1);
 			}
 

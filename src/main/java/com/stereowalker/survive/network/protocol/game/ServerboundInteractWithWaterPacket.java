@@ -1,7 +1,7 @@
 package com.stereowalker.survive.network.protocol.game;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
+import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.WaterData;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
@@ -77,7 +77,7 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 			FluidState fluid = sender.level.getFluidState(pos);
 			if (heldItem.isEmpty()) {
 				if (sender.isCrouching()) {
-					WaterData waterStats = SurviveEntityStats.getWaterStats(sender);
+					WaterData waterStats = ((IRealisticEntity)sender).getWaterData();
 					if (waterStats.needWater()) {
 						boolean flag = false;
 						if (block.getBlock() == Blocks.WATER_CAULDRON) {

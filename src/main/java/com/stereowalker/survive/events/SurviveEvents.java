@@ -18,6 +18,7 @@ import com.stereowalker.survive.core.TempMode;
 import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.survive.json.FluidJsonHolder;
+import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.SleepData;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.TemperatureUtil;
@@ -41,7 +42,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -80,40 +80,6 @@ import net.minecraftforge.network.NetworkDirection;
 
 @EventBusSubscriber
 public class SurviveEvents {
-	@SubscribeEvent
-	public static void registerStats(LivingUpdateEvent event) {
-		if(event.getEntityLiving() instanceof Player) {
-			Player player = (Player)event.getEntityLiving();
-			SurviveEntityStats.addStatsOnSpawn(player);
-			if (!player.level.isClientSide) {
-				SurviveEntityStats.getEnergyStats(player).baseTick(player);
-				SurviveEntityStats.getHygieneStats(player).baseTick(player);
-				SurviveEntityStats.getNutritionStats(player).baseTick(player);
-				SurviveEntityStats.getTemperatureStats(player).baseTick(player);
-				SurviveEntityStats.getWaterStats(player).baseTick(player);
-				SurviveEntityStats.getWellbeingStats(player).baseTick(player);
-				SurviveEntityStats.getSleepStats(player).baseTick(player);
-			}
-		}
-	}
-
-	@SubscribeEvent
-	@OnlyIn(Dist.CLIENT)
-	public static void tickStatsOnClient(LivingUpdateEvent event) {
-		if(event.getEntityLiving() instanceof AbstractClientPlayer) {
-			AbstractClientPlayer player = (AbstractClientPlayer)event.getEntityLiving();
-			if (player.level.isClientSide) {
-				SurviveEntityStats.getEnergyStats(player).baseClientTick(player);
-				SurviveEntityStats.getHygieneStats(player).baseClientTick(player);
-				SurviveEntityStats.getNutritionStats(player).baseClientTick(player);
-				SurviveEntityStats.getTemperatureStats(player).baseClientTick(player);
-				SurviveEntityStats.getWaterStats(player).baseClientTick(player);
-				SurviveEntityStats.getWellbeingStats(player).baseClientTick(player);
-				SurviveEntityStats.getSleepStats(player).baseClientTick(player);
-			}
-		}
-	}
-
 	@SubscribeEvent
 	public static void allowSleep(SleepingTimeCheckEvent event) {
 		if (Survive.CONFIG.enable_sleep) {
@@ -468,10 +434,11 @@ public class SurviveEvents {
 	public static void restoreStats(PlayerEvent.Clone event) {
 		SurviveEntityStats.getOrCreateModNBT(event.getPlayer());
 		if (!event.isWasDeath()) {
+			IRealisticEntity original = ((IRealisticEntity)event.getOriginal());
 			SurviveEntityStats.setNutritionStats(event.getPlayer(), SurviveEntityStats.getNutritionStats(event.getOriginal()));
 			SurviveEntityStats.setWellbeingStats(event.getPlayer(), SurviveEntityStats.getWellbeingStats(event.getOriginal()));
 			SurviveEntityStats.setHygieneStats(event.getPlayer(), SurviveEntityStats.getHygieneStats(event.getOriginal()));
-			SurviveEntityStats.setWaterStats(event.getPlayer(), SurviveEntityStats.getWaterStats(event.getOriginal()));
+			SurviveEntityStats.setWaterStats(event.getPlayer(), original.getWaterData());
 			SurviveEntityStats.setStaminaStats(event.getPlayer(), SurviveEntityStats.getEnergyStats(event.getOriginal()));
 			SurviveEntityStats.setTemperatureStats(event.getPlayer(), SurviveEntityStats.getTemperatureStats(event.getOriginal()));
 			SurviveEntityStats.setSleepStats(event.getPlayer(), SurviveEntityStats.getSleepStats(event.getOriginal()));
