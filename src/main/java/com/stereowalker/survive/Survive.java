@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.stereowalker.survive.commands.SCommands;
@@ -18,7 +17,6 @@ import com.stereowalker.survive.config.TemperatureConfig;
 import com.stereowalker.survive.config.ThirstConfig;
 import com.stereowalker.survive.config.WellbeingConfig;
 import com.stereowalker.survive.core.cauldron.SCauldronInteraction;
-import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.json.ArmorJsonHolder;
 import com.stereowalker.survive.json.BiomeTemperatureJsonHolder;
 import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
@@ -38,6 +36,7 @@ import com.stereowalker.survive.resource.ArmorDataManager;
 import com.stereowalker.survive.resource.BiomeTemperatureDataManager;
 import com.stereowalker.survive.resource.BlockTemperatureDataManager;
 import com.stereowalker.survive.resource.EntityTemperatureDataManager;
+import com.stereowalker.survive.resource.FluidDataManager;
 import com.stereowalker.survive.resource.ItemConsummableDataManager;
 import com.stereowalker.survive.resource.PotionDrinkDataManager;
 import com.stereowalker.survive.tags.FluidSTags;
@@ -48,7 +47,6 @@ import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.item.HygieneItems;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.alchemy.BrewingRecipes;
-import com.stereowalker.survive.world.item.alchemy.SPotions;
 import com.stereowalker.survive.world.item.crafting.SRecipeSerializer;
 import com.stereowalker.survive.world.level.CGameRules;
 import com.stereowalker.survive.world.level.block.SBlocks;
@@ -71,9 +69,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -109,6 +105,7 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 	public static final BlockTemperatureDataManager blockReloader = new BlockTemperatureDataManager();
 	public static final BiomeTemperatureDataManager biomeReloader = new BiomeTemperatureDataManager();
 	public static final EntityTemperatureDataManager entityReloader = new EntityTemperatureDataManager();
+	public static final FluidDataManager fluidReloader = new FluidDataManager();
 	private static Survive instance;
 
 	public static boolean isCombatLoaded() {
@@ -222,7 +219,6 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		SCauldronInteraction.bootStrap();
 		BrewingRecipes.addBrewingRecipes();
 		CGameRules.init();
-		SurviveEvents.registerHeatMap();
 
 		for(Item item : ForgeRegistries.ITEMS) {
 			if (item.isEdible())

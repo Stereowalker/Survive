@@ -17,6 +17,7 @@ import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempMode;
 import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
+import com.stereowalker.survive.json.FluidJsonHolder;
 import com.stereowalker.survive.needs.SleepData;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.TemperatureUtil;
@@ -26,7 +27,6 @@ import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWat
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.item.enchantment.SEnchantmentHelper;
-import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
 import com.stereowalker.survive.world.temperature.TemperatureQuery;
@@ -36,15 +36,12 @@ import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.math.UnionMathHelper;
 import com.stereowalker.unionlib.world.level.block.state.properties.UBlockStateProperties;
 
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -62,7 +59,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -84,36 +80,6 @@ import net.minecraftforge.network.NetworkDirection;
 
 @EventBusSubscriber
 public class SurviveEvents {
-	public static final Object2FloatMap<Fluid> FLUID_THIRST_MAP = new Object2FloatOpenHashMap<Fluid>();
-	public static final Object2FloatMap<Fluid> FLUID_HYDRATION_MAP = new Object2FloatOpenHashMap<Fluid>();
-	public static final Object2BooleanMap<Fluid> FLUID_THIRSTY_MAP = new Object2BooleanOpenHashMap<Fluid>();
-
-
-	public static void registerHeatMap() {
-		registerFluidDrinkStats(Fluids.WATER, 4, 1.0F, true);
-		registerFluidDrinkStats(SFluids.PURIFIED_WATER, 6, 3.0F, false);
-		registerFluidDrinkStats(Fluids.FLOWING_WATER, 4, 1.0F, true);
-		registerFluidDrinkStats(SFluids.FLOWING_PURIFIED_WATER, 6, 3.0F, false);
-	}
-
-	public static float getRegisteredThirst(Fluid fluid) {
-		return FLUID_THIRST_MAP.getOrDefault(fluid, 0);
-	}
-
-	public static float getRegisteredHydration(Fluid fluid) {
-		return FLUID_HYDRATION_MAP.getOrDefault(fluid, 0);
-	}
-
-	public static boolean getRegisteredThirstEffect(Fluid fluid) {
-		return FLUID_THIRSTY_MAP.getOrDefault(fluid, false);
-	}
-
-	public static void registerFluidDrinkStats(Fluid fluid, int thirst, float hydration, boolean shouldGiveThirst) {
-		FLUID_THIRST_MAP.put(fluid, thirst);
-		FLUID_HYDRATION_MAP.put(fluid, hydration);
-		FLUID_THIRSTY_MAP.put(fluid, shouldGiveThirst);
-	}
-
 	@SubscribeEvent
 	public static void registerStats(LivingUpdateEvent event) {
 		if(event.getEntityLiving() instanceof Player) {
@@ -436,15 +402,16 @@ public class SurviveEvents {
 	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickEmpty event) {
 		HitResult raytraceresult = rayTrace(event.getWorld(), event.getEntityLiving(), ClipContext.Fluid.SOURCE_ONLY);
 		BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
-		if (event.getWorld().isClientSide) {
+		if (event.getWorld().isClientSide && event.getItemStack().isEmpty()) {
 			//Source Block Of Water
 			Fluid fluid = event.getWorld().getFluidState(blockpos).getType();
-			if (FLUID_THIRST_MAP.containsKey(fluid) && FLUID_THIRSTY_MAP.containsKey(fluid) && FLUID_HYDRATION_MAP.containsKey(fluid)) {
-				new ServerboundInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand()).send();
+			if (DataMaps.Server.fluid.containsKey(fluid.getRegistryName())) {
+				FluidJsonHolder fluidHolder = DataMaps.Server.fluid.get(fluid.getRegistryName());
+				new ServerboundInteractWithWaterPacket(blockpos, fluidHolder.getThirstChance(), fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
 			}
 			//Air Block
 			if (event.getWorld().isRainingAt(blockpos)) {
-				new ServerboundInteractWithWaterPacket(event.getPos(), false, 1.0D, 0.5D, event.getHand()).send();
+				new ServerboundInteractWithWaterPacket(event.getPos(), 0.0f, 1.0D, 0.5D, event.getHand()).send();
 			}
 		}
 	}
@@ -459,10 +426,11 @@ public class SurviveEvents {
 		BlockState stateUnder = event.getWorld().getBlockState(event.getPos().below());
 		if (event.getWorld().isClientSide && event.getItemStack().isEmpty()) {
 			//Source Block Of Water
-			if (FLUID_THIRST_MAP.containsKey(fluid) && FLUID_THIRSTY_MAP.containsKey(fluid) && FLUID_HYDRATION_MAP.containsKey(fluid)) {
+			if (DataMaps.Server.fluid.containsKey(fluid.getRegistryName())) {
+				FluidJsonHolder fluidHolder = DataMaps.Server.fluid.get(fluid.getRegistryName());
 				event.setCanceled(true);
 				event.setCancellationResult(InteractionResult.SUCCESS);
-				new ServerboundInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand()).send();
+				new ServerboundInteractWithWaterPacket(blockpos, fluidHolder.getThirstChance(), fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
 			}
 			//Cauldron
 			if (state.getBlock() == Blocks.WATER_CAULDRON) {
@@ -471,10 +439,10 @@ public class SurviveEvents {
 					event.setCanceled(true);
 					event.setCancellationResult(InteractionResult.SUCCESS);
 					if (stateUnder.getBlock() == Blocks.CAMPFIRE && stateUnder.getValue(BlockStateProperties.LIT)) {
-						new ServerboundInteractWithWaterPacket(event.getPos(), false, 4.0D, event.getHand()).send();
+						new ServerboundInteractWithWaterPacket(event.getPos(), 0.0f, 4.0D, event.getHand()).send();
 					}
 					else {
-						new ServerboundInteractWithWaterPacket(event.getPos(), true, 4.0D, event.getHand()).send();
+						new ServerboundInteractWithWaterPacket(event.getPos(), 0.5f, 4.0D, event.getHand()).send();
 					}
 				}
 			}
@@ -519,6 +487,7 @@ public class SurviveEvents {
 		event.addListener(Survive.blockReloader);
 		event.addListener(Survive.biomeReloader);
 		event.addListener(Survive.entityReloader);
+		event.addListener(Survive.fluidReloader);
 	}
 
 	@SubscribeEvent

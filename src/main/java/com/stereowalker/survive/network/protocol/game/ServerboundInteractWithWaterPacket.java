@@ -21,12 +21,12 @@ import net.minecraftforge.network.NetworkDirection;
 
 public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 	private BlockPos pos;
-	private boolean addThirst;
+	private float addThirst;
 	private double waterAmount;
 	private double hydrationAmount;
 	private InteractionHand hand;
 
-	public ServerboundInteractWithWaterPacket(final BlockPos pos, final boolean addThirst, final double waterAmount, final double hydrationAmount, final InteractionHand hand) {
+	public ServerboundInteractWithWaterPacket(final BlockPos pos, final float addThirst, final double waterAmount, final double hydrationAmount, final InteractionHand hand) {
 		super(Survive.getInstance().channel);
 		this.pos = pos;
 		this.addThirst = addThirst;
@@ -35,14 +35,14 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 		this.hand = hand;
 	}
 	
-	public ServerboundInteractWithWaterPacket(final BlockPos pos, final boolean addThirst, final double waterAmount, final InteractionHand hand) {
+	public ServerboundInteractWithWaterPacket(final BlockPos pos, final float addThirst, final double waterAmount, final InteractionHand hand) {
 		this(pos, addThirst, waterAmount, 0, hand);
 	}
 
 	public ServerboundInteractWithWaterPacket(FriendlyByteBuf packetBuffer) {
 		super(packetBuffer, Survive.getInstance().channel);
 		this.pos = packetBuffer.readBlockPos();
-		this.addThirst = packetBuffer.readBoolean();
+		this.addThirst = packetBuffer.readFloat();
 		this.hand = packetBuffer.readEnum(InteractionHand.class);
 		this.waterAmount = packetBuffer.readDouble();
 		this.hydrationAmount = packetBuffer.readDouble();
@@ -51,7 +51,7 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 	@Override
 	public void encode(final FriendlyByteBuf byteBuf) {
 		byteBuf.writeBlockPos(pos);
-		byteBuf.writeBoolean(addThirst);
+		byteBuf.writeFloat(addThirst);
 		byteBuf.writeEnum(hand);
 		byteBuf.writeDouble(waterAmount);
 		byteBuf.writeDouble(hydrationAmount);
@@ -92,7 +92,7 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 							flag = true;
 						}
 						if (flag) {
-							waterStats.drink((int) waterAmount, (float) hydrationAmount, addThirst ? WaterData.applyThirst(sender, 0.5f/*TODO MAKE BIOMES HAVE DIFFERENT THIRST CHANCES*/) : false);
+							waterStats.drink((int) waterAmount, (float) hydrationAmount, WaterData.applyThirst(sender, addThirst/*TODO MAKE BIOMES HAVE DIFFERENT THIRST CHANCES*/));
 						}
 						Survive.getInstance().channel.sendTo(new ClientboundDrinkSoundPacket(pos, sender.getUUID()), sender.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 					}
@@ -101,7 +101,7 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 			} else if (heldItem.getItem() == Items.BOWL) {
 				if (isValidContainerSource(waterAmount)) {
 					heldItem.shrink(1);
-					if (addThirst) sender.addItem(new ItemStack(SItems.WATER_BOWL));
+					if (addThirst > 0) sender.addItem(new ItemStack(SItems.WATER_BOWL));
 					else sender.addItem(new ItemStack(SItems.PURIFIED_WATER_BOWL));
 				}
 			}

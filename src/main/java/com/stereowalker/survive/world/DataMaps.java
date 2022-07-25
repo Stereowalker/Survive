@@ -8,6 +8,7 @@ import com.stereowalker.survive.json.ArmorJsonHolder;
 import com.stereowalker.survive.json.BiomeTemperatureJsonHolder;
 import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
+import com.stereowalker.survive.json.FluidJsonHolder;
 import com.stereowalker.survive.json.FoodJsonHolder;
 import com.stereowalker.survive.json.PotionJsonHolder;
 
@@ -23,6 +24,7 @@ public class DataMaps {
 		public static final Map<ResourceLocation, FoodJsonHolder> consummableItem = Maps.newHashMap();
 		public static final Map<ResourceLocation, PotionJsonHolder> potionDrink = Maps.newHashMap();
 		public static final Map<ResourceLocation, ArmorJsonHolder> armor = Maps.newHashMap();
+		public static final Map<ResourceLocation, FluidJsonHolder> fluid = Maps.newHashMap();
 		public static final Map<ResourceLocation, BlockTemperatureJsonHolder> blockTemperature = Maps.newHashMap();
 		public static final Map<ResourceLocation, EntityTemperatureJsonHolder> entityTemperature = Maps.newHashMap();
 		public static final Map<ResourceLocation, BiomeTemperatureJsonHolder> biomeTemperature = Maps.newHashMap();
@@ -33,6 +35,7 @@ public class DataMaps {
 		public static ImmutableMap<ResourceLocation, FoodJsonHolder> consummableItem = ImmutableMap.of();
 		public static ImmutableMap<ResourceLocation, PotionJsonHolder> potionDrink = ImmutableMap.of();
 		public static ImmutableMap<ResourceLocation, ArmorJsonHolder> armor = ImmutableMap.of();
+		public static ImmutableMap<ResourceLocation, FluidJsonHolder> fluid = ImmutableMap.of();
 		public static ImmutableMap<ResourceLocation, BlockTemperatureJsonHolder> blockTemperature = ImmutableMap.of();
 		public static ImmutableMap<ResourceLocation, EntityTemperatureJsonHolder> entityTemperature = ImmutableMap.of();
 		public static ImmutableMap<ResourceLocation, BiomeTemperatureJsonHolder> biomeTemperature = ImmutableMap.of();
