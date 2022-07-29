@@ -16,8 +16,11 @@ public class ServerConfig {
 	@UnionConfig.Comment(comment = {"This list defines dimensional temperature modifiers","Dimensions in this list will multiply the tempeatures of their biomes by this value.","Values here should typically be between 2 (hot) and -2 (cold) but they can be anything"})
 	public static List<String> dimensionModifiers = Survive.defaultDimensionMods();
 	
-	//
-	//Thirst
+	static final String THIR = "Hunger & Thirst";
+	@UnionConfig.Entry(group = THIR , name = "Expanded Stomach Capacity", type = Type.SERVER)
+	@UnionConfig.Comment(comment = {"Should the player be allowed to eat or drink beyond the maximum capacity"})
+	public static boolean expandedStomachCapacity = true;
+	public static int stomachCapacity() {return (ServerConfig.expandedStomachCapacity?40:20);}
 	
 	//
 	//Hunger
@@ -30,9 +33,6 @@ public class ServerConfig {
 	
 	//
 	//Hygiene
-	
-	//
-	//Misc
 	static final String MISC = "Miscellaneous";
 	@UnionConfig.Entry(group = MISC , name = "Should Purified Water Cauldron Revert", type = Type.SERVER)
 	@UnionConfig.Comment(comment = {"Should the purified water cauldron revert back to a water cauldron when no longer underneath a campfire?"})

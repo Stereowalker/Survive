@@ -5,6 +5,7 @@ import java.util.Random;
 
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.compat.PamsHarvestcraftCompat;
+import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.json.ConsummableJsonHolder;
 import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
@@ -41,7 +42,7 @@ public class WaterData extends SurviveData {
 	private int waterTimer;
 	@SuppressWarnings("unused")
 	private int prevWaterLevel = 20;
-	private int uncleanComsumption = 0;
+	private int uncleanConsumption = 0;
 
 	public WaterData() {
 		this.waterHydrationLevel = 5.0F;
@@ -51,18 +52,18 @@ public class WaterData extends SurviveData {
 	 * Add water stats.
 	 */
 	public void drink(int waterLevelIn, float waterHydrationModifier, boolean isUnclean) {
-		this.waterLevel = Math.min(waterLevelIn + this.waterLevel, 20);
+		this.waterLevel = Math.min(waterLevelIn + this.waterLevel, ServerConfig.stomachCapacity());
 		this.waterHydrationLevel = Math.min(this.waterHydrationLevel + (float)waterLevelIn * waterHydrationModifier * 2.0F, (float)this.waterLevel);
 		if (isUnclean) {
-			uncleanComsumption++;
+			uncleanConsumption++;
 		}
 	}
 
 	//TODO: Change This
 	public void consume(Item maybeFood, ItemStack stack) {
 		if (maybeFood.isEdible()) {
-//			FoodProperties food = maybeFood.getFoodProperties();
-//			this.addStats(food.getNutrition(), food.getSaturationModifier());
+			//			FoodProperties food = maybeFood.getFoodProperties();
+			//			this.addStats(food.getNutrition(), food.getSaturationModifier());
 		}
 
 	}
@@ -74,6 +75,19 @@ public class WaterData extends SurviveData {
 	public void tick(Player player) {
 		Difficulty difficulty = player.level.getDifficulty();
 		this.prevWaterLevel = this.waterLevel;
+		
+		if (!player.hasEffect(SMobEffects.UPSET_STOMACH) || player.getEffect(SMobEffects.UPSET_STOMACH).getDuration() <= 10)
+			if (this.waterLevel > 36)
+				player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 4));
+			else if (this.waterLevel > 32)
+				player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 3));
+			else if (this.waterLevel > 28)
+				player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 2));
+			else if (this.waterLevel > 24)
+				player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 1));
+			else if (this.waterLevel > 20)
+				player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 0));
+		
 		if (this.waterExhaustionLevel > 4.0F) {
 			this.waterExhaustionLevel -= 4.0F;
 			if (this.waterHydrationLevel > 0.0F) {
@@ -84,7 +98,16 @@ public class WaterData extends SurviveData {
 		}
 
 		boolean flag = player.level.getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION);
-		if (flag && this.waterHydrationLevel > 0.0F && player.isHurt() && this.waterLevel >= 20) {
+		if (this.waterLevel >= 40) {
+			++this.waterTimer;
+			if (this.waterTimer >= 10) {
+				if (player.getHealth() > 10.0F || difficulty == Difficulty.HARD || player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL) {
+					player.hurt(SDamageSource.OVERHYDRATE, 1.0F);
+				}
+
+				this.waterTimer = 0;
+			}
+		} else if (flag && this.waterHydrationLevel > 0.0F && player.isHurt() && this.waterLevel >= 20) {
 			++this.waterTimer;
 			if (this.waterTimer >= 10) {
 				float f = Math.min(this.waterHydrationLevel, 6.0F);
@@ -111,13 +134,13 @@ public class WaterData extends SurviveData {
 		} else {
 			this.waterTimer = 0;
 		}
-		
+
 		if (Survive.WELLBEING_CONFIG.enabled) {
 			WellbeingData wellbeing = SurviveEntityStats.getWellbeingStats(player);
 			//Essentially causes the player to get ill when drinking bad water
-			if (uncleanComsumption >= 3) {
+			if (uncleanConsumption >= 3) {
 				wellbeing.setTimer(2400, 6000);
-				uncleanComsumption = 0;
+				uncleanConsumption = 0;
 				wellbeing.save(player);
 			}
 		}
@@ -133,7 +156,7 @@ public class WaterData extends SurviveData {
 			this.waterTimer = compound.getInt("waterTickTimer");
 			this.waterHydrationLevel = compound.getFloat("waterHydrationLevel");
 			this.waterExhaustionLevel = compound.getFloat("waterExhaustionLevel");
-			this.uncleanComsumption = compound.getInt("uncleanComsumption");
+			this.uncleanConsumption = compound.getInt("uncleanComsumption");
 		}
 
 	}
@@ -146,7 +169,7 @@ public class WaterData extends SurviveData {
 		compound.putInt("waterTickTimer", this.waterTimer);
 		compound.putFloat("waterHydrationLevel", this.waterHydrationLevel);
 		compound.putFloat("waterExhaustionLevel", this.waterExhaustionLevel);
-		compound.putInt("uncleanComsumption", this.uncleanComsumption);
+		compound.putInt("uncleanComsumption", this.uncleanConsumption);
 	}
 
 	/**
@@ -160,7 +183,7 @@ public class WaterData extends SurviveData {
 	 * Get whether the player must drink water.
 	 */
 	public boolean needWater() {
-		return this.waterLevel < 20;
+		return this.waterLevel < ServerConfig.stomachCapacity();
 	}
 
 	/**
@@ -203,7 +226,7 @@ public class WaterData extends SurviveData {
 	public void save(LivingEntity player) {
 		SurviveEntityStats.setWaterStats(player, this);
 	}
-	
+
 	@Override
 	public boolean shouldTick() {
 		return Survive.THIRST_CONFIG.enabled;
@@ -239,7 +262,7 @@ public class WaterData extends SurviveData {
 			}
 		}
 	}
-	
+
 	public static float getHydrationFromList(ItemStack stack, List<String> list) {
 		for (String containerList : list) {
 			String[] container = containerList.split(",");
@@ -249,30 +272,30 @@ public class WaterData extends SurviveData {
 		}
 		return 0;
 	}
-	
-	
+
+
 	public static int getThirstFill(ItemStack stack) {
 		int amount = 0;
-			
-			if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) == Potions.WATER)
-				amount+=5;
-			if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) != Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY)
-				amount+=4;
+
+		if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) == Potions.WATER)
+			amount+=5;
+		if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) != Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY)
+			amount+=4;
 		return amount;
 	}
-	
+
 	public static float getHydrationFill(ItemStack stack) {
 		float amount = 0.0f;
-			amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.normalPamHCDrinks());
-			amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.uncleanPamHCDrinks());
-			amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.chilledPamHCDrinks());
-			amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.heatedPamHCDrinks());
-			amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.stimulatingPamHCDrinks());
-			
-			if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) == Potions.WATER) {
-				amount+=2.0F;}
-			if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) != Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY)
-				amount+=1.0F;
+		amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.normalPamHCDrinks());
+		amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.uncleanPamHCDrinks());
+		amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.chilledPamHCDrinks());
+		amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.heatedPamHCDrinks());
+		amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.stimulatingPamHCDrinks());
+
+		if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) == Potions.WATER) {
+			amount+=2.0F;}
+		if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) != Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY)
+			amount+=1.0F;
 		return amount;
 	}
 
@@ -281,7 +304,7 @@ public class WaterData extends SurviveData {
 		if (event.getEntityLiving() != null && event.getEntityLiving() instanceof ServerPlayer) {
 			ServerPlayer player = (ServerPlayer) event.getEntityLiving();
 			WaterData stats = ((IRealisticEntity)player).getWaterData();
-			
+
 			if ((event.getItem().getItem() == Items.POTION || event.getItem().getItem() == SItems.FILLED_CANTEEN) && DataMaps.Server.potionDrink.containsKey(PotionUtils.getPotion(event.getItem()).getRegistryName())) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(PotionUtils.getPotion(event.getItem()).getRegistryName());
 				stats.drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(event.getEntityLiving(), drinkData.getThirstChance()));
@@ -296,8 +319,8 @@ public class WaterData extends SurviveData {
 				if (drinkData.isChilled())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
 				if (drinkData.isEnergizing())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.ENERGIZED, 60*20*5));
 			}
-			
-			
+
+
 			stats.save(player);
 		}
 	}
