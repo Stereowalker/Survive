@@ -88,19 +88,28 @@ public class StaminaData extends SurviveData {
 			}
 		}
 
-		boolean flag = player.level.getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION);
-		if (flag && this.energyReserveLevel > 6 && player.isHurt() && this.energyLevel >= 19) {
+		if (this.isTired() && Survive.CONFIG.nutrition_enabled && SurviveEntityStats.getNutritionStats(player).getCarbLevel() >= 2) {
 			++this.energyTimer;
-			if (this.energyTimer >= 10) {
-				player.heal(2.0F);
-				this.addExhaustion(6.0F);
+			if (Survive.STAMINA_CONFIG.stamina_recovery_ticks == 0 || this.energyTimer >= Survive.STAMINA_CONFIG.stamina_recovery_ticks) {
+				NutritionData nutritionStats = SurviveEntityStats.getNutritionStats(player);
+				this.relax(1, player.getAttributeValue(SAttributes.MAX_STAMINA));
+				nutritionStats.removeCarbs(2);
+				nutritionStats.save(player);
 				this.energyTimer = 0;
 			}
-		} else if (flag && this.energyReserveLevel > 6 && player.isHurt() && this.energyLevel >= 18) {
+		}
+		else if (this.isTired() && !Survive.CONFIG.nutrition_enabled && player.getFoodData().getFoodLevel() > 15 && WeightHandler.getTotalArmorWeight(player)/Survive.STAMINA_CONFIG.max_weight < 1.0F) {
 			++this.energyTimer;
-			if (this.energyTimer >= 80) {
-				player.heal(1.0F);
-				this.addExhaustion(6.0F);
+			if (Survive.STAMINA_CONFIG.stamina_recovery_ticks == 0 || this.energyTimer >= Survive.STAMINA_CONFIG.stamina_recovery_ticks) {
+				this.relax(1, this.maxStamina);
+				player.getFoodData().addExhaustion(1.0F);
+				this.energyTimer = 0;
+			}
+		}
+		else if (player.isSleeping()) {
+			++this.energyTimer;
+			if (this.energyTimer >= 20) {
+				this.relax(1, this.maxStamina);
 				this.energyTimer = 0;
 			}
 		} else if (this.energyLevel <= 0 && this.energyReserveLevel <= 0) {
@@ -114,25 +123,6 @@ public class StaminaData extends SurviveData {
 			}
 		} else {
 			this.energyTimer = 0;
-		}
-		//Moved from the event. Find a way to mesh all this with what is above you
-		if (player.isSleeping() && player.tickCount%20 == 19) {
-			this.relax(1, this.maxStamina);
-		}
-		if ((Survive.STAMINA_CONFIG.stamina_recovery_ticks == 0 || player.tickCount%Survive.STAMINA_CONFIG.stamina_recovery_ticks == Survive.STAMINA_CONFIG.stamina_recovery_ticks-1) && this.isTired()) {
-			if (Survive.CONFIG.nutrition_enabled) {
-				NutritionData nutritionStats = SurviveEntityStats.getNutritionStats(player);
-				if (nutritionStats.getCarbLevel() >= 2) {
-					this.relax(1, player.getAttributeValue(SAttributes.MAX_STAMINA));
-					nutritionStats.removeCarbs(2);
-				}
-				nutritionStats.save(player);
-			} else {
-				if (player.getFoodData().getFoodLevel() > 15 && WeightHandler.getTotalArmorWeight(player)/Survive.STAMINA_CONFIG.max_weight < 1.0F) {
-					this.relax(1, this.maxStamina);
-					player.getFoodData().addExhaustion(1.0F);
-				}
-			}
 		}
 		if (difficulty == Difficulty.PEACEFUL && player.level.getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION)) {
 			if (this.isTired() && player.tickCount % 10 == 0) {
