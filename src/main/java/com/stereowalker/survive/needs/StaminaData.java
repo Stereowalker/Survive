@@ -108,7 +108,7 @@ public class StaminaData extends SurviveData {
 		}
 		else if (player.isSleeping()) {
 			++this.energyTimer;
-			if (this.energyTimer >= 20) {
+			if (this.energyTimer >= Math.floor((float)Survive.STAMINA_CONFIG.sleepTime/(float)(maxStamina+6))) {
 				this.relax(1, this.maxStamina);
 				this.energyTimer = 0;
 			}
