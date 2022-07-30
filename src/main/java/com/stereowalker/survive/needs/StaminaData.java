@@ -46,7 +46,7 @@ public class StaminaData extends SurviveData {
 	 * Add water stats.
 	 */
 	public void relax(int energyLevelIn, double maxStamina) {
-		int remaining = 0;;
+		int remaining = 0;
 		remaining = (this.energyReserveLevel + energyLevelIn) - 6;
 		this.energyReserveLevel = Math.min(energyLevelIn + this.energyReserveLevel, 6);
 		if (remaining > 0) {
@@ -248,7 +248,8 @@ public class StaminaData extends SurviveData {
 	public static void replenishEnergyOnSleep(SleepFinishedTimeEvent event) {
 		for (Player player : event.getWorld().players()) {
 			StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
-			energyStats.relax(energyStats.maxStamina, player.getAttributeValue(SAttributes.MAX_STAMINA));
+			int staminaToRecover = Mth.ceil(((float)(event.getNewTime()-event.getWorld().dayTime())/Survive.STAMINA_CONFIG.sleepTime)*(energyStats.maxStamina+6));
+			energyStats.relax(staminaToRecover, player.getAttributeValue(SAttributes.MAX_STAMINA));
 			SurviveEntityStats.setStaminaStats(player, energyStats);
 		}
 	}
