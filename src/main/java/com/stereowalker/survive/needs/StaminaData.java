@@ -17,10 +17,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -51,6 +52,16 @@ public class StaminaData extends SurviveData {
 		this.energyReserveLevel = Math.min(energyLevelIn + this.energyReserveLevel, 6);
 		if (remaining > 0) {
 			this.energyLevel = Math.min(remaining + this.energyLevel, Mth.floor(maxStamina));
+		}
+	}
+	
+	public void eat(Item pItem, ItemStack pStack, LivingEntity entity) {
+		if (pStack.isEdible() && DataMaps.Server.consummableItem.containsKey(pItem.getRegistryName())) {
+			if (entity instanceof ServerPlayer && !entity.level.isClientSide) {
+				ServerPlayer player = (ServerPlayer)entity;
+				relax(DataMaps.Server.consummableItem.get(pItem.getRegistryName()).getEnergyAmount(), player.getAttributeValue(SAttributes.MAX_STAMINA));
+				save(player);
+			}
 		}
 	}
 
@@ -251,18 +262,6 @@ public class StaminaData extends SurviveData {
 			int staminaToRecover = Mth.ceil(((float)(event.getNewTime()-event.getWorld().dayTime())/Survive.STAMINA_CONFIG.sleepTime)*(energyStats.maxStamina+6));
 			energyStats.relax(staminaToRecover, player.getAttributeValue(SAttributes.MAX_STAMINA));
 			SurviveEntityStats.setStaminaStats(player, energyStats);
-		}
-	}
-
-	@SubscribeEvent
-	public static void eatFood(LivingEntityUseItemEvent.Finish event) {
-		if (event.getResultStack().isEdible() && DataMaps.Server.consummableItem.containsKey(event.getItem().getItem().getRegistryName())) {
-			if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
-				ServerPlayer player = (ServerPlayer)event.getEntityLiving();
-				StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
-				energyStats.relax(DataMaps.Server.consummableItem.get(event.getItem().getItem().getRegistryName()).getEnergyAmount(), player.getAttributeValue(SAttributes.MAX_STAMINA));
-				SurviveEntityStats.setStaminaStats(player, energyStats);
-			}
 		}
 	}
 }

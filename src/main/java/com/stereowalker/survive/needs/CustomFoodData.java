@@ -46,7 +46,7 @@ public class CustomFoodData extends FoodData {
 	@Override
 	public void tick(Player pPlayer) {
 		Difficulty difficulty = pPlayer.level.getDifficulty();
-
+		//Stomach Ache
 		if (!pPlayer.hasEffect(SMobEffects.UPSET_STOMACH) || pPlayer.getEffect(SMobEffects.UPSET_STOMACH).getDuration() <= 20)
 			if (this.foodLevel > 36)
 				pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 4));
@@ -58,7 +58,12 @@ public class CustomFoodData extends FoodData {
 				pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 1));
 			else if (this.foodLevel > 20)
 				pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 0));
-
+		//Passive Hunger Decay
+		if (Survive.CONFIG.idle_hunger_tick_rate > -1) {
+			if (pPlayer.tickCount%Survive.CONFIG.idle_hunger_tick_rate == Survive.CONFIG.idle_hunger_tick_rate-1) {
+				addExhaustion(Survive.CONFIG.idle_hunger_exhaustion);
+			}
+		}
 		if (Survive.WELLBEING_CONFIG.enabled) {
 			WellbeingData wellbeing = SurviveEntityStats.getWellbeingStats(pPlayer);
 			//Essentially causes the player to get ill when drinking bad water

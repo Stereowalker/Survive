@@ -29,7 +29,6 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.GameRules;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -59,11 +58,25 @@ public class WaterData extends SurviveData {
 		}
 	}
 
-	//TODO: Change This
-	public void consume(Item maybeFood, ItemStack stack) {
-		if (maybeFood.isEdible()) {
-			//			FoodProperties food = maybeFood.getFoodProperties();
-			//			this.addStats(food.getNutrition(), food.getSaturationModifier());
+	public void drink(Item pItem, ItemStack pStack, LivingEntity entity) {
+		if (entity != null && entity instanceof ServerPlayer) {
+			ServerPlayer player = (ServerPlayer)entity;
+			if ((pItem == Items.POTION || pItem == SItems.FILLED_CANTEEN) && DataMaps.Server.potionDrink.containsKey(PotionUtils.getPotion(pStack).getRegistryName())) {
+				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(PotionUtils.getPotion(pStack).getRegistryName());
+				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(entity, drinkData.getThirstChance()));
+				if (drinkData.isHeated())entity.addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
+				if (drinkData.isChilled())entity.addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
+				if (drinkData.isEnergizing())entity.addEffect(new MobEffectInstance(SMobEffects.ENERGIZED, 60*20*5));
+			}
+			else if (DataMaps.Server.consummableItem.containsKey(pItem.getRegistryName())) {
+				ConsummableJsonHolder drinkData = DataMaps.Server.consummableItem.get(pItem.getRegistryName());
+				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(entity, drinkData.getThirstChance()));
+				if (drinkData.isHeated())entity.addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
+				if (drinkData.isChilled())entity.addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
+				if (drinkData.isEnergizing())entity.addEffect(new MobEffectInstance(SMobEffects.ENERGIZED, 60*20*5));
+			}
+
+			save(player);
 		}
 
 	}
@@ -273,17 +286,6 @@ public class WaterData extends SurviveData {
 		return 0;
 	}
 
-
-	public static int getThirstFill(ItemStack stack) {
-		int amount = 0;
-
-		if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) == Potions.WATER)
-			amount+=5;
-		if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) != Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY)
-			amount+=4;
-		return amount;
-	}
-
 	public static float getHydrationFill(ItemStack stack) {
 		float amount = 0.0f;
 		amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.normalPamHCDrinks());
@@ -297,32 +299,6 @@ public class WaterData extends SurviveData {
 		if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) != Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY)
 			amount+=1.0F;
 		return amount;
-	}
-
-	@SubscribeEvent
-	public static void drinkWaterFromBottle(LivingEntityUseItemEvent.Finish event) {
-		if (event.getEntityLiving() != null && event.getEntityLiving() instanceof ServerPlayer) {
-			ServerPlayer player = (ServerPlayer) event.getEntityLiving();
-			WaterData stats = ((IRealisticEntity)player).getWaterData();
-
-			if ((event.getItem().getItem() == Items.POTION || event.getItem().getItem() == SItems.FILLED_CANTEEN) && DataMaps.Server.potionDrink.containsKey(PotionUtils.getPotion(event.getItem()).getRegistryName())) {
-				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(PotionUtils.getPotion(event.getItem()).getRegistryName());
-				stats.drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(event.getEntityLiving(), drinkData.getThirstChance()));
-				if (drinkData.isHeated())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
-				if (drinkData.isChilled())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
-				if (drinkData.isEnergizing())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.ENERGIZED, 60*20*5));
-			}
-			else if (DataMaps.Server.consummableItem.containsKey(event.getItem().getItem().getRegistryName())) {
-				ConsummableJsonHolder drinkData = DataMaps.Server.consummableItem.get(event.getItem().getItem().getRegistryName());
-				stats.drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(event.getEntityLiving(), drinkData.getThirstChance()));
-				if (drinkData.isHeated())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
-				if (drinkData.isChilled())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
-				if (drinkData.isEnergizing())event.getEntityLiving().addEffect(new MobEffectInstance(SMobEffects.ENERGIZED, 60*20*5));
-			}
-
-
-			stats.save(player);
-		}
 	}
 
 	public static boolean applyThirst(LivingEntity entity, float probabiltiy) {

@@ -124,18 +124,6 @@ public class SurviveEvents {
 	}
 
 	@SubscribeEvent
-	public static void regulateHunger(LivingUpdateEvent event) {
-		if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
-			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
-			if (Survive.CONFIG.idle_hunger_tick_rate > -1) {
-				if (player.tickCount%Survive.CONFIG.idle_hunger_tick_rate == Survive.CONFIG.idle_hunger_tick_rate-1) {
-					player.getFoodData().addExhaustion(Survive.CONFIG.idle_hunger_exhaustion);
-				}
-			}
-		}
-	}
-
-	@SubscribeEvent
 	public static void regulateWetness(LivingUpdateEvent event) {
 		if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
 			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
