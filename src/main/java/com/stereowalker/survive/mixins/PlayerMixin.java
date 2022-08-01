@@ -21,16 +21,21 @@ import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.WaterData;
 import com.stereowalker.survive.needs.WellbeingData;
+import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
 import com.stereowalker.survive.world.DataMaps;
 
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 
 @Mixin(Player.class)
@@ -56,6 +61,27 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	@Inject(method = "tick", at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/world/entity/player/Player;updateIsUnderwater()Z"))
 	public void tickInject(CallbackInfo ci) {
 		SurviveEntityStats.addStatsOnSpawn((Player)(Object)this);
+		//
+		if (!this.level.isClientSide && (Player)(Object)this instanceof ServerPlayer) {
+			ServerPlayer player = (ServerPlayer)(Object)this;
+			if (Survive.THIRST_CONFIG.enabled) {
+				if (player.level.getDifficulty() == Difficulty.PEACEFUL && player.level.getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION)) {
+					if (getWaterData().needWater() && player.tickCount % 10 == 0) {
+						getWaterData().setWaterLevel(getWaterData().getWaterLevel() + 1);
+					}
+				}
+				getWaterData().save(player);
+			}
+		}
+		if (this.level.isClientSide && (Player)(Object)this instanceof LocalPlayer) {
+			LocalPlayer player = (LocalPlayer)(Object)this;
+			if (player.tickCount%290 == 288) {
+				if (player.level.getDifficulty() != Difficulty.PEACEFUL) {
+					new ServerboundThirstMovementPacket(player.input.forwardImpulse, player.input.leftImpulse, player.input.jumping).send();
+				}
+			}
+		}
+		//
 		if (!this.level.isClientSide) {
 			getStaminaData().baseTick((Player)(Object)this);
 			getHygieneData().baseTick((Player)(Object)this);

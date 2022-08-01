@@ -36,7 +36,6 @@ import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeIn
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.math.UnionMathHelper;
-import com.stereowalker.unionlib.world.level.block.state.properties.UBlockStateProperties;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -245,14 +244,7 @@ public class SurviveEvents {
 									if (!setTemp) blockTemp += blockTemperatureData.getTemperatureModifier();
 								}
 								else {
-									if (blockTemperatureData.usesLitOrActiveProperty()) {
-										boolean litOrActive = false;
-										if (heatState.hasProperty(BlockStateProperties.LIT) && heatState.getValue(BlockStateProperties.LIT)) litOrActive = true;
-										if (heatState.hasProperty(UBlockStateProperties.ACTIVE) && heatState.getValue(UBlockStateProperties.ACTIVE)) litOrActive = true;
-										if (litOrActive) blockTemp += blockTemperatureData.getTemperatureModifier();
-									}
-									else
-										blockTemp += blockTemperatureData.getTemperatureModifier();
+									blockTemp += blockTemperatureData.getTemperatureModifier();
 
 									if (blockTemperatureData.usesLevelProperty()) {
 										if (heatState.hasProperty(BlockStateProperties.LEVEL)) {

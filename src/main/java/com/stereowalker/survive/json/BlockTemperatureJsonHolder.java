@@ -1,5 +1,6 @@
 package com.stereowalker.survive.json;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.MarkerManager;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.stereowalker.survive.Survive;
@@ -15,7 +17,6 @@ import com.stereowalker.survive.api.IBlockPropertyHandler;
 import com.stereowalker.survive.api.IBlockPropertyHandler.PropertyPair;
 import com.stereowalker.survive.api.json.JsonHolder;
 import com.stereowalker.survive.json.property.BlockPropertyHandlerImpl;
-import com.stereowalker.unionlib.world.level.block.state.properties.UBlockStateProperties;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -28,19 +29,15 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 	private final float temperatureModifier;
 	private final int range;
 	@Deprecated
-	private final boolean usesLitOrActiveProperty;
-	@Deprecated
 	private final boolean usesLevelProperty;
 	private final List<Triple<IBlockPropertyHandler<?>,List<PropertyPair<?>>,Map<String,Float>>> statePropertyOverride;
 
 	public BlockTemperatureJsonHolder(ResourceLocation blockID, JsonObject object) {
 		String CHANGE_PROPERTY = "blockstate_property_overrides";
-		String LIT_PROPERTY = "uses_lit_or_active_property";
 		String LEVEL_PROPERTY = "uses_level_property";
 		String RANGE = "range";
 
 		float temperatureIn = 0;
-		boolean usesLitOrActivePropertyIn = false;
 		boolean usesLevelPropertyIn = false;
 		//
 		List<Triple<IBlockPropertyHandler<?>,List<PropertyPair<?>>,Map<String,Float>>> stateChangePropertyIn = Lists.newArrayList();
@@ -55,9 +52,14 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 					temperatureIn = workOnFloat("temperature_modifier", object);
 				}
 
-				if(this.hasMemberAndIsPrimitive(LIT_PROPERTY, object)) {
-					setWorkingOn(LIT_PROPERTY);
-					usesLitOrActivePropertyIn = object.get(LIT_PROPERTY).getAsBoolean();
+				//TODO: This is the legacy system which will be removed in a future update
+				if(this.hasMemberAndIsPrimitive("uses_lit_or_active_property", object)) {
+					setWorkingOn("uses_lit_or_active_property");
+					Map<String,Float> vals = Maps.newHashMap();
+					vals.put("lit", temperatureIn);
+					vals.put("active", temperatureIn);
+					temperatureIn = 0;
+					stateChangePropertyIn.add(Triple.of(IBlockPropertyHandler.SAVED_PROPERTIES.get("boolean"), new ArrayList<PropertyPair<?>>(), vals));
 					stopWorking();
 				} else if(this.hasMemberAndIsJsonArray(CHANGE_PROPERTY, object)) {
 					setWorkingOn(CHANGE_PROPERTY);
@@ -110,11 +112,6 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 			rangeIn = 0;
 		}
 
-		if (usesLitOrActivePropertyIn && !ForgeRegistries.BLOCKS.getValue(blockID).defaultBlockState().hasProperty(BlockStateProperties.LIT) && !ForgeRegistries.BLOCKS.getValue(blockID).defaultBlockState().hasProperty(UBlockStateProperties.ACTIVE)) {
-			Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: This block has neither the lit property nor the active property, please set this to false", blockID);
-			usesLitOrActivePropertyIn = false;
-		}
-
 		List<Triple<IBlockPropertyHandler<?>, List<PropertyPair<?>>, Map<String, Float>>> toRemove = Lists.newArrayList();
 		for (Triple<IBlockPropertyHandler<?>, List<PropertyPair<?>>, Map<String, Float>> prop : stateChangePropertyIn) {
 			if (!ForgeRegistries.BLOCKS.getValue(blockID).defaultBlockState().hasProperty(prop.getLeft().derivedProperty())) {
@@ -130,11 +127,10 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 				&& ForgeRegistries.BLOCKS.getValue(blockID).defaultBlockState().hasProperty(BlockStateProperties.LEVEL_COMPOSTER)
 				&& ForgeRegistries.BLOCKS.getValue(blockID).defaultBlockState().hasProperty(BlockStateProperties.LEVEL_FLOWING)) {
 			Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: This block does not have the level property, please set this to false", blockID);
-			usesLitOrActivePropertyIn = false;
+			usesLevelPropertyIn = false;
 		}
 
 		this.temperatureModifier = temperatureIn;
-		this.usesLitOrActiveProperty = usesLitOrActivePropertyIn;
 		this.usesLevelProperty = usesLevelPropertyIn;
 
 		if (stateChangePropertyIn.isEmpty())
@@ -154,14 +150,6 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 	 */
 	public float getTemperatureModifier() {
 		return temperatureModifier;
-	}
-
-	/**
-	 * @return the usesLitOrActiveProperty
-	 */
-	@Deprecated
-	public boolean usesLitOrActiveProperty() {
-		return usesLitOrActiveProperty;
 	}
 
 	/**

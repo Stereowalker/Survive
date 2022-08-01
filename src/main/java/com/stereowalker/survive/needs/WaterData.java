@@ -8,13 +8,11 @@ import com.stereowalker.survive.compat.PamsHarvestcraftCompat;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.json.ConsummableJsonHolder;
-import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -29,11 +27,7 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.GameRules;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-@EventBusSubscriber
 public class WaterData extends SurviveData {
 	private int waterLevel = 20;
 	private float waterHydrationLevel;
@@ -86,6 +80,12 @@ public class WaterData extends SurviveData {
 	 */
 	//TODO: Figure out something else that hydration can do apart from healing
 	public void tick(Player player) {
+		if (Survive.THIRST_CONFIG.idle_thirst_tick_rate > -1) {
+			if (player.tickCount%Survive.THIRST_CONFIG.idle_thirst_tick_rate == Survive.THIRST_CONFIG.idle_thirst_tick_rate-1) {
+				addExhaustion(player, Survive.THIRST_CONFIG.idle_thirst_exhaustion);
+			}
+		}
+		
 		Difficulty difficulty = player.level.getDifficulty();
 		this.prevWaterLevel = this.waterLevel;
 		
@@ -246,35 +246,6 @@ public class WaterData extends SurviveData {
 	}
 
 	/////-----------EVENTS-----------/////
-
-	@SubscribeEvent
-	public static void regulateThirst(LivingUpdateEvent event) {
-		if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
-			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
-			if (Survive.THIRST_CONFIG.enabled) {
-				WaterData stats = ((IRealisticEntity)player).getWaterData();
-				if (Survive.THIRST_CONFIG.idle_thirst_tick_rate > -1) {
-					if (player.tickCount%Survive.THIRST_CONFIG.idle_thirst_tick_rate == Survive.THIRST_CONFIG.idle_thirst_tick_rate-1) {
-						stats.addExhaustion(player, Survive.THIRST_CONFIG.idle_thirst_exhaustion);
-					}
-				}
-				if (player.level.getDifficulty() == Difficulty.PEACEFUL && player.level.getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION)) {
-					if (stats.needWater() && player.tickCount % 10 == 0) {
-						stats.setWaterLevel(stats.getWaterLevel() + 1);
-					}
-				}
-				stats.save(player);
-			}
-		}
-		if (event.getEntityLiving() != null && event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof LocalPlayer) {
-			LocalPlayer player = (LocalPlayer)event.getEntityLiving();
-			if (player.tickCount%290 == 288) {
-				if (player.level.getDifficulty() != Difficulty.PEACEFUL) {
-					new ServerboundThirstMovementPacket(player.input.forwardImpulse, player.input.leftImpulse, player.input.jumping).send();
-				}
-			}
-		}
-	}
 
 	public static float getHydrationFromList(ItemStack stack, List<String> list) {
 		for (String containerList : list) {
