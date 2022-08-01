@@ -36,6 +36,7 @@ import net.minecraft.world.level.Level;
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntity implements IRealisticEntity {
 	@Shadow protected FoodData foodData;
+	@Shadow private int sleepCounter;
 
 	protected PlayerMixin(EntityType<? extends LivingEntity> type, Level worldIn) {
 		super(type, worldIn);

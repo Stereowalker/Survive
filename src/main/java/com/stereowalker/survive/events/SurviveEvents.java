@@ -27,6 +27,7 @@ import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPa
 import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWaterPacket;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
+import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.item.enchantment.SEnchantmentHelper;
 import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
@@ -37,7 +38,6 @@ import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.math.UnionMathHelper;
 import com.stereowalker.unionlib.world.level.block.state.properties.UBlockStateProperties;
 
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -63,8 +63,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -85,8 +83,10 @@ public class SurviveEvents {
 		if (Survive.CONFIG.enable_sleep) {
 			if (event.getEntityLiving() instanceof ServerPlayer) {
 				ServerPlayer player = (ServerPlayer)event.getEntityLiving();
-				SleepData stats = SurviveEntityStats.getSleepStats(player);
-				if (stats.getAwakeTimer() > time(0) - 5000 && Survive.CONFIG.canSleepDuringDay) {
+				if (SurviveEntityStats.getSleepStats(player).getAwakeTimer() > time(0) - 5000 && Survive.CONFIG.canSleepDuringDay) {
+					event.setResult(Result.ALLOW);
+				}
+				else if (SurviveEntityStats.getEnergyStats(player).getEnergyLevel() < player.getAttributeValue(SAttributes.MAX_STAMINA)/2) {
 					event.setResult(Result.ALLOW);
 				}
 			}

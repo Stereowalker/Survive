@@ -85,7 +85,13 @@ public class StaminaData extends SurviveData {
 	 * Handles the stamina game logic.
 	 */
 	public void tick(Player player) {
+		//Sets the maximum stamina
 		this.maxStamina = Mth.floor(player.getAttributeValue(SAttributes.MAX_STAMINA));
+		//Forces the player awake if their energy is too low and it's day
+		if (player.isSleeping() && player.level.isDay() && this.energyLevel < this.maxStamina/2) {
+			player.sleepCounter = 0;
+		}
+		
 		Difficulty difficulty = player.level.getDifficulty();
 		this.prevEnergyLevel = this.energyLevel;
 		if (this.energyExhaustionLevel > 10.0F) {
