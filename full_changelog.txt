@@ -1,41 +1,13 @@
-[7.0.7]
-- Fix inability for clients to connect to servers
-
-[7.0.6]
-- Merlings regain air when drinking from a canteen
-- Fixed drinking from purified water source still causing the thirst effect
-- Converted the Purified Water Bottle into a potion
-- Fix purified water fluid not using the correct color everywhere else but the block
-- The canteen can now store any potion
-
-[7.0.5]
-- Reduced the amount of resistance gained per point from C.O.M.B.A.T Stats
-- Re-enabled Origins compatibility and added a Cold Blooded power to the Merling Origin
-
-[7.0.4]
-- Updated C.O.M.B.A.T Spells and Stats
-- Changed the default textures for the temperature bars
-- Fix drinking unclean water not triggering the wellbeing debuffs
-- Added the Survival Guide (Use Patchouli to see the book)
-
-[7.0.3]
-- Used newer JEI methods
-- Updated ru_ru.json (Credits to jolopapina)
-- Corrected the comment on "Idle Thirst Exhaustion"
-- Added animal fat to the "minecraft:animal_fat" tag and used it in soap crafting
-- Animal fat drops from animals can be disabled in the server config
-
-[7.0.2]
-- Fixed inability to collect/drink from water block
-- Added a purified water fluid tag
-- Canteen fill is now handled by the empty canteen item code and not packets
-- Hyp(o/er)thermia consumes 10x more stamina and stops consuming stamina at 30% energy
-
-[7.0.1]
-- Updated UnionLib to 7.1.1
-- Updated Forge to 4.1.0
-
-[7.0.0]
-- Hyp(o/er)thermia now consumes stamina, ticks less often, deals 0.8 points of damage instead of 1.0 and stops at 28% health instead of 25%
-- Made the experimental temperature features the default while the old one is now the legacy one. This will be removed in a later update
-- Ported to 1.18.2 and updated to UnionLib v7.0.0
+[7.1.0]
+- Fixed Chilled and Heated effects not working
+- Overhauled the customization of how blocks affect temperature
+- The intensity of the sun can be specified in biome .json files
+- Reduced the intensity of the sun in cold biomes
+- Increased the intensity of the sun in the desert
+- Allowed fluids to be modifiable via datapacks
+- Allowed the player to eat and drink beyond their maximum capacity
+- Fix stamina healing the player
+- Stamina recovered via sleeping through the night is completely dependent on when you started sleeping
+- Stamina recovered via lying down on the bed is generally slower
+- Allowed the player to lay on the bed during the day if stamina is low
+- Optimized code and moved some events into mixins
