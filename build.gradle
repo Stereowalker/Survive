@@ -30,7 +30,7 @@ mixin {
 }
 
 version = modMinecraftVersion + "-" +modVersion
-group = modGroup // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = modGroup
 archivesBaseName = modFilename
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -90,8 +90,8 @@ repositories {
 
 dependencies {
 	minecraft 'net.minecraftforge:forge:' + modMinecraftVersion + '-' + modLoaderVersion
-	annotationProcessor "org.spongepowered:mixin:"+modMixinVersion+":processor"
-	implementation "org.spongepowered:mixin:"+modMixinVersion+""
+	annotationProcessor "org.spongepowered:mixin:${modMixinVersion}:processor"
+	implementation "org.spongepowered:mixin:${modMixinVersion}"
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
 	implementation fg.deobf("com.stereowalker.unionlib:UnionLib:"+modMinecraftVersion+"-"+unionLibVersion+"-"+modLoader+"")
 	

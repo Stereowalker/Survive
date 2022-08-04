@@ -24,6 +24,7 @@ public class BiomeTemperatureJsonHolder implements JsonHolder {
 	private ResourceLocation biomeID;
 	private final float temperature;
 	private final float wetnessModifier;
+	private final float sun_intensity;
 	private final Pair<Float, Float> altitude_level_modifier;
 	private final Map<Season,Float> seasonModifiers;
 
@@ -33,6 +34,7 @@ public class BiomeTemperatureJsonHolder implements JsonHolder {
 
 		float temperatureIn = 0;
 		float wetnessModiIn = 1;
+		float sunIntensitIn = 5;
 		Pair<Float, Float> altitude_level_modifierIn = Pair.of(1.0f, 1.0f);
 		Map<Season,Float> seasonModifiersIn = Maps.newHashMap();
 
@@ -45,6 +47,9 @@ public class BiomeTemperatureJsonHolder implements JsonHolder {
 				}
 				if(this.hasMemberAndIsPrimitive("wetness_modifier", object)) {
 					wetnessModiIn = workOnFloat("wetness_modifier", object);
+				}
+				if(this.hasMemberAndIsPrimitive("sun_intensity", object)) {
+					sunIntensitIn = workOnFloat("sun_intensity", object);
 				}
 				if(this.hasMemberAndIsObject(SEASON_MODIFIER, object)) {
 					setWorkingOn(SEASON_MODIFIER);
@@ -103,6 +108,7 @@ public class BiomeTemperatureJsonHolder implements JsonHolder {
 		this.seasonModifiers = seasonModifiersIn;
 		this.temperature = temperatureIn;
 		this.wetnessModifier = wetnessModiIn;
+		this.sun_intensity = sunIntensitIn;
 		this.altitude_level_modifier = altitude_level_modifierIn;
 	}
 
@@ -144,5 +150,9 @@ public class BiomeTemperatureJsonHolder implements JsonHolder {
 	@Override
 	public void setWorkingOn(String member) {
 		this.wo = member;
+	}
+
+	public float getSunIntensity() {
+		return sun_intensity;
 	}
 }

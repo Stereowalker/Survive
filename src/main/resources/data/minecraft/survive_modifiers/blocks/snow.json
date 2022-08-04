@@ -1,6 +1,11 @@
 {
-  "temperature_modifier": -0.02426,
-  "uses_lit_or_active_property": false,
-  "uses_level_property": true,
+  "temperature_modifier": -0.0242,
+  "blockstate_property_overrides": [
+    {
+	  "name": "layers",
+	  "type": "integer",
+      "values": {"2": -0.0484, "3": -0.0726, "4": -0.0968, "5": -0.121, "6": -0.1452, "7": -0.1694, "8": -0.1936}
+    }   
+  ],
   "range": 5
 }

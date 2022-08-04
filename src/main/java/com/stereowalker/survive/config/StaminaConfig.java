@@ -12,6 +12,10 @@ public class StaminaConfig implements ConfigObject {
 	@UnionConfig.Comment(comment = {"Disabling this will disable this mods stamina system and energy management system"})
 	public boolean enabled = true;
 	
+	@UnionConfig.Entry(name = "Ideal Amount Of Sleep", type = Type.SERVER)
+	@UnionConfig.Comment(comment = {"The amount of time the player needs to sleep to recover all their energy"})
+	public long sleepTime = 6000L;
+	
 	@UnionConfig.Entry(name = "Enable Armor Weights", type = Type.COMMON)
 	@UnionConfig.Comment(comment = {"Disabling this will allow the weight of certain armor pieces to affect your stamina"})
 	public boolean enable_weights = true;

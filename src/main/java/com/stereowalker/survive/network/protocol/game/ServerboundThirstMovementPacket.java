@@ -1,8 +1,7 @@
 package com.stereowalker.survive.network.protocol.game;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
-import com.stereowalker.survive.needs.WaterData;
+import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -37,7 +36,6 @@ public class ServerboundThirstMovementPacket extends ServerboundUnionPacket {
 	@Override
 	public boolean handleOnServer(ServerPlayer sender) {
 		if (Survive.THIRST_CONFIG.enabled) {
-			WaterData stats = SurviveEntityStats.getWaterStats(sender);
 			int movM = (int) ((moveS+moveF)*10);
 			float moveMul;
 			if (movM > 0)
@@ -51,8 +49,7 @@ public class ServerboundThirstMovementPacket extends ServerboundUnionPacket {
 				moveMul+=0.5F;
 			if (jump)
 				moveMul+=1.5F;
-			stats.addExhaustion(sender, 0.1F*moveMul);
-			stats.save(sender);
+			((IRealisticEntity)sender).getWaterData().addExhaustion(sender, 0.1F*moveMul);
 		}
 		return true;
 	}

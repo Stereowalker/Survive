@@ -24,7 +24,7 @@ public class SMobEffects {
 	@RegistryObject("heat_resistance")
 	public static final MobEffect HEAT_RESISTANCE = new SMobEffect(MobEffectCategory.BENEFICIAL, 12221756).addAttributeModifier(SAttributes.HEAT_RESISTANCE, "795606d6-4ac6-4ae7-8311-63ccdb293eb3", 20.0D, AttributeModifier.Operation.ADDITION);
 	@RegistryObject("cold_resistance")
-	public static final MobEffect COLD_RESISTANCE = new SMobEffect(MobEffectCategory.BENEFICIAL, 5750248).addAttributeModifier(SAttributes.COLD_RESISTANCE, "5cebe402-4f28-4d41-8539-2496f900ef90", 20.0D, AttributeModifier.Operation.ADDITION);
+	public static final MobEffect COLD_RESISTANCE = new SMobEffect(MobEffectCategory.BENEFICIAL, 5750248).addAttributeModifier(SAttributes.COLD_RESISTANCE, SurviveUUIDS.COLD_RESISTANCE, 20.0D, AttributeModifier.Operation.ADDITION);
 	@RegistryObject("tiredness")
 	public static final MobEffect TIREDNESS = new SMobEffect(MobEffectCategory.BENEFICIAL, 0xaa6666)
 			.addAttributeModifier(Attributes.MOVEMENT_SPEED, "7107DE5E-7CE8-4030-940E-514C1F160891", (double)-0.005F, AttributeModifier.Operation.ADDITION)
@@ -44,4 +44,6 @@ public class SMobEffects {
 	public static final MobEffect HYPOTHERMIA = new UnwellMobEffect(MobEffectCategory.HARMFUL, 5750248);
 	@RegistryObject("hyperthermia")
 	public static final MobEffect HYPERTHERMIA = new UnwellMobEffect(MobEffectCategory.HARMFUL, 16750592);
+	@RegistryObject("upset_stomach")
+	public static final MobEffect UPSET_STOMACH = (new SMobEffect(MobEffectCategory.HARMFUL, 5926017)).addAttributeModifier(Attributes.MOVEMENT_SPEED, SurviveUUIDS.UPSET___STOMACH, (double)-0.05F, AttributeModifier.Operation.MULTIPLY_TOTAL);
 }

@@ -1,9 +1,15 @@
 package com.stereowalker.survive.events;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.tuple.Triple;
 
 import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.api.IBlockPropertyHandler;
+import com.stereowalker.survive.api.IBlockPropertyHandler.PropertyPair;
 import com.stereowalker.survive.api.world.level.block.TemperatureEmitter;
 import com.stereowalker.survive.compat.SereneSeasonsCompat;
 import com.stereowalker.survive.config.ServerConfig;
@@ -11,6 +17,8 @@ import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempMode;
 import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
+import com.stereowalker.survive.json.FluidJsonHolder;
+import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.SleepData;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.TemperatureUtil;
@@ -19,8 +27,8 @@ import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPa
 import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWaterPacket;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
+import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.item.enchantment.SEnchantmentHelper;
-import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
 import com.stereowalker.survive.world.temperature.TemperatureQuery;
@@ -28,14 +36,7 @@ import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeIn
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.math.UnionMathHelper;
-import com.stereowalker.unionlib.world.level.block.state.properties.UBlockStateProperties;
 
-//import io.github.apace100.origins.integration.OriginEventsArchitectury;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -57,13 +58,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -79,77 +77,15 @@ import net.minecraftforge.network.NetworkDirection;
 
 @EventBusSubscriber
 public class SurviveEvents {
-	public static final Object2FloatMap<Fluid> FLUID_THIRST_MAP = new Object2FloatOpenHashMap<Fluid>();
-	public static final Object2FloatMap<Fluid> FLUID_HYDRATION_MAP = new Object2FloatOpenHashMap<Fluid>();
-	public static final Object2BooleanMap<Fluid> FLUID_THIRSTY_MAP = new Object2BooleanOpenHashMap<Fluid>();
-
-
-	public static void registerHeatMap() {
-		registerFluidDrinkStats(Fluids.WATER, 4, 1.0F, true);
-		registerFluidDrinkStats(SFluids.PURIFIED_WATER, 6, 3.0F, false);
-		registerFluidDrinkStats(Fluids.FLOWING_WATER, 4, 1.0F, true);
-		registerFluidDrinkStats(SFluids.FLOWING_PURIFIED_WATER, 6, 3.0F, false);
-	}
-
-	public static float getRegisteredThirst(Fluid fluid) {
-		return FLUID_THIRST_MAP.getOrDefault(fluid, 0);
-	}
-
-	public static float getRegisteredHydration(Fluid fluid) {
-		return FLUID_HYDRATION_MAP.getOrDefault(fluid, 0);
-	}
-
-	public static boolean getRegisteredThirstEffect(Fluid fluid) {
-		return FLUID_THIRSTY_MAP.getOrDefault(fluid, false);
-	}
-
-	public static void registerFluidDrinkStats(Fluid fluid, int thirst, float hydration, boolean shouldGiveThirst) {
-		FLUID_THIRST_MAP.put(fluid, thirst);
-		FLUID_HYDRATION_MAP.put(fluid, hydration);
-		FLUID_THIRSTY_MAP.put(fluid, shouldGiveThirst);
-	}
-
-	@SubscribeEvent
-	public static void registerStats(LivingUpdateEvent event) {
-		if(event.getEntityLiving() instanceof Player) {
-			Player player = (Player)event.getEntityLiving();
-			SurviveEntityStats.addStatsOnSpawn(player);
-			if (!player.level.isClientSide) {
-				SurviveEntityStats.getEnergyStats(player).baseTick(player);
-				SurviveEntityStats.getHygieneStats(player).baseTick(player);
-				SurviveEntityStats.getNutritionStats(player).baseTick(player);
-				SurviveEntityStats.getTemperatureStats(player).baseTick(player);
-				SurviveEntityStats.getWaterStats(player).baseTick(player);
-				SurviveEntityStats.getWellbeingStats(player).baseTick(player);
-				SurviveEntityStats.getSleepStats(player).baseTick(player);
-			}
-		}
-	}
-
-	@SubscribeEvent
-	@OnlyIn(Dist.CLIENT)
-	public static void tickStatsOnClient(LivingUpdateEvent event) {
-		if(event.getEntityLiving() instanceof AbstractClientPlayer) {
-			AbstractClientPlayer player = (AbstractClientPlayer)event.getEntityLiving();
-			if (player.level.isClientSide) {
-				SurviveEntityStats.getEnergyStats(player).baseClientTick(player);
-				SurviveEntityStats.getHygieneStats(player).baseClientTick(player);
-				SurviveEntityStats.getNutritionStats(player).baseClientTick(player);
-				SurviveEntityStats.getTemperatureStats(player).baseClientTick(player);
-				SurviveEntityStats.getWaterStats(player).baseClientTick(player);
-				SurviveEntityStats.getWellbeingStats(player).baseClientTick(player);
-				SurviveEntityStats.getSleepStats(player).baseClientTick(player);
-			}
-		}
-	}
-
 	@SubscribeEvent
 	public static void allowSleep(SleepingTimeCheckEvent event) {
 		if (Survive.CONFIG.enable_sleep) {
 			if (event.getEntityLiving() instanceof ServerPlayer) {
 				ServerPlayer player = (ServerPlayer)event.getEntityLiving();
-				SleepData stats = SurviveEntityStats.getSleepStats(player);
-				if (stats.getAwakeTimer() > time(0) - 5000 && Survive.CONFIG.canSleepDuringDay) {
+				if (SurviveEntityStats.getSleepStats(player).getAwakeTimer() > time(0) - 5000 && Survive.CONFIG.canSleepDuringDay) {
+					event.setResult(Result.ALLOW);
+				}
+				else if (SurviveEntityStats.getEnergyStats(player).getEnergyLevel() < player.getAttributeValue(SAttributes.MAX_STAMINA)/2) {
 					event.setResult(Result.ALLOW);
 				}
 			}
@@ -182,18 +118,6 @@ public class SurviveEvents {
 					i.increment();;
 				});
 				DataMaps.Server.syncedToClient = true;
-			}
-		}
-	}
-
-	@SubscribeEvent
-	public static void regulateHunger(LivingUpdateEvent event) {
-		if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
-			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
-			if (Survive.CONFIG.idle_hunger_tick_rate > -1) {
-				if (player.tickCount%Survive.CONFIG.idle_hunger_tick_rate == Survive.CONFIG.idle_hunger_tick_rate-1) {
-					player.getFoodData().addExhaustion(Survive.CONFIG.idle_hunger_exhaustion);
-				}
 			}
 		}
 	}
@@ -257,8 +181,12 @@ public class SurviveEvents {
 
 		switch (type) {
 		case SUN:
-			if (skyLight > 5.0F) return gameTime*5.0F;
-			else return -1.0F * 5.0F;
+			float sunIntensity = 5.0f;
+			if (DataMaps.Server.biomeTemperature.containsKey(world.getBiome(pos).value().getRegistryName())) {
+				sunIntensity = DataMaps.Server.biomeTemperature.get(world.getBiome(pos).value().getRegistryName()).getSunIntensity();
+			}
+			if (skyLight > 5.0F) return gameTime*sunIntensity;
+			else return -1.0F * sunIntensity;
 
 		case BIOME:
 			float biomeTemp = (TemperatureUtil.getTemperature(world.getBiome(pos).value(), pos)*2)-2;
@@ -293,27 +221,44 @@ public class SurviveEvents {
 							}
 							else if (DataMaps.Server.blockTemperature.containsKey(heatState.getBlock().getRegistryName())) {
 								BlockTemperatureJsonHolder blockTemperatureData = DataMaps.Server.blockTemperature.get(heatState.getBlock().getRegistryName());
-								if (blockTemperatureData.usesLitOrActiveProperty()) {
-									boolean litOrActive = false;
-									if (heatState.hasProperty(BlockStateProperties.LIT) && heatState.getValue(BlockStateProperties.LIT)) litOrActive = true;
-									if (heatState.hasProperty(UBlockStateProperties.ACTIVE) && heatState.getValue(UBlockStateProperties.ACTIVE)) litOrActive = true;
-									if (litOrActive) blockTemp += blockTemperatureData.getTemperatureModifier();
+								if (blockTemperatureData.getStateChangeProperty() != null) {
+									boolean setTemp = false;
+									List<Triple<IBlockPropertyHandler<?>,List<PropertyPair<?>>,Map<String,Float>>> changeProperty = blockTemperatureData.getStateChangeProperty();
+									first:
+										for (Triple<IBlockPropertyHandler<?>, List<PropertyPair<?>>, Map<String, Float>> handler : changeProperty) {
+											boolean meets = true;
+											for (PropertyPair<?> requirements : handler.getMiddle()) {
+												if (!heatState.getValue(requirements.getFirst()).equals(requirements.getSecond())) {
+													meets = false;
+													break;
+												}
+											}
+											if (meets)
+												for (String prop2 : handler.getRight().keySet())
+													if (heatState.getValue(handler.getLeft().derivedProperty()).equals(handler.getLeft().getValue(prop2))) {
+														blockTemp += handler.getRight().get(prop2);
+														setTemp = true;
+														break first;
+													}
+										}
+									if (!setTemp) blockTemp += blockTemperatureData.getTemperatureModifier();
 								}
-								else
+								else {
 									blockTemp += blockTemperatureData.getTemperatureModifier();
 
-								if (blockTemperatureData.usesLevelProperty()) {
-									if (heatState.hasProperty(BlockStateProperties.LEVEL)) {
-										blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL)+1)/16;
-									}
-									else if (heatState.hasProperty(BlockStateProperties.LEVEL_COMPOSTER)) {
-										blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_COMPOSTER)+1)/9;
-									}
-									else if (heatState.hasProperty(BlockStateProperties.LEVEL_FLOWING)) {
-										blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_FLOWING))/8;
-									}
-									else if (heatState.hasProperty(BlockStateProperties.LEVEL_CAULDRON)) {
-										blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_CAULDRON)+1)/4;
+									if (blockTemperatureData.usesLevelProperty()) {
+										if (heatState.hasProperty(BlockStateProperties.LEVEL)) {
+											blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL)+1)/16;
+										}
+										else if (heatState.hasProperty(BlockStateProperties.LEVEL_COMPOSTER)) {
+											blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_COMPOSTER)+1)/9;
+										}
+										else if (heatState.hasProperty(BlockStateProperties.LEVEL_FLOWING)) {
+											blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_FLOWING))/8;
+										}
+										else if (heatState.hasProperty(BlockStateProperties.LEVEL_CAULDRON)) {
+											blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_CAULDRON)+1)/4;
+										}
 									}
 								}
 							}
@@ -348,14 +293,12 @@ public class SurviveEvents {
 	}
 
 	private enum TempType {
-		BIOME("biome", 10, 7, false), BLOCK("block", 10, 9, true), ENTITY("entity", 10, 9, true), SHADE("shade", 10, 200, true), SUN("sun", 10, 200, true);
+		BIOME("biome", 7, false), BLOCK("block", 9, true), ENTITY("entity", 9, true), SHADE("shade", 200, true), SUN("sun", 200, true);
 
 		String name;
-		int tickInterval;
 		double reductionAmount;
 		boolean usingExact;
-		private TempType(String name, int tickIntervalIn, double reductionAmountIn, boolean usingExactIn) {
-			this.tickInterval = tickIntervalIn;
+		private TempType(String name, double reductionAmountIn, boolean usingExactIn) {
 			this.reductionAmount = reductionAmountIn;
 			this.usingExact = usingExactIn;
 			this.name = name;
@@ -405,15 +348,16 @@ public class SurviveEvents {
 	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickEmpty event) {
 		HitResult raytraceresult = rayTrace(event.getWorld(), event.getEntityLiving(), ClipContext.Fluid.SOURCE_ONLY);
 		BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
-		if (event.getWorld().isClientSide) {
+		if (event.getWorld().isClientSide && event.getItemStack().isEmpty()) {
 			//Source Block Of Water
 			Fluid fluid = event.getWorld().getFluidState(blockpos).getType();
-			if (FLUID_THIRST_MAP.containsKey(fluid) && FLUID_THIRSTY_MAP.containsKey(fluid) && FLUID_HYDRATION_MAP.containsKey(fluid)) {
-				new ServerboundInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand()).send();
+			if (DataMaps.Server.fluid.containsKey(fluid.getRegistryName())) {
+				FluidJsonHolder fluidHolder = DataMaps.Server.fluid.get(fluid.getRegistryName());
+				new ServerboundInteractWithWaterPacket(blockpos, fluidHolder.getThirstChance(), fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
 			}
 			//Air Block
 			if (event.getWorld().isRainingAt(blockpos)) {
-				new ServerboundInteractWithWaterPacket(event.getPos(), false, 1.0D, 0.5D, event.getHand()).send();
+				new ServerboundInteractWithWaterPacket(event.getPos(), 0.0f, 1.0D, 0.5D, event.getHand()).send();
 			}
 		}
 	}
@@ -428,10 +372,11 @@ public class SurviveEvents {
 		BlockState stateUnder = event.getWorld().getBlockState(event.getPos().below());
 		if (event.getWorld().isClientSide && event.getItemStack().isEmpty()) {
 			//Source Block Of Water
-			if (FLUID_THIRST_MAP.containsKey(fluid) && FLUID_THIRSTY_MAP.containsKey(fluid) && FLUID_HYDRATION_MAP.containsKey(fluid)) {
+			if (DataMaps.Server.fluid.containsKey(fluid.getRegistryName())) {
+				FluidJsonHolder fluidHolder = DataMaps.Server.fluid.get(fluid.getRegistryName());
 				event.setCanceled(true);
 				event.setCancellationResult(InteractionResult.SUCCESS);
-				new ServerboundInteractWithWaterPacket(blockpos, getRegisteredThirstEffect(fluid), getRegisteredThirst(fluid), getRegisteredHydration(fluid), event.getHand()).send();
+				new ServerboundInteractWithWaterPacket(blockpos, fluidHolder.getThirstChance(), fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
 			}
 			//Cauldron
 			if (state.getBlock() == Blocks.WATER_CAULDRON) {
@@ -440,10 +385,10 @@ public class SurviveEvents {
 					event.setCanceled(true);
 					event.setCancellationResult(InteractionResult.SUCCESS);
 					if (stateUnder.getBlock() == Blocks.CAMPFIRE && stateUnder.getValue(BlockStateProperties.LIT)) {
-						new ServerboundInteractWithWaterPacket(event.getPos(), false, 4.0D, event.getHand()).send();
+						new ServerboundInteractWithWaterPacket(event.getPos(), 0.0f, 4.0D, event.getHand()).send();
 					}
 					else {
-						new ServerboundInteractWithWaterPacket(event.getPos(), true, 4.0D, event.getHand()).send();
+						new ServerboundInteractWithWaterPacket(event.getPos(), 0.5f, 4.0D, event.getHand()).send();
 					}
 				}
 			}
@@ -469,10 +414,11 @@ public class SurviveEvents {
 	public static void restoreStats(PlayerEvent.Clone event) {
 		SurviveEntityStats.getOrCreateModNBT(event.getPlayer());
 		if (!event.isWasDeath()) {
+			IRealisticEntity original = ((IRealisticEntity)event.getOriginal());
 			SurviveEntityStats.setNutritionStats(event.getPlayer(), SurviveEntityStats.getNutritionStats(event.getOriginal()));
 			SurviveEntityStats.setWellbeingStats(event.getPlayer(), SurviveEntityStats.getWellbeingStats(event.getOriginal()));
 			SurviveEntityStats.setHygieneStats(event.getPlayer(), SurviveEntityStats.getHygieneStats(event.getOriginal()));
-			SurviveEntityStats.setWaterStats(event.getPlayer(), SurviveEntityStats.getWaterStats(event.getOriginal()));
+			SurviveEntityStats.setWaterStats(event.getPlayer(), original.getWaterData());
 			SurviveEntityStats.setStaminaStats(event.getPlayer(), SurviveEntityStats.getEnergyStats(event.getOriginal()));
 			SurviveEntityStats.setTemperatureStats(event.getPlayer(), SurviveEntityStats.getTemperatureStats(event.getOriginal()));
 			SurviveEntityStats.setSleepStats(event.getPlayer(), SurviveEntityStats.getSleepStats(event.getOriginal()));
@@ -488,6 +434,7 @@ public class SurviveEvents {
 		event.addListener(Survive.blockReloader);
 		event.addListener(Survive.biomeReloader);
 		event.addListener(Survive.entityReloader);
+		event.addListener(Survive.fluidReloader);
 	}
 
 	@SubscribeEvent
@@ -612,8 +559,8 @@ public class SurviveEvents {
 				return 0;
 		});
 		TemperatureQuery.registerQuery("survive:heated_effect", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
-			if (player.hasEffect(SMobEffects.CHILLED))
-				return +(0.05F * (float)(player.getEffect(SMobEffects.CHILLED).getAmplifier() + 1));
+			if (player.hasEffect(SMobEffects.HEATED))
+				return +(0.05F * (float)(player.getEffect(SMobEffects.HEATED).getAmplifier() + 1));
 			else
 				return 0;
 		});

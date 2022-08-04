@@ -7,6 +7,7 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.needs.HygieneData;
+import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.SleepData;
 import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.needs.WaterData;
@@ -100,8 +101,9 @@ public class NeedsCommand {
 
 	private static int restore(CommandSourceStack source, float amount, NeedType type, Collection<ServerPlayer> pTargets) throws CommandSyntaxException {
 		for(ServerPlayer player : pTargets) {
+			IRealisticEntity realisticPlayer = (IRealisticEntity)player;
 			SleepData sleepData = SurviveEntityStats.getSleepStats(player);
-			WaterData waterData = SurviveEntityStats.getWaterStats(player);
+			WaterData waterData = realisticPlayer.getWaterData();
 			StaminaData staminaData = SurviveEntityStats.getEnergyStats(player);
 			HygieneData hygieneData = SurviveEntityStats.getHygieneStats(player);
 			switch (type)  {
@@ -143,8 +145,9 @@ public class NeedsCommand {
 
 	private static int deplete(CommandSourceStack source, float amount, NeedType type, Collection<ServerPlayer> pTargets) throws CommandSyntaxException {
 		for(ServerPlayer player : pTargets) {
+			IRealisticEntity realisticPlayer = (IRealisticEntity)player;
 			SleepData sleepData = SurviveEntityStats.getSleepStats(player);
-			WaterData waterData = SurviveEntityStats.getWaterStats(player);
+			WaterData waterData = realisticPlayer.getWaterData();
 			StaminaData staminaData = SurviveEntityStats.getEnergyStats(player);
 			HygieneData hygieneData = SurviveEntityStats.getHygieneStats(player);
 			switch (type)  {
@@ -185,9 +188,9 @@ public class NeedsCommand {
 	}
 
 	private static int query(CommandSourceStack source, NeedType type, ServerPlayer pTarget) throws CommandSyntaxException {
+		IRealisticEntity realisticPlayer = (IRealisticEntity)pTarget;
 		float result = 0;
 		SleepData sleepData = SurviveEntityStats.getSleepStats(pTarget);
-		WaterData waterData = SurviveEntityStats.getWaterStats(pTarget);
 		StaminaData staminaData = SurviveEntityStats.getEnergyStats(pTarget);
 		HygieneData hygieneData = SurviveEntityStats.getHygieneStats(pTarget);
 		switch (type)  {
@@ -207,10 +210,10 @@ public class NeedsCommand {
 			result = sleepData.getAwakeTimer();
 			break;
 		case THIRST:
-			result = waterData.getWaterLevel();
+			result = realisticPlayer.getWaterData().getWaterLevel();
 			break;
 		case HYDRATION:
-			result = waterData.getHydrationLevel();
+			result = realisticPlayer.getWaterData().getHydrationLevel();
 			break;
 		}
 
