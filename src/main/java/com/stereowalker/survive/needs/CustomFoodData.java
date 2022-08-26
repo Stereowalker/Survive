@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class CustomFoodData extends FoodData {
 	int uncleanConsumption = 0;
+	boolean causeAche = false;
 	/**
 	 * Add food stats.
 	 */
@@ -26,7 +27,16 @@ public class CustomFoodData extends FoodData {
 	public void eat(int pFoodLevelModifier, float pSaturationLevelModifier) {
 		int foodLevel = this.foodLevel;
 		super.eat(pFoodLevelModifier, pSaturationLevelModifier);
-		this.foodLevel = Math.min(pFoodLevelModifier + foodLevel, ServerConfig.stomachCapacity());
+		if (ServerConfig.expandedStomachCapacity) {
+			this.foodLevel = Math.min(pFoodLevelModifier + foodLevel, ServerConfig.stomachCapacity());
+			if (this.foodLevel > 20 && foodLevel < 20 && (pFoodLevelModifier/2) < (this.foodLevel-20)) {
+				this.causeAche = true;
+			} else if (this.foodLevel > 20 && foodLevel >= 20){
+				this.causeAche = true;
+			} else {
+				this.causeAche = false;
+			}
+		}
 	}
 
 	@Override
@@ -47,7 +57,7 @@ public class CustomFoodData extends FoodData {
 	public void tick(Player pPlayer) {
 		Difficulty difficulty = pPlayer.level.getDifficulty();
 		//Stomach Ache
-		if (!pPlayer.hasEffect(SMobEffects.UPSET_STOMACH) || pPlayer.getEffect(SMobEffects.UPSET_STOMACH).getDuration() <= 20)
+		if (this.causeAche && (!pPlayer.hasEffect(SMobEffects.UPSET_STOMACH) || pPlayer.getEffect(SMobEffects.UPSET_STOMACH).getDuration() <= 20))
 			if (this.foodLevel > 36)
 				pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 4));
 			else if (this.foodLevel > 32)
@@ -104,6 +114,7 @@ public class CustomFoodData extends FoodData {
 		super.readAdditionalSaveData(pCompoundTag);
 		if (pCompoundTag.contains("foodLevel", 99)) {
 			this.uncleanConsumption = pCompoundTag.getInt("foodUncleanConsumption");
+			this.causeAche = pCompoundTag.getBoolean("foodCauseAche");
 		}
 	}
 
@@ -111,5 +122,6 @@ public class CustomFoodData extends FoodData {
 	public void addAdditionalSaveData(CompoundTag pCompoundTag) {
 		super.addAdditionalSaveData(pCompoundTag);
 		pCompoundTag.putFloat("foodUncleanConsumption", this.uncleanConsumption);
+		pCompoundTag.putBoolean("foodCauseAche", this.causeAche);
 	}
 }
