@@ -1,13 +1,6 @@
-[7.1.0]
-- Fixed Chilled and Heated effects not working
-- Overhauled the customization of how blocks affect temperature
-- The intensity of the sun can be specified in biome .json files
-- Reduced the intensity of the sun in cold biomes
-- Increased the intensity of the sun in the desert
-- Allowed fluids to be modifiable via datapacks
-- Allowed the player to eat and drink beyond their maximum capacity
-- Fix stamina healing the player
-- Stamina recovered via sleeping through the night is completely dependent on when you started sleeping
-- Stamina recovered via lying down on the bed is generally slower
-- Allowed the player to lay on the bed during the day if stamina is low
-- Optimized code and moved some events into mixins
+[7.1.1]
+- Updated to work with UnionLib 7.2.0
+- Update zh_cn.json (Credits to StarchierOrb)
+- Fix inability to start server
+- Eating over stomach capacity will cause an ache if the extra food points gained is more than half of the items value
+- Reduced the movement penalty of an upset stomach by 10%
