@@ -20,7 +20,9 @@
 	"BottleItemMixin"
   ],
   "client": [
-  	"GuiMixin"
+  	"GuiMixin",
+  	"client.AbstractClientPlayerMixin",
+  	"client.LocalPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

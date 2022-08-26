@@ -21,11 +21,8 @@ import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.WaterData;
 import com.stereowalker.survive.needs.WellbeingData;
-import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
 import com.stereowalker.survive.world.DataMaps;
 
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
@@ -73,14 +70,6 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 				getWaterData().save(player);
 			}
 		}
-		if (this.level.isClientSide && (Player)(Object)this instanceof LocalPlayer) {
-			LocalPlayer player = (LocalPlayer)(Object)this;
-			if (player.tickCount%290 == 288) {
-				if (player.level.getDifficulty() != Difficulty.PEACEFUL) {
-					new ServerboundThirstMovementPacket(player.input.forwardImpulse, player.input.leftImpulse, player.input.jumping).send();
-				}
-			}
-		}
 		//
 		if (!this.level.isClientSide) {
 			getStaminaData().baseTick((Player)(Object)this);
@@ -90,18 +79,6 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			getWaterData().baseTick((Player)(Object)this);
 			getWellbeingData().baseTick((Player)(Object)this);
 			getSleepData().baseTick((Player)(Object)this);
-		}
-		if((Player)(Object)this instanceof AbstractClientPlayer) {
-			AbstractClientPlayer player = (AbstractClientPlayer)(Object)this;
-			if (player.level.isClientSide) {
-				getStaminaData().baseClientTick(player);
-				getHygieneData().baseClientTick(player);
-				getNutritionData().baseClientTick(player);
-				getTemperatureData().baseClientTick(player);
-				getWaterData().baseClientTick(player);
-				getWellbeingData().baseClientTick(player);
-				getSleepData().baseClientTick(player);
-			}
 		}
 	}
 	
