@@ -4,7 +4,7 @@ import com.stereowalker.survive.world.SurviveUUIDS;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.core.registries.RegistryHolder;
 import com.stereowalker.unionlib.core.registries.RegistryObject;
-import com.stereowalker.unionlib.entity.ai.UAttributes;
+import com.stereowalker.unionlib.world.entity.ai.UAttributes;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
