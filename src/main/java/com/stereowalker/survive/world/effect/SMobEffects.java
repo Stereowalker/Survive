@@ -45,5 +45,5 @@ public class SMobEffects {
 	@RegistryObject("hyperthermia")
 	public static final MobEffect HYPERTHERMIA = new UnwellMobEffect(MobEffectCategory.HARMFUL, 16750592);
 	@RegistryObject("upset_stomach")
-	public static final MobEffect UPSET_STOMACH = (new SMobEffect(MobEffectCategory.HARMFUL, 5926017)).addAttributeModifier(Attributes.MOVEMENT_SPEED, SurviveUUIDS.UPSET___STOMACH, (double)-0.05F, AttributeModifier.Operation.MULTIPLY_TOTAL);
+	public static final MobEffect UPSET_STOMACH = (new SMobEffect(MobEffectCategory.HARMFUL, 5926017)).addAttributeModifier(Attributes.MOVEMENT_SPEED, SurviveUUIDS.UPSET___STOMACH, (double)-0.045F, AttributeModifier.Operation.MULTIPLY_TOTAL);
 }
