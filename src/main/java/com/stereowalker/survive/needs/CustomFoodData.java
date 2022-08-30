@@ -20,6 +20,13 @@ import net.minecraft.world.item.ItemStack;
 public class CustomFoodData extends FoodData {
 	int uncleanConsumption = 0;
 	boolean causeAche = false;
+
+	public CustomFoodData(FoodData originalFoodData) {
+		this.foodLevel = originalFoodData.foodLevel;
+		this.setSaturation(originalFoodData.getSaturationLevel());
+		this.setExhaustion(originalFoodData.getExhaustionLevel());
+		this.tickTimer = originalFoodData.tickTimer;
+	}
 	/**
 	 * Add food stats.
 	 */

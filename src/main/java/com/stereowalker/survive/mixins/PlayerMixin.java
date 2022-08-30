@@ -46,7 +46,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	public void initInject(CallbackInfo ci) {
-		this.foodData = new CustomFoodData();
+		this.foodData = new CustomFoodData(this.foodData);
 	}
 	
 	@Inject(method = "eat", at = @At("HEAD"))
@@ -84,7 +84,11 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	
 	@Redirect(method = "canEat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;needsFood()Z"))
 	public boolean makeEdible(FoodData foodData) {
-		return ((CustomFoodData)foodData).canConsumeFood();
+		if (foodData instanceof CustomFoodData) {
+			return ((CustomFoodData)foodData).canConsumeFood();
+		} else {
+			return foodData.needsFood();
+		}
 	}
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = {"jumpFromGround", "actuallyHurt", "checkMovementStatistics"})
