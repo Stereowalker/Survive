@@ -17,7 +17,8 @@
 	"CowMixin",
 	"PigMixin",
 	"IceBlockMixin",
-	"BottleItemMixin"
+	"BottleItemMixin",
+	"MobEffectMixin"
   ],
   "client": [
   	"GuiMixin",
