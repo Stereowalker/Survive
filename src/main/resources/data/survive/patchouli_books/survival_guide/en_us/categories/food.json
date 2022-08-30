@@ -1,0 +1,7 @@
+{
+	"name": "book.survive.category.food.name",
+	"description": "book.survive.category.food.desc",
+	"icon": "minecraft:cooked_beef",
+	"sortnum": 1,
+	"secret": false
+}
