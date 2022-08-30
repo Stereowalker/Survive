@@ -5,4 +5,6 @@ public class SurviveUUIDS {
 	public static final String UNWELL_SLOWNESS = "7107DE5E-7CE8-4030-940E-514C1F160891";
 	public static final String UNWELL_WEAKNESS = "7107DE5E-7CE8-4030-940E-514C1F160892";
 	public static final String UPSET___STOMACH = "7107DE5E-7CE8-4030-940E-514C1F160893";
+	public static final String WELL_FED_SPEED_ = "7107DE5E-7CE8-4030-940E-514C1F160894";
+	public static final String WELL_FED_DAMAGE = "7107DE5E-7CE8-4030-940E-514C1F160895";
 }

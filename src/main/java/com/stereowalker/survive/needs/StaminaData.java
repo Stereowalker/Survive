@@ -1,5 +1,7 @@
 package com.stereowalker.survive.needs;
 
+import java.util.Random;
+
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.WeightHandler;
@@ -7,6 +9,7 @@ import com.stereowalker.survive.network.protocol.game.ServerboundArmorStaminaPac
 import com.stereowalker.survive.network.protocol.game.ServerboundRelaxPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhaustionPacket;
 import com.stereowalker.survive.world.DataMaps;
+import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -93,6 +96,7 @@ public class StaminaData extends SurviveData {
 		}
 		
 		Difficulty difficulty = player.level.getDifficulty();
+		int energyToRegen = 1 + (player.hasEffect(SMobEffects.WELL_FED) ? new Random().nextInt(2) : 0);
 		this.prevEnergyLevel = this.energyLevel;
 		if (this.energyExhaustionLevel > 10.0F) {
 			this.energyExhaustionLevel -= 10.0F;
@@ -109,7 +113,7 @@ public class StaminaData extends SurviveData {
 			++this.energyTimer;
 			if (Survive.STAMINA_CONFIG.stamina_recovery_ticks == 0 || this.energyTimer >= Survive.STAMINA_CONFIG.stamina_recovery_ticks) {
 				NutritionData nutritionStats = SurviveEntityStats.getNutritionStats(player);
-				this.relax(1, player.getAttributeValue(SAttributes.MAX_STAMINA));
+				this.relax(energyToRegen, this.maxStamina);
 				nutritionStats.removeCarbs(2);
 				nutritionStats.save(player);
 				this.energyTimer = 0;
@@ -118,7 +122,7 @@ public class StaminaData extends SurviveData {
 		else if (this.isTired() && !Survive.CONFIG.nutrition_enabled && player.getFoodData().getFoodLevel() > 15 && WeightHandler.getTotalArmorWeight(player)/Survive.STAMINA_CONFIG.max_weight < 1.0F) {
 			++this.energyTimer;
 			if (Survive.STAMINA_CONFIG.stamina_recovery_ticks == 0 || this.energyTimer >= Survive.STAMINA_CONFIG.stamina_recovery_ticks) {
-				this.relax(1, this.maxStamina);
+				this.relax(energyToRegen, this.maxStamina);
 				player.getFoodData().addExhaustion(1.0F);
 				this.energyTimer = 0;
 			}
@@ -126,7 +130,7 @@ public class StaminaData extends SurviveData {
 		else if (player.isSleeping()) {
 			++this.energyTimer;
 			if (this.energyTimer >= Math.floor((float)Survive.STAMINA_CONFIG.sleepTime/(float)(maxStamina+6))) {
-				this.relax(1, this.maxStamina);
+				this.relax(energyToRegen, this.maxStamina);
 				this.energyTimer = 0;
 			}
 		} else if (this.energyLevel <= 0 && this.energyReserveLevel <= 0) {
