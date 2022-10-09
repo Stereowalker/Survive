@@ -3,6 +3,7 @@ package com.stereowalker.survive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -47,13 +48,17 @@ import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.item.HygieneItems;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.alchemy.BrewingRecipes;
+import com.stereowalker.survive.world.item.alchemy.SPotions;
 import com.stereowalker.survive.world.item.crafting.SRecipeSerializer;
 import com.stereowalker.survive.world.level.CGameRules;
 import com.stereowalker.survive.world.level.block.SBlocks;
+import com.stereowalker.survive.world.level.material.PurifiedWaterFluid;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.spellcraft.SSpells;
 import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsScreen;
 import com.stereowalker.unionlib.config.ConfigBuilder;
+import com.stereowalker.unionlib.event.potionfluid.FluidToPotionEvent;
+import com.stereowalker.unionlib.event.potionfluid.PotionToFluidEvent;
 import com.stereowalker.unionlib.mod.IPacketHolder;
 import com.stereowalker.unionlib.mod.MinecraftMod;
 import com.stereowalker.unionlib.network.PacketRegistry;
@@ -121,7 +126,7 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		instance = this;
 		ConfigBuilder.registerConfig(ServerConfig.class);
 		ConfigBuilder.registerConfig(CONFIG);
-		ConfigBuilder.registerConfig(HYGIENE_CONFIG);
+		ConfigBuilder.registerConfig(HYGIENE_CONFIG); 
 		ConfigBuilder.registerConfig(TEMPERATURE_CONFIG);
 		ConfigBuilder.registerConfig(THIRST_CONFIG);
 		ConfigBuilder.registerConfig(WELLBEING_CONFIG);
@@ -133,6 +138,17 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		modEventBus.addListener(this::clientRegistries);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		//		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.addListener((Consumer<PotionToFluidEvent>) event -> {
+			if (event.getPotion() == SPotions.PURIFIED_WATER) {
+				event.setFluid(SFluids.PURIFIED_WATER);
+				event.setFlowingFluid(SFluids.FLOWING_PURIFIED_WATER);
+			}
+		});
+		MinecraftForge.EVENT_BUS.addListener((Consumer<FluidToPotionEvent.FromStateEvent>) event -> {
+			if (event.getFluid().getType() instanceof PurifiedWaterFluid) {
+				event.setPotion(SPotions.PURIFIED_WATER);
+			}
+		});
 		isPrimalWinterLoaded = ModList.get().isLoaded("primalwinter");
 		if (isCombatLoaded()) {
 			SSpells.registerAll(modEventBus);
