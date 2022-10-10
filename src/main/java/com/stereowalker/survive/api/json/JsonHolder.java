@@ -51,10 +51,9 @@ public interface JsonHolder {
 			.put("Lcom/stereowalker/survive/json/ArmorJsonHolder;", ArmorJsonHolder.class)
 			.put("Lcom/stereowalker/survive/json/FluidJsonHolder;", FluidJsonHolder.class)
 			.build();
-	public static JsonHolder deserialize(CompoundTag input, Class<? extends JsonHolder> func) {
-		System.out.println(func);
+	public static JsonHolder deserialize(CompoundTag input, Class<? extends JsonHolder> jsonClass) {
 		try {
-			return func.getConstructor(input.getClass()).newInstance(input);
+			return jsonClass.getConstructor(input.getClass()).newInstance(input);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();

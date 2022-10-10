@@ -43,8 +43,8 @@ public abstract class BlockPropertyHandlerImpl<X extends Comparable<X>> implemen
 			int max;
 			@Override
 			public Map<String, Float> deserialize(JsonObject object) {
-				min = object.get("max").getAsInt();
-				max = object.get("min").getAsInt();
+				min = object.get("min").getAsInt();
+				max = object.get("max").getAsInt();
 				Map<String, Float> m = Maps.newHashMap();
 				for (Entry<String, JsonElement> pr2 : object.get("values").getAsJsonObject().entrySet()) {
 					m.put(pr2.getKey()+"i", pr2.getValue().getAsFloat());
