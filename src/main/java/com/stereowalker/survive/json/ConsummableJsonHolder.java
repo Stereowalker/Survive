@@ -261,4 +261,10 @@ public class ConsummableJsonHolder implements JsonHolder {
 	public void setWorkingOn(String member) {
 		this.wo = member;
 	}
+
+	@Override
+	public JsonHolder deserialize(CompoundTag input) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -91,4 +91,10 @@ public class EntityTemperatureJsonHolder implements JsonHolder {
 	public String getworkingOn() {return wo;}
 	@Override
 	public void setWorkingOn(String member) {this.wo = member;}
+
+	@Override
+	public JsonHolder deserialize(CompoundTag input) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

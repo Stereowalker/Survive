@@ -25,7 +25,7 @@ import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.survive.json.FoodJsonHolder;
 import com.stereowalker.survive.json.PotionJsonHolder;
 import com.stereowalker.survive.json.property.BlockPropertyHandlerImpl;
-import com.stereowalker.survive.network.protocol.game.ClientboundArmorDataTransferPacket;
+import com.stereowalker.survive.network.protocol.game.ClientboundDataTransferPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundDrinkSoundPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundArmorStaminaPacket;
@@ -196,7 +196,7 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 	public void registerClientboundPackets(SimpleChannel channel) {
 		channel.registerMessage(5, ClientboundSurvivalStatsPacket.class, ClientboundSurvivalStatsPacket::encode, ClientboundSurvivalStatsPacket::decode, ClientboundSurvivalStatsPacket::handle);
 		channel.registerMessage(6, ClientboundDrinkSoundPacket.class, ClientboundDrinkSoundPacket::encode, ClientboundDrinkSoundPacket::decode, ClientboundDrinkSoundPacket::handle);
-		channel.registerMessage(7, ClientboundArmorDataTransferPacket.class, ClientboundArmorDataTransferPacket::encode, ClientboundArmorDataTransferPacket::decode, ClientboundArmorDataTransferPacket::handle);
+		PacketRegistry.registerMessage(channel, 7, ClientboundDataTransferPacket.class, (packetBuffer) -> {return new ClientboundDataTransferPacket(packetBuffer);});
 	}
 
 	//TODO: FInd Somewhere to put all these

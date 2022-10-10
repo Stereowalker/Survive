@@ -123,6 +123,11 @@ public class ArmorJsonHolder implements JsonHolder {
 		return nbt;
 	}
 
+	@Override
+	public ArmorJsonHolder deserialize(CompoundTag input) {
+		return new ArmorJsonHolder(input);
+	}
+
 	String wo = "NOTHING";
 	
 	@Override

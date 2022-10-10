@@ -1,6 +1,11 @@
 package com.stereowalker.survive.api.json;
 
+import java.lang.reflect.InvocationTargetException;
+
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import com.stereowalker.survive.json.ArmorJsonHolder;
+import com.stereowalker.survive.json.FluidJsonHolder;
 
 import net.minecraft.nbt.CompoundTag;
 
@@ -27,6 +32,7 @@ public interface JsonHolder {
 	}
 	
 	public default boolean hasMemberAndIsPrimitive(String member, JsonObject object) {
+		
 		return object.has(member) && object.get(member).isJsonPrimitive();
 	}
 	
@@ -39,4 +45,20 @@ public interface JsonHolder {
 	}
 	
 	public CompoundTag serialize();
+	public JsonHolder deserialize(CompoundTag input);
+
+	public static ImmutableMap<String, Class<? extends JsonHolder>> HOLD = new ImmutableMap.Builder<String, Class<? extends JsonHolder>>()
+			.put("Lcom/stereowalker/survive/json/ArmorJsonHolder;", ArmorJsonHolder.class)
+			.put("Lcom/stereowalker/survive/json/FluidJsonHolder;", FluidJsonHolder.class)
+			.build();
+	public static JsonHolder deserialize(CompoundTag input, Class<? extends JsonHolder> func) {
+		System.out.println(func);
+		try {
+			return func.getConstructor(input.getClass()).newInstance(input);
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

@@ -155,4 +155,9 @@ public class BiomeTemperatureJsonHolder implements JsonHolder {
 	public float getSunIntensity() {
 		return sun_intensity;
 	}
+
+	@Override
+	public JsonHolder deserialize(CompoundTag input) {
+		return null;
+	}
 }

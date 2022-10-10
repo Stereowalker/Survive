@@ -23,6 +23,13 @@ public class FluidJsonHolder implements JsonHolder {
 	private float hydrationAmount = 0;
 	private float thirstChance = 0;
 	
+	public FluidJsonHolder(CompoundTag nbt) {
+		this.itemID = new ResourceLocation(nbt.getString("id"));
+		this.thirstAmount = nbt.getInt("thirst_amount");
+		this.hydrationAmount = nbt.getFloat("hydration_amount");
+		this.thirstChance = nbt.getFloat("thirst_chance");
+	}
+	
 	public FluidJsonHolder(ResourceLocation itemID, JsonObject object) {
 		String THIRST = "thirst";
 		String THIRSTY = "thirst_chance";
@@ -70,11 +77,20 @@ public class FluidJsonHolder implements JsonHolder {
 	public float getThirstChance() {
 		return thirstChance;
 	}
-	
+
 	@Override
 	public CompoundTag serialize() {
-		// TODO Auto-generated method stub
-		return null;
+		CompoundTag nbt = new CompoundTag();
+		nbt.putString("id", this.itemID.toString());
+		nbt.putInt("thirst_amount", this.thirstAmount);
+		nbt.putFloat("hydration_amount", this.hydrationAmount);
+		nbt.putFloat("thirst_chance", this.thirstChance);
+		return nbt;
+	}
+
+	@Override
+	public FluidJsonHolder deserialize(CompoundTag input) {
+		return new FluidJsonHolder(input);
 	}
 	
 	String wo = "NOTHING";
@@ -85,4 +101,5 @@ public class FluidJsonHolder implements JsonHolder {
 	public void setWorkingOn(String member) {
 		this.wo = member;
 	}
+
 }

@@ -22,7 +22,7 @@ import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.SleepData;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.TemperatureUtil;
-import com.stereowalker.survive.network.protocol.game.ClientboundArmorDataTransferPacket;
+import com.stereowalker.survive.network.protocol.game.ClientboundDataTransferPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWaterPacket;
 import com.stereowalker.survive.world.DataMaps;
@@ -112,12 +112,21 @@ public class SurviveEvents {
 			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
 			Survive.getInstance().channel.sendTo(new ClientboundSurvivalStatsPacket(player), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 			if (!DataMaps.Server.syncedToClient) {
-				Survive.getInstance().getLogger().info("Syncing Armor Data To Client ("+player.getDisplayName().getString()+")");
-				MutableInt i = new MutableInt(0);
+				Survive.getInstance().getLogger().info("Syncing All Data To Client ("+player.getDisplayName().getString()+")");
+				Survive.getInstance().getLogger().info("Syncing Armor Data");
+				MutableInt a = new MutableInt(0);
 				DataMaps.Server.armor.forEach((key, value) -> {
-					Survive.getInstance().channel.sendTo(new ClientboundArmorDataTransferPacket(key, value, i.getValue() == 0), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+					Survive.getInstance().channel.sendTo(new ClientboundDataTransferPacket(key, value, a.getValue() == 0), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+					a.increment();;
+				});
+				Survive.getInstance().getLogger().info("Done with Armors");
+				Survive.getInstance().getLogger().info("Syncing Fluid Data");
+				MutableInt i = new MutableInt(0);
+				DataMaps.Server.fluid.forEach((key, value) -> {
+					Survive.getInstance().channel.sendTo(new ClientboundDataTransferPacket(key, value, i.getValue() == 0), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 					i.increment();;
 				});
+				Survive.getInstance().getLogger().info("Done with Fluids");
 				DataMaps.Server.syncedToClient = true;
 			}
 		}
@@ -352,8 +361,8 @@ public class SurviveEvents {
 		if (event.getWorld().isClientSide && event.getItemStack().isEmpty() && event.getHand() == InteractionHand.MAIN_HAND) {
 			//Source Block Of Water
 			Fluid fluid = event.getWorld().getFluidState(blockpos).getType();
-			if (DataMaps.Server.fluid.containsKey(fluid.getRegistryName())) {
-				FluidJsonHolder fluidHolder = DataMaps.Server.fluid.get(fluid.getRegistryName());
+			if (DataMaps.Client.fluid.containsKey(fluid.getRegistryName())) {
+				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(fluid.getRegistryName());
 				new ServerboundInteractWithWaterPacket(blockpos, fluidHolder.getThirstChance(), fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
 			}
 			//Air Block
@@ -373,8 +382,8 @@ public class SurviveEvents {
 		BlockState stateUnder = event.getWorld().getBlockState(event.getPos().below());
 		if (event.getWorld().isClientSide && event.getItemStack().isEmpty()) {
 			//Source Block Of Water
-			if (DataMaps.Server.fluid.containsKey(fluid.getRegistryName())) {
-				FluidJsonHolder fluidHolder = DataMaps.Server.fluid.get(fluid.getRegistryName());
+			if (DataMaps.Client.fluid.containsKey(fluid.getRegistryName())) {
+				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(fluid.getRegistryName());
 				event.setCanceled(true);
 				event.setCancellationResult(InteractionResult.SUCCESS);
 				new ServerboundInteractWithWaterPacket(blockpos, fluidHolder.getThirstChance(), fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
