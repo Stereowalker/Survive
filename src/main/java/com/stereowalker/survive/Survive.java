@@ -80,7 +80,7 @@ public class Survive extends UnionMod {
 	
 	public Survive() 
 	{
-		super("survive", new ResourceLocation(MOD_ID, "textures/icon.png"), LoadType.BOTH);Entity.
+		super("survive", new ResourceLocation(MOD_ID, "textures/icon.png"), LoadType.BOTH);
 		instance = this;
 		ConfigBuilder.registerConfig(Config.class);
 		ConfigBuilder.registerConfig(ServerConfig.class);

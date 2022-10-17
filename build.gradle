@@ -115,7 +115,7 @@ dependencies {
 	implementation fg.deobf("curse.maven:combatapi-320729:"+combatAPIID)
 	
 }
-// Process resources on build
+/* Process resources on build
 processResources {
 	// This will ensure that this task is redone when the versions change.
 	inputs.property 'version', project.version
@@ -129,7 +129,7 @@ processResources {
 	from(sourceSets.main.resources.srcDirs) {
 		exclude 'META-INF/mods.toml'
 	}
-}
+}*/
 
 // Example for how to get properties into the manifest for reading by the runtime..
 jar {
@@ -197,6 +197,49 @@ publishing {
         }
     }
 }
+
+//Begining of Fix for build crash
+
+// Generate a fixed tsrg file after generating the default tsrg file
+createMcpToSrg {
+    outputs.upToDateWhen {false}
+    doLast {
+        fixFG5TsrgForMixinAP(output.get().asFile, file("${buildDir}/fixMcpToSrg/output.tsrg"))
+    }
+}
+
+// Tell mixin to use the fixed TSRG file
+mixin {
+    reobfSrgFile = file("${buildDir}/fixMcpToSrg/output.tsrg")
+}
+
+// Function that actually fixes the TSRG file
+static def fixFG5TsrgForMixinAP(File inFile, File outFile) {
+    // Make directory if needed
+    outFile.parentFile.mkdirs()
+
+    try (Scanner scanner = new Scanner(inFile); PrintWriter out = new PrintWriter(outFile)) {
+        boolean firstLine = true
+        while (scanner.hasNextLine()) {
+            String next = scanner.nextLine()
+
+            // Skip first 'tsrg left right' header line
+            if (firstLine) {
+                firstLine = false
+                continue
+            }
+
+            // Skip 'static' indicators
+            if (next.trim() == "static") {
+                continue
+            }
+
+            // Export line otherwise
+            out.println(next)
+        }
+    }
+}
+//End of Fix for build crash
 
 artifacts {
 	archives sourcesJar
