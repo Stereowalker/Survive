@@ -112,7 +112,7 @@ dependencies {
 	implementation fg.deobf("curse.maven:create-328085:"+createID)
 	implementation fg.deobf("curse.maven:flywheel-486392:"+flywheelID)
 	
-	implementation fg.deobf("curse.maven:combat-api-320729:"+combatAPIID)
+	implementation fg.deobf("curse.maven:combatapi-320729:"+combatAPIID)
 	
 }
 // Process resources on build
