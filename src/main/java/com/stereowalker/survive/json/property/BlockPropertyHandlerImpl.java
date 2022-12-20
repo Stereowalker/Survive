@@ -35,7 +35,7 @@ public abstract class BlockPropertyHandlerImpl<X extends Comparable<X>> implemen
 
 			@Override
 			public Boolean getValue(String value) {
-				return Boolean.parseBoolean(value+"b");
+				return Boolean.parseBoolean(value.substring(0, value.length() - 1));
 			}
 		};
 		new BlockPropertyHandlerImpl<Integer>("integer") {
@@ -64,7 +64,7 @@ public abstract class BlockPropertyHandlerImpl<X extends Comparable<X>> implemen
 
 			@Override
 			public Integer getValue(String value) {
-				return Integer.parseInt(value+"i");
+				return Integer.parseInt(value.substring(0, value.length() - 1));
 			}
 		};
 		new EnumBlockPropertyHandlerImpl<>();
