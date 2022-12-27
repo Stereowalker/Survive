@@ -64,7 +64,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -434,17 +433,6 @@ public class SurviveEvents {
 			SurviveEntityStats.setSleepStats(event.getPlayer(), SurviveEntityStats.getSleepStats(event.getOriginal()));
 			SurviveEntityStats.setWetTime(event.getPlayer(), SurviveEntityStats.getWetTime(event.getOriginal()));
 		}
-	}
-
-	@SubscribeEvent
-	public static void addReload(AddReloadListenerEvent event) {
-		event.addListener(Survive.consummableReloader);
-		event.addListener(Survive.potionReloader);
-		event.addListener(Survive.armorReloader);
-		event.addListener(Survive.blockReloader);
-		event.addListener(Survive.biomeReloader);
-		event.addListener(Survive.entityReloader);
-		event.addListener(Survive.fluidReloader);
 	}
 
 	@SubscribeEvent

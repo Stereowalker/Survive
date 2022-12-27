@@ -250,6 +250,17 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		GuiHelper.registerOverlays();
 		SItemProperties.registerAll();
 	}
+	
+	@Override
+	public void registerServerRelaodableResources(ReloadListeners reloadListener) {
+		reloadListener.listenTo(consummableReloader);
+		reloadListener.listenTo(potionReloader);
+		reloadListener.listenTo(armorReloader);
+		reloadListener.listenTo(blockReloader);
+		reloadListener.listenTo(biomeReloader);
+		reloadListener.listenTo(entityReloader);
+		reloadListener.listenTo(fluidReloader);
+	}
 
 	public static List<String> defaultDimensionMods() {
 		List<String> dims = new ArrayList<String>();
@@ -258,95 +269,7 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		dims.add("minecraft:the_end,0.0");
 		return dims;
 	}
-
-	public static List<String> defaultArmorMods(){
-		List<String> armorTemps = new ArrayList<String>();
-		//Ars Nouveau
-		armorTemps.add("ars_nouveau:novice_robes,3.0");
-		armorTemps.add("ars_nouveau:novice_leggings,3.0");
-		armorTemps.add("ars_nouveau:novice_hood,3.0");
-		armorTemps.add("ars_nouveau:novice_boots,3.0");
-		armorTemps.add("ars_nouveau:apprentice_robes,3.0");
-		armorTemps.add("ars_nouveau:apprentice_leggings,3.0");
-		armorTemps.add("ars_nouveau:apprentice_hood,3.0");
-		armorTemps.add("ars_nouveau:apprentice_boots,3.0");
-		armorTemps.add("ars_nouveau:archmage_robes,3.0");
-		armorTemps.add("ars_nouveau:archmage_leggings,3.0");
-		armorTemps.add("ars_nouveau:archmage_hood,3.0");
-		armorTemps.add("ars_nouveau:archmage_boots,3.0");
-		return armorTemps;
-	}
-
-	public static List<String> defaultWaterContainers() {
-		List<String> water = new ArrayList<String>();
-		//		water.add("minecraft:sweet_berries,-2");
-		water.add("farmersdelight:milk_bottle,4");
-		//		water.add("minecraft:pumpkin_pie,-4");
-		return water;
-	}
-
-	public static List<String> defaultThirstContainers() {
-		List<String> thirst = new ArrayList<String>();
-		//		thirst.add("minecraft:honey_bottle,1");
-		//		thirst.add("minecraft:pufferfish,-8");
-		//		thirst.add("minecraft:rotten_flesh,-4");
-		//		thirst.add("minecraft:poisonous_potato,-8");
-		thirst.add("minecraft:spider_eye,-8");
-		thirst.add("minecraft:bread,-6");
-		thirst.add("minecraft:cookie,-1");
-		thirst.add("farmersdelight:raw_pasta,-4");
-		thirst.add("farmersdelight:pie_crust,-2");
-		thirst.add("farmersdelight:slice_of_cake,-2");
-		thirst.add("farmersdelight:slice_of_apple_pie,-2");
-		thirst.add("farmersdelight:slice_of_sweet_berry_cheesecake,-2");
-		thirst.add("farmersdelight:slice_of_chocolate_pie,-2");
-		thirst.add("farmersdelight:sweet_berry_cookie,-1");
-		thirst.add("farmersdelight:honey_cookie,-1");
-		thirst.add("farmersdelight:cooked_rice,-4");
-		return thirst;
-	}
-
-	public static List<String> defaultChilledContainers() {
-		List<String> chilled = new ArrayList<String>();
-		//		chilled.add("minecraft:beetroot_soup,3");
-		chilled.add("minecraft:potato,0");
-		chilled.add("minecraft:carrot,0");
-		chilled.add("create:builders_tea,8");
-		chilled.add("farmersdelight:tomato_sauce,1");
-		chilled.add("farmersdelight:cabbage,0");
-		chilled.add("farmersdelight:cabbage_leaf,0");
-		chilled.add("farmersdelight:tomato,0");
-		chilled.add("farmersdelight:onion,0");
-		chilled.add("farmersdelight:pumpkin_slice,0");
-		chilled.add("farmersdelight:minced_beef,0");
-		chilled.add("farmersdelight:mixed_salad,0");
-		return chilled;
-	}
-
-	public static List<String> defaultHeatedContainers(){
-		List<String> heated = new ArrayList<String>(); 
-		heated.add("minecraft:rabbit_stew,0");
-		heated.add("farmersdelight:hot_cocoa,4");
-		heated.add("farmersdelight:beef_stew,1");
-		heated.add("farmersdelight:chicken_soup,5");
-		heated.add("farmersdelight:vegetable_soup,5");
-		heated.add("farmersdelight:pumpkin_soup,5");
-		heated.add("farmersdelight:nether_salad,0");
-		heated.add("farmersdelight:dumplings,0");
-		heated.add("farmersdelight:stuffed_pumpkin,0");
-		heated.add("farmersdelight:fish_stew,1");
-		heated.add("farmersdelight:baked_cod_stew,1");
-		heated.add("farmersdelight:honey_glazed_ham,-2");
-		heated.add("farmersdelight:pasta_with_meatballs,0");
-		heated.add("farmersdelight:pasta_with_mutton_chop,0");
-		heated.add("farmersdelight:vegetable_noodles,0");
-		heated.add("farmersdelight:steak_and_potatoes,0");
-		heated.add("farmersdelight:shepherds_pie,0");
-		heated.add("farmersdelight:ratatouille,0");
-		heated.add("farmersdelight:squid_ink_pasta,0");
-		heated.add("farmersdelight:grilled_salmon,0");
-		return heated;
-	}
+	
 	public static Survive getInstance() {
 		return instance;
 	}
