@@ -1,2 +1,2 @@
-[7.1.4]
-- FIxed crash when going near snow
+[7.1.5]
+- Added a crafting recipe for the Survival Guide
