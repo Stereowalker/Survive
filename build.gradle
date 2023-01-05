@@ -1,28 +1,11 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-		maven { url = 'https://repo.spongepowered.org/maven' }
-		maven { url = 'https://maven.parchmentmc.org' }
-        mavenCentral()
-    }
-	
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-		classpath 'org.parchmentmc:librarian:1.+'
-		classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
-    }
-}
-
 plugins {
-  id "com.matthewprenger.cursegradle" version "1.4.0"
+ 	id "com.matthewprenger.cursegradle" version "1.4.0"
+	id 'eclipse'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'org.spongepowered.mixin' version '0.7.+'
 }
-
-apply plugin: 'net.minecraftforge.gradle'
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
-apply plugin: 'org.spongepowered.mixin'
 
 mixin {
     add sourceSets.main, "${modFilename}-refmap.json"
@@ -95,21 +78,21 @@ dependencies {
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
 	implementation fg.deobf("com.stereowalker.unionlib:UnionLib:"+modMinecraftVersion+"-"+unionLibVersion+"-"+modLoader+"")
 	
-	compileOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+":api")
-	compileOnly fg.deobf("com.stereowalker.combat:C.O.M.B.A.T:"+modMinecraftVersion+"-"+combatVersion+":api")
-    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.18.1"+/*modMinecraftVersion+*/"-"+caelusVersion+"") 
-    compileOnly fg.deobf("vazkii.patchouli:Patchouli:"+modMinecraftVersion+"-"+patchouliVersion+":api")
+	compileOnly fg.deobf("mezz.jei:jei-1.19.2"+/*modMinecraftVersion+*/"-forge-api:"+jeiVersion)
+	compileOnly fg.deobf("com.stereowalker.combat:C.O.M.B.A.T:1.18.2"+/*modMinecraftVersion+*/"-"+combatVersion+":api")
+    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.19.2"+/*modMinecraftVersion+*/"-"+patchouliVersion+":api")
 	
-	runtimeOnly fg.deobf("mezz.jei:jei-"+modMinecraftVersion+":"+jeiVersion+"")
-	runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:1.18.1"+/*modMinecraftVersion+*/"-"+caelusVersion+"") 
-    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:"+modMinecraftVersion+"-"+patchouliVersion+"")
+	//runtimeOnly fg.deobf("mezz.jei:jei-1.19.2"+/*modMinecraftVersion+*/"-forge:"+jeiVersion+"")
+	runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
+    //runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.19.2"+/*modMinecraftVersion+*/"-"+patchouliVersion+"")
 	
 	implementation fg.deobf("curse.maven:biomes-o-plenty-220318:"+bopID)
 	implementation fg.deobf("curse.maven:terrablender-563928:"+terrablenderID)
 	implementation fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
-	implementation fg.deobf("curse.maven:origins-474438:"+originsID)
-	implementation fg.deobf("curse.maven:create-328085:"+createID)
-	implementation fg.deobf("curse.maven:flywheel-486392:"+flywheelID)
+	//implementation fg.deobf("curse.maven:origins-474438:"+originsID)
+	//implementation fg.deobf("curse.maven:create-328085:"+createID)
+	//implementation fg.deobf("curse.maven:flywheel-486392:"+flywheelID)
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -184,6 +167,7 @@ curseforge {
 //    type 'jar'
 //    builtBy 'reobfJar'
 //}
+jar.finalizedBy('reobfJar')
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -208,6 +192,10 @@ publishing {
 			url = "https://modmaven.dev/artifactory/local-releases/"
         }
     }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
 artifacts {
