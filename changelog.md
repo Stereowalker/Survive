@@ -1,2 +1,2 @@
-[7.1.5]
-- Added a crafting recipe for the Survival Guide
+[8.0.0]
+- Ported to 1.19.3
