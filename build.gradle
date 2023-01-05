@@ -1,10 +1,11 @@
 plugins {
- 	id "com.matthewprenger.cursegradle" version "1.4.0"
 	id 'eclipse'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1.+'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
+    id "com.matthewprenger.cursegradle" version "1.4.0"
+	id "com.modrinth.minotaur" version "2.+"
 }
 
 mixin {
@@ -156,6 +157,26 @@ curseforge {
 	options {
     	debug = false // defaults to false
   	}		
+}
+
+
+modrinth {
+    token = "$System.env.MODRINTH_TOKEN"
+    projectId = modId
+    versionNumber = "${project.version}"
+    versionType = "release"
+    uploadFile = jar
+    gameVersions = [modMinecraftVersion]
+    loaders = ["${project.modLoader}"]
+	changelog = file('changelog.md').text
+    dependencies {
+        required.project "unionlib"
+    }
+}
+task uploadToAllSites {
+    uploadToAllSites.dependsOn curseforge
+    uploadToAllSites.dependsOn modrinth
+    uploadToAllSites.dependsOn publish
 }
 
 // Example configuration to allow publishing using the maven-publish task
