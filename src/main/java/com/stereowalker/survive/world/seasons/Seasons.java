@@ -1,14 +1,16 @@
 package com.stereowalker.survive.world.seasons;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.stereowalker.survive.Survive;
 
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 
 public class Seasons {
-	public static final List<Season> SEASON_LIST = new ArrayList<Season>();
+	public static final Map<ResourceLocation, Season> SEASON_LIST = new HashMap<ResourceLocation, Season>();
 
 	public static final Season NONE = register("none", new Season(0));
 	public static final Season DRY_BEGIN = register("dry_begin", new Season(0.1f));
@@ -30,16 +32,15 @@ public class Seasons {
 	public static final Season AUTUMN_MIDST = register("autumn_midst", new Season(0.0f));
 	public static final Season AUTUMN_CLOSE = register("autumn_close", new Season(-0.3f));
 	
-	public static Season register(String name, Season condition) {
-		condition.setRegistryName(Survive.getInstance().location(name));
-		SEASON_LIST.add(condition);
-		return condition;
+	public static Season register(String name, Season season) {
+		SEASON_LIST.put(Survive.getInstance().location(name), season);
+		return season;
 	}
 	
-	public static void registerAll(IForgeRegistry<Season> registry) {
-		for(Season condition : SEASON_LIST) {
-			registry.register(condition);
-			Survive.getInstance().debug("Season: \""+condition.getRegistryName().toString()+"\" registered");
+	public static void registerAll(RegisterHelper<Season> registry) {
+		for(Entry<ResourceLocation, Season> season : SEASON_LIST.entrySet()) {
+			registry.register(season.getKey(), season.getValue());
+			Survive.getInstance().debug("Season: \""+season.getKey().toString()+"\" registered");
 		}
 		Survive.getInstance().debug("All Seasons Registered");
 	}

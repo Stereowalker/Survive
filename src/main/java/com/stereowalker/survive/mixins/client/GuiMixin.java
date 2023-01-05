@@ -1,9 +1,8 @@
-package com.stereowalker.survive.mixins;
-
-import java.util.Random;
+package com.stereowalker.survive.mixins.client;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.lwjgl.opengl.GL11;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.stereowalker.survive.GuiHelper;
@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
@@ -39,7 +40,7 @@ import net.minecraft.world.food.FoodData;
 @Mixin(Gui.class)
 public abstract class GuiMixin extends GuiComponent {
 	@Shadow protected Minecraft minecraft;
-	@Shadow protected final Random random = new Random();
+	@Shadow @Final public RandomSource random = RandomSource.create();
 	@Shadow public Player getCameraPlayer() {return null;}
 	@Shadow public void renderTextureOverlay(ResourceLocation p_168709_, float p_168710_) {}
 	@Shadow public int screenWidth;
@@ -47,7 +48,7 @@ public abstract class GuiMixin extends GuiComponent {
 	@Shadow protected int tickCount;
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;lerp(FFF)F", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void render2(PoseStack arg0, float arg1, CallbackInfo ci, Font font, float f) {
+	public void render2(PoseStack arg0, float arg1, CallbackInfo ci, Window window, Font font, float f) {
 		if (Survive.CONFIG.tired_overlay && minecraft.player.hasEffect(SMobEffects.TIREDNESS)) {
 			GuiHelper.renderTiredOverlay((Gui)(Object)this);
 		}

@@ -11,14 +11,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 public class CanteenFillingRecipe extends CustomRecipe {
 
-	public CanteenFillingRecipe(ResourceLocation idIn) {
-		super(idIn);
+	public CanteenFillingRecipe(ResourceLocation idIn, CraftingBookCategory pCategory) {
+		super(idIn, pCategory);
 	}
 
 	@Override
@@ -72,8 +73,8 @@ public class CanteenFillingRecipe extends CustomRecipe {
 		NonNullList<ItemStack> nonnulllist = NonNullList.withSize(pContainer.getContainerSize(), ItemStack.EMPTY);
 	      for(int i = 0; i < nonnulllist.size(); ++i) {
 	         ItemStack item = pContainer.getItem(i);
-	         if (item.hasContainerItem()) {
-	            nonnulllist.set(i, item.getContainerItem());
+	         if (item.hasCraftingRemainingItem()) {
+	            nonnulllist.set(i, item.getCraftingRemainingItem());
 	         }
 	         if (item.getItem() == Items.POTION) {
 	        	 nonnulllist.set(i, new ItemStack(Items.GLASS_BOTTLE));

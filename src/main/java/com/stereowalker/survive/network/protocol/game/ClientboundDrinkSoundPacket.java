@@ -51,7 +51,7 @@ public class ClientboundDrinkSoundPacket {
 	@SuppressWarnings("resource")
 	@OnlyIn(Dist.CLIENT)
 	public static void update(final BlockPos pos, final UUID uuid) {
-		if (uuid.equals(Player.createPlayerUUID(Minecraft.getInstance().player.getGameProfile()))) {
+		if (uuid.equals(Minecraft.getInstance().player.getUUID())) {
 			Minecraft.getInstance().player.level.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.POTION).getDrinkingSound(), SoundSource.PLAYERS, 0.5F, Minecraft.getInstance().player.level.random.nextFloat() * 0.1F + 0.9F, false);
 			Minecraft.getInstance().player.swing(InteractionHand.MAIN_HAND);
 		}

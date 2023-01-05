@@ -51,7 +51,7 @@ public class ClientboundSurvivalStatsPacket {
 	
 	@OnlyIn(Dist.CLIENT)
 	public static void update(final CompoundTag stats, final UUID uuid) {
-		if (uuid.equals(Player.createPlayerUUID(Minecraft.getInstance().player.getGameProfile()))) {
+		if (uuid.equals(Minecraft.getInstance().player.getUUID())) {
 			SurviveEntityStats.setModNBT(stats, Minecraft.getInstance().player);
 		}
 	}

@@ -25,7 +25,7 @@ public class ModuleEnabledCondition implements ICondition
     }
 
     @Override
-    public boolean test()
+    public boolean test(IContext context)
     {
         switch (module) {
 		case "hygiene":

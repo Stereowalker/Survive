@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.SimpleCookingSerializer;
 
 public class WaterBottleCookingSerializer extends SimpleCookingSerializer<WaterBottleSmeltingRecipe> {
@@ -17,7 +18,7 @@ public class WaterBottleCookingSerializer extends SimpleCookingSerializer<WaterB
       String s = GsonHelper.getAsString(pJson, "group", "");
       float f = GsonHelper.getAsFloat(pJson, "experience", 0.0F);
       int i = GsonHelper.getAsInt(pJson, "cookingtime", this.defaultCookingTime);
-      return this.factory.create(pRecipeId, s, null, null, f, i);
+      return this.factory.create(pRecipeId, s, CookingBookCategory.MISC, null, null, f, i);
    }
 
    @Override
@@ -25,7 +26,7 @@ public class WaterBottleCookingSerializer extends SimpleCookingSerializer<WaterB
       String s = pBuffer.readUtf();
       float f = pBuffer.readFloat();
       int i = pBuffer.readVarInt();
-      return this.factory.create(pRecipeId, s, null, null, f, i);
+      return this.factory.create(pRecipeId, s, CookingBookCategory.MISC, null, null, f, i);
    }
 
    @Override

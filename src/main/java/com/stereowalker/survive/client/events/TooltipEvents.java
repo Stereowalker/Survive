@@ -10,8 +10,8 @@ import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.player.Player;
@@ -29,25 +29,25 @@ public class TooltipEvents {
 	@OnlyIn(Dist.CLIENT)
 	public static void accessoryTooltip(Player player, ItemStack stack, List<Component> tooltip, boolean displayWeight, boolean displayTemp) {
 		List<Component> tooltipsToAdd = new ArrayList<Component>();
-		if (DataMaps.Client.armor.containsKey(stack.getItem().getRegistryName())) {
+		if (DataMaps.Client.armor.containsKey(BuiltInRegistries.ITEM.getKey(stack.getItem()))) {
 			float kg = WeightHandler.getArmorWeightClient(stack);
 			float rawPound = kg*2.205f;
 			int poundInt = (int)(rawPound*1000);
 			float pound = poundInt/1000.0F;
-			if (displayWeight) tooltipsToAdd.add(new TranslatableComponent("tooltip.survive.weight", Survive.STAMINA_CONFIG.displayWeightInPounds ? pound : kg, Survive.STAMINA_CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
+			if (displayWeight) tooltipsToAdd.add(Component.translatable("tooltip.survive.weight", Survive.STAMINA_CONFIG.displayWeightInPounds ? pound : kg, Survive.STAMINA_CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
 			if (displayTemp)
-				for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Client.armor.get(stack.getItem().getRegistryName()).getTemperatureModifier()) {
+				for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Client.armor.get(BuiltInRegistries.ITEM.getKey(stack.getItem())).getTemperatureModifier()) {
 					if (instance.getSecond().shouldChangeTemperature(player)) {
 						if (instance.getSecond().getAdditionalContext() != null)
-							tooltipsToAdd.add(new TranslatableComponent("tooltip.survive.temperature", instance.getSecond().getTemperature()).append(instance.getSecond().getAdditionalContext()).withStyle(ChatFormatting.DARK_PURPLE));
+							tooltipsToAdd.add(Component.translatable("tooltip.survive.temperature", instance.getSecond().getTemperature()).append(instance.getSecond().getAdditionalContext()).withStyle(ChatFormatting.DARK_PURPLE));
 						else
-							tooltipsToAdd.add(new TranslatableComponent("tooltip.survive.temperature", instance.getSecond().getTemperature()).withStyle(ChatFormatting.DARK_PURPLE));
+							tooltipsToAdd.add(Component.translatable("tooltip.survive.temperature", instance.getSecond().getTemperature()).withStyle(ChatFormatting.DARK_PURPLE));
 						break;
 					}
 				}
 		} else {
-			if (displayWeight) tooltipsToAdd.add(new TranslatableComponent("tooltip.survive.weight", 0, Survive.STAMINA_CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
-			if (displayTemp) tooltipsToAdd.add(new TranslatableComponent("tooltip.survive.temperature", 0).withStyle(ChatFormatting.DARK_PURPLE));
+			if (displayWeight) tooltipsToAdd.add(Component.translatable("tooltip.survive.weight", 0, Survive.STAMINA_CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
+			if (displayTemp) tooltipsToAdd.add(Component.translatable("tooltip.survive.temperature", 0).withStyle(ChatFormatting.DARK_PURPLE));
 		}
 		
 		tooltip.addAll(1, tooltipsToAdd);
@@ -60,7 +60,7 @@ public class TooltipEvents {
 		boolean showTemp = false;
 		if ((Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights) || Survive.TEMPERATURE_CONFIG.enabled) {
 			for(EquipmentSlot type : EquipmentSlot.values()) {
-				if (event.getPlayer() != null && event.getItemStack().canEquip(type, event.getPlayer()) && type.getType() == Type.ARMOR) {
+				if (event.getEntity() != null && event.getItemStack().canEquip(type, event.getEntity()) && type.getType() == Type.ARMOR) {
 					showWeight = Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights;
 					showTemp = Survive.TEMPERATURE_CONFIG.enabled;
 					break;
@@ -69,7 +69,7 @@ public class TooltipEvents {
 		}
 
 		if (showWeight || showTemp) {
-			accessoryTooltip(event.getPlayer(), event.getItemStack(), event.getToolTip(), showWeight, showTemp);
+			accessoryTooltip(event.getEntity(), event.getItemStack(), event.getToolTip(), showWeight, showTemp);
 		}
 	}
 }

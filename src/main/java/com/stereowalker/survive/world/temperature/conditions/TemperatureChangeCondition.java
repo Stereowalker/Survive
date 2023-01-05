@@ -3,9 +3,8 @@ package com.stereowalker.survive.world.temperature.conditions;
 import com.google.gson.JsonObject;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public abstract class TemperatureChangeCondition<T extends TemperatureChangeInstance> extends ForgeRegistryEntry<TemperatureChangeCondition<?>> {
+public abstract class TemperatureChangeCondition<T extends TemperatureChangeInstance> {
 	
 	public TemperatureChangeCondition() {
 	}

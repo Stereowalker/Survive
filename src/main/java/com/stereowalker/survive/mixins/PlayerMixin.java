@@ -23,6 +23,7 @@ import com.stereowalker.survive.needs.WaterData;
 import com.stereowalker.survive.needs.WellbeingData;
 import com.stereowalker.survive.world.DataMaps;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
@@ -125,8 +126,8 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		if (Survive.CONFIG.nutrition_enabled) {
 			float protein = 1;
 			float carbs = 1;
-			if (DataMaps.Server.consummableItem.containsKey(p_213357_2_.getItem().getRegistryName())) {
-				ConsummableJsonHolder data = DataMaps.Server.consummableItem.get(p_213357_2_.getItem().getRegistryName());
+			if (DataMaps.Server.consummableItem.containsKey(BuiltInRegistries.ITEM.getKey(p_213357_2_.getItem()))) {
+				ConsummableJsonHolder data = DataMaps.Server.consummableItem.get(BuiltInRegistries.ITEM.getKey(p_213357_2_.getItem()));
 				protein = data.getProteinRatio();
 				carbs = data.getCarbohydrateRatio();
 			}

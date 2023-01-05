@@ -16,7 +16,7 @@ import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
@@ -136,9 +136,9 @@ public class NeedsCommand {
 		}
 
 		if (pTargets.size() == 1) {
-			source.sendSuccess(new TranslatableComponent("commands.needs.restore."+type.getSerializedName()+".success.single", amount, pTargets.iterator().next().getDisplayName()), true);
+			source.sendSuccess(Component.translatable("commands.needs.restore."+type.getSerializedName()+".success.single", amount, pTargets.iterator().next().getDisplayName()), true);
 		} else {
-			source.sendSuccess(new TranslatableComponent("commands.needs.restore."+type.getSerializedName()+".success.multiple", amount, pTargets.size()), true);
+			source.sendSuccess(Component.translatable("commands.needs.restore."+type.getSerializedName()+".success.multiple", amount, pTargets.size()), true);
 		}
 		return pTargets.size();
 	}
@@ -180,9 +180,9 @@ public class NeedsCommand {
 		}
 
 		if (pTargets.size() == 1) {
-			source.sendSuccess(new TranslatableComponent("commands.needs.deplete."+type.getSerializedName()+".success.single", amount, pTargets.iterator().next().getDisplayName()), true);
+			source.sendSuccess(Component.translatable("commands.needs.deplete."+type.getSerializedName()+".success.single", amount, pTargets.iterator().next().getDisplayName()), true);
 		} else {
-			source.sendSuccess(new TranslatableComponent("commands.needs.deplete."+type.getSerializedName()+".success.multiple", amount, pTargets.size()), true);
+			source.sendSuccess(Component.translatable("commands.needs.deplete."+type.getSerializedName()+".success.multiple", amount, pTargets.size()), true);
 		}
 		return pTargets.size();
 	}
@@ -217,7 +217,7 @@ public class NeedsCommand {
 			break;
 		}
 
-		source.sendSuccess(new TranslatableComponent("commands.needs.query."+type.getSerializedName(), pTarget.getDisplayName(), result), true);
+		source.sendSuccess(Component.translatable("commands.needs.query."+type.getSerializedName(), pTarget.getDisplayName(), result), true);
 		return Mth.floor(result);
 	}
 

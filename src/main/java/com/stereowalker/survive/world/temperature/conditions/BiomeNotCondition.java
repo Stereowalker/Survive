@@ -5,7 +5,6 @@ import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -63,7 +62,7 @@ public class BiomeNotCondition extends TemperatureChangeCondition<BiomeNotCondit
 		@Override
 		@OnlyIn(Dist.CLIENT)
 		public Component getAdditionalContext() {
-			return new TranslatableComponent("temperature_context.not_biome", this.biome);
+			return Component.translatable("temperature_context.not_biome", this.biome);
 		}
 	}
 }

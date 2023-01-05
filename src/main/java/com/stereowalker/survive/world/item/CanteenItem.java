@@ -7,11 +7,8 @@ import com.stereowalker.survive.Survive;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.FluidTags;
@@ -22,7 +19,6 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
@@ -122,7 +118,7 @@ public class CanteenItem extends Item {
 			}
 		}
 
-		pLevel.gameEvent(pEntityLiving, GameEvent.DRINKING_FINISH, pEntityLiving.eyeBlockPosition());
+		pEntityLiving.gameEvent(GameEvent.DRINK);
 		return pStack;
 	}
 
@@ -166,11 +162,11 @@ public class CanteenItem extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack pStack, Level worldIn, List<Component> pTooltip, TooltipFlag flagIn) {
-		pTooltip.add(new TranslatableComponent("tooltip.drinks_left").append(": "+getDrinksLeft(pStack)).withStyle(ChatFormatting.AQUA));
+		pTooltip.add(Component.translatable("tooltip.drinks_left").append(": "+getDrinksLeft(pStack)).withStyle(ChatFormatting.AQUA));
 		if (Survive.POTION_FLUID_MAP.containsKey(PotionUtils.getPotion(pStack)))
-			pTooltip.add(new TranslatableComponent(PotionUtils.getPotion(pStack).getName(this.getDescriptionId()+".effect.")).withStyle(ChatFormatting.YELLOW));
+			pTooltip.add(Component.translatable(PotionUtils.getPotion(pStack).getName(this.getDescriptionId()+".effect.")).withStyle(ChatFormatting.YELLOW));
 		else
-			pTooltip.add(new TranslatableComponent(PotionUtils.getPotion(pStack).getName("item.minecraft.potion.effect.")).withStyle(ChatFormatting.GOLD));
+			pTooltip.add(Component.translatable(PotionUtils.getPotion(pStack).getName("item.minecraft.potion.effect.")).withStyle(ChatFormatting.GOLD));
 		PotionUtils.addPotionTooltip(pStack, pTooltip, 1.0F);
 	}
 
@@ -178,21 +174,6 @@ public class CanteenItem extends Item {
 	@Override
 	public boolean isFoil(ItemStack pStack) {
 		return super.isFoil(pStack) || !PotionUtils.getMobEffects(pStack).isEmpty();
-	}
-
-	/**
-	 * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
-	 */
-	@Override
-	public void fillItemCategory(CreativeModeTab pGroup, NonNullList<ItemStack> pItems) {
-		if (this.allowdedIn(pGroup)) {
-			for(Potion potion : Registry.POTION) {
-				if (potion != Potions.EMPTY) {
-					pItems.add(addToCanteen(new ItemStack(this), Survive.THIRST_CONFIG.canteen_fill_amount, potion));
-				}
-			}
-		}
-
 	}
 
 }

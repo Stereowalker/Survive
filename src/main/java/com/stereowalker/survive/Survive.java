@@ -45,7 +45,9 @@ import com.stereowalker.survive.tags.ItemSTags;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
+import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.HygieneItems;
+import com.stereowalker.survive.world.item.SCreativeModeTab;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.alchemy.BrewingRecipes;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
@@ -67,17 +69,21 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
@@ -149,6 +155,14 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 				event.setPotion(SPotions.PURIFIED_WATER);
 			}
 		});
+		eventBus().addListener((Consumer<CreativeModeTabEvent.Register>)event -> {
+			event.registerCreativeModeTab(new ResourceLocation("survive:main_tab2"), (s)->{
+				s.title(Component.translatable("survive:itemGroup.main"))
+				.icon(() -> {
+					return new ItemStack(SItems.CANTEEN);
+				});
+			});
+		});
 		isPrimalWinterLoaded = ModList.get().isLoaded("primalwinter");
 		if (isCombatLoaded()) {
 			SSpells.registerAll(modEventBus);
@@ -156,6 +170,8 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		if (isOriginsLoaded()) {
 			OriginsCompat.initOriginsPatcher();
 		}
+
+		eventBus().addListener(GuiHelper::registerOverlays);
 		BlockPropertyHandlerImpl.init();
 	}
 
@@ -222,7 +238,7 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public Screen getConfigScreen(Minecraft mc, Screen previousScreen) {
-		return new MinecraftModConfigsScreen(previousScreen, new TranslatableComponent("gui.survive.config.title"), HYGIENE_CONFIG, STAMINA_CONFIG, TEMPERATURE_CONFIG, THIRST_CONFIG, WELLBEING_CONFIG, CONFIG);
+		return new MinecraftModConfigsScreen(previousScreen, Component.translatable("gui.survive.config.title"), HYGIENE_CONFIG, STAMINA_CONFIG, TEMPERATURE_CONFIG, THIRST_CONFIG, WELLBEING_CONFIG, CONFIG);
 	}
 
 	public void debug(Object message) {
@@ -238,7 +254,7 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 
 		for(Item item : ForgeRegistries.ITEMS) {
 			if (item.isEdible())
-				DataMaps.Server.defaultFood.put(item.getRegistryName(), item.getFoodProperties());
+				DataMaps.Server.defaultFood.put(ForgeRegistries.ITEMS.getKey(item), item.getFoodProperties());
 		}
 	}
 
@@ -247,7 +263,6 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		RenderType frendertype = RenderType.translucent();
 		ItemBlockRenderTypes.setRenderLayer(SFluids.PURIFIED_WATER, frendertype);
 		ItemBlockRenderTypes.setRenderLayer(SFluids.FLOWING_PURIFIED_WATER, frendertype);
-		GuiHelper.registerOverlays();
 		SItemProperties.registerAll();
 	}
 	
@@ -260,6 +275,73 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		reloadListener.listenTo(biomeReloader);
 		reloadListener.listenTo(entityReloader);
 		reloadListener.listenTo(fluidReloader);
+	}
+	
+	@Override
+	public void registerCreativeTabs(CreativeTabBuilder builder) {
+		builder.addTab(new ResourceLocation("survive:main_tab"), SCreativeModeTab.TAB_MAIN);
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Override
+	public void populateCreativeTabs(CreativeTabPopulator builder) {
+		//Hygiene related
+		if (builder.getTab() == SCreativeModeTab.TAB_MAIN && Survive.HYGIENE_CONFIG.enabled) {
+			builder.getOutput().accept(HygieneItems.BATH_SPONGE);
+			builder.getOutput().accept(HygieneItems.WHITE_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.ORANGE_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.MAGENTA_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.LIGHT_BLUE_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.YELLOW_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.LIME_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.PINK_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.GRAY_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.LIGHT_GRAY_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.CYAN_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.PURPLE_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.BLUE_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.BROWN_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.GREEN_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.RED_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.BLACK_WASHCLOTH);
+			builder.getOutput().accept(HygieneItems.WOOD_ASH);
+			builder.getOutput().accept(HygieneItems.POTASH_SOLUTION);
+			builder.getOutput().accept(HygieneItems.POTASH);
+			builder.getOutput().accept(HygieneItems.ANIMAL_FAT);
+			builder.getOutput().accept(HygieneItems.SOAP_MIX);
+			builder.getOutput().accept(HygieneItems.SOAP_BOTTLE);
+		}
+		if (builder.getTab() == SCreativeModeTab.TAB_MAIN) {
+			builder.getOutput().accept(SItems.WOOL_HAT);
+			builder.getOutput().accept(SItems.WOOL_JACKET);
+			builder.getOutput().accept(SItems.WOOL_PANTS);
+			builder.getOutput().accept(SItems.WOOL_BOOTS);
+			builder.getOutput().accept(SItems.STIFFENED_HONEY_HELMET);
+			builder.getOutput().accept(SItems.STIFFENED_HONEY_CHESTPLATE);
+			builder.getOutput().accept(SItems.STIFFENED_HONEY_LEGGINGS);
+			builder.getOutput().accept(SItems.STIFFENED_HONEY_BOOTS);
+			builder.getOutput().accept(SItems.CANTEEN);
+			for(Potion potion : BuiltInRegistries.POTION) {
+				if (potion != Potions.EMPTY) {
+					builder.getOutput().accept(CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), THIRST_CONFIG.canteen_fill_amount, potion));
+				}
+			}
+			builder.getOutput().accept(SItems.WATER_BOWL);
+			builder.getOutput().accept(SItems.PURIFIED_WATER_BOWL);
+			builder.getOutput().accept(SItems.ICE_CUBE);
+			builder.getOutput().accept(SItems.THERMOMETER);
+			builder.getOutput().accept(SItems.TEMPERATURE_REGULATOR);
+			builder.getOutput().accept(SItems.LARGE_HEATING_PLATE);
+			builder.getOutput().accept(SItems.LARGE_COOLING_PLATE);
+			builder.getOutput().accept(SItems.MEDIUM_HEATING_PLATE);
+			builder.getOutput().accept(SItems.MEDIUM_COOLING_PLATE);
+			builder.getOutput().accept(SItems.SMALL_HEATING_PLATE);
+			builder.getOutput().accept(SItems.SMALL_COOLING_PLATE);
+			builder.getOutput().accept(SItems.CHARCOAL_FILTER);
+			builder.getOutput().accept(SItems.PURIFIED_WATER_BUCKET);
+			builder.getOutput().accept(SItems.MAGMA_PASTE);
+		}
+		
 	}
 
 	public static List<String> defaultDimensionMods() {

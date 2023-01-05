@@ -2,25 +2,26 @@ package com.stereowalker.survive.world.item.crafting;
 
 import java.util.Random;
 
-import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 public class CharcoalFilterRecipe extends CustomRecipe {
 
-	public CharcoalFilterRecipe(ResourceLocation idIn) {
-		super(idIn);
+	public CharcoalFilterRecipe(ResourceLocation idIn, CraftingBookCategory pCategory) {
+		super(idIn, pCategory);
 	}
 
 	@Override
@@ -74,7 +75,7 @@ public class CharcoalFilterRecipe extends CustomRecipe {
 			ItemStack itemstack = inv.getItem(i);
 			if (itemstack.getItem() == SItems.CHARCOAL_FILTER) {
 				ItemStack filterClone = itemstack.copy();
-				if (filterClone.hurt(1, new Random(), null)) {
+				if (filterClone.hurt(1, RandomSource.create(), null)) {
 					nonnulllist.set(i, ItemStack.EMPTY);
 				} else {
 					nonnulllist.set(i, filterClone);

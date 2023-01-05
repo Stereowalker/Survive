@@ -8,9 +8,11 @@ import com.stereowalker.survive.world.item.HygieneItems;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
@@ -38,7 +40,7 @@ public class PotashCauldronBlock extends LayeredCauldronBlock {
 	}
 
 	@Override
-	public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, Random random) {
+	public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, RandomSource random) {
 		if (isUnderSun(state, worldIn, pos) && random.nextInt(2) == 0) {
 			worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, new ItemStack(HygieneItems.POTASH), 0, 0, 0));
 			lowerFillLevel(state, worldIn, pos);
@@ -62,7 +64,7 @@ public class PotashCauldronBlock extends LayeredCauldronBlock {
 	}
 
 	public float getBrightness(ServerLevel level, BlockPos pos) {
-		return level.hasChunkAt(pos) ? level.getBrightness(pos) : 0.0F;
+		return level.hasChunkAt(pos) ? level.getBrightness(LightLayer.SKY, pos) : 0.0F;
 	}
 
 }

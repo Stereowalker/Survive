@@ -56,7 +56,7 @@ public class BiomeTemperatureJsonHolder implements JsonHolder {
 					for (Entry<String, JsonElement> elem : object.get(SEASON_MODIFIER).getAsJsonObject().entrySet()) {
 						Season season = null;
 						setWorkingOn(elem.getKey());
-						season = SurviveRegistries.SEASON.getValue(new ResourceLocation(elem.getKey()));
+						season = SurviveRegistries.ForgeRegistry.SEASON.getValue(new ResourceLocation(elem.getKey()));
 						if (season != null) {
 							if(elem.getValue().isJsonPrimitive()) {
 								seasonModifiersIn.put(season, elem.getValue().getAsFloat());
@@ -100,7 +100,7 @@ public class BiomeTemperatureJsonHolder implements JsonHolder {
 			}
 		}
 
-		for (Season season : SurviveRegistries.SEASON) {
+		for (Season season : SurviveRegistries.ForgeRegistry.SEASON) {
 			if (!seasonModifiersIn.containsKey(season)) {
 				seasonModifiersIn.put(season, season.getModifier());
 			}

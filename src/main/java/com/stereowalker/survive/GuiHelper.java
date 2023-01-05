@@ -28,51 +28,51 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.client.gui.OverlayRegistry;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiHelper {
 	public static final ResourceLocation GUI_ICONS = new ResourceLocation(Survive.MOD_ID, "textures/gui/icons.png");
 	@OnlyIn(Dist.CLIENT)
-	public static void registerOverlays() {
-		OverlayRegistry.registerOverlayTop("Tired", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+	public static void registerOverlays(RegisterGuiOverlaysEvent event) {
+		event.registerAboveAll("tired", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 			if (Survive.CONFIG.tired_overlay && gui.minecraft.player.hasEffect(SMobEffects.TIREDNESS)) {
 				gui.setupOverlayRenderState(true, false);
 				GuiHelper.renderTiredOverlay(gui);
 			}
 		});
-		OverlayRegistry.registerOverlayTop("Heat Stroke", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+		event.registerAboveAll("heat_stroke", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 			gui.setupOverlayRenderState(true, false);
 			GuiHelper.renderHeatStroke(gui);
 		});
-		OverlayRegistry.registerOverlayTop("Temperature", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+		event.registerAboveAll("temperature", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 			if (!gui.minecraft.options.hideGui && Survive.TEMPERATURE_CONFIG.enabled && !Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
 				gui.setupOverlayRenderState(true, false, GUI_ICONS);
 				GuiHelper.renderTemperature(gui, ScreenOffset.TOP, gui.getCameraPlayer(), mStack, true);
 			}
 		});
-		OverlayRegistry.registerOverlayAbove(ForgeIngameGui.FOOD_LEVEL_ELEMENT, "Thirst Level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+		event.registerAbove(VanillaGuiOverlay.FOOD_LEVEL.id(), "thirst_level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
 			if (Survive.THIRST_CONFIG.enabled && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
 			{
 				gui.setupOverlayRenderState(true, false, GUI_ICONS);
 				int left = screenWidth / 2 + 91;
-				int top = screenHeight - gui.right_height;
+				int top = screenHeight - gui.rightHeight;
 				renderThirst(gui, mStack, new MutableInt(), left, top, true);
-				gui.right_height += 10;
+				gui.rightHeight += 10;
 			}
 		});
-		OverlayRegistry.registerOverlayAbove(ForgeIngameGui.FOOD_LEVEL_ELEMENT, "Stamina Level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+		event.registerAbove(VanillaGuiOverlay.FOOD_LEVEL.id(), "stamina_level", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
 			if (Survive.STAMINA_CONFIG.enabled && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
 			{
 				gui.setupOverlayRenderState(true, false, GUI_ICONS);
 				int left = screenWidth / 2 + 91;
-				int top = screenHeight - gui.right_height;
+				int top = screenHeight - gui.rightHeight;
 				MutableInt moveUp = new MutableInt();
 				renderEnergyBars(gui, mStack, moveUp, left, top, true);
-				gui.right_height += moveUp.getValue();
+				gui.rightHeight += moveUp.getValue();
 			}
 		});
 	}
@@ -109,7 +109,7 @@ public class GuiHelper {
 		//For Numbers
 		int temp = (int) (rawTemperature*100);
 		double temperaure = ((double)temp) / 100.0D;
-		String s = temperaure+" °C";
+		String s = temperaure+" ï¿½C";
 		if (Minecraft.getInstance().gameMode.hasExperience()) {
 			if (Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HORIZONTAL_BAR)) {
 				if (Survive.TEMPERATURE_CONFIG.tempEffects && displayTemp >= 1) {//Hyperthermia override
@@ -138,7 +138,7 @@ public class GuiHelper {
 					double rawFTemp = (temperaure * (9.0D/5.0D)) + 32.0D;
 					int fTemp = (int) (rawFTemp*100);
 					double fTemperaure = ((double)fTemp) / 100.0D;
-					s = fTemperaure+" °F";
+					s = fTemperaure+" ï¿½F";
 				}
 				if (displayTemp >= 1) {
 					Minecraft.getInstance().font.drawShadow(matrixStack, s, x, y, ChatFormatting.GOLD.getColor());

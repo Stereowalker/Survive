@@ -14,6 +14,7 @@ import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -26,7 +27,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.world.SleepFinishedTimeEvent;
+import net.minecraftforge.event.level.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
@@ -59,10 +60,10 @@ public class StaminaData extends SurviveData {
 	}
 	
 	public void eat(Item pItem, ItemStack pStack, LivingEntity entity) {
-		if (pStack.isEdible() && DataMaps.Server.consummableItem.containsKey(pItem.getRegistryName())) {
+		if (pStack.isEdible() && DataMaps.Server.consummableItem.containsKey(BuiltInRegistries.ITEM.getKey(pItem))) {
 			if (entity instanceof ServerPlayer && !entity.level.isClientSide) {
 				ServerPlayer player = (ServerPlayer)entity;
-				relax(DataMaps.Server.consummableItem.get(pItem.getRegistryName()).getEnergyAmount(), player.getAttributeValue(SAttributes.MAX_STAMINA));
+				relax(DataMaps.Server.consummableItem.get(BuiltInRegistries.ITEM.getKey(pItem)).getEnergyAmount(), player.getAttributeValue(SAttributes.MAX_STAMINA));
 				save(player);
 			}
 		}
@@ -246,30 +247,30 @@ public class StaminaData extends SurviveData {
 
 	@SubscribeEvent
 	public static void clickItem(PlayerInteractEvent.RightClickItem clickItem) {
-		if(!clickItem.isCanceled() && clickItem.getPlayer() instanceof Player && clickItem.getCancellationResult().consumesAction()) {
+		if(!clickItem.isCanceled() && clickItem.getEntity() instanceof Player && clickItem.getCancellationResult().consumesAction()) {
 
 		}
 	}
 
 	@SubscribeEvent
 	public static void rightClickEmpty(PlayerInteractEvent.RightClickEmpty clickItem) {
-		if(!clickItem.isCanceled() && clickItem.getPlayer() instanceof LocalPlayer && clickItem.getCancellationResult().consumesAction()) {
+		if(!clickItem.isCanceled() && clickItem.getEntity() instanceof LocalPlayer && clickItem.getCancellationResult().consumesAction()) {
 			new ServerboundStaminaExhaustionPacket(0.3125F).send();
 		}
 	}
 
 	@SubscribeEvent
 	public static void leftClickEmpty(PlayerInteractEvent.LeftClickEmpty clickItem) {
-		if(!clickItem.isCanceled() && clickItem.getPlayer() instanceof LocalPlayer && clickItem.getCancellationResult().consumesAction()) {
+		if(!clickItem.isCanceled() && clickItem.getEntity() instanceof LocalPlayer && clickItem.getCancellationResult().consumesAction()) {
 			new ServerboundStaminaExhaustionPacket(0.3125F).send();
 		}
 	}
 
 	@SubscribeEvent
 	public static void replenishEnergyOnSleep(SleepFinishedTimeEvent event) {
-		for (Player player : event.getWorld().players()) {
+		for (Player player : event.getLevel().players()) {
 			StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
-			int staminaToRecover = Mth.ceil(((float)(event.getNewTime()-event.getWorld().dayTime())/Survive.STAMINA_CONFIG.sleepTime)*(energyStats.maxStamina+6));
+			int staminaToRecover = Mth.ceil(((float)(event.getNewTime()-event.getLevel().dayTime())/Survive.STAMINA_CONFIG.sleepTime)*(energyStats.maxStamina+6));
 			energyStats.relax(staminaToRecover, player.getAttributeValue(SAttributes.MAX_STAMINA));
 			SurviveEntityStats.setStaminaStats(player, energyStats);
 		}

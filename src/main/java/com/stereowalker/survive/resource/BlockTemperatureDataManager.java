@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -29,16 +30,15 @@ public class BlockTemperatureDataManager implements IResourceReloadListener<Map<
 		return CompletableFuture.supplyAsync(() -> {
 			Map<ResourceLocation, BlockTemperatureJsonHolder> drinkMap = new HashMap<>();
 
-			for (ResourceLocation id : manager.listResources("survive_modifiers/blocks", (s) -> s.endsWith(".json"))) {
+			for (Entry<ResourceLocation, Resource> resource : manager.listResources("survive_modifiers/blocks", (s) -> s.toString().endsWith(".json")).entrySet()) {
 				ResourceLocation blockId = new ResourceLocation(
-						id.getNamespace(),
-						id.getPath().replace("survive_modifiers/blocks/", "").replace(".json", "")
+						resource.getKey().getNamespace(),
+						resource.getKey().getPath().replace("survive_modifiers/blocks/", "").replace(".json", "")
 						);
 
 				if (ForgeRegistries.BLOCKS.containsKey(blockId)) {
 					try {
-						Resource resource = manager.getResource(id);
-						try (InputStream stream = resource.getInputStream(); 
+						try (InputStream stream = resource.getValue().open(); 
 								InputStreamReader reader = new InputStreamReader(stream)) {
 							
 							JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();

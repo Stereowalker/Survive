@@ -1,17 +1,19 @@
 package com.stereowalker.survive.world.item.enchantment;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.stereowalker.survive.Survive;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantment.Rarity;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 
 public class SEnchantments {
-	public static List<Enchantment> ENCHANTMENTS = new ArrayList<Enchantment>();
+	public static final Map<ResourceLocation, Enchantment> ENCHANTMENTS = new HashMap<ResourceLocation, Enchantment>();
 	
 	public static final Enchantment WARMING = registerTempe("warming", new TempControlEnchantment(Rarity.UNCOMMON, new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}));
 	public static final Enchantment COOLING = registerTempe("cooling", new TempControlEnchantment(Rarity.UNCOMMON, new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}));
@@ -37,16 +39,15 @@ public class SEnchantments {
 	}
 	
 	public static Enchantment register(String name, Enchantment enchantment) {
-		enchantment.setRegistryName(Survive.getInstance().location(name));
-		ENCHANTMENTS.add(enchantment);
+		ENCHANTMENTS.put(Survive.getInstance().location(name), enchantment);
 		return enchantment;
 	}
 	
-	public static void registerAll(IForgeRegistry<Enchantment> registry) {
+	public static void registerAll(RegisterHelper<Enchantment> registry) {
 		if (!Survive.CONFIG.disable_enchantments) {
-			for(Enchantment enchantment : ENCHANTMENTS) {
-				registry.register(enchantment);
-				Survive.getInstance().debug("Enchantment: \""+enchantment.getRegistryName().toString()+"\" registered");
+			for(Entry<ResourceLocation, Enchantment> enchantment : ENCHANTMENTS.entrySet()) {
+				registry.register(enchantment.getKey(), enchantment.getValue());
+				Survive.getInstance().debug("Enchantment: \""+enchantment.getKey().toString()+"\" registered");
 			}
 			Survive.getInstance().debug("All Enchantments Registered");
 		} else {

@@ -9,6 +9,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 public class BodyCleaningItem extends Item {
@@ -30,7 +31,7 @@ public class BodyCleaningItem extends Item {
 				cleaning = this.cleanValue * ((SoapItem)soap.getItem()).soapEfficacy;
 				SoapItem.decrementSoap(soap);
 				if (SoapItem.getSoapLeft(soap) <= 0) {
-					playerIn.setItemInHand(handIn == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND, soap.getContainerItem());
+					playerIn.setItemInHand(handIn == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND, new ItemStack(Items.GLASS_BOTTLE));
 				}
 			} else {
 				cleaning = this.cleanValue;

@@ -1,18 +1,16 @@
 package com.stereowalker.survive.needs;
 
-import java.util.List;
 import java.util.Random;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.compat.PamsHarvestcraftCompat;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.json.ConsummableJsonHolder;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.item.SItems;
-import com.stereowalker.unionlib.util.RegistryHelper;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -23,7 +21,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.GameRules;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -55,15 +52,15 @@ public class WaterData extends SurviveData {
 	public void drink(Item pItem, ItemStack pStack, LivingEntity entity) {
 		if (entity != null && entity instanceof ServerPlayer) {
 			ServerPlayer player = (ServerPlayer)entity;
-			if ((pItem == Items.POTION || pItem == SItems.FILLED_CANTEEN) && DataMaps.Server.potionDrink.containsKey(PotionUtils.getPotion(pStack).getRegistryName())) {
-				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(PotionUtils.getPotion(pStack).getRegistryName());
+			if ((pItem == Items.POTION || pItem == SItems.FILLED_CANTEEN) && DataMaps.Server.potionDrink.containsKey(BuiltInRegistries.POTION.getKey(PotionUtils.getPotion(pStack)))) {
+				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(BuiltInRegistries.POTION.getKey(PotionUtils.getPotion(pStack)));
 				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(entity, drinkData.getThirstChance()));
 				if (drinkData.isHeated())entity.addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
 				if (drinkData.isChilled())entity.addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
 				if (drinkData.isEnergizing())entity.addEffect(new MobEffectInstance(SMobEffects.ENERGIZED, 60*20*5));
 			}
-			else if (DataMaps.Server.consummableItem.containsKey(pItem.getRegistryName())) {
-				ConsummableJsonHolder drinkData = DataMaps.Server.consummableItem.get(pItem.getRegistryName());
+			else if (DataMaps.Server.consummableItem.containsKey(BuiltInRegistries.ITEM.getKey(pItem))) {
+				ConsummableJsonHolder drinkData = DataMaps.Server.consummableItem.get(BuiltInRegistries.ITEM.getKey(pItem));
 				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(entity, drinkData.getThirstChance()));
 				if (drinkData.isHeated())entity.addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
 				if (drinkData.isChilled())entity.addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
@@ -246,31 +243,6 @@ public class WaterData extends SurviveData {
 	}
 
 	/////-----------EVENTS-----------/////
-
-	public static float getHydrationFromList(ItemStack stack, List<String> list) {
-		for (String containerList : list) {
-			String[] container = containerList.split(",");
-			if (RegistryHelper.matchesRegisteredEntry(container[0], stack.getItem())) {
-				return Float.parseFloat(container[2]);
-			}
-		}
-		return 0;
-	}
-
-	public static float getHydrationFill(ItemStack stack) {
-		float amount = 0.0f;
-		amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.normalPamHCDrinks());
-		amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.uncleanPamHCDrinks());
-		amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.chilledPamHCDrinks());
-		amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.heatedPamHCDrinks());
-		amount+=getHydrationFromList(stack, PamsHarvestcraftCompat.stimulatingPamHCDrinks());
-
-		if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) == Potions.WATER) {
-			amount+=2.0F;}
-		if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) != Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY)
-			amount+=1.0F;
-		return amount;
-	}
 
 	public static boolean applyThirst(LivingEntity entity, float probabiltiy) {
 		if (probabiltiy > 0) {

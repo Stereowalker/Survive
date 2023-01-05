@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -87,9 +86,9 @@ public class OnFireCondition extends TemperatureChangeCondition<OnFireCondition.
 		@OnlyIn(Dist.CLIENT)
 		public Component getAdditionalContext() {
 			if (this.fireTimer > 0) {
-				return new TranslatableComponent("temperature_context.on_fire", this.operation.equals("") ? "<" : this.operation, this.fireTimer);
+				return Component.translatable("temperature_context.on_fire", this.operation.equals("") ? "<" : this.operation, this.fireTimer);
 			} else {
-				return new TranslatableComponent("temperature_context.on_fire_no_timer");
+				return Component.translatable("temperature_context.on_fire_no_timer");
 			}
 		}
 	}

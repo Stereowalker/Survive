@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -58,15 +57,10 @@ public class SoapItem extends Item {
 	public static void decrementSoap(ItemStack stack) {
 		setSoapLeft(stack, getSoapLeft(stack) - 1);
 	}
-	
-	@Override
-	public ItemStack getContainerItem(ItemStack itemStack) {
-		return new ItemStack(Items.GLASS_BOTTLE);
-	}
 
 	@Override
 	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(new TranslatableComponent("tooltip.soap_left", getSoapLeft(stack)).withStyle(ChatFormatting.AQUA));
+		tooltip.add(Component.translatable("tooltip.soap_left", getSoapLeft(stack)).withStyle(ChatFormatting.AQUA));
 	}
 
 }

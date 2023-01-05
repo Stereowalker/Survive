@@ -38,6 +38,8 @@ import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.math.UnionMathHelper;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -64,12 +66,12 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
-import net.minecraftforge.event.world.SleepFinishedTimeEvent;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.SleepFinishedTimeEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -80,8 +82,8 @@ public class SurviveEvents {
 	@SubscribeEvent
 	public static void allowSleep(SleepingTimeCheckEvent event) {
 		if (Survive.CONFIG.enable_sleep) {
-			if (event.getEntityLiving() instanceof ServerPlayer) {
-				ServerPlayer player = (ServerPlayer)event.getEntityLiving();
+			if (event.getEntity() instanceof ServerPlayer) {
+				ServerPlayer player = (ServerPlayer)event.getEntity();
 				if (SurviveEntityStats.getSleepStats(player).getAwakeTimer() > time(0) - 5000 && Survive.CONFIG.canSleepDuringDay) {
 					event.setResult(Result.ALLOW);
 				}
@@ -98,7 +100,7 @@ public class SurviveEvents {
 
 	@SubscribeEvent
 	public static void manageSleep(SleepFinishedTimeEvent event) {
-		for (Player player : event.getWorld().players()) {
+		for (Player player : event.getLevel().players()) {
 			SleepData stats = SurviveEntityStats.getSleepStats(player);
 			stats.setAwakeTimer(0);
 			stats.save(player);
@@ -106,9 +108,9 @@ public class SurviveEvents {
 	}
 
 	@SubscribeEvent
-	public static void sendToClient(LivingUpdateEvent event) {
-		if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
-			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
+	public static void sendToClient(LivingTickEvent event) {
+		if (event.getEntity() != null && !event.getEntity().level.isClientSide && event.getEntity() instanceof ServerPlayer) {
+			ServerPlayer player = (ServerPlayer)event.getEntity();
 			Survive.getInstance().channel.sendTo(new ClientboundSurvivalStatsPacket(player), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 			if (!DataMaps.Server.syncedToClient) {
 				Survive.getInstance().getLogger().info("Syncing All Data To Client ("+player.getDisplayName().getString()+")");
@@ -132,9 +134,9 @@ public class SurviveEvents {
 	}
 
 	@SubscribeEvent
-	public static void regulateWetness(LivingUpdateEvent event) {
-		if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
-			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
+	public static void regulateWetness(LivingTickEvent event) {
+		if (event.getEntity() != null && !event.getEntity().level.isClientSide && event.getEntity() instanceof ServerPlayer) {
+			ServerPlayer player = (ServerPlayer)event.getEntity();
 			SurviveEntityStats.addWetTime(player, player.isUnderWater() ? 2 : player.isInWaterOrRain() ? 1 : -2);
 		}
 	}
@@ -160,9 +162,9 @@ public class SurviveEvents {
 	}
 
 	@SubscribeEvent
-	public static void updateEnvTemperature(LivingUpdateEvent event) {
-		if (event.getEntityLiving() != null && event.getEntityLiving() instanceof ServerPlayer) {
-			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
+	public static void updateEnvTemperature(LivingTickEvent event) {
+		if (event.getEntity() != null && event.getEntity() instanceof ServerPlayer) {
+			ServerPlayer player = (ServerPlayer)event.getEntity();
 			if (player.isAlive()) {
 				for (ResourceLocation queryId : TemperatureQuery.queries.keySet()) {
 					double queryValue = TemperatureQuery.queries.get(queryId).getA().run(player, SurviveEntityStats.getTemperatureStats(player).getTemperatureLevel(), player.level, player.blockPosition());
@@ -182,6 +184,7 @@ public class SurviveEvents {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public static double getExactTemperature(Level world, BlockPos pos, TempType type) {
 		float skyLight = world.getChunkSource().getLightEngine().getLayerListener(LightLayer.SKY).getLightValue(pos);
 		float gameTime = world.getDayTime() % 24000L;
@@ -191,14 +194,14 @@ public class SurviveEvents {
 		switch (type) {
 		case SUN:
 			float sunIntensity = 5.0f;
-			if (DataMaps.Server.biomeTemperature.containsKey(world.getBiome(pos).value().getRegistryName())) {
-				sunIntensity = DataMaps.Server.biomeTemperature.get(world.getBiome(pos).value().getRegistryName()).getSunIntensity();
+			if (world.getBiome(pos).unwrapKey().isPresent() && DataMaps.Server.biomeTemperature.containsKey(world.getBiome(pos).unwrapKey().get().location())) {
+				sunIntensity = DataMaps.Server.biomeTemperature.get(world.getBiome(pos).unwrapKey().get().location()).getSunIntensity();
 			}
 			if (skyLight > 5.0F) return gameTime*sunIntensity;
 			else return -1.0F * sunIntensity;
 
 		case BIOME:
-			float biomeTemp = (TemperatureUtil.getTemperature(world.getBiome(pos).value(), pos)*2)-2;
+			float biomeTemp = (TemperatureUtil.getTemperature(world.getBiome(pos), pos)*2)-2;
 			if (ModHelper.isPrimalWinterLoaded()) {
 				biomeTemp = -0.7F;
 			}
@@ -219,7 +222,7 @@ public class SurviveEvents {
 						if (heatState.getBlock() instanceof TemperatureEmitter) {
 							sourceRange = ((TemperatureEmitter)heatState.getBlock()).getModificationRange(heatState);
 						} else {
-							sourceRange = DataMaps.Server.blockTemperature.containsKey(heatState.getBlock().getRegistryName()) ? DataMaps.Server.blockTemperature.get(heatState.getBlock().getRegistryName()).getRange() : 5;
+							sourceRange = DataMaps.Server.blockTemperature.containsKey(BuiltInRegistries.BLOCK.getKey(heatState.getBlock())) ? DataMaps.Server.blockTemperature.get(BuiltInRegistries.BLOCK.getKey(heatState.getBlock())).getRange() : 5;
 						}
 
 						if (pos.closerThan(heatSource, sourceRange)) {
@@ -228,8 +231,8 @@ public class SurviveEvents {
 							if (heatState.getBlock() instanceof TemperatureEmitter) {
 								blockTemp = ((TemperatureEmitter)heatState.getBlock()).getTemperatureModification(heatState);
 							}
-							else if (DataMaps.Server.blockTemperature.containsKey(heatState.getBlock().getRegistryName())) {
-								BlockTemperatureJsonHolder blockTemperatureData = DataMaps.Server.blockTemperature.get(heatState.getBlock().getRegistryName());
+							else if (DataMaps.Server.blockTemperature.containsKey(BuiltInRegistries.BLOCK.getKey(heatState.getBlock()))) {
+								BlockTemperatureJsonHolder blockTemperatureData = DataMaps.Server.blockTemperature.get(BuiltInRegistries.BLOCK.getKey(heatState.getBlock()));
 								if (blockTemperatureData.getStateChangeProperty() != null) {
 									boolean setTemp = false;
 									List<Triple<IBlockPropertyHandler<?>,List<PropertyPair<?>>,Map<String,Float>>> changeProperty = blockTemperatureData.getStateChangeProperty();
@@ -285,11 +288,10 @@ public class SurviveEvents {
 			float totalEntityTemp = 0;
 			rangeInBlocks = 5;
 			for (Entity entity : world.getEntitiesOfClass(Entity.class, new AABB(pos.offset(rangeInBlocks, rangeInBlocks, rangeInBlocks), pos.offset(-rangeInBlocks, -rangeInBlocks, -rangeInBlocks)))) {
-				float sourceRange = DataMaps.Server.entityTemperature.containsKey(entity.getType().getRegistryName()) ? DataMaps.Server.entityTemperature.get(entity.getType().getRegistryName()).getRange() : 5;
-
+				float sourceRange = DataMaps.Server.entityTemperature.containsKey(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType())) ? DataMaps.Server.entityTemperature.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType())).getRange() : 5;
 				if (pos.closerThan(entity.blockPosition(), sourceRange)) {
-					if (DataMaps.Server.entityTemperature.containsKey(entity.getType().getRegistryName())) {
-						EntityTemperatureJsonHolder entityTemperatureData = DataMaps.Server.entityTemperature.get(entity.getType().getRegistryName());
+					if (DataMaps.Server.entityTemperature.containsKey(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()))) {
+						EntityTemperatureJsonHolder entityTemperatureData = DataMaps.Server.entityTemperature.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
 						totalEntityTemp+=entityTemperatureData.getTemperatureModifier();
 					}
 				}
@@ -355,17 +357,17 @@ public class SurviveEvents {
 	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickEmpty event) {
-		HitResult raytraceresult = rayTrace(event.getWorld(), event.getEntityLiving(), ClipContext.Fluid.SOURCE_ONLY);
+		HitResult raytraceresult = rayTrace(event.getLevel(), event.getEntity(), ClipContext.Fluid.SOURCE_ONLY);
 		BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
-		if (event.getWorld().isClientSide && event.getItemStack().isEmpty() && event.getHand() == InteractionHand.MAIN_HAND) {
+		if (event.getLevel().isClientSide && event.getItemStack().isEmpty() && event.getHand() == InteractionHand.MAIN_HAND) {
 			//Source Block Of Water
-			Fluid fluid = event.getWorld().getFluidState(blockpos).getType();
-			if (DataMaps.Client.fluid.containsKey(fluid.getRegistryName())) {
-				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(fluid.getRegistryName());
+			Fluid fluid = event.getLevel().getFluidState(blockpos).getType();
+			if (DataMaps.Client.fluid.containsKey(BuiltInRegistries.FLUID.getKey(fluid))) {
+				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(BuiltInRegistries.FLUID.getKey(fluid));
 				new ServerboundInteractWithWaterPacket(blockpos, fluidHolder.getThirstChance(), fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
 			}
 			//Air Block
-			if (event.getWorld().isRainingAt(blockpos)) {
+			if (event.getLevel().isRainingAt(blockpos)) {
 				new ServerboundInteractWithWaterPacket(event.getPos(), 0.0f, 1.0D, 0.5D, event.getHand()).send();
 			}
 		}
@@ -374,15 +376,15 @@ public class SurviveEvents {
 	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickBlock event) {
-		HitResult raytraceresult = rayTrace(event.getWorld(), event.getEntityLiving(), ClipContext.Fluid.SOURCE_ONLY);
+		HitResult raytraceresult = rayTrace(event.getLevel(), event.getEntity(), ClipContext.Fluid.SOURCE_ONLY);
 		BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
-		BlockState state = event.getWorld().getBlockState(event.getPos());
-		Fluid fluid = event.getWorld().getFluidState(blockpos).getType();
-		BlockState stateUnder = event.getWorld().getBlockState(event.getPos().below());
-		if (event.getWorld().isClientSide && event.getItemStack().isEmpty()) {
+		BlockState state = event.getLevel().getBlockState(event.getPos());
+		Fluid fluid = event.getLevel().getFluidState(blockpos).getType();
+		BlockState stateUnder = event.getLevel().getBlockState(event.getPos().below());
+		if (event.getLevel().isClientSide && event.getItemStack().isEmpty()) {
 			//Source Block Of Water
-			if (DataMaps.Client.fluid.containsKey(fluid.getRegistryName())) {
-				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(fluid.getRegistryName());
+			if (DataMaps.Client.fluid.containsKey(BuiltInRegistries.FLUID.getKey(fluid))) {
+				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(BuiltInRegistries.FLUID.getKey(fluid));
 				event.setCanceled(true);
 				event.setCancellationResult(InteractionResult.SUCCESS);
 				new ServerboundInteractWithWaterPacket(blockpos, fluidHolder.getThirstChance(), fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
@@ -421,22 +423,22 @@ public class SurviveEvents {
 
 	@SubscribeEvent
 	public static void restoreStats(PlayerEvent.Clone event) {
-		SurviveEntityStats.getOrCreateModNBT(event.getPlayer());
+		SurviveEntityStats.getOrCreateModNBT(event.getEntity());
 		if (!event.isWasDeath()) {
 			IRealisticEntity original = ((IRealisticEntity)event.getOriginal());
-			SurviveEntityStats.setNutritionStats(event.getPlayer(), SurviveEntityStats.getNutritionStats(event.getOriginal()));
-			SurviveEntityStats.setWellbeingStats(event.getPlayer(), SurviveEntityStats.getWellbeingStats(event.getOriginal()));
-			SurviveEntityStats.setHygieneStats(event.getPlayer(), SurviveEntityStats.getHygieneStats(event.getOriginal()));
-			SurviveEntityStats.setWaterStats(event.getPlayer(), original.getWaterData());
-			SurviveEntityStats.setStaminaStats(event.getPlayer(), SurviveEntityStats.getEnergyStats(event.getOriginal()));
-			SurviveEntityStats.setTemperatureStats(event.getPlayer(), SurviveEntityStats.getTemperatureStats(event.getOriginal()));
-			SurviveEntityStats.setSleepStats(event.getPlayer(), SurviveEntityStats.getSleepStats(event.getOriginal()));
-			SurviveEntityStats.setWetTime(event.getPlayer(), SurviveEntityStats.getWetTime(event.getOriginal()));
+			SurviveEntityStats.setNutritionStats(event.getEntity(), SurviveEntityStats.getNutritionStats(event.getOriginal()));
+			SurviveEntityStats.setWellbeingStats(event.getEntity(), SurviveEntityStats.getWellbeingStats(event.getOriginal()));
+			SurviveEntityStats.setHygieneStats(event.getEntity(), SurviveEntityStats.getHygieneStats(event.getOriginal()));
+			SurviveEntityStats.setWaterStats(event.getEntity(), original.getWaterData());
+			SurviveEntityStats.setStaminaStats(event.getEntity(), SurviveEntityStats.getEnergyStats(event.getOriginal()));
+			SurviveEntityStats.setTemperatureStats(event.getEntity(), SurviveEntityStats.getTemperatureStats(event.getOriginal()));
+			SurviveEntityStats.setSleepStats(event.getEntity(), SurviveEntityStats.getSleepStats(event.getOriginal()));
+			SurviveEntityStats.setWetTime(event.getEntity(), SurviveEntityStats.getWetTime(event.getOriginal()));
 		}
 	}
 
 	@SubscribeEvent
-	public static void addReload(WorldEvent.Load event) {
+	public static void addReload(LevelEvent.Load event) {
 		System.out.println("Resistering Temperature Queries");
 		//Environment
 		for (TempType type : TempType.values()) {
@@ -461,8 +463,8 @@ public class SurviveEvents {
 			float seasonMod = 0;
 			if (ModHelper.isSereneSeasonsLoaded()) {
 				Season season = SereneSeasonsCompat.modifyTemperatureBySeason(level, pos);
-				if (DataMaps.Server.biomeTemperature.containsKey(level.getBiome(pos).value().getRegistryName())) {
-					seasonMod = DataMaps.Server.biomeTemperature.get(level.getBiome(pos).value().getRegistryName()).getSeasonModifiers().get(season);
+				if (level.getBiome(pos).unwrapKey().isPresent() && DataMaps.Server.biomeTemperature.containsKey(level.getBiome(pos).unwrapKey().get().location())) {
+					seasonMod = DataMaps.Server.biomeTemperature.get(level.getBiome(pos).unwrapKey().get().location()).getSeasonModifiers().get(season);
 				} else {
 					seasonMod = season.getModifier();
 				}
@@ -484,8 +486,8 @@ public class SurviveEvents {
 		});
 		//Internal
 		TemperatureQuery.registerQuery("survive:wetness", ContributingFactor.INTERNAL, (player, temp, level, pos)->{
-			if (DataMaps.Server.biomeTemperature.containsKey(level.getBiome(pos).value().getRegistryName())) {
-				float f = DataMaps.Server.biomeTemperature.get(level.getBiome(pos).value().getRegistryName()).getWetnessModifier();
+			if (level.getBiome(pos).unwrapKey().isPresent() && DataMaps.Server.biomeTemperature.containsKey(level.getBiome(pos).unwrapKey().get().location())) {
+				float f = DataMaps.Server.biomeTemperature.get(level.getBiome(pos).unwrapKey().get().location()).getWetnessModifier();
 				return ((double)(SurviveEntityStats.getWetTime(player)) / -1800.0D) * f;
 			} else {
 				return (double)(SurviveEntityStats.getWetTime(player)) / -1800.0D;
@@ -536,8 +538,8 @@ public class SurviveEvents {
 					if (!player.getItemBySlot(slot).isEmpty()) {
 						Item armor = player.getItemBySlot(slot).getItem();
 						float modifier = 1.0F;
-						if (DataMaps.Server.armor.containsKey(armor.getRegistryName())) {
-							for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Server.armor.get(armor.getRegistryName()).getTemperatureModifier()) {
+						if (DataMaps.Server.armor.containsKey(BuiltInRegistries.ITEM.getKey(armor))) {
+							for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Server.armor.get(BuiltInRegistries.ITEM.getKey(armor)).getTemperatureModifier()) {
 								if (instance.getSecond().shouldChangeTemperature(player)) {
 									modifier = instance.getSecond().getTemperature();
 									break;

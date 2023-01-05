@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -106,7 +105,7 @@ public class UnderwaterCondition extends TemperatureChangeCondition<UnderwaterCo
 		@Override
 		@OnlyIn(Dist.CLIENT)
 		public Component getAdditionalContext() {
-			return new TranslatableComponent("temperature_context.underwater");
+			return Component.translatable("temperature_context.underwater");
 		}
 		
 	}

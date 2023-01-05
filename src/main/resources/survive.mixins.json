@@ -20,7 +20,7 @@
 	"MobEffectMixin"
   ],
   "client": [
-  	"GuiMixin",
+  	"client.GuiMixin",
   	"client.AbstractClientPlayerMixin",
   	"client.LocalPlayerMixin"
   ],

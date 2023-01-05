@@ -7,6 +7,7 @@ import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
@@ -46,12 +47,12 @@ public class TemperatureUtil {
 	 * Gets the current temperature at the given location, based off of the default for this biome, the elevation of the
 	 * position, and {@linkplain #Biome#TEMPERATURE_NOISE} some random perlin noise. Although this is a heavily modified version to account for altitude
 	 */
-	public static float getTemperature(Biome biome, BlockPos pos) {
+	public static float getTemperature(Holder<Biome> biome, BlockPos pos) {
 		float f = (float)(TEMPERATURE_NOISE.getValue((double)((float)pos.getX() / 8.0F), (double)((float)pos.getZ() / 8.0F), false) * 4.0D);
 		float modifier = 1.0f;
-		float t = biome.getBaseTemperature();
-		if (DataMaps.Server.biomeTemperature.containsKey(biome.getRegistryName())) {
-			BiomeTemperatureJsonHolder temperatureData = DataMaps.Server.biomeTemperature.get(biome.getRegistryName());
+		float t = biome.value().getBaseTemperature();
+		if (biome.unwrapKey().isPresent() && DataMaps.Server.biomeTemperature.containsKey(biome.unwrapKey().get().location())) {
+			BiomeTemperatureJsonHolder temperatureData = DataMaps.Server.biomeTemperature.get(biome.unwrapKey().get().location());
 			t = (temperatureData.getTemperature() + 2) / 2;
 			if (pos.getY() > 64.0F) {
 				modifier = temperatureData.getAltitudeLevelModifier().getFirst();

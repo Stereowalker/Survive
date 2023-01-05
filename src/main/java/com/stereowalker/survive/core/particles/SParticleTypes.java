@@ -1,23 +1,24 @@
 package com.stereowalker.survive.core.particles;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.stereowalker.survive.Survive;
 
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 
 public class SParticleTypes {
-	public static final List<ParticleType<?>> PARTICLES = new ArrayList<ParticleType<?>>();
+	public static final Map<ResourceLocation, ParticleType<?>> PARTICLES = new HashMap<ResourceLocation, ParticleType<?>>();
 	public static final SimpleParticleType STINK = register("stink", false);
 	public static final SimpleParticleType CLEAN = register("clean", false);
 
 	private static SimpleParticleType register(String key, boolean alwaysShow) {
 		SimpleParticleType particle = new SimpleParticleType(alwaysShow);
-		particle.setRegistryName(Survive.getInstance().location(key));
-		PARTICLES.add(particle);
+		PARTICLES.put(Survive.getInstance().location(key), particle);
 		return particle;
 		//		return (SimpleParticleType)Registry.<ParticleType<? extends IParticleData>>register(Registry.PARTICLE_TYPE, key, );
 	}
@@ -26,10 +27,10 @@ public class SParticleTypes {
 	//		return Registry.register(Registry.PARTICLE_TYPE, key, new ParticleType<>(false, deserializer));
 	//	}
 
-	public static void registerAll(IForgeRegistry<ParticleType<?>> registry) {
-		for(ParticleType<?> particle: PARTICLES) {
-			registry.register(particle);
-			Survive.getInstance().debug("Particle: \""+particle.getRegistryName().toString()+"\" registered");
+	public static void registerAll(RegisterHelper<ParticleType<?>> registry) {
+		for(Entry<ResourceLocation, ParticleType<?>> particle: PARTICLES.entrySet()) {
+			registry.register(particle.getKey(), particle.getValue());
+			Survive.getInstance().debug("Particle: \""+particle.getKey().toString()+"\" registered");
 		}
 		Survive.getInstance().debug("All Particles Registered");
 	}
