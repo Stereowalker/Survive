@@ -86,17 +86,19 @@ public class WaterData extends SurviveData {
 		Difficulty difficulty = player.level.getDifficulty();
 		this.prevWaterLevel = this.waterLevel;
 		
-		if (!player.hasEffect(SMobEffects.UPSET_STOMACH) || player.getEffect(SMobEffects.UPSET_STOMACH).getDuration() <= 10)
-			if (this.waterLevel > 36)
-				player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 4));
-			else if (this.waterLevel > 32)
-				player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 3));
-			else if (this.waterLevel > 28)
-				player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 2));
-			else if (this.waterLevel > 24)
-				player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 1));
-			else if (this.waterLevel > 20)
-				player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 0));
+		if (!player.isSpectator() && !player.isCreative()) {
+			if (!player.hasEffect(SMobEffects.UPSET_STOMACH) || player.getEffect(SMobEffects.UPSET_STOMACH).getDuration() <= 10)
+				if (this.waterLevel > 36)
+					player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 4));
+				else if (this.waterLevel > 32)
+					player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 3));
+				else if (this.waterLevel > 28)
+					player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 2));
+				else if (this.waterLevel > 24)
+					player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 1));
+				else if (this.waterLevel > 20)
+					player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 0));	
+		}
 		
 		if (this.waterExhaustionLevel > 4.0F) {
 			this.waterExhaustionLevel -= 4.0F;

@@ -167,7 +167,7 @@ modrinth {
     versionType = "release"
     uploadFile = jar
     gameVersions = [modMinecraftVersion]
-    loaders = ["${project.modLoader}"]
+    loaders = ["${project.modLoader}".toLowerCase()]
 	changelog = file('changelog.md').text
     dependencies {
         required.project "unionlib"
