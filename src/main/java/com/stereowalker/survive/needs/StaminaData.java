@@ -120,7 +120,7 @@ public class StaminaData extends SurviveData {
 				this.energyTimer = 0;
 			}
 		}
-		else if (this.isTired() && !Survive.CONFIG.nutrition_enabled && player.getFoodData().getFoodLevel() > 15 && WeightHandler.getTotalArmorWeight(player)/Survive.STAMINA_CONFIG.max_weight < 1.0F) {
+		else if (this.isTired() && !Survive.CONFIG.nutrition_enabled && player.getFoodData().getFoodLevel() > Survive.STAMINA_CONFIG.min_food && WeightHandler.getTotalArmorWeight(player)/Survive.STAMINA_CONFIG.max_weight < 1.0F) {
 			++this.energyTimer;
 			if (Survive.STAMINA_CONFIG.stamina_recovery_ticks == 0 || this.energyTimer >= Survive.STAMINA_CONFIG.stamina_recovery_ticks) {
 				this.relax(energyToRegen, this.maxStamina);

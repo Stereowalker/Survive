@@ -58,5 +58,12 @@ public class StaminaConfig implements ConfigObject {
 	@UnionConfig.Comment(comment = {"The maximum stamina the player has","If you want to modify this, you'll need to first restart the world then kill all the players in your world to have the changes applied to all the players"})
 	@UnionConfig.Range(min = 0.0D, max = 100.0D)
 	public float max_stamina = 20.0F;
+	
+	@UnionConfig.Entry(name = "Minimum Food For Stamina Regeneration", type = Type.COMMON)
+	@UnionConfig.Comment(comment = {
+			"The minimum amount of food the player is required to have to regenerate stamina",
+			"This only actually does anything if the player disables the nutrition module"})
+	@UnionConfig.Range(min = 0.0D, max = 20.0D)
+	public int min_food = 15;
 
 }
