@@ -1,1 +1,1 @@
-- Prevented players from getting upset stomach in creative or spectator
+- The minimum amount of food required for stamina generation can now be set in the config
