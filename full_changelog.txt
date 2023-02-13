@@ -1,3 +1,6 @@
+[8.0.3]
+- Fix inability to load on servers
+
 [8.0.2]
 - The minimum amount of food required for stamina generation can now be set in the config
 

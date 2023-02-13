@@ -1,1 +1,1 @@
-- The minimum amount of food required for stamina generation can now be set in the config
+- Fix inability to load on servers
