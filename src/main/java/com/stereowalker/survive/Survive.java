@@ -170,8 +170,6 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		if (isOriginsLoaded()) {
 			OriginsCompat.initOriginsPatcher();
 		}
-
-		eventBus().addListener(GuiHelper::registerOverlays);
 		BlockPropertyHandlerImpl.init();
 	}
 
@@ -264,6 +262,7 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		ItemBlockRenderTypes.setRenderLayer(SFluids.PURIFIED_WATER, frendertype);
 		ItemBlockRenderTypes.setRenderLayer(SFluids.FLOWING_PURIFIED_WATER, frendertype);
 		SItemProperties.registerAll();
+		eventBus().addListener(GuiHelper::registerOverlays);
 	}
 	
 	@Override
