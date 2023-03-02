@@ -1,2 +1,3 @@
 - Used newer Serene Seasons methods
 - Fix inability to connect to servers
+- Updated Ukranian translation (Credits to unroman) 

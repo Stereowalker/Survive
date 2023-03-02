@@ -1,6 +1,7 @@
 [8.0.4]
 - Used newer Serene Seasons methods
 - Fix inability to connect to servers
+- Updated Ukranian translation (Credits to unroman) 
 
 [8.0.3]
 - Fix inability to load on servers
