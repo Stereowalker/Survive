@@ -439,7 +439,7 @@ public class SurviveEvents {
 
 	@SubscribeEvent
 	public static void addReload(LevelEvent.Load event) {
-		System.out.println("Resistering Temperature Queries");
+		System.out.println("Start Resistering Temperature Queries");
 		//Environment
 		for (TempType type : TempType.values()) {
 			TemperatureQuery.registerQuery("survive:"+type.getName(), ContributingFactor.ENVIRONMENTAL, (player, temp, level, pos)-> {
@@ -564,5 +564,6 @@ public class SurviveEvents {
 			else
 				return 0;
 		});
+		System.out.println("Done Resistering Temperature Queries");
 	}
 }

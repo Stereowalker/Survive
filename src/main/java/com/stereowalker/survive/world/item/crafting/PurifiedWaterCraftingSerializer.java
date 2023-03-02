@@ -63,6 +63,7 @@ public class PurifiedWaterCraftingSerializer implements RecipeSerializer<Purifie
 
     public void toNetwork(FriendlyByteBuf pBuffer, PurifiedWaterCraftingRecipe pRecipe) {
        pBuffer.writeUtf(pRecipe.getGroup());
+       pBuffer.writeEnum(pRecipe.category());
        NonNullList<Ingredient> nonnulllist = add(pRecipe.getIngredients());
        pBuffer.writeVarInt(nonnulllist.size());
 
