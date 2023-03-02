@@ -1,1 +1,2 @@
-- Fix inability to load on servers
+- Used newer Serene Seasons methods
+- Fix inability to connect to servers
