@@ -10,7 +10,7 @@ import sereneseasons.api.season.SeasonHelper;
 public class SereneSeasonsCompat {
 
 	public static boolean snowsHere(Level world, BlockPos pos) {
-		if (world.getBiome(pos).isBound() && !sereneseasons.config.BiomeConfig.usesTropicalSeasons(world.getBiome(pos))) {
+		if (world.getBiome(pos).isBound() && !SeasonHelper.usesTropicalSeasons(world.getBiome(pos))) {
 			return SeasonHelper.getSeasonState(world).getSeason() == sereneseasons.api.season.Season.WINTER;
 		}
 		return false;
@@ -19,7 +19,7 @@ public class SereneSeasonsCompat {
 	public static Season modifyTemperatureBySeason(Level world, BlockPos pos) {
 		if (world.getBiome(pos) != null &&
 				world.getBiome(pos).isBound()) {
-			if (sereneseasons.config.BiomeConfig.usesTropicalSeasons(world.getBiome(pos))) {
+			if (SeasonHelper.usesTropicalSeasons(world.getBiome(pos))) {
 				switch (SeasonHelper.getSeasonState(world).getTropicalSeason()) {
 				case EARLY_DRY: return Seasons.DRY_BEGIN;
 				case MID_DRY: return Seasons.DRY_MIDST;
