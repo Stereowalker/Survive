@@ -139,9 +139,9 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		ConfigBuilder.registerConfig(STAMINA_CONFIG);
 		new FluidSTags();
 		new ItemSTags();
-		final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-		modEventBus.addListener(this::setup);
-		modEventBus.addListener(this::clientRegistries);
+		eventBus().addListener(this::setup);
+		eventBus().addListener(this::clientRegistries);
+		eventBus().addListener(GuiHelper::registerOverlays);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		//		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.addListener((Consumer<PotionToFluidEvent>) event -> {
@@ -165,7 +165,7 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		});
 		isPrimalWinterLoaded = ModList.get().isLoaded("primalwinter");
 		if (isCombatLoaded()) {
-			SSpells.registerAll(modEventBus);
+			SSpells.registerAll(eventBus());
 		}
 		if (isOriginsLoaded()) {
 			OriginsCompat.initOriginsPatcher();
@@ -262,7 +262,6 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		ItemBlockRenderTypes.setRenderLayer(SFluids.PURIFIED_WATER, frendertype);
 		ItemBlockRenderTypes.setRenderLayer(SFluids.FLOWING_PURIFIED_WATER, frendertype);
 		SItemProperties.registerAll();
-		eventBus().addListener(GuiHelper::registerOverlays);
 	}
 	
 	@Override
