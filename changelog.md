@@ -1,3 +1,2 @@
-- Used newer Serene Seasons methods
-- Fix inability to connect to servers
-- Updated Ukranian translation (Credits to unroman) 
+- Fix HUD elements not showing up
+- Awake timer now ticks down when the world is set to peaceful

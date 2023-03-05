@@ -1,3 +1,7 @@
+[8.0.5]
+- Fix HUD elements not showing up
+- Awake timer now ticks down when the world is set to peaceful
+
 [8.0.4]
 - Used newer Serene Seasons methods
 - Fix inability to connect to servers
