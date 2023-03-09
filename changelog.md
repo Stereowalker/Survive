@@ -1,2 +1,2 @@
-- Fix HUD elements not showing up
-- Awake timer now ticks down when the world is set to peaceful
+- Fix server not starting
+- Update pack format

@@ -1,3 +1,7 @@
+[8.0.6]
+- Fix server not starting
+- Update pack format
+
 [8.0.5]
 - Fix HUD elements not showing up
 - Awake timer now ticks down when the world is set to peaceful
