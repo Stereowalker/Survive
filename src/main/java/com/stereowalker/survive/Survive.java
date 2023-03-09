@@ -82,15 +82,14 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -141,7 +140,9 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		new ItemSTags();
 		eventBus().addListener(this::setup);
 		eventBus().addListener(this::clientRegistries);
-		eventBus().addListener(GuiHelper::registerOverlays);
+		eventBus().addListener((Consumer<RegisterGuiOverlaysEvent>) event -> {
+			GuiHelper.registerOverlays(event);
+		});
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		//		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.addListener((Consumer<PotionToFluidEvent>) event -> {
@@ -172,7 +173,7 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		}
 		BlockPropertyHandlerImpl.init();
 	}
-
+	
 	public void registerCommands(RegisterCommandsEvent event) {
 		SCommands.registerCommands(event.getDispatcher());
 	}
