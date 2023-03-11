@@ -18,6 +18,7 @@ import com.stereowalker.survive.config.TemperatureConfig;
 import com.stereowalker.survive.config.ThirstConfig;
 import com.stereowalker.survive.config.WellbeingConfig;
 import com.stereowalker.survive.core.cauldron.SCauldronInteraction;
+import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.json.ArmorJsonHolder;
 import com.stereowalker.survive.json.BiomeTemperatureJsonHolder;
 import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
@@ -61,6 +62,8 @@ import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsSc
 import com.stereowalker.unionlib.config.ConfigBuilder;
 import com.stereowalker.unionlib.event.potionfluid.FluidToPotionEvent;
 import com.stereowalker.unionlib.event.potionfluid.PotionToFluidEvent;
+import com.stereowalker.unionlib.insert.InsertSystem.InsertCollector;
+import com.stereowalker.unionlib.insert.Inserts;
 import com.stereowalker.unionlib.mod.IPacketHolder;
 import com.stereowalker.unionlib.mod.MinecraftMod;
 import com.stereowalker.unionlib.network.PacketRegistry;
@@ -189,6 +192,13 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 			reg.add(SAttributes.class);
 			reg.add(SMobEffects.class);
 		};
+	}
+	
+	@Override
+	public void registerInserts(InsertCollector collector) {
+		collector.getSystem().addInsert(Inserts.LIVING_TICK, SurviveEvents::sendToClient);
+		collector.getSystem().addInsert(Inserts.LIVING_TICK, SurviveEvents::regulateWetness);
+		collector.getSystem().addInsert(Inserts.LIVING_TICK, SurviveEvents::updateEnvTemperature);
 	}
 
 	@Override

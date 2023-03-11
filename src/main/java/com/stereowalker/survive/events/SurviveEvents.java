@@ -39,7 +39,6 @@ import com.stereowalker.unionlib.util.math.UnionMathHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -66,12 +65,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
-import net.minecraftforge.event.level.SleepFinishedTimeEvent;
 import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.level.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -107,10 +105,8 @@ public class SurviveEvents {
 		}
 	}
 
-	@SubscribeEvent
-	public static void sendToClient(LivingTickEvent event) {
-		if (event.getEntity() != null && !event.getEntity().level.isClientSide && event.getEntity() instanceof ServerPlayer) {
-			ServerPlayer player = (ServerPlayer)event.getEntity();
+	public static void sendToClient(LivingEntity living) {
+		if (living != null && !living.level.isClientSide && living instanceof ServerPlayer player) {
 			Survive.getInstance().channel.sendTo(new ClientboundSurvivalStatsPacket(player), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
 			if (!DataMaps.Server.syncedToClient) {
 				Survive.getInstance().getLogger().info("Syncing All Data To Client ("+player.getDisplayName().getString()+")");
@@ -133,10 +129,8 @@ public class SurviveEvents {
 		}
 	}
 
-	@SubscribeEvent
-	public static void regulateWetness(LivingTickEvent event) {
-		if (event.getEntity() != null && !event.getEntity().level.isClientSide && event.getEntity() instanceof ServerPlayer) {
-			ServerPlayer player = (ServerPlayer)event.getEntity();
+	public static void regulateWetness(LivingEntity living) {
+		if (living != null && living instanceof ServerPlayer player && !living.level.isClientSide) {
 			SurviveEntityStats.addWetTime(player, player.isUnderWater() ? 2 : player.isInWaterOrRain() ? 1 : -2);
 		}
 	}
@@ -161,10 +155,8 @@ public class SurviveEvents {
 		}
 	}
 
-	@SubscribeEvent
-	public static void updateEnvTemperature(LivingTickEvent event) {
-		if (event.getEntity() != null && event.getEntity() instanceof ServerPlayer) {
-			ServerPlayer player = (ServerPlayer)event.getEntity();
+	public static void updateEnvTemperature(LivingEntity living) {
+		if (living != null && living instanceof ServerPlayer player) {
 			if (player.isAlive()) {
 				for (ResourceLocation queryId : TemperatureQuery.queries.keySet()) {
 					double queryValue = TemperatureQuery.queries.get(queryId).getA().run(player, SurviveEntityStats.getTemperatureStats(player).getTemperatureLevel(), player.level, player.blockPosition());
