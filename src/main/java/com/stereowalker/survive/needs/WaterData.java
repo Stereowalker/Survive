@@ -13,6 +13,7 @@ import com.stereowalker.survive.world.item.SItems;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,7 +36,7 @@ public class WaterData extends SurviveData {
 	private int uncleanConsumption = 0;
 
 	public WaterData() {
-		this.waterHydrationLevel = 5.0F;
+		this.waterHydrationLevel = 4.0F;
 	}
 
 	/**
@@ -43,7 +44,11 @@ public class WaterData extends SurviveData {
 	 */
 	public void drink(int waterLevelIn, float waterHydrationModifier, boolean isUnclean) {
 		this.waterLevel = Math.min(waterLevelIn + this.waterLevel, ServerConfig.stomachCapacity());
-		this.waterHydrationLevel = Math.min(this.waterHydrationLevel + (float)waterLevelIn * waterHydrationModifier * 2.0F, (float)this.waterLevel);
+		if (this.waterHydrationLevel >= waterHydrationModifier) {
+			this.waterHydrationLevel = Mth.clamp(this.waterHydrationLevel + waterHydrationModifier, 1.0f, 4.0f);
+		} else if (this.waterHydrationLevel < waterHydrationModifier) {
+			this.waterHydrationLevel = Mth.clamp(this.waterHydrationLevel + (waterHydrationModifier * 0.1f), 1.0f, 4.0f);
+		}
 		if (isUnclean) {
 			uncleanConsumption++;
 		}
@@ -102,11 +107,10 @@ public class WaterData extends SurviveData {
 		
 		if (this.waterExhaustionLevel > 4.0F) {
 			this.waterExhaustionLevel -= 4.0F;
-			if (this.waterHydrationLevel > 0.0F) {
-				this.waterHydrationLevel = Math.max(this.waterHydrationLevel - 1.0F, 0.0F);
-			} else if (difficulty != Difficulty.PEACEFUL) {
-				this.waterLevel = Math.max(this.waterLevel - 1, 0);
-			}
+			if (this.waterHydrationLevel > 2.0F)
+				this.waterHydrationLevel = Math.max(this.waterHydrationLevel - 0.1F, 2.0F);
+			if (difficulty != Difficulty.PEACEFUL)
+				this.waterLevel = Math.max(this.waterLevel - Math.round(this.waterHydrationLevel), 0);
 		}
 
 		boolean flag = player.level.getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION);
@@ -117,14 +121,6 @@ public class WaterData extends SurviveData {
 					player.hurt(SDamageSource.OVERHYDRATE, 1.0F);
 				}
 
-				this.waterTimer = 0;
-			}
-		} else if (flag && this.waterHydrationLevel > 0.0F && player.isHurt() && this.waterLevel >= 20) {
-			++this.waterTimer;
-			if (this.waterTimer >= 10) {
-				float f = Math.min(this.waterHydrationLevel, 6.0F);
-				//player.heal(f / 12.0F);
-				this.addExhaustion(f);
 				this.waterTimer = 0;
 			}
 		} else if (flag && this.waterLevel >= 18 && player.isHurt()) {
