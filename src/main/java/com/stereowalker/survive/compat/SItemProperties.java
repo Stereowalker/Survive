@@ -30,7 +30,7 @@ public class SItemProperties {
 					float environmentalMods = 0;
 					for (Entry<ResourceLocation, Tuple<TemperatureQuery, ContributingFactor>> query : TemperatureQuery.queries.entrySet()) {
 						if (query.getValue().getB() == ContributingFactor.ENVIRONMENTAL ) {
-							environmentalMods += query.getValue().getA().run(null, 0, level, entity.blockPosition());
+							environmentalMods += query.getValue().getA().run(null, 0, level, entity.blockPosition(), false);
 						}
 					}
 					float val = 0.0f;

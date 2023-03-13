@@ -28,5 +28,5 @@ public interface TemperatureQuery {
 		registerQuery(new ResourceLocation(id), factor, query);
 	}
 	
-	double run(@Nullable Player player, double temp, Level level, BlockPos pos);
+	double run(@Nullable Player player, double temp, Level level, BlockPos pos, boolean applyTemp);
 }

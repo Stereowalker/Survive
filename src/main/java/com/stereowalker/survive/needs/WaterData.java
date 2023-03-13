@@ -27,6 +27,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class WaterData extends SurviveData {
+	private int tempDropTicks = 0;
 	private int waterLevel = 20;
 	private float waterHydrationLevel;
 	private float waterExhaustionLevel;
@@ -123,10 +124,10 @@ public class WaterData extends SurviveData {
 
 				this.waterTimer = 0;
 			}
-		} else if (flag && this.waterLevel >= 18 && player.isHurt()) {
+		} else if (flag && this.waterLevel >= 16 && ((IRealisticEntity)player).getTemperatureData().getTemperatureLevel() > Survive.DEFAULT_TEMP) {
 			++this.waterTimer;
 			if (this.waterTimer >= 80) {
-				//player.heal(0.5F);
+				this.tempDropTicks++;
 				this.addExhaustion(6.0F);
 				this.waterTimer = 0;
 			}
@@ -154,12 +155,22 @@ public class WaterData extends SurviveData {
 		}
 
 	}
+	
+	public void applyTempDrop() {
+		this.tempDropTicks--;
+	}
+	
+
+	public boolean shouldTempDrop() {
+		return this.tempDropTicks > 0;
+	}
 
 	/**
 	 * Reads the water data for the player.
 	 */
 	public void read(CompoundTag compound) {
 		if (compound.contains("waterLevel", 99)) {
+			this.tempDropTicks = compound.getInt("tempDropTicks");
 			this.waterLevel = compound.getInt("waterLevel");
 			this.waterTimer = compound.getInt("waterTickTimer");
 			this.waterHydrationLevel = compound.getFloat("waterHydrationLevel");
@@ -173,6 +184,7 @@ public class WaterData extends SurviveData {
 	 * Writes the water data for the player.
 	 */
 	public void write(CompoundTag compound) {
+		compound.putInt("tempDropTicks", this.tempDropTicks);
 		compound.putInt("waterLevel", this.waterLevel);
 		compound.putInt("waterTickTimer", this.waterTimer);
 		compound.putFloat("waterHydrationLevel", this.waterHydrationLevel);
