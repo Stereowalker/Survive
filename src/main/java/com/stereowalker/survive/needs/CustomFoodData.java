@@ -75,26 +75,19 @@ public class CustomFoodData extends FoodData {
 				this.wellFed = false;
 			}
 		}
-		if (!pPlayer.isSpectator() && !pPlayer.isCreative()) {
-			//Stomach Ache
-			if (this.causeAche && (!pPlayer.hasEffect(SMobEffects.UPSET_STOMACH) || pPlayer.getEffect(SMobEffects.UPSET_STOMACH).getDuration() <= 20))
-				if (this.foodLevel > 36)
-					pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 4));
-				else if (this.foodLevel > 32)
-					pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 3));
-				else if (this.foodLevel > 28)
-					pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 2));
-				else if (this.foodLevel > 24)
-					pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 1));
-				else if (this.foodLevel > 20)
-					pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, 300, 0));
-			//Passive Hunger Decay
-			if (Survive.CONFIG.idle_hunger_tick_rate > -1) {
-				if (pPlayer.tickCount%Survive.CONFIG.idle_hunger_tick_rate == Survive.CONFIG.idle_hunger_tick_rate-1) {
-					addExhaustion(Survive.CONFIG.idle_hunger_exhaustion);
-				}
-			}	
-		}
+		
+		int amplifier = -1;
+		int duration = 210;
+		if (this.foodLevel > 36) amplifier = 4;
+		else if (this.foodLevel > 32) amplifier = 3;
+		else if (this.foodLevel > 28) amplifier = 2;
+		else if (this.foodLevel > 24) amplifier = 1;
+		else if (this.foodLevel > 20) amplifier = 0;
+		MobEffectInstance upsetStomach = pPlayer.getEffect(SMobEffects.UPSET_STOMACH);
+		if (!pPlayer.isSpectator() && !pPlayer.isCreative())
+			if (amplifier > 0 && (upsetStomach == null || upsetStomach.getDuration() <= 210 || upsetStomach.getAmplifier() < amplifier))
+				pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, duration, amplifier));
+		
 		if (Survive.WELLBEING_CONFIG.enabled) {
 			WellbeingData wellbeing = SurviveEntityStats.getWellbeingStats(pPlayer);
 			//Essentially causes the player to get ill when drinking bad water
