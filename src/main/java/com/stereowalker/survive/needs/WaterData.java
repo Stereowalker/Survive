@@ -46,9 +46,9 @@ public class WaterData extends SurviveData {
 	public void drink(int waterLevelIn, float waterHydrationModifier, boolean isUnclean) {
 		this.waterLevel = Math.min(waterLevelIn + this.waterLevel, ServerConfig.stomachCapacity());
 		if (this.waterHydrationLevel >= waterHydrationModifier) {
-			this.waterHydrationLevel = Mth.clamp(this.waterHydrationLevel + waterHydrationModifier, 1.0f, 4.0f);
+			this.waterHydrationLevel = waterHydrationModifier;
 		} else if (this.waterHydrationLevel < waterHydrationModifier) {
-			this.waterHydrationLevel = Mth.clamp(this.waterHydrationLevel + (waterHydrationModifier * 0.1f), 1.0f, 4.0f);
+			this.waterHydrationLevel = Mth.clamp(this.waterHydrationLevel + (waterHydrationModifier * Survive.THIRST_CONFIG.hydration_restoration), 1.0f, this.waterHydrationLevel);
 		}
 		if (isUnclean) {
 			uncleanConsumption++;
@@ -154,8 +154,9 @@ public class WaterData extends SurviveData {
 
 	}
 	
-	public void applyTempDrop() {
+	public void applyTempDrop(Player player) {
 		this.tempDropTicks--;
+		save(player);
 	}
 	
 

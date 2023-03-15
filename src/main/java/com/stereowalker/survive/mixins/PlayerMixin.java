@@ -167,4 +167,10 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		return SurviveEntityStats.getSleepStats((Player)(Object)this);
 	}
 
+	public CustomFoodData getRealFoodData(){
+		if (foodData instanceof CustomFoodData)
+			return (CustomFoodData) foodData;
+		else return null;
+	}
+
 }

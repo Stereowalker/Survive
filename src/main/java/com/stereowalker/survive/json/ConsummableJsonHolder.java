@@ -9,6 +9,7 @@ import com.stereowalker.survive.api.json.JsonHolder;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 /**
  * @author Stereowalker
@@ -64,6 +65,9 @@ public class ConsummableJsonHolder implements JsonHolder {
 
 				if(this.hasMemberAndIsPrimitive("hydration", object)) {
 					hydrationAmount = workOnFloat("hydration", object);
+					if (hydrationAmount > 4.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data $s from JSON: Hydration should not be greater than 4.0", itemID);
+					if (hydrationAmount < 1.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data $s from JSON: Hydration should not be less than 1.0", itemID);
+					hydrationAmount = Mth.clamp(hydrationAmount, 1.0f, 4.0f);
 				}
 				
 				if(this.hasMemberAndIsPrimitive(THIRSTY, object)) {

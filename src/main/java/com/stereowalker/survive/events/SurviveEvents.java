@@ -503,7 +503,7 @@ public class SurviveEvents {
 		});
 		TemperatureQuery.registerQuery("survive:thirst_cooldown", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
 			if (((IRealisticEntity)player).getWaterData().shouldTempDrop()) {
-				if (applyTemp) ((IRealisticEntity)player).getWaterData().applyTempDrop();
+				if (applyTemp) ((IRealisticEntity)player).getWaterData().applyTempDrop(player);
 				return 1.0D;
 			}
 			return 0.0D;
