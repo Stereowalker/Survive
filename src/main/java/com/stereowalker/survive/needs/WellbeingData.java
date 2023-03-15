@@ -1,7 +1,5 @@
 package com.stereowalker.survive.needs;
 
-import java.util.Random;
-
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.world.effect.SMobEffects;
@@ -20,6 +18,7 @@ public class WellbeingData extends SurviveData {
 	public int timeUntilWell = 0;
 	public int timeUntilHypothermia;
 	public int timeUntilHyperthermia;
+	private int intensity;
 
 	/**
 	 * Sets the time (in ticks) before the player becomes unwell
@@ -36,6 +35,7 @@ public class WellbeingData extends SurviveData {
 		this.isWell = true;
 		this.timeUntilHyperthermia = 6000;
 		this.timeUntilHyperthermia = 6000;
+		this.intensity = -1;
 	}
 
 	@Override
@@ -52,11 +52,22 @@ public class WellbeingData extends SurviveData {
 			this.isWell = false;
 			//Set custom timers
 			this.timeUntilWell = 6000;
-			int rgn = new Random().nextInt(2);
+			int nte = rng.nextInt(46);
+			if (nte == 45) this.intensity = 9;
+			else if (nte >= 44) this.intensity = 8;
+			else if (nte >= 42) this.intensity = 7;
+			else if (nte >= 39) this.intensity = 6;
+			else if (nte >= 35) this.intensity = 5;
+			else if (nte >= 30) this.intensity = 4;
+			else if (nte >= 24) this.intensity = 3;
+			else if (nte >= 17) this.intensity = 2;
+			else if (nte >= 9) this.intensity = 1;
+			else this.intensity = 0;
+			int rgn = rng.nextInt(2);
 			if (rgn == 0)
-				player.addEffect(new MobEffectInstance(SMobEffects.SLOWNESS_ILLNESS, 6000));
+				player.addEffect(new MobEffectInstance(SMobEffects.SLOWNESS_ILLNESS, 6000, this.intensity));
 			else
-				player.addEffect(new MobEffectInstance(SMobEffects.WEAKNESS_ILLNESS, 6000));
+				player.addEffect(new MobEffectInstance(SMobEffects.WEAKNESS_ILLNESS, 6000, this.intensity));
 		}
 		//As long as the player is not well
 		else if (this.timeUntilWell > 1 && !this.isWell) {
@@ -122,6 +133,7 @@ public class WellbeingData extends SurviveData {
 			this.timeUntilHypothermia = compound.getInt("timeUntilHypothermia");
 			this.timeUntilHyperthermia = compound.getInt("timeUntilHyperthermia");
 			this.isWell = compound.getBoolean("isWell");
+			this.intensity = compound.getInt("intensity");
 		}
 	}
 
@@ -132,6 +144,7 @@ public class WellbeingData extends SurviveData {
 		compound.putInt("timeUntilHypothermia", this.timeUntilHypothermia);
 		compound.putInt("timeUntilHyperthermia", this.timeUntilHyperthermia);
 		compound.putBoolean("isWell", this.isWell);
+		compound.putInt("intensity", this.intensity);
 	}
 
 	@Override
@@ -142,6 +155,13 @@ public class WellbeingData extends SurviveData {
 	@Override
 	public boolean shouldTick() {
 		return Survive.WELLBEING_CONFIG.enabled;
+	}
+	
+	/**
+	 * Gets the intensity of the applied illness
+	 */
+	public int getIntensity() {
+		return intensity;
 	}
 
 }
