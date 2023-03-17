@@ -68,9 +68,8 @@ public class HygieneData extends SurviveData {
 				this.dirty(1);
 				this.hygieneTimer = 0;
 			}
-			
 			if (this.uncleanLevel > 100 && Survive.WELLBEING_CONFIG.enabled) {
-				SurviveEntityStats.getWellbeingStats(player).setTimer(6000, 24000);
+				SurviveEntityStats.getWellbeingStats(player).setTimer(6000, 24000, "Staying dirty too long");
 			}
 		} else {
 			this.hygieneTimer = 0;

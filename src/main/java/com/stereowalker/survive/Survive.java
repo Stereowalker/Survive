@@ -31,6 +31,7 @@ import com.stereowalker.survive.network.protocol.game.ClientboundDrinkSoundPacke
 import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundArmorStaminaPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWaterPacket;
+import com.stereowalker.survive.network.protocol.game.ServerboundPlayerStatusBookPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundRelaxPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhaustionPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
@@ -213,15 +214,16 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		PacketRegistry.registerMessage(channel, 0, ServerboundArmorStaminaPacket.class, (packetBuffer) -> {return new ServerboundArmorStaminaPacket(packetBuffer);});
 		PacketRegistry.registerMessage(channel, 1, ServerboundThirstMovementPacket.class, (packetBuffer) -> {return new ServerboundThirstMovementPacket(packetBuffer);});
 		PacketRegistry.registerMessage(channel, 2, ServerboundInteractWithWaterPacket.class, (packetBuffer) -> {return new ServerboundInteractWithWaterPacket(packetBuffer);});
-		PacketRegistry.registerMessage(channel, 3, ServerboundStaminaExhaustionPacket.class, (packetBuffer) -> {return new ServerboundStaminaExhaustionPacket(packetBuffer);});
-		PacketRegistry.registerMessage(channel, 4, ServerboundRelaxPacket.class, (packetBuffer) -> {return new ServerboundRelaxPacket(packetBuffer);});
+		PacketRegistry.registerMessage(channel, 3, ServerboundStaminaExhaustionPacket.class, ServerboundStaminaExhaustionPacket::new);
+		PacketRegistry.registerMessage(channel, 4, ServerboundRelaxPacket.class, ServerboundRelaxPacket::new);
+		PacketRegistry.registerMessage(channel, 5, ServerboundPlayerStatusBookPacket.class, ServerboundPlayerStatusBookPacket::new);
 	}
 
 	@Override
 	public void registerClientboundPackets(SimpleChannel channel) {
-		channel.registerMessage(5, ClientboundSurvivalStatsPacket.class, ClientboundSurvivalStatsPacket::encode, ClientboundSurvivalStatsPacket::decode, ClientboundSurvivalStatsPacket::handle);
-		channel.registerMessage(6, ClientboundDrinkSoundPacket.class, ClientboundDrinkSoundPacket::encode, ClientboundDrinkSoundPacket::decode, ClientboundDrinkSoundPacket::handle);
-		PacketRegistry.registerMessage(channel, 7, ClientboundDataTransferPacket.class, (packetBuffer) -> {return new ClientboundDataTransferPacket(packetBuffer);});
+		channel.registerMessage(6, ClientboundSurvivalStatsPacket.class, ClientboundSurvivalStatsPacket::encode, ClientboundSurvivalStatsPacket::decode, ClientboundSurvivalStatsPacket::handle);
+		channel.registerMessage(7, ClientboundDrinkSoundPacket.class, ClientboundDrinkSoundPacket::encode, ClientboundDrinkSoundPacket::decode, ClientboundDrinkSoundPacket::handle);
+		PacketRegistry.registerMessage(channel, 8, ClientboundDataTransferPacket.class, (packetBuffer) -> {return new ClientboundDataTransferPacket(packetBuffer);});
 	}
 
 	//TODO: FInd Somewhere to put all these

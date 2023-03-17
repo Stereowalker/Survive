@@ -81,6 +81,10 @@ public class SleepData extends SurviveData {
 		return awakeTimer;
 	}
 
+	public float getDaysAwake() {
+		return (float)Mth.floor((float)awakeTimer / 12000.f) * 0.5f;
+	}
+
 	public void setAwakeTimer(int awakeTimer) {
 		this.awakeTimer = awakeTimer;
 	}

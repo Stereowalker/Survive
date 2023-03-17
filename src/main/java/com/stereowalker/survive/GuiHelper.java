@@ -87,8 +87,6 @@ public class GuiHelper {
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0, GUI_ICONS);
 		}
-		double rawTemperature = SurviveEntityStats.getTemperatureStats(playerentity).getTemperatureLevel();
-//		double tempLocation = rawTemperature - Survive.DEFAULT_TEMP;
 		double displayTemp = SurviveEntityStats.getTemperatureStats(playerentity).getDisplayTemperature();
 //		if (tempLocation > 0) {
 //			double maxTemp = 0.0D;
@@ -107,9 +105,7 @@ public class GuiHelper {
 //			displayTemp = Mth.clamp(div, -1.0D-(28.0D/63.0D), 0);
 //		}
 		//For Numbers
-		int temp = (int) (rawTemperature*100);
-		double temperaure = ((double)temp) / 100.0D;
-		String s = temperaure+" �C";
+		String s = SurviveEntityStats.getTemperatureStats(playerentity).getCelcius()+" °C";
 		if (Minecraft.getInstance().gameMode.hasExperience()) {
 			if (Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HORIZONTAL_BAR)) {
 				if (Survive.TEMPERATURE_CONFIG.tempEffects && displayTemp >= 1) {//Hyperthermia override
@@ -135,10 +131,7 @@ public class GuiHelper {
 			}
 			else if (Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.NUMBERS)) {
 				if (Survive.TEMPERATURE_CONFIG.displayTempInFahrenheit) {
-					double rawFTemp = (temperaure * (9.0D/5.0D)) + 32.0D;
-					int fTemp = (int) (rawFTemp*100);
-					double fTemperaure = ((double)fTemp) / 100.0D;
-					s = fTemperaure+" �F";
+					s = SurviveEntityStats.getTemperatureStats(playerentity).getFahrenheit()+" °F";
 				}
 				if (displayTemp >= 1) {
 					Minecraft.getInstance().font.drawShadow(matrixStack, s, x, y, ChatFormatting.GOLD.getColor());

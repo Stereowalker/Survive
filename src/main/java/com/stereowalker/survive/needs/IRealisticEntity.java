@@ -12,6 +12,7 @@ public interface IRealisticEntity {
 	public WaterData getWaterData();
 	public WellbeingData getWellbeingData();
 	public SleepData getSleepData();
+	public CustomFoodData getRealFoodData();
 	
 	private LivingEntity self() {
 		return (LivingEntity)this;

@@ -249,10 +249,24 @@ public class TemperatureData extends SurviveData {
 	}
 
 	/**
-	 * Get the player's water level.
+	 * Get the player's temperature level.
 	 */
 	public double getTemperatureLevel() {
 		return this.temperatureLevel;
+	}
+
+	/**
+	 * Get the player's temperature level rounded to 2 decimal places.
+	 */
+	public float getCelcius() {
+		int temp = (int) (this.temperatureLevel*100);
+		return ((float)temp) / 100.0F;
+	}
+	
+	public float getFahrenheit() {
+		float rawFTemp = (getCelcius() * (9.0F/5.0F)) + 32.0F;
+		int fTemp = (int) (rawFTemp*100);
+		return ((float)fTemp) / 100.0F;
 	}
 	
 	@OnlyIn(Dist.CLIENT)

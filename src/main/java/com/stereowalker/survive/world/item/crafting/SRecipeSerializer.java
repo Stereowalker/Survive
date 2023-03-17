@@ -12,6 +12,8 @@ public class SRecipeSerializer {
 	public static final RecipeSerializer<CharcoalFilterRecipe> CRAFTING_SPECIAL_CHARCOAL_FILTERING = new SimpleCraftingRecipeSerializer<>(CharcoalFilterRecipe::new);
 	@RegistryObject("crafting_canteen_filling")
 	public static final RecipeSerializer<CanteenFillingRecipe> CRAFTING_SPECIAL_CANTEEN_FILLING = new SimpleCraftingRecipeSerializer<>(CanteenFillingRecipe::new);
+	@RegistryObject("crafting_player_status_book")
+	public static final RecipeSerializer<PlayerStatusBookRecipe> CRAFTING_PLAYER_STATUS_BOOK = new SimpleCraftingRecipeSerializer<>(PlayerStatusBookRecipe::new);
 	@RegistryObject("crafting_shapeless_with_purified_water")
 	public static final PurifiedWaterCraftingSerializer CRAFTING_SHAPELESS_WITH_PURIFIED_WATER = new PurifiedWaterCraftingSerializer();
 	@RegistryObject("purified_water_bottle")

@@ -48,7 +48,7 @@ public class WaterData extends SurviveData {
 		if (this.waterHydrationLevel >= waterHydrationModifier) {
 			this.waterHydrationLevel = waterHydrationModifier;
 		} else if (this.waterHydrationLevel < waterHydrationModifier) {
-			this.waterHydrationLevel = Mth.clamp(this.waterHydrationLevel + (waterHydrationModifier * Survive.THIRST_CONFIG.hydration_restoration), 1.0f, this.waterHydrationLevel);
+			this.waterHydrationLevel = Mth.clamp(this.waterHydrationLevel + (waterHydrationModifier * Survive.THIRST_CONFIG.hydration_restoration), 1.0f, waterHydrationModifier);
 		}
 		if (isUnclean) {
 			uncleanConsumption++;
@@ -146,7 +146,7 @@ public class WaterData extends SurviveData {
 			WellbeingData wellbeing = SurviveEntityStats.getWellbeingStats(player);
 			//Essentially causes the player to get ill when drinking bad water
 			if (uncleanConsumption >= 3) {
-				wellbeing.setTimer(2400, 6000);
+				wellbeing.setTimer(2400, 6000, "Drinking Unpurified water");
 				uncleanConsumption = 0;
 				wellbeing.save(player);
 			}

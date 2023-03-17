@@ -92,7 +92,7 @@ public class CustomFoodData extends FoodData {
 			WellbeingData wellbeing = SurviveEntityStats.getWellbeingStats(pPlayer);
 			//Essentially causes the player to get ill when drinking bad water
 			if (uncleanConsumption >= 3) {
-				wellbeing.setTimer(2400, 6000);
+				wellbeing.setTimer(2400, 6000, "Eating bad food");
 				uncleanConsumption = 0;
 				wellbeing.save(pPlayer);
 			}
