@@ -3,7 +3,6 @@ package com.stereowalker.survive.needs;
 import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.config.ServerConfig;
-import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.world.effect.SMobEffects;
 
 import net.minecraft.nbt.CompoundTag;
@@ -89,12 +88,10 @@ public class CustomFoodData extends FoodData {
 				pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, duration, amplifier));
 		
 		if (Survive.WELLBEING_CONFIG.enabled) {
-			WellbeingData wellbeing = SurviveEntityStats.getWellbeingStats(pPlayer);
 			//Essentially causes the player to get ill when drinking bad water
 			if (uncleanConsumption >= 3) {
-				wellbeing.setTimer(2400, 6000, "Eating bad food");
+				((IRealisticEntity)pPlayer).getWellbeingData().setTimer(2400, 6000, "Eating bad food");
 				uncleanConsumption = 0;
-				wellbeing.save(pPlayer);
 			}
 		}
 

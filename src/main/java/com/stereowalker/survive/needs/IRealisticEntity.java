@@ -11,6 +11,7 @@ public interface IRealisticEntity {
 	public TemperatureData getTemperatureData();
 	public WaterData getWaterData();
 	public WellbeingData getWellbeingData();
+	public void setWellbeingData(WellbeingData data);
 	public SleepData getSleepData();
 	public CustomFoodData getRealFoodData();
 	

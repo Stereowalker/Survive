@@ -417,9 +417,10 @@ public class SurviveEvents {
 	public static void restoreStats(PlayerEvent.Clone event) {
 		SurviveEntityStats.getOrCreateModNBT(event.getEntity());
 		if (!event.isWasDeath()) {
+			IRealisticEntity entity = ((IRealisticEntity)event.getEntity());
 			IRealisticEntity original = ((IRealisticEntity)event.getOriginal());
 			SurviveEntityStats.setNutritionStats(event.getEntity(), SurviveEntityStats.getNutritionStats(event.getOriginal()));
-			SurviveEntityStats.setWellbeingStats(event.getEntity(), SurviveEntityStats.getWellbeingStats(event.getOriginal()));
+			entity.setWellbeingData(original.getWellbeingData());
 			SurviveEntityStats.setHygieneStats(event.getEntity(), SurviveEntityStats.getHygieneStats(event.getOriginal()));
 			SurviveEntityStats.setWaterStats(event.getEntity(), original.getWaterData());
 			SurviveEntityStats.setStaminaStats(event.getEntity(), SurviveEntityStats.getEnergyStats(event.getOriginal()));

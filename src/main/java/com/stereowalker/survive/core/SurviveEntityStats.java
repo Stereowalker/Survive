@@ -7,7 +7,6 @@ import com.stereowalker.survive.needs.SleepData;
 import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.WaterData;
-import com.stereowalker.survive.needs.WellbeingData;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
 import net.minecraft.nbt.CompoundTag;
@@ -22,7 +21,6 @@ public class SurviveEntityStats {
 	public static String energyStatsID = "EnergyStats";
 	public static String hygieneStatsID = "HygieneStats";
 	public static String nutritionStatsID = "NutritionStats";
-	public static String wellbeingStatsID = "WellbeingStats";
 	public static String sleepStatsID = "SleepStats";
 	//Getters
 
@@ -81,17 +79,6 @@ public class SurviveEntityStats {
 		return stats;
 	}
 	
-	public static WellbeingData getWellbeingStats(LivingEntity entity) {
-		WellbeingData stats = new WellbeingData();
-		if(entity != null) {
-			if (getModNBT(entity) != null && getModNBT(entity).contains(wellbeingStatsID, 10)) {
-				stats.read(getModNBT(entity).getCompound(wellbeingStatsID));
-				return stats;
-			}
-		}
-		return stats;
-	}
-	
 	public static SleepData getSleepStats(LivingEntity entity) {
 		SleepData stats = new SleepData();
 		if(entity != null) {
@@ -140,12 +127,6 @@ public class SurviveEntityStats {
 		CompoundTag compound2 = new CompoundTag();
 		nutritionStats.write(compound2);
 		getModNBT(entity).put(nutritionStatsID, compound2);
-	}
-	
-	public static void setWellbeingStats(LivingEntity entity, WellbeingData wellbeingStats) {
-		CompoundTag compound2 = new CompoundTag();
-		wellbeingStats.write(compound2);
-		getModNBT(entity).put(wellbeingStatsID, compound2);
 	}
 	
 	public static void setSleepStats(LivingEntity entity, SleepData sleepStats) {
@@ -205,9 +186,6 @@ public class SurviveEntityStats {
 				}
 				if (!compound.contains(nutritionStatsID)) {
 					setNutritionStats(player, new NutritionData());
-				}
-				if (!compound.contains(wellbeingStatsID)) {
-					setWellbeingStats(player, new WellbeingData());
 				}
 				if (!compound.contains(sleepStatsID)) {
 					setSleepStats(player, new SleepData());

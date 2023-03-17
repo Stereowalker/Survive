@@ -50,6 +50,7 @@ public class WellbeingData extends SurviveData {
 	public void tick(Player player) {
 		//This is logic for diseases
 		//If we have a timer to make us unwell, then tick that timer down
+		System.out.println(timeUntilUnwell+" "+reason);
 		if (this.timeUntilUnwell > 1 && this.isWell) {	
 			this.timeUntilWell = 0;
 			this.timeUntilUnwell--;
@@ -142,8 +143,8 @@ public class WellbeingData extends SurviveData {
 			this.timeUntilUnwell = compound.getInt("timeUntilUnwell");
 			this.timeUntilHypothermia = compound.getInt("timeUntilHypothermia");
 			this.timeUntilHyperthermia = compound.getInt("timeUntilHyperthermia");
-			this.intensity = compound.getInt("intensity");
-			this.reason = compound.getString("reason");
+			this.intensity = compound.getInt("unwellIntensity");
+			this.reason = compound.getString("unwellReason");
 		}
 	}
 
@@ -154,13 +155,12 @@ public class WellbeingData extends SurviveData {
 		compound.putInt("timeUntilUnwell", this.timeUntilUnwell);
 		compound.putInt("timeUntilHypothermia", this.timeUntilHypothermia);
 		compound.putInt("timeUntilHyperthermia", this.timeUntilHyperthermia);
-		compound.putInt("intensity", this.intensity);
-		compound.putString("reason", this.reason);
+		compound.putInt("unwellIntensity", this.intensity);
+		compound.putString("unwellReason", this.reason);
 	}
 
 	@Override
 	public void save(LivingEntity player) {
-		SurviveEntityStats.setWellbeingStats(player, this);
 	}
 
 	@Override

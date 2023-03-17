@@ -24,6 +24,7 @@ import com.stereowalker.survive.needs.WellbeingData;
 import com.stereowalker.survive.world.DataMaps;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
@@ -40,6 +41,7 @@ import net.minecraft.world.level.Level;
 public abstract class PlayerMixin extends LivingEntity implements IRealisticEntity {
 	@Shadow protected FoodData foodData;
 	@Shadow private int sleepCounter;
+	private WellbeingData wellbeingData = new WellbeingData();
 
 	protected PlayerMixin(EntityType<? extends LivingEntity> type, Level worldIn) {
 		super(type, worldIn);
@@ -138,6 +140,21 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			getNutritionData().save((Player)(Object)this);
 		}
 	}
+	
+	@Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
+	public void readAdditionalSaveData_inject(CompoundTag pCompound, CallbackInfo ci) {
+		if (pCompound.contains("surviveData", 10)) {
+			this.wellbeingData.read(pCompound);
+		}
+	}
+	
+	@Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
+	public void addAdditionalSaveData_inject(CompoundTag pCompound, CallbackInfo ci) {
+		if (!pCompound.contains("surviveData", 10)) {
+			pCompound.put("surviveData", new CompoundTag());
+		}
+		this.wellbeingData.write(pCompound.getCompound("surviveData"));
+	}
 
 	public StaminaData getStaminaData() {
 		return SurviveEntityStats.getEnergyStats((Player)(Object)this);
@@ -159,8 +176,14 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		return SurviveEntityStats.getWaterStats((Player)(Object)this);
 	}
 
+	@Override
 	public WellbeingData getWellbeingData(){
-		return SurviveEntityStats.getWellbeingStats((Player)(Object)this);
+		return this.wellbeingData;
+	}
+	
+	@Override
+	public void setWellbeingData(WellbeingData data) {
+		this.wellbeingData = data;
 	}
 
 	public SleepData getSleepData(){
