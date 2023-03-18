@@ -83,6 +83,7 @@ public class WaterData extends SurviveData {
 	 */
 	//TODO: Figure out something else that hydration can do apart from healing
 	public void tick(Player player) {
+		this.waterHydrationLevel = Mth.clamp(this.waterHydrationLevel, 1.0f, 4.0f);
 		if (Survive.THIRST_CONFIG.idle_thirst_tick_rate > -1) {
 			if (player.tickCount%Survive.THIRST_CONFIG.idle_thirst_tick_rate == Survive.THIRST_CONFIG.idle_thirst_tick_rate-1) {
 				addExhaustion(player, Survive.THIRST_CONFIG.idle_thirst_exhaustion);
@@ -106,10 +107,10 @@ public class WaterData extends SurviveData {
 		
 		if (this.waterExhaustionLevel > 4.0F) {
 			this.waterExhaustionLevel -= 4.0F;
-			if (this.waterHydrationLevel > 2.0F)
-				this.waterHydrationLevel = Math.max(this.waterHydrationLevel - 0.1F, 2.0F);
+			if (this.waterHydrationLevel > 2.8F)
+				this.waterHydrationLevel = Math.max(this.waterHydrationLevel - 0.1F, 2.8F);
 			if (difficulty != Difficulty.PEACEFUL)
-				this.waterLevel = Math.max(this.waterLevel - Math.round(this.waterHydrationLevel), 0);
+				this.waterLevel = Math.max(this.waterLevel - (5 - Mth.ceil(this.waterHydrationLevel)), 0);
 		}
 
 		boolean flag = player.level.getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION);
@@ -145,7 +146,7 @@ public class WaterData extends SurviveData {
 		if (Survive.WELLBEING_CONFIG.enabled) {
 			//Essentially causes the player to get ill when drinking bad water
 			if (uncleanConsumption >= 3) {
-				((IRealisticEntity)player).getWellbeingData().setTimer(2400, 6000, "Drinking Unpurified water");
+				((IRealisticEntity)player).getWellbeingData().setTimer(2400, 6000, "drinking unpurified water");
 				uncleanConsumption = 0;
 			}
 		}
