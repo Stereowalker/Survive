@@ -15,7 +15,6 @@ import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.network.protocol.game.ServerboundPlayerStatusBookPacket;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringUtil;
@@ -26,6 +25,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.WrittenBookItem;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @Mixin(WrittenBookItem.class)
 public abstract class WrittenBookItemMixin extends Item{
@@ -44,12 +45,17 @@ public abstract class WrittenBookItemMixin extends Item{
 					compoundtag.putString(TAG_STATUS_OWNER, player.getStringUUID());
 				}
 				else if (compoundtag.getString(TAG_STATUS_OWNER).equals(player.getStringUUID()) && pLevel.isClientSide) {
-					new ServerboundPlayerStatusBookPacket(pStack.getTag(), !Survive.TEMPERATURE_CONFIG.displayTempInFahrenheit, 
-							I18n.get("book.patient.sleep", "%1$s"),
-							I18n.get("book.patient.temperature", "%1$s")).send();
+					sendPacket(compoundtag);
 				}
 			}
 		}
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	private void sendPacket(CompoundTag tag) {
+		new ServerboundPlayerStatusBookPacket(tag, !Survive.TEMPERATURE_CONFIG.displayTempInFahrenheit, 
+				net.minecraft.client.resources.language.I18n.get("book.patient.sleep", "%1$s"),
+				net.minecraft.client.resources.language.I18n.get("book.patient.temperature", "%1$s")).send();
 	}
 
 	@Inject(method = "appendHoverText", at = @At("TAIL"))

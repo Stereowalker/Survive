@@ -274,7 +274,9 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		RenderType frendertype = RenderType.translucent();
 		ItemBlockRenderTypes.setRenderLayer(SFluids.PURIFIED_WATER, frendertype);
 		ItemBlockRenderTypes.setRenderLayer(SFluids.FLOWING_PURIFIED_WATER, frendertype);
-		SItemProperties.registerAll();
+		event.enqueueWork(()->{
+			SItemProperties.registerAll();
+		});
 	}
 	
 	@Override
