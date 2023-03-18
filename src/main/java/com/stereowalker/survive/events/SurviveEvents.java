@@ -66,6 +66,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.event.level.LevelEvent;
@@ -104,11 +105,20 @@ public class SurviveEvents {
 			stats.save(player);
 		}
 	}
+	
+	@SubscribeEvent
+	public static void desyncClient(PlayerLoggedOutEvent event) {
+		if (!event.getEntity().level.isClientSide && DataMaps.Server.syncedClients.containsKey(event.getEntity().getUUID()) ) {
+			DataMaps.Server.syncedClients.put(event.getEntity().getUUID(), false); 
+		}
+	}
 
 	public static void sendToClient(LivingEntity living) {
 		if (living != null && !living.level.isClientSide && living instanceof ServerPlayer player) {
 			Survive.getInstance().channel.sendTo(new ClientboundSurvivalStatsPacket(player), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
-			if (!DataMaps.Server.syncedToClient) {
+			if (!DataMaps.Server.syncedClients.containsKey(player.getUUID()))
+				DataMaps.Server.syncedClients.put(player.getUUID(), false); 
+			if (!DataMaps.Server.syncedClients.get(player.getUUID())) {
 				Survive.getInstance().getLogger().info("Syncing All Data To Client ("+player.getDisplayName().getString()+")");
 				Survive.getInstance().getLogger().info("Syncing Armor Data");
 				MutableInt a = new MutableInt(0);
@@ -124,7 +134,7 @@ public class SurviveEvents {
 					i.increment();;
 				});
 				Survive.getInstance().getLogger().info("Done with Fluids");
-				DataMaps.Server.syncedToClient = true;
+				DataMaps.Server.syncedClients.put(player.getUUID(), true); 
 			}
 		}
 	}
@@ -374,6 +384,10 @@ public class SurviveEvents {
 		Fluid fluid = event.getLevel().getFluidState(blockpos).getType();
 		BlockState stateUnder = event.getLevel().getBlockState(event.getPos().below());
 		if (event.getLevel().isClientSide && event.getItemStack().isEmpty()) {
+			System.out.println(DataMaps.Client.fluid.keySet().size()+" BAsic Ticks "+BuiltInRegistries.FLUID.getKey(fluid));
+			for (ResourceLocation k : DataMaps.Client.fluid.keySet()) {
+				System.out.println(k);
+			}
 			//Source Block Of Water
 			if (DataMaps.Client.fluid.containsKey(BuiltInRegistries.FLUID.getKey(fluid))) {
 				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(BuiltInRegistries.FLUID.getKey(fluid));

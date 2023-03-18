@@ -50,7 +50,6 @@ public class WellbeingData extends SurviveData {
 	public void tick(Player player) {
 		//This is logic for diseases
 		//If we have a timer to make us unwell, then tick that timer down
-		System.out.println(timeUntilUnwell+" "+reason);
 		if (this.timeUntilUnwell > 1 && this.isWell) {	
 			this.timeUntilWell = 0;
 			this.timeUntilUnwell--;
