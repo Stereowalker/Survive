@@ -1,5 +1,7 @@
 package com.stereowalker.survive.network.protocol.game;
 
+import java.util.function.Function;
+
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
@@ -55,7 +57,7 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 					"Hydration = "+real.getWaterData().getHydrationLevel()+"\n"+
 					"Food Level = "+sender.getFoodData().getFoodLevel()+"\n"+
 					"Saturation Level = "+sender.getFoodData().getSaturationLevel()+"\n"+
-					"Energy Level = "+real.getStaminaData().getEnergyLevel()+"\n";
+					"Energy Level = "+real.getStaminaData().getEnergyLevel();
 
 			String status1 = "§2§nWellness:§r\n";
 			if (real.getWellbeingData().isWell())
@@ -71,12 +73,13 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 			status4+= "Carbohydrates = "+real.getNutritionData().getCarbLevel()+"\n"+
 					"Proteins = "+real.getNutritionData().getProteinLevel()+"\n";
 
-			listtag.set(0, (Tag)StringTag.valueOf(status0));
-			listtag.set(1, (Tag)StringTag.valueOf(status1));
-			listtag.set(2, (Tag)StringTag.valueOf(String.format(this.sleepPage, real.getSleepData().getDaysAwake())));
-			listtag.set(3, (Tag)StringTag.valueOf(status3));
-			listtag.set(4, (Tag)StringTag.valueOf(status4));
-			listtag.set(5, (Tag)StringTag.valueOf(String.format(this.tempPage, (!celcius ? (real.getTemperatureData().getFahrenheit()+" °F") : (real.getTemperatureData().getCelcius()+" °C")))));
+			Function<String, Tag> ft = (s) -> (Tag)StringTag.valueOf("{\"text\":\""+s.replaceAll("\n", "\\\\n")+"\"}");
+			listtag.set(0, ft.apply(status0));
+			listtag.set(1, ft.apply(status1));
+			listtag.set(2, ft.apply(String.format(this.sleepPage, real.getSleepData().getDaysAwake())));
+			listtag.set(3, ft.apply(status3));
+			listtag.set(4, ft.apply(status4));
+			listtag.set(5, ft.apply(String.format(this.tempPage, (!celcius ? (real.getTemperatureData().getFahrenheit()+" °F") : (real.getTemperatureData().getCelcius()+" °C")))));
 			compoundtag.put("pages", listtag);
 			sender.getItemInHand(InteractionHand.MAIN_HAND).setTag(compoundtag);
 		}
