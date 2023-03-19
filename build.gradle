@@ -79,12 +79,13 @@ dependencies {
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
 	implementation fg.deobf("com.stereowalker.unionlib:UnionLib:"+modMinecraftVersion+"-"+unionLibVersion+"-"+modLoader+"")
 	
-	compileOnly fg.deobf("mezz.jei:jei-1.19.2"+/*modMinecraftVersion+*/"-forge-api:"+jeiVersion)
+	compileOnly fg.deobf("mezz.jei:jei-${modMinecraftVersion}-common-api:"+jeiVersion)
+	compileOnly fg.deobf("mezz.jei:jei-${modMinecraftVersion}-forge-api:"+jeiVersion)
 	compileOnly fg.deobf("com.stereowalker.combat:C.O.M.B.A.T:1.18.2"+/*modMinecraftVersion+*/"-"+combatVersion+":api")
     compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.19.2"+/*modMinecraftVersion+*/"-"+patchouliVersion+":api")
 	
-	//runtimeOnly fg.deobf("mezz.jei:jei-1.19.2"+/*modMinecraftVersion+*/"-forge:"+jeiVersion+"")
+	runtimeOnly fg.deobf("mezz.jei:jei-${modMinecraftVersion}-forge:"+jeiVersion+"")
 	runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
     //runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.19.2"+/*modMinecraftVersion+*/"-"+patchouliVersion+"")
 	

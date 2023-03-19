@@ -74,6 +74,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -81,6 +82,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
@@ -277,6 +279,16 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 		event.enqueueWork(()->{
 			SItemProperties.registerAll();
 		});
+	}
+	
+	public static ItemStack convertToPlayerStatusBook(ItemStack stack) {
+		ItemStack result = new ItemStack(Items.WRITTEN_BOOK);
+		if (stack.getTag() != null) {
+			result.setTag(stack.getTag().copy());
+         }
+		result.addTagElement("status_owner", StringTag.valueOf(""));
+		result.getTag().putInt("generation", 0);
+		return result;
 	}
 	
 	@Override

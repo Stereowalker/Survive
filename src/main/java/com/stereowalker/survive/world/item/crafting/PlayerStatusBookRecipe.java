@@ -1,9 +1,9 @@
 package com.stereowalker.survive.world.item.crafting;
 
+import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.SItems;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -43,14 +43,7 @@ public class PlayerStatusBookRecipe extends CustomRecipe {
 		for (int i = 0; i < inv.getContainerSize(); i++) {
 			ItemStack stack = inv.getItem(i);
 			if (stack.getItem() == Items.WRITTEN_BOOK) {
-				ItemStack result = new ItemStack(Items.WRITTEN_BOOK);
-				if (stack.getTag() != null) {
-		            result.setTag(stack.getTag().copy());
-		         }
-				result.addTagElement("status_owner", StringTag.valueOf(""));
-				result.addTagElement("title", StringTag.valueOf(stack.getTag().getString("title")));
-				result.getTag().putInt("generation", 0);
-				return result;
+				return Survive.convertToPlayerStatusBook(stack);
 			}
 		}
 		return ItemStack.EMPTY;
