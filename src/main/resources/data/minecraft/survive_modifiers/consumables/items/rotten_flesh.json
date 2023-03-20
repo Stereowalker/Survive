@@ -1,7 +1,7 @@
 {
 	"energy": 2,
 	"thirst": -4,
-	"hydration": 2.0,
+	"hydration": 2.2,
 	"thirst_chance": 0.5,
 	"gives_chilled_effect": false,
 	"gives_heated_effect": false,
