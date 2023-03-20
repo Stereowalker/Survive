@@ -4,7 +4,6 @@ import org.apache.commons.lang3.mutable.MutableFloat;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -77,14 +76,14 @@ public class NutritionData extends SurviveData {
 	 * Reads the water data for the player.
 	 */
 	public void read(CompoundTag compound) {
-		if (compound.contains("carbLevel", 99)) {
-			this.carbLevel = new MutableInt(compound.getInt("carbLevel"));
-			this.carbTimer = new MutableInt(compound.getInt("carbTimer"));
-			this.carbStack = new MutableFloat(compound.getFloat("carbStack"));
+		if (compound.contains("nutritionCarbLevel", 99)) {
+			this.carbLevel = new MutableInt(compound.getInt("nutritionCarbLevel"));
+			this.carbTimer = new MutableInt(compound.getInt("nutritionCarbTimer"));
+			this.carbStack = new MutableFloat(compound.getFloat("nutritionCarbStack"));
 			
-			this.proteinLevel = new MutableInt(compound.getInt("proteinLevel"));
-			this.proteinTimer = new MutableInt(compound.getInt("proteinTimer"));
-			this.proteinStack = new MutableFloat(compound.getFloat("proteinStack"));
+			this.proteinLevel = new MutableInt(compound.getInt("nutritionProteinLevel"));
+			this.proteinTimer = new MutableInt(compound.getInt("nutritionProteinTimer"));
+			this.proteinStack = new MutableFloat(compound.getFloat("nutritionProteinStack"));
 		}
 	}
 
@@ -92,13 +91,13 @@ public class NutritionData extends SurviveData {
 	 * Writes the water data for the player.
 	 */
 	public void write(CompoundTag compound) {
-		compound.putInt("carbLevel", this.carbLevel.getValue());
-		compound.putInt("carbTimer", this.carbTimer.getValue());
-		compound.putFloat("carbStack", this.carbStack.getValue());
+		compound.putInt("nutritionCarbLevel", this.carbLevel.getValue());
+		compound.putInt("nutritionCarbTimer", this.carbTimer.getValue());
+		compound.putFloat("nutritionCarbStack", this.carbStack.getValue());
 		
-		compound.putInt("proteinLevel", this.proteinLevel.getValue());
-		compound.putInt("proteinTimer", this.proteinTimer.getValue());
-		compound.putFloat("proteinStack", this.proteinStack.getValue());
+		compound.putInt("nutritionProteinLevel", this.proteinLevel.getValue());
+		compound.putInt("nutritionProteinTimer", this.proteinTimer.getValue());
+		compound.putFloat("nutritionProteinStack", this.proteinStack.getValue());
 	}
 
 	/**
@@ -117,7 +116,6 @@ public class NutritionData extends SurviveData {
 
 	@Override
 	public void save(LivingEntity player) {
-		SurviveEntityStats.setNutritionStats(player, this);
 	}
 
 	@Override

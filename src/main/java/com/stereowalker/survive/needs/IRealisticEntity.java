@@ -8,6 +8,7 @@ public interface IRealisticEntity {
 	public StaminaData getStaminaData();
 	public HygieneData getHygieneData();
 	public NutritionData getNutritionData();
+	public void setNutritionData(NutritionData data);
 	public TemperatureData getTemperatureData();
 	public WaterData getWaterData();
 	public WellbeingData getWellbeingData();

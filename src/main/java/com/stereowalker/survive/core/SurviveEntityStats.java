@@ -20,7 +20,7 @@ public class SurviveEntityStats {
 	public static String temperatureStatsID = "TemperatureStats";
 	public static String energyStatsID = "EnergyStats";
 	public static String hygieneStatsID = "HygieneStats";
-	public static String nutritionStatsID = "NutritionStats";
+//	public static String nutritionStatsID = "NutritionStats";
 	public static String sleepStatsID = "SleepStats";
 	//Getters
 
@@ -68,16 +68,16 @@ public class SurviveEntityStats {
 		return stats;
 	}
 	
-	public static NutritionData getNutritionStats(LivingEntity entity) {
-		NutritionData stats = new NutritionData();
-		if(entity != null) {
-			if (getModNBT(entity) != null && getModNBT(entity).contains(nutritionStatsID, 10)) {
-				stats.read(getModNBT(entity).getCompound(nutritionStatsID));
-				return stats;
-			}
-		}
-		return stats;
-	}
+//	public static NutritionData getNutritionStats(LivingEntity entity) {
+//		NutritionData stats = new NutritionData();
+//		if(entity != null) {
+//			if (getModNBT(entity) != null && getModNBT(entity).contains(nutritionStatsID, 10)) {
+//				stats.read(getModNBT(entity).getCompound(nutritionStatsID));
+//				return stats;
+//			}
+//		}
+//		return stats;
+//	}
 	
 	public static SleepData getSleepStats(LivingEntity entity) {
 		SleepData stats = new SleepData();
@@ -123,11 +123,11 @@ public class SurviveEntityStats {
 		getModNBT(entity).put(hygieneStatsID, compound2);
 	}
 	
-	public static void setNutritionStats(LivingEntity entity, NutritionData nutritionStats) {
-		CompoundTag compound2 = new CompoundTag();
-		nutritionStats.write(compound2);
-		getModNBT(entity).put(nutritionStatsID, compound2);
-	}
+//	public static void setNutritionStats(LivingEntity entity, NutritionData nutritionStats) {
+//		CompoundTag compound2 = new CompoundTag();
+//		nutritionStats.write(compound2);
+//		getModNBT(entity).put(nutritionStatsID, compound2);
+//	}
 	
 	public static void setSleepStats(LivingEntity entity, SleepData sleepStats) {
 		CompoundTag compound2 = new CompoundTag();
@@ -184,9 +184,9 @@ public class SurviveEntityStats {
 				if (!compound.contains(hygieneStatsID)) {
 					setHygieneStats(player, new HygieneData());
 				}
-				if (!compound.contains(nutritionStatsID)) {
-					setNutritionStats(player, new NutritionData());
-				}
+//				if (!compound.contains(nutritionStatsID)) {
+//					setNutritionStats(player, new NutritionData());
+//				}
 				if (!compound.contains(sleepStatsID)) {
 					setSleepStats(player, new SleepData());
 				}

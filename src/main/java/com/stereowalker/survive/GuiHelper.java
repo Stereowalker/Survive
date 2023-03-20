@@ -11,7 +11,6 @@ import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.IRoastedEntity;
-import com.stereowalker.survive.needs.NutritionData;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.util.ScreenHelper;
@@ -143,9 +142,8 @@ public class GuiHelper {
 			}
 		}
 		if (Survive.CONFIG.nutrition_enabled && (playerentity.getMainHandItem().isEdible() || playerentity.getOffhandItem().isEdible())) {
-			NutritionData stats = SurviveEntityStats.getNutritionStats(playerentity);
-			Minecraft.getInstance().font.drawShadow(matrixStack, "Carbs = "+stats.getCarbLevel(), 0, 0, ChatFormatting.GRAY.getColor());
-			Minecraft.getInstance().font.drawShadow(matrixStack, "Protein = "+stats.getProteinLevel(), 0, 10, ChatFormatting.GRAY.getColor());
+			Minecraft.getInstance().font.drawShadow(matrixStack, "Carbs = "+((IRealisticEntity)playerentity).getNutritionData().getCarbLevel(), 0, 0, ChatFormatting.GRAY.getColor());
+			Minecraft.getInstance().font.drawShadow(matrixStack, "Protein = "+((IRealisticEntity)playerentity).getNutritionData().getProteinLevel(), 0, 10, ChatFormatting.GRAY.getColor());
 		}
 		Minecraft.getInstance().getProfiler().pop();
 		if (!forgeOverlay) {

@@ -65,8 +65,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.event.level.LevelEvent;
@@ -429,7 +427,7 @@ public class SurviveEvents {
 		if (keepEverything) {
 			IRealisticEntity entity = ((IRealisticEntity)thisPlayer);
 			IRealisticEntity original = ((IRealisticEntity)thatPlayer);
-			SurviveEntityStats.setNutritionStats(thisPlayer, SurviveEntityStats.getNutritionStats(thatPlayer));
+			entity.setNutritionData(original.getNutritionData());
 			entity.setWellbeingData(original.getWellbeingData());
 			SurviveEntityStats.setHygieneStats(thisPlayer, SurviveEntityStats.getHygieneStats(thatPlayer));
 			SurviveEntityStats.setWaterStats(thisPlayer, original.getWaterData());

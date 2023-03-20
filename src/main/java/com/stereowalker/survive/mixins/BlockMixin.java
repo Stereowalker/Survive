@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
-import com.stereowalker.survive.needs.NutritionData;
+import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.StaminaData;
 
 import net.minecraft.core.BlockPos;
@@ -41,8 +41,7 @@ public abstract class BlockMixin extends BlockBehaviour implements ItemLike, net
 //			}
 		}
 		else if (Survive.CONFIG.nutrition_enabled) {
-			NutritionData nutritionStats = SurviveEntityStats.getNutritionStats(player);
-			nutritionStats.removeCarbs(Mth.ceil(value*2.5f));
+			((IRealisticEntity)player).getNutritionData().removeCarbs(Mth.ceil(value*2.5f));
 		}
 		else {
 			player.causeFoodExhaustion(value);

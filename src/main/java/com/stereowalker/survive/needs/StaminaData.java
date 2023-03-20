@@ -110,13 +110,11 @@ public class StaminaData extends SurviveData {
 			}
 		}
 
-		if (this.isTired() && Survive.CONFIG.nutrition_enabled && SurviveEntityStats.getNutritionStats(player).getCarbLevel() >= 2) {
+		if (this.isTired() && Survive.CONFIG.nutrition_enabled && ((IRealisticEntity)player).getNutritionData().getCarbLevel() >= 2) {
 			++this.energyTimer;
 			if (Survive.STAMINA_CONFIG.stamina_recovery_ticks == 0 || this.energyTimer >= Survive.STAMINA_CONFIG.stamina_recovery_ticks) {
-				NutritionData nutritionStats = SurviveEntityStats.getNutritionStats(player);
 				this.relax(energyToRegen, this.maxStamina);
-				nutritionStats.removeCarbs(2);
-				nutritionStats.save(player);
+				((IRealisticEntity)player).getNutritionData().removeCarbs(2);
 				this.energyTimer = 0;
 			}
 		}

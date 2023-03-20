@@ -42,6 +42,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	@Shadow protected FoodData foodData;
 	@Shadow private int sleepCounter;
 	private WellbeingData wellbeingData = new WellbeingData();
+	private NutritionData nutritionData = new NutritionData();
 
 	protected PlayerMixin(EntityType<? extends LivingEntity> type, Level worldIn) {
 		super(type, worldIn);
@@ -77,10 +78,10 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		if (!this.level.isClientSide) {
 			getStaminaData().baseTick((Player)(Object)this);
 			getHygieneData().baseTick((Player)(Object)this);
-			getNutritionData().baseTick((Player)(Object)this);
+			this.nutritionData.baseTick((Player)(Object)this);
 			getTemperatureData().baseTick((Player)(Object)this);
 			getWaterData().baseTick((Player)(Object)this);
-			getWellbeingData().baseTick((Player)(Object)this);
+			this.wellbeingData.baseTick((Player)(Object)this);
 			getSleepData().baseTick((Player)(Object)this);
 		}
 	}
@@ -100,8 +101,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			getStaminaData().addExhaustion(player, value*2.5f, "Jumped, Got hurt or moved");
 		}
 		else if (Survive.CONFIG.nutrition_enabled) {
-			getNutritionData().removeCarbs(Mth.ceil(value*2.5f));
-			getNutritionData().save(player);
+			this.nutritionData.removeCarbs(Mth.ceil(value*2.5f));
 		}
 		else {
 			player.causeFoodExhaustion(value);
@@ -114,8 +114,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			getStaminaData().addExhaustion(player, 1.25f, "Player Attacked");
 		}
 		else if (Survive.CONFIG.nutrition_enabled) {
-			getNutritionData().removeCarbs(Mth.ceil(value*2.5f));
-			getNutritionData().save(player);
+			this.nutritionData.removeCarbs(Mth.ceil(value*2.5f));
 		}
 		else {
 			player.causeFoodExhaustion(value);
@@ -135,9 +134,8 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			}
 			FoodProperties food = p_213357_2_.getItem().getFoodProperties();
 			float total = protein+carbs;
-			getNutritionData().addCarbs(food.getNutrition()*Mth.ceil((carbs/total)*10));
-			getNutritionData().addProtein(food.getNutrition()*Mth.ceil((protein/total)*10));
-			getNutritionData().save((Player)(Object)this);
+			this.nutritionData.addCarbs(food.getNutrition()*Mth.ceil((carbs/total)*10));
+			this.nutritionData.addProtein(food.getNutrition()*Mth.ceil((protein/total)*10));
 		}
 	}
 	
@@ -145,6 +143,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	public void readAdditionalSaveData_inject(CompoundTag pCompound, CallbackInfo ci) {
 		if (pCompound.contains("surviveData", 10)) {
 			this.wellbeingData.read(pCompound);
+			this.nutritionData.read(pCompound);
 		}
 	}
 	
@@ -154,6 +153,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			pCompound.put("surviveData", new CompoundTag());
 		}
 		this.wellbeingData.write(pCompound.getCompound("surviveData"));
+		this.nutritionData.write(pCompound.getCompound("surviveData"));
 	}
 
 	public StaminaData getStaminaData() {
@@ -165,7 +165,12 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	}
 
 	public NutritionData getNutritionData(){
-		return SurviveEntityStats.getNutritionStats((Player)(Object)this);
+		return this.nutritionData;
+	}
+	
+	@Override
+	public void setNutritionData(NutritionData data) {
+		this.nutritionData = data;
 	}
 
 	public TemperatureData getTemperatureData(){
