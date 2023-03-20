@@ -60,17 +60,17 @@ public class WellbeingData extends SurviveData {
 			this.isWell = false;
 			//Set custom timers
 			this.timeUntilWell = 6000;
-			int nte = rng.nextInt(46);
-			if (nte == 45) this.intensity = 9;
-			else if (nte >= 44) this.intensity = 8;
-			else if (nte >= 42) this.intensity = 7;
-			else if (nte >= 39) this.intensity = 6;
-			else if (nte >= 35) this.intensity = 5;
-			else if (nte >= 30) this.intensity = 4;
-			else if (nte >= 24) this.intensity = 3;
-			else if (nte >= 17) this.intensity = 2;
-			else if (nte >= 9) this.intensity = 1;
-			else this.intensity = 0;
+			int max = 0;
+			for (int i = 1; i <= 9; i++) max+=i;
+			int nte = rng.nextInt(max+1);
+			for (int i = 9; i >= 0; i--) {
+				if (nte >= max) {
+					this.intensity = i;
+					break;
+				}
+				else max -= 10 - i;
+			}
+			
 			int rgn = rng.nextInt(2);
 			if (rgn == 0)
 				player.addEffect(new MobEffectInstance(SMobEffects.SLOWNESS_ILLNESS, 6000, this.intensity));
