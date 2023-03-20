@@ -106,10 +106,10 @@ public class SurviveEvents {
 		}
 	}
 	
-	@SubscribeEvent
-	public static void desyncClient(PlayerLoggedOutEvent event) {
-		if (!event.getEntity().level.isClientSide && DataMaps.Server.syncedClients.containsKey(event.getEntity().getUUID()) ) {
-			DataMaps.Server.syncedClients.put(event.getEntity().getUUID(), false); 
+	public static void desyncClient(Player player) {
+		if (!player.level.isClientSide && DataMaps.Server.syncedClients.containsKey(player.getUUID()) ) {
+			Survive.getInstance().getLogger().info("Removing Client ("+player.getDisplayName().getString()+") From Survive Data Sync List");
+			DataMaps.Server.syncedClients.put(player.getUUID(), false); 
 		}
 	}
 
@@ -139,12 +139,6 @@ public class SurviveEvents {
 		}
 	}
 
-	public static void regulateWetness(LivingEntity living) {
-		if (living != null && living instanceof ServerPlayer player && !living.level.isClientSide) {
-			SurviveEntityStats.addWetTime(player, player.isUnderWater() ? 2 : player.isInWaterOrRain() ? 1 : -2);
-		}
-	}
-
 	/**
 	 * Check if precipitation is currently happening at a position
 	 */
@@ -166,6 +160,9 @@ public class SurviveEvents {
 	}
 
 	public static void updateEnvTemperature(LivingEntity living) {
+		if (living != null && living instanceof ServerPlayer player && !living.level.isClientSide) {
+			SurviveEntityStats.addWetTime(player, player.isUnderWater() ? 2 : player.isInWaterOrRain() ? 1 : -2);
+		}
 		if (living != null && living instanceof ServerPlayer player) {
 			if (player.isAlive()) {
 				for (ResourceLocation queryId : TemperatureQuery.queries.keySet()) {
@@ -427,20 +424,19 @@ public class SurviveEvents {
 		return worldIn.clip(new ClipContext(vec3d, vec3d1, ClipContext.Block.OUTLINE, fluidMode, player));
 	}
 
-	@SubscribeEvent
-	public static void restoreStats(PlayerEvent.Clone event) {
-		SurviveEntityStats.getOrCreateModNBT(event.getEntity());
-		if (!event.isWasDeath()) {
-			IRealisticEntity entity = ((IRealisticEntity)event.getEntity());
-			IRealisticEntity original = ((IRealisticEntity)event.getOriginal());
-			SurviveEntityStats.setNutritionStats(event.getEntity(), SurviveEntityStats.getNutritionStats(event.getOriginal()));
+	public static void restoreStats(Player thisPlayer, Player thatPlayer, boolean keepEverything) {
+		SurviveEntityStats.getOrCreateModNBT(thisPlayer);
+		if (keepEverything) {
+			IRealisticEntity entity = ((IRealisticEntity)thisPlayer);
+			IRealisticEntity original = ((IRealisticEntity)thatPlayer);
+			SurviveEntityStats.setNutritionStats(thisPlayer, SurviveEntityStats.getNutritionStats(thatPlayer));
 			entity.setWellbeingData(original.getWellbeingData());
-			SurviveEntityStats.setHygieneStats(event.getEntity(), SurviveEntityStats.getHygieneStats(event.getOriginal()));
-			SurviveEntityStats.setWaterStats(event.getEntity(), original.getWaterData());
-			SurviveEntityStats.setStaminaStats(event.getEntity(), SurviveEntityStats.getEnergyStats(event.getOriginal()));
-			SurviveEntityStats.setTemperatureStats(event.getEntity(), SurviveEntityStats.getTemperatureStats(event.getOriginal()));
-			SurviveEntityStats.setSleepStats(event.getEntity(), SurviveEntityStats.getSleepStats(event.getOriginal()));
-			SurviveEntityStats.setWetTime(event.getEntity(), SurviveEntityStats.getWetTime(event.getOriginal()));
+			SurviveEntityStats.setHygieneStats(thisPlayer, SurviveEntityStats.getHygieneStats(thatPlayer));
+			SurviveEntityStats.setWaterStats(thisPlayer, original.getWaterData());
+			SurviveEntityStats.setStaminaStats(thisPlayer, SurviveEntityStats.getEnergyStats(thatPlayer));
+			SurviveEntityStats.setTemperatureStats(thisPlayer, SurviveEntityStats.getTemperatureStats(thatPlayer));
+			SurviveEntityStats.setSleepStats(thisPlayer, SurviveEntityStats.getSleepStats(thatPlayer));
+			SurviveEntityStats.setWetTime(thisPlayer, SurviveEntityStats.getWetTime(thatPlayer));
 		}
 	}
 

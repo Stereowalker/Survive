@@ -31,7 +31,7 @@ public class JEICompat implements IModPlugin {
 
 	@Override
 	public ResourceLocation getPluginUid() {
-		return Survive.getInstance().location("recipe_handler");
+		return new ResourceLocation("survive:recipe_handler");
 	}
 	
 	@Override

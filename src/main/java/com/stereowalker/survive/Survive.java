@@ -200,8 +200,9 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 	@Override
 	public void registerInserts(InsertCollector collector) {
 		collector.getSystem().addInsert(Inserts.LIVING_TICK, SurviveEvents::sendToClient);
-		collector.getSystem().addInsert(Inserts.LIVING_TICK, SurviveEvents::regulateWetness);
 		collector.getSystem().addInsert(Inserts.LIVING_TICK, SurviveEvents::updateEnvTemperature);
+		collector.getSystem().addInsert(Inserts.PLAYER_RESTORE, SurviveEvents::restoreStats);
+		collector.getSystem().addInsert(Inserts.LOGGED_OUT, SurviveEvents::desyncClient);
 	}
 
 	@Override
