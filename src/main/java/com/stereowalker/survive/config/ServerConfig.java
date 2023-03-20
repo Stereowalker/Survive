@@ -41,4 +41,8 @@ public class ServerConfig {
 	@UnionConfig.Entry(group = MISC , name = "Animal Fat Drops", type = Type.SERVER)
 	@UnionConfig.Comment(comment = {"Should Animal Fat drop from animals upon death?"})
 	public static boolean animalFatDrops = true;
+	
+	@UnionConfig.Entry(group = MISC , name = "Status Book Crafting", type = Type.SERVER)
+	@UnionConfig.Comment(comment = {"Can the status book be crafted from a written book and a thermometer in this world?"})
+	public static boolean canCraftStatusBook = true;
 }

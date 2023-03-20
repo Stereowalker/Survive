@@ -1,6 +1,7 @@
 package com.stereowalker.survive.world.item.crafting;
 
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.world.item.SItems;
 
 import net.minecraft.core.NonNullList;
@@ -22,6 +23,7 @@ public class PlayerStatusBookRecipe extends CustomRecipe {
 
 	@Override
 	public boolean matches(CraftingContainer inv, Level worldIn) {
+		if (!ServerConfig.canCraftStatusBook) return false;
 		int thermometer = 0;
 		int book = 0;
 		for (int i = 0; i < inv.getContainerSize(); i++) {
@@ -40,6 +42,7 @@ public class PlayerStatusBookRecipe extends CustomRecipe {
 
 	@Override
 	public ItemStack assemble(CraftingContainer inv) {
+		if (!ServerConfig.canCraftStatusBook) return ItemStack.EMPTY;
 		for (int i = 0; i < inv.getContainerSize(); i++) {
 			ItemStack stack = inv.getItem(i);
 			if (stack.getItem() == Items.WRITTEN_BOOK) {
