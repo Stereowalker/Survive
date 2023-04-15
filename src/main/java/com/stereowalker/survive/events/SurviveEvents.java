@@ -72,7 +72,6 @@ import net.minecraftforge.event.level.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.network.NetworkDirection;
 
 @EventBusSubscriber
 public class SurviveEvents {
@@ -113,7 +112,7 @@ public class SurviveEvents {
 
 	public static void sendToClient(LivingEntity living) {
 		if (living != null && !living.level.isClientSide && living instanceof ServerPlayer player) {
-			Survive.getInstance().channel.sendTo(new ClientboundSurvivalStatsPacket(player), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+			new ClientboundSurvivalStatsPacket(player).send(player);
 			if (!DataMaps.Server.syncedClients.containsKey(player.getUUID()))
 				DataMaps.Server.syncedClients.put(player.getUUID(), false); 
 			if (!DataMaps.Server.syncedClients.get(player.getUUID())) {
@@ -121,14 +120,14 @@ public class SurviveEvents {
 				Survive.getInstance().getLogger().info("Syncing Armor Data");
 				MutableInt a = new MutableInt(0);
 				DataMaps.Server.armor.forEach((key, value) -> {
-					Survive.getInstance().channel.sendTo(new ClientboundDataTransferPacket(key, value, a.getValue() == 0), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+					new ClientboundDataTransferPacket(key, value, a.getValue() == 0).send(player);
 					a.increment();;
 				});
 				Survive.getInstance().getLogger().info("Done with Armors");
 				Survive.getInstance().getLogger().info("Syncing Fluid Data");
 				MutableInt i = new MutableInt(0);
 				DataMaps.Server.fluid.forEach((key, value) -> {
-					Survive.getInstance().channel.sendTo(new ClientboundDataTransferPacket(key, value, i.getValue() == 0), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+					new ClientboundDataTransferPacket(key, value, i.getValue() == 0).send(player);
 					i.increment();;
 				});
 				Survive.getInstance().getLogger().info("Done with Fluids");

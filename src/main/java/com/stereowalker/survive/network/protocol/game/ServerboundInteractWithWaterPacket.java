@@ -6,7 +6,6 @@ import com.stereowalker.survive.needs.WaterData;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,7 +18,6 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.WaterFluid;
-import net.minecraftforge.network.NetworkDirection;
 
 public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 	private BlockPos pos;
@@ -98,7 +96,7 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 						}
 						sender.level.playSound(sender, pos, new ItemStack(Items.POTION).getDrinkingSound(), SoundSource.PLAYERS, 0.5F, sender.level.random.nextFloat() * 0.1F + 0.9F);
 						sender.swing(InteractionHand.MAIN_HAND);
-						Survive.getInstance().channel.sendTo(new ClientboundDrinkSoundPacket(pos, sender.getUUID()), sender.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+						new ClientboundDrinkSoundPacket(pos).send(sender);
 					}
 					waterStats.save(sender);
 				}

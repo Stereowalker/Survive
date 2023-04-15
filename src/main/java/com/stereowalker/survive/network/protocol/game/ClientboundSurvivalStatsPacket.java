@@ -1,58 +1,40 @@
 package com.stereowalker.survive.network.protocol.game;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
+import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
+import com.stereowalker.unionlib.network.protocol.game.ClientboundUnionPacket;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent;
 
-public class ClientboundSurvivalStatsPacket {
+public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 	private CompoundTag stats;
-	private UUID uuid;
-	
-	public ClientboundSurvivalStatsPacket(final CompoundTag statsIn, final UUID uuid) {
+
+	public ClientboundSurvivalStatsPacket(final CompoundTag statsIn) {
+		super(Survive.getInstance().channel);
 		this.stats = statsIn;
-		this.uuid = uuid;
 	}
 	
 	public ClientboundSurvivalStatsPacket(final ServerPlayer player){
-		this(SurviveEntityStats.getModNBT(player), player.getUUID());
+		this(SurviveEntityStats.getModNBT(player));
 	}
-	
-	public static void encode(final ClientboundSurvivalStatsPacket msg, final FriendlyByteBuf packetBuffer) {
-		packetBuffer.writeNbt(msg.stats);
-		packetBuffer.writeLong(msg.uuid.getMostSignificantBits());
-        packetBuffer.writeLong(msg.uuid.getLeastSignificantBits());
+
+	public ClientboundSurvivalStatsPacket(FriendlyByteBuf byteBuf) {
+		super(byteBuf, Survive.getInstance().channel);
+		this.stats = byteBuf.readNbt();
 	}
-	
-	public static ClientboundSurvivalStatsPacket decode(final FriendlyByteBuf packetBuffer) {
-		return new ClientboundSurvivalStatsPacket(packetBuffer.readNbt(), new UUID(packetBuffer.readLong(), packetBuffer.readLong()));
+
+	@Override
+	public void encode(final FriendlyByteBuf byteBuf) {
+		byteBuf.writeNbt(this.stats);
 	}
-	
-	@SuppressWarnings("deprecation")
-	public static void handle(final ClientboundSurvivalStatsPacket msg, final Supplier<NetworkEvent.Context> contextSupplier) {
-		final NetworkEvent.Context context = contextSupplier.get();
-		context.enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-			final CompoundTag stats = msg.stats;
-			final UUID uuid = msg.uuid;
-			update(stats, uuid);
-		}));
-		context.setPacketHandled(true);
-	}
-	
-	@OnlyIn(Dist.CLIENT)
-	public static void update(final CompoundTag stats, final UUID uuid) {
-		if (uuid.equals(Minecraft.getInstance().player.getUUID())) {
-			SurviveEntityStats.setModNBT(stats, Minecraft.getInstance().player);
-		}
+
+	@Override
+	public boolean handleOnClient(LocalPlayer sender) {
+		SurviveEntityStats.setModNBT(this.stats, Minecraft.getInstance().player);
+		return true;
 	}
 }

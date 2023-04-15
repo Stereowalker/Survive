@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.stereowalker.survive.commands.SCommands;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.compat.SItemProperties;
@@ -59,15 +57,20 @@ import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.PurifiedWaterFluid;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.spellcraft.SSpells;
+import com.stereowalker.unionlib.api.collectors.DefaultAttributeModifier;
+import com.stereowalker.unionlib.api.collectors.InsertCollector;
+import com.stereowalker.unionlib.api.collectors.PacketCollector;
+import com.stereowalker.unionlib.api.collectors.ReloadListeners;
+import com.stereowalker.unionlib.api.creativetabs.CreativeTabBuilder;
+import com.stereowalker.unionlib.api.creativetabs.CreativeTabPopulator;
+import com.stereowalker.unionlib.api.registries.RegistryCollector;
 import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsScreen;
 import com.stereowalker.unionlib.config.ConfigBuilder;
 import com.stereowalker.unionlib.event.potionfluid.FluidToPotionEvent;
 import com.stereowalker.unionlib.event.potionfluid.PotionToFluidEvent;
-import com.stereowalker.unionlib.insert.InsertSystem.InsertCollector;
 import com.stereowalker.unionlib.insert.Inserts;
-import com.stereowalker.unionlib.mod.IPacketHolder;
 import com.stereowalker.unionlib.mod.MinecraftMod;
-import com.stereowalker.unionlib.network.PacketRegistry;
+import com.stereowalker.unionlib.mod.PacketHolder;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -78,8 +81,6 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -96,11 +97,10 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(value = "survive")
-public class Survive extends MinecraftMod implements IPacketHolder {
+public class Survive extends MinecraftMod implements PacketHolder {
 
 	public static final float DEFAULT_TEMP = 37.0F;
 	public static final int PURIFIED_WATER_COLOR = 0x41d3f8;
@@ -185,48 +185,45 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 	}
 
 	@Override
-	public IRegistries getRegistries() {
-		return (reg)-> {
-			reg.add(SBlocks.class);
-			reg.add(SFluids.class);
-			reg.add(SItems.class);
-			reg.add(HygieneItems.class);
-			reg.add(SRecipeSerializer.class);
-			reg.add(SAttributes.class);
-			reg.add(SMobEffects.class);
-		};
+	public void setupRegistries(RegistryCollector collector) {
+		collector.addRegistryHolder(SBlocks.class);
+		collector.addRegistryHolder(SFluids.class);
+		collector.addRegistryHolder(SItems.class);
+		collector.addRegistryHolder(HygieneItems.class);
+		collector.addRegistryHolder(SRecipeSerializer.class);
+		collector.addRegistryHolder(SAttributes.class);
+		collector.addRegistryHolder(SMobEffects.class);
 	}
 	
 	@Override
 	public void registerInserts(InsertCollector collector) {
-		collector.getSystem().addInsert(Inserts.LIVING_TICK, SurviveEvents::sendToClient);
-		collector.getSystem().addInsert(Inserts.LIVING_TICK, SurviveEvents::updateEnvTemperature);
-		collector.getSystem().addInsert(Inserts.PLAYER_RESTORE, SurviveEvents::restoreStats);
-		collector.getSystem().addInsert(Inserts.LOGGED_OUT, SurviveEvents::desyncClient);
+		collector.addInsert(Inserts.LIVING_TICK, SurviveEvents::sendToClient);
+		collector.addInsert(Inserts.LIVING_TICK, SurviveEvents::updateEnvTemperature);
+		collector.addInsert(Inserts.PLAYER_RESTORE, SurviveEvents::restoreStats);
+		collector.addInsert(Inserts.LOGGED_OUT, SurviveEvents::desyncClient);
+	}
+	
+	@Override
+	public void modifyDefaultEntityAttributes(DefaultAttributeModifier modifier) {
+		super.modifyDefaultEntityAttributes(modifier);
+		modifier.addToEntity(EntityType.PLAYER, SAttributes.COLD_RESISTANCE, SAttributes.HEAT_RESISTANCE, SAttributes.MAX_STAMINA);
 	}
 
 	@Override
-	public Map<EntityType<? extends LivingEntity>, List<Attribute>> appendAttributesWithoutValues() {
-		Map<EntityType<? extends LivingEntity>, List<Attribute>> map = Maps.newHashMap();
-		map.put(EntityType.PLAYER, Lists.newArrayList(SAttributes.COLD_RESISTANCE, SAttributes.HEAT_RESISTANCE, SAttributes.MAX_STAMINA));
-		return map;
+	public void registerServerboundPackets(PacketCollector collector) {
+		collector.registerPacket(ServerboundArmorStaminaPacket.class, (packetBuffer) -> {return new ServerboundArmorStaminaPacket(packetBuffer);});
+		collector.registerPacket(ServerboundThirstMovementPacket.class, (packetBuffer) -> {return new ServerboundThirstMovementPacket(packetBuffer);});
+		collector.registerPacket(ServerboundInteractWithWaterPacket.class, (packetBuffer) -> {return new ServerboundInteractWithWaterPacket(packetBuffer);});
+		collector.registerPacket(ServerboundStaminaExhaustionPacket.class, ServerboundStaminaExhaustionPacket::new);
+		collector.registerPacket(ServerboundRelaxPacket.class, ServerboundRelaxPacket::new);
+		collector.registerPacket(ServerboundPlayerStatusBookPacket.class, ServerboundPlayerStatusBookPacket::new);
 	}
 
 	@Override
-	public void registerServerboundPackets(SimpleChannel channel) {
-		PacketRegistry.registerMessage(channel, 0, ServerboundArmorStaminaPacket.class, (packetBuffer) -> {return new ServerboundArmorStaminaPacket(packetBuffer);});
-		PacketRegistry.registerMessage(channel, 1, ServerboundThirstMovementPacket.class, (packetBuffer) -> {return new ServerboundThirstMovementPacket(packetBuffer);});
-		PacketRegistry.registerMessage(channel, 2, ServerboundInteractWithWaterPacket.class, (packetBuffer) -> {return new ServerboundInteractWithWaterPacket(packetBuffer);});
-		PacketRegistry.registerMessage(channel, 3, ServerboundStaminaExhaustionPacket.class, ServerboundStaminaExhaustionPacket::new);
-		PacketRegistry.registerMessage(channel, 4, ServerboundRelaxPacket.class, ServerboundRelaxPacket::new);
-		PacketRegistry.registerMessage(channel, 5, ServerboundPlayerStatusBookPacket.class, ServerboundPlayerStatusBookPacket::new);
-	}
-
-	@Override
-	public void registerClientboundPackets(SimpleChannel channel) {
-		channel.registerMessage(6, ClientboundSurvivalStatsPacket.class, ClientboundSurvivalStatsPacket::encode, ClientboundSurvivalStatsPacket::decode, ClientboundSurvivalStatsPacket::handle);
-		channel.registerMessage(7, ClientboundDrinkSoundPacket.class, ClientboundDrinkSoundPacket::encode, ClientboundDrinkSoundPacket::decode, ClientboundDrinkSoundPacket::handle);
-		PacketRegistry.registerMessage(channel, 8, ClientboundDataTransferPacket.class, (packetBuffer) -> {return new ClientboundDataTransferPacket(packetBuffer);});
+	public void registerClientboundPackets(PacketCollector collector) {
+		collector.registerPacket(ClientboundSurvivalStatsPacket.class, (packetBuffer) -> {return new ClientboundSurvivalStatsPacket(packetBuffer);});
+		collector.registerPacket(ClientboundDrinkSoundPacket.class, (packetBuffer) -> {return new ClientboundDrinkSoundPacket(packetBuffer);});
+		collector.registerPacket(ClientboundDataTransferPacket.class, (packetBuffer) -> {return new ClientboundDataTransferPacket(packetBuffer);});
 	}
 
 	//TODO: FInd Somewhere to put all these
@@ -310,62 +307,62 @@ public class Survive extends MinecraftMod implements IPacketHolder {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public void populateCreativeTabs(CreativeTabPopulator builder) {
+	public void populateCreativeTabs(CreativeTabPopulator populator) {
 		//Hygiene related
-		if (builder.getTab() == SCreativeModeTab.TAB_MAIN && Survive.HYGIENE_CONFIG.enabled) {
-			builder.getOutput().accept(HygieneItems.BATH_SPONGE);
-			builder.getOutput().accept(HygieneItems.WHITE_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.ORANGE_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.MAGENTA_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.LIGHT_BLUE_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.YELLOW_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.LIME_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.PINK_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.GRAY_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.LIGHT_GRAY_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.CYAN_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.PURPLE_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.BLUE_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.BROWN_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.GREEN_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.RED_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.BLACK_WASHCLOTH);
-			builder.getOutput().accept(HygieneItems.WOOD_ASH);
-			builder.getOutput().accept(HygieneItems.POTASH_SOLUTION);
-			builder.getOutput().accept(HygieneItems.POTASH);
-			builder.getOutput().accept(HygieneItems.ANIMAL_FAT);
-			builder.getOutput().accept(HygieneItems.SOAP_MIX);
-			builder.getOutput().accept(HygieneItems.SOAP_BOTTLE);
+		if (populator.getTab().getDisplayName().equals(SCreativeModeTab.TAB_MAIN.getDisplayName()) && Survive.HYGIENE_CONFIG.enabled) {
+			populator.addItems(HygieneItems.BATH_SPONGE);
+			populator.addItems(HygieneItems.WHITE_WASHCLOTH);
+			populator.addItems(HygieneItems.ORANGE_WASHCLOTH);
+			populator.addItems(HygieneItems.MAGENTA_WASHCLOTH);
+			populator.addItems(HygieneItems.LIGHT_BLUE_WASHCLOTH);
+			populator.addItems(HygieneItems.YELLOW_WASHCLOTH);
+			populator.addItems(HygieneItems.LIME_WASHCLOTH);
+			populator.addItems(HygieneItems.PINK_WASHCLOTH);
+			populator.addItems(HygieneItems.GRAY_WASHCLOTH);
+			populator.addItems(HygieneItems.LIGHT_GRAY_WASHCLOTH);
+			populator.addItems(HygieneItems.CYAN_WASHCLOTH);
+			populator.addItems(HygieneItems.PURPLE_WASHCLOTH);
+			populator.addItems(HygieneItems.BLUE_WASHCLOTH);
+			populator.addItems(HygieneItems.BROWN_WASHCLOTH);
+			populator.addItems(HygieneItems.GREEN_WASHCLOTH);
+			populator.addItems(HygieneItems.RED_WASHCLOTH);
+			populator.addItems(HygieneItems.BLACK_WASHCLOTH);
+			populator.addItems(HygieneItems.WOOD_ASH);
+			populator.addItems(HygieneItems.POTASH_SOLUTION);
+			populator.addItems(HygieneItems.POTASH);
+			populator.addItems(HygieneItems.ANIMAL_FAT);
+			populator.addItems(HygieneItems.SOAP_MIX);
+			populator.addItems(HygieneItems.SOAP_BOTTLE);
 		}
-		if (builder.getTab() == SCreativeModeTab.TAB_MAIN) {
-			builder.getOutput().accept(SItems.WOOL_HAT);
-			builder.getOutput().accept(SItems.WOOL_JACKET);
-			builder.getOutput().accept(SItems.WOOL_PANTS);
-			builder.getOutput().accept(SItems.WOOL_BOOTS);
-			builder.getOutput().accept(SItems.STIFFENED_HONEY_HELMET);
-			builder.getOutput().accept(SItems.STIFFENED_HONEY_CHESTPLATE);
-			builder.getOutput().accept(SItems.STIFFENED_HONEY_LEGGINGS);
-			builder.getOutput().accept(SItems.STIFFENED_HONEY_BOOTS);
-			builder.getOutput().accept(SItems.CANTEEN);
+		if (populator.getTab().getDisplayName().equals(SCreativeModeTab.TAB_MAIN.getDisplayName())) {
+			populator.addItems(SItems.WOOL_HAT);
+			populator.addItems(SItems.WOOL_JACKET);
+			populator.addItems(SItems.WOOL_PANTS);
+			populator.addItems(SItems.WOOL_BOOTS);
+			populator.addItems(SItems.STIFFENED_HONEY_HELMET);
+			populator.addItems(SItems.STIFFENED_HONEY_CHESTPLATE);
+			populator.addItems(SItems.STIFFENED_HONEY_LEGGINGS);
+			populator.addItems(SItems.STIFFENED_HONEY_BOOTS);
+			populator.addItems(SItems.CANTEEN);
 			for(Potion potion : BuiltInRegistries.POTION) {
 				if (potion != Potions.EMPTY) {
-					builder.getOutput().accept(CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), THIRST_CONFIG.canteen_fill_amount, potion));
+					populator.getOutput().accept(CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), THIRST_CONFIG.canteen_fill_amount, potion));
 				}
 			}
-			builder.getOutput().accept(SItems.WATER_BOWL);
-			builder.getOutput().accept(SItems.PURIFIED_WATER_BOWL);
-			builder.getOutput().accept(SItems.ICE_CUBE);
-			builder.getOutput().accept(SItems.THERMOMETER);
-			builder.getOutput().accept(SItems.TEMPERATURE_REGULATOR);
-			builder.getOutput().accept(SItems.LARGE_HEATING_PLATE);
-			builder.getOutput().accept(SItems.LARGE_COOLING_PLATE);
-			builder.getOutput().accept(SItems.MEDIUM_HEATING_PLATE);
-			builder.getOutput().accept(SItems.MEDIUM_COOLING_PLATE);
-			builder.getOutput().accept(SItems.SMALL_HEATING_PLATE);
-			builder.getOutput().accept(SItems.SMALL_COOLING_PLATE);
-			builder.getOutput().accept(SItems.CHARCOAL_FILTER);
-			builder.getOutput().accept(SItems.PURIFIED_WATER_BUCKET);
-			builder.getOutput().accept(SItems.MAGMA_PASTE);
+			populator.addItems(SItems.WATER_BOWL);
+			populator.addItems(SItems.PURIFIED_WATER_BOWL);
+			populator.addItems(SItems.ICE_CUBE);
+			populator.addItems(SItems.THERMOMETER);
+			populator.addItems(SItems.TEMPERATURE_REGULATOR);
+			populator.addItems(SItems.LARGE_HEATING_PLATE);
+			populator.addItems(SItems.LARGE_COOLING_PLATE);
+			populator.addItems(SItems.MEDIUM_HEATING_PLATE);
+			populator.addItems(SItems.MEDIUM_COOLING_PLATE);
+			populator.addItems(SItems.SMALL_HEATING_PLATE);
+			populator.addItems(SItems.SMALL_COOLING_PLATE);
+			populator.addItems(SItems.CHARCOAL_FILTER);
+			populator.addItems(SItems.PURIFIED_WATER_BUCKET);
+			populator.addItems(SItems.MAGMA_PASTE);
 		}
 		
 	}
