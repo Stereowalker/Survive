@@ -1,11 +1,1 @@
-- Moved some events to UnionLib's event system
-- Reworked hydration
-- Players temperature now drop when hot and thirst is above 8 notches
-- Reduced the duration of somach ache to 10 seconds and prevented it from ticking down when the player is full
-- Illnesses can now have a certain intensity applied to them
-- Added a way to view your status by combining a thermometer with a written book
-- Reworked the NBT structure for Wellbeing and Nutrition Data
-- Fix players not being able to drink water from water blocks in a server after the first person to log in (Fixes #279)
-- Fix inability for nearby players to hear when water is drunk from a block by another player
-- Re-enabled JEI integration
-- All apples manipulate thirst and replenish stamina
+- Used newest version of UnionLib
