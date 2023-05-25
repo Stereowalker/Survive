@@ -545,8 +545,8 @@ public class SurviveEvents {
 					if (!player.getItemBySlot(slot).isEmpty()) {
 						Item armor = player.getItemBySlot(slot).getItem();
 						float modifier = 1.0F;
-						if (DataMaps.Server.armor.containsKey(BuiltInRegistries.ITEM.getKey(armor))) {
-							for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Server.armor.get(BuiltInRegistries.ITEM.getKey(armor)).getTemperatureModifier()) {
+						if (DataMaps.Server.armor.containsKey(RegistryHelper.items().getKey(armor))) {
+							for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Server.armor.get(RegistryHelper.items().getKey(armor)).getTemperatureModifier()) {
 								if (instance.getSecond().shouldChangeTemperature(player)) {
 									modifier = instance.getSecond().getTemperature();
 									break;

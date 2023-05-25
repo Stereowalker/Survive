@@ -5,10 +5,10 @@ import java.util.List;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.unionlib.util.RegistryHelper;
 
 import mezz.jei.api.helpers.IStackHelper;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -22,7 +22,7 @@ public final class CanteenFillingRecipeMaker {
 	public static List<CraftingRecipe> createRecipes(IStackHelper stackHelper) {
 		String group = "survive.fill.canteen";
 
-		return BuiltInRegistries.POTION.stream()
+		return RegistryHelper.potions().stream()
 			.<CraftingRecipe>map(potion -> {				
 				ItemStack canteenStack = new ItemStack(SItems.CANTEEN);
 				Ingredient canteenIngredient = Ingredient.of(canteenStack);

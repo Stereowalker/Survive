@@ -9,8 +9,8 @@ import com.stereowalker.survive.json.ConsummableJsonHolder;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.unionlib.util.RegistryHelper;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -58,15 +58,15 @@ public class WaterData extends SurviveData {
 	public void drink(Item pItem, ItemStack pStack, LivingEntity entity) {
 		if (entity != null && entity instanceof ServerPlayer) {
 			ServerPlayer player = (ServerPlayer)entity;
-			if ((pItem == Items.POTION || pItem == SItems.FILLED_CANTEEN) && DataMaps.Server.potionDrink.containsKey(BuiltInRegistries.POTION.getKey(PotionUtils.getPotion(pStack)))) {
-				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(BuiltInRegistries.POTION.getKey(PotionUtils.getPotion(pStack)));
+			if ((pItem == Items.POTION || pItem == SItems.FILLED_CANTEEN) && DataMaps.Server.potionDrink.containsKey(RegistryHelper.potions().getKey(PotionUtils.getPotion(pStack)))) {
+				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(RegistryHelper.potions().getKey(PotionUtils.getPotion(pStack)));
 				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(entity, drinkData.getThirstChance()));
 				if (drinkData.isHeated())entity.addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
 				if (drinkData.isChilled())entity.addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
 				if (drinkData.isEnergizing())entity.addEffect(new MobEffectInstance(SMobEffects.ENERGIZED, 60*20*5));
 			}
-			else if (DataMaps.Server.consummableItem.containsKey(BuiltInRegistries.ITEM.getKey(pItem))) {
-				ConsummableJsonHolder drinkData = DataMaps.Server.consummableItem.get(BuiltInRegistries.ITEM.getKey(pItem));
+			else if (DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(pItem))) {
+				ConsummableJsonHolder drinkData = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(pItem));
 				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(entity, drinkData.getThirstChance()));
 				if (drinkData.isHeated())entity.addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
 				if (drinkData.isChilled())entity.addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));

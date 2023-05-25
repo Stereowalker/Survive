@@ -22,6 +22,7 @@ import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.seasons.Seasons;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeCondition;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeConditions;
+import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -85,7 +86,7 @@ public class SurviveRegistryEvents
 	@SubscribeEvent
 	public static void registerParticlesz(final RegisterEvent event) {
 		event.register(Registries.PARTICLE_TYPE, (helper) -> SParticleTypes.registerAll(helper));
-		event.register(Registries.POTION, (helper) -> SPotions.registerAll(helper));
+		event.register(RegistryHelper.potionKey(), (helper) -> SPotions.registerAll(helper));
 		event.register(Registries.ENCHANTMENT, (helper) -> SEnchantments.registerAll(helper));
 		event.register(SurviveRegistries.CONDITION, (helper) -> TemperatureChangeConditions.registerAll(helper));
 		event.register(SurviveRegistries.SEASON, (helper) -> Seasons.registerAll(helper));

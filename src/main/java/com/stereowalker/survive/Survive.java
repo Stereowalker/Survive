@@ -71,12 +71,12 @@ import com.stereowalker.unionlib.event.potionfluid.PotionToFluidEvent;
 import com.stereowalker.unionlib.insert.Inserts;
 import com.stereowalker.unionlib.mod.MinecraftMod;
 import com.stereowalker.unionlib.mod.PacketHolder;
+import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -91,7 +91,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -161,14 +160,6 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			if (event.getFluid().getType() instanceof PurifiedWaterFluid) {
 				event.setPotion(SPotions.PURIFIED_WATER);
 			}
-		});
-		eventBus().addListener((Consumer<CreativeModeTabEvent.Register>)event -> {
-			event.registerCreativeModeTab(new ResourceLocation("survive:main_tab2"), (s)->{
-				s.title(Component.translatable("survive:itemGroup.main"))
-				.icon(() -> {
-					return new ItemStack(SItems.CANTEEN);
-				});
-			});
 		});
 		isPrimalWinterLoaded = ModList.get().isLoaded("primalwinter");
 		if (isCombatLoaded()) {
@@ -344,7 +335,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			populator.addItems(SItems.STIFFENED_HONEY_LEGGINGS);
 			populator.addItems(SItems.STIFFENED_HONEY_BOOTS);
 			populator.addItems(SItems.CANTEEN);
-			for(Potion potion : BuiltInRegistries.POTION) {
+			for(Potion potion : RegistryHelper.potions()) {
 				if (potion != Potions.EMPTY) {
 					populator.getOutput().accept(CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), THIRST_CONFIG.canteen_fill_amount, potion));
 				}

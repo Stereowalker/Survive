@@ -11,10 +11,10 @@ import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhausti
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
+import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -60,10 +60,10 @@ public class StaminaData extends SurviveData {
 	}
 	
 	public void eat(Item pItem, ItemStack pStack, LivingEntity entity) {
-		if (pStack.isEdible() && DataMaps.Server.consummableItem.containsKey(BuiltInRegistries.ITEM.getKey(pItem))) {
+		if (pStack.isEdible() && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(pItem))) {
 			if (entity instanceof ServerPlayer && !entity.level.isClientSide) {
 				ServerPlayer player = (ServerPlayer)entity;
-				relax(DataMaps.Server.consummableItem.get(BuiltInRegistries.ITEM.getKey(pItem)).getEnergyAmount(), player.getAttributeValue(SAttributes.MAX_STAMINA));
+				relax(DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(pItem)).getEnergyAmount(), player.getAttributeValue(SAttributes.MAX_STAMINA));
 				save(player);
 			}
 		}

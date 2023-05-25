@@ -8,9 +8,9 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.WeightHandler;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
+import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
@@ -29,14 +29,14 @@ public class TooltipEvents {
 	@OnlyIn(Dist.CLIENT)
 	public static void accessoryTooltip(Player player, ItemStack stack, List<Component> tooltip, boolean displayWeight, boolean displayTemp) {
 		List<Component> tooltipsToAdd = new ArrayList<Component>();
-		if (DataMaps.Client.armor.containsKey(BuiltInRegistries.ITEM.getKey(stack.getItem()))) {
+		if (DataMaps.Client.armor.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
 			float kg = WeightHandler.getArmorWeightClient(stack);
 			float rawPound = kg*2.205f;
 			int poundInt = (int)(rawPound*1000);
 			float pound = poundInt/1000.0F;
 			if (displayWeight) tooltipsToAdd.add(Component.translatable("tooltip.survive.weight", Survive.STAMINA_CONFIG.displayWeightInPounds ? pound : kg, Survive.STAMINA_CONFIG.displayWeightInPounds ? "lbs" : "kg").withStyle(ChatFormatting.DARK_PURPLE));
 			if (displayTemp)
-				for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Client.armor.get(BuiltInRegistries.ITEM.getKey(stack.getItem())).getTemperatureModifier()) {
+				for (Pair<String,TemperatureChangeInstance> instance : DataMaps.Client.armor.get(RegistryHelper.items().getKey(stack.getItem())).getTemperatureModifier()) {
 					if (instance.getSecond().shouldChangeTemperature(player)) {
 						if (instance.getSecond().getAdditionalContext() != null)
 							tooltipsToAdd.add(Component.translatable("tooltip.survive.temperature", instance.getSecond().getTemperature()).append(instance.getSecond().getAdditionalContext()).withStyle(ChatFormatting.DARK_PURPLE));
