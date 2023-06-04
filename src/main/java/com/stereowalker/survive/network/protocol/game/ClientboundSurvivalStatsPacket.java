@@ -9,6 +9,8 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 	private CompoundTag stats;
@@ -33,6 +35,7 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public boolean handleOnClient(LocalPlayer sender) {
 		SurviveEntityStats.setModNBT(this.stats, Minecraft.getInstance().player);
 		return true;

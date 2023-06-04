@@ -14,6 +14,8 @@ import com.stereowalker.unionlib.network.protocol.game.ClientboundUnionPacket;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 	private ResourceLocation stat;
@@ -44,6 +46,7 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public boolean handleOnClient(LocalPlayer sender) {
 		if (settings instanceof ArmorJsonHolder) {
 			if (this.clear) {

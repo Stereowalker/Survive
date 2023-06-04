@@ -11,6 +11,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ClientboundDrinkSoundPacket extends ClientboundUnionPacket {
 	private BlockPos pos;
@@ -31,6 +33,7 @@ public class ClientboundDrinkSoundPacket extends ClientboundUnionPacket {
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public boolean handleOnClient(LocalPlayer sender) {
 		Minecraft.getInstance().player.level.playLocalSound(this.pos.getX(), this.pos.getY(), this.pos.getZ(), new ItemStack(Items.POTION).getDrinkingSound(), SoundSource.PLAYERS, 0.5F, Minecraft.getInstance().player.level.random.nextFloat() * 0.1F + 0.9F, false);
 		Minecraft.getInstance().player.swing(InteractionHand.MAIN_HAND);
