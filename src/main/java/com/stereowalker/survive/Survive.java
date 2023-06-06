@@ -52,6 +52,8 @@ import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.alchemy.BrewingRecipes;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
 import com.stereowalker.survive.world.item.crafting.SRecipeSerializer;
+import com.stereowalker.survive.world.item.enchantment.StaminaEnchantments;
+import com.stereowalker.survive.world.item.enchantment.TemperatureEnchantments;
 import com.stereowalker.survive.world.level.CGameRules;
 import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.PurifiedWaterFluid;
@@ -184,6 +186,12 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addRegistryHolder(SRecipeSerializer.class);
 		collector.addRegistryHolder(SAttributes.class);
 		collector.addRegistryHolder(SMobEffects.class);
+		if (Survive.STAMINA_CONFIG.enabled) {
+			collector.addRegistryHolder(StaminaEnchantments.class);
+		}
+		if (Survive.TEMPERATURE_CONFIG.enabled) {
+			collector.addRegistryHolder(TemperatureEnchantments.class);
+		}
 	}
 	
 	@Override

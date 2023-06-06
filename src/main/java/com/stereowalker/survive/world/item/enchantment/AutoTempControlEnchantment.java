@@ -39,10 +39,10 @@ public class AutoTempControlEnchantment extends Enchantment {
 	@Override
 	protected boolean checkCompatibility(Enchantment ench) 
 	{
-		if (this == SEnchantments.ADJUSTED_COOLING) {
-			return super.checkCompatibility(ench) && ench != SEnchantments.WARMING && ench != SEnchantments.ADJUSTED_WARMING && ench != SEnchantments.COOLING;
+		if (this == TemperatureEnchantments.ADJUSTED_COOLING) {
+			return super.checkCompatibility(ench) && ench != TemperatureEnchantments.WARMING && ench != TemperatureEnchantments.ADJUSTED_WARMING && ench != TemperatureEnchantments.COOLING;
 		} else {
-			return super.checkCompatibility(ench) && ench != SEnchantments.WARMING && ench != SEnchantments.ADJUSTED_COOLING && ench != SEnchantments.COOLING;
+			return super.checkCompatibility(ench) && ench != TemperatureEnchantments.WARMING && ench != TemperatureEnchantments.ADJUSTED_COOLING && ench != TemperatureEnchantments.COOLING;
 		}
 	}
 }

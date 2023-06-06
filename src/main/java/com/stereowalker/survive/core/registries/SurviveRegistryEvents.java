@@ -12,7 +12,6 @@ import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.TemperatureRegulatorPlateItem;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
 import com.stereowalker.survive.world.item.crafting.conditions.ModuleEnabledCondition;
-import com.stereowalker.survive.world.item.enchantment.SEnchantments;
 import com.stereowalker.survive.world.level.block.PlatedTemperatureRegulatorBlock;
 import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.PurifiedWaterFluid;
@@ -24,7 +23,6 @@ import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeCo
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeConditions;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -85,9 +83,8 @@ public class SurviveRegistryEvents
 	
 	@SubscribeEvent
 	public static void registerParticlesz(final RegisterEvent event) {
-		event.register(Registries.PARTICLE_TYPE, (helper) -> SParticleTypes.registerAll(helper));
+		event.register(RegistryHelper.particleTypeKey(), (helper) -> SParticleTypes.registerAll(helper));
 		event.register(RegistryHelper.potionKey(), (helper) -> SPotions.registerAll(helper));
-		event.register(Registries.ENCHANTMENT, (helper) -> SEnchantments.registerAll(helper));
 		event.register(SurviveRegistries.CONDITION, (helper) -> TemperatureChangeConditions.registerAll(helper));
 		event.register(SurviveRegistries.SEASON, (helper) -> Seasons.registerAll(helper));
 		event.register(ForgeRegistries.Keys.FLUID_TYPES, (helper) -> helper.register(new ResourceLocation("survive:purified_water"), PurifiedWaterFluid.TYPE));
