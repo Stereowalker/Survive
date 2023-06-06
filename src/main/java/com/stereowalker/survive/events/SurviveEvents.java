@@ -38,7 +38,6 @@ import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.math.UnionMathHelper;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -218,7 +217,7 @@ public class SurviveEvents {
 						if (heatState.getBlock() instanceof TemperatureEmitter) {
 							sourceRange = ((TemperatureEmitter)heatState.getBlock()).getModificationRange(heatState);
 						} else {
-							sourceRange = DataMaps.Server.blockTemperature.containsKey(BuiltInRegistries.BLOCK.getKey(heatState.getBlock())) ? DataMaps.Server.blockTemperature.get(BuiltInRegistries.BLOCK.getKey(heatState.getBlock())).getRange() : 5;
+							sourceRange = DataMaps.Server.blockTemperature.containsKey(RegistryHelper.blocks().getKey(heatState.getBlock())) ? DataMaps.Server.blockTemperature.get(RegistryHelper.blocks().getKey(heatState.getBlock())).getRange() : 5;
 						}
 
 						if (pos.closerThan(heatSource, sourceRange)) {
@@ -227,8 +226,8 @@ public class SurviveEvents {
 							if (heatState.getBlock() instanceof TemperatureEmitter) {
 								blockTemp = ((TemperatureEmitter)heatState.getBlock()).getTemperatureModification(heatState);
 							}
-							else if (DataMaps.Server.blockTemperature.containsKey(BuiltInRegistries.BLOCK.getKey(heatState.getBlock()))) {
-								BlockTemperatureJsonHolder blockTemperatureData = DataMaps.Server.blockTemperature.get(BuiltInRegistries.BLOCK.getKey(heatState.getBlock()));
+							else if (DataMaps.Server.blockTemperature.containsKey(RegistryHelper.blocks().getKey(heatState.getBlock()))) {
+								BlockTemperatureJsonHolder blockTemperatureData = DataMaps.Server.blockTemperature.get(RegistryHelper.blocks().getKey(heatState.getBlock()));
 								if (blockTemperatureData.getStateChangeProperty() != null) {
 									boolean setTemp = false;
 									List<Triple<IBlockPropertyHandler<?>,List<PropertyPair<?>>,Map<String,Float>>> changeProperty = blockTemperatureData.getStateChangeProperty();
@@ -284,10 +283,10 @@ public class SurviveEvents {
 			float totalEntityTemp = 0;
 			rangeInBlocks = 5;
 			for (Entity entity : world.getEntitiesOfClass(Entity.class, new AABB(pos.offset(rangeInBlocks, rangeInBlocks, rangeInBlocks), pos.offset(-rangeInBlocks, -rangeInBlocks, -rangeInBlocks)))) {
-				float sourceRange = DataMaps.Server.entityTemperature.containsKey(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType())) ? DataMaps.Server.entityTemperature.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType())).getRange() : 5;
+				float sourceRange = DataMaps.Server.entityTemperature.containsKey(RegistryHelper.entityTypes().getKey(entity.getType())) ? DataMaps.Server.entityTemperature.get(RegistryHelper.entityTypes().getKey(entity.getType())).getRange() : 5;
 				if (pos.closerThan(entity.blockPosition(), sourceRange)) {
-					if (DataMaps.Server.entityTemperature.containsKey(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()))) {
-						EntityTemperatureJsonHolder entityTemperatureData = DataMaps.Server.entityTemperature.get(BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
+					if (DataMaps.Server.entityTemperature.containsKey(RegistryHelper.entityTypes().getKey(entity.getType()))) {
+						EntityTemperatureJsonHolder entityTemperatureData = DataMaps.Server.entityTemperature.get(RegistryHelper.entityTypes().getKey(entity.getType()));
 						totalEntityTemp+=entityTemperatureData.getTemperatureModifier();
 					}
 				}
@@ -358,8 +357,8 @@ public class SurviveEvents {
 		if (event.getLevel().isClientSide && event.getItemStack().isEmpty() && event.getHand() == InteractionHand.MAIN_HAND) {
 			//Source Block Of Water
 			Fluid fluid = event.getLevel().getFluidState(blockpos).getType();
-			if (DataMaps.Client.fluid.containsKey(BuiltInRegistries.FLUID.getKey(fluid))) {
-				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(BuiltInRegistries.FLUID.getKey(fluid));
+			if (DataMaps.Client.fluid.containsKey(RegistryHelper.fluids().getKey(fluid))) {
+				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(RegistryHelper.fluids().getKey(fluid));
 				new ServerboundInteractWithWaterPacket(blockpos, fluidHolder.getThirstChance(), fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
 			}
 			//Air Block
@@ -378,13 +377,13 @@ public class SurviveEvents {
 		Fluid fluid = event.getLevel().getFluidState(blockpos).getType();
 		BlockState stateUnder = event.getLevel().getBlockState(event.getPos().below());
 		if (event.getLevel().isClientSide && event.getItemStack().isEmpty()) {
-			System.out.println(DataMaps.Client.fluid.keySet().size()+" BAsic Ticks "+BuiltInRegistries.FLUID.getKey(fluid));
+			System.out.println(DataMaps.Client.fluid.keySet().size()+" BAsic Ticks "+RegistryHelper.fluids().getKey(fluid));
 			for (ResourceLocation k : DataMaps.Client.fluid.keySet()) {
 				System.out.println(k);
 			}
 			//Source Block Of Water
-			if (DataMaps.Client.fluid.containsKey(BuiltInRegistries.FLUID.getKey(fluid))) {
-				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(BuiltInRegistries.FLUID.getKey(fluid));
+			if (DataMaps.Client.fluid.containsKey(RegistryHelper.fluids().getKey(fluid))) {
+				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(RegistryHelper.fluids().getKey(fluid));
 				event.setCanceled(true);
 				event.setCancellationResult(InteractionResult.SUCCESS);
 				new ServerboundInteractWithWaterPacket(blockpos, fluidHolder.getThirstChance(), fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
