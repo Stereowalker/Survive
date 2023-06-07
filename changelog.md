@@ -1,1 +1,4 @@
-- Used newest version of UnionLib
+- Use UnionLib methods to allow for version compatibility
+- Added OnlyIn markers for clientbound packets
+- Added an icon and missing translation for the well fed effect
+- Moved enchantments to unionlib's registries

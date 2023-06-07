@@ -1,3 +1,9 @@
+[8.0.9]
+- Use UnionLib methods to allow for version compatibility
+- Added OnlyIn markers for clientbound packets
+- Added an icon and missing translation for the well fed effect
+- Moved enchantments to unionlib's registries
+
 [8.0.8]
 - Used newest version of UnionLib
 
