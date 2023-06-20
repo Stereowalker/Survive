@@ -38,14 +38,19 @@ public class SurviveEntityStats {
 	}
 	
 	public static StaminaData getEnergyStats(LivingEntity entity) {
-		StaminaData stats = new StaminaData(entity.getAttributeValue(SAttributes.MAX_STAMINA));
-		if(entity != null) {
-			if (getModNBT(entity) != null && getModNBT(entity).contains(energyStatsID, 10)) {
-				stats.read(getModNBT(entity).getCompound(energyStatsID));
-				return stats;
+		try {
+			double max_stamina = entity.getAttributeValue(SAttributes.MAX_STAMINA);
+			StaminaData stats = new StaminaData(max_stamina);
+			if(entity != null) {
+				if (getModNBT(entity) != null && getModNBT(entity).contains(energyStatsID, 10)) {
+					stats.read(getModNBT(entity).getCompound(energyStatsID));
+					return stats;
+				}
 			}
+			return stats;
+		} catch (IllegalArgumentException e) {
+			return null;
 		}
-		return stats;
 	}
 	
 	public static TemperatureData getTemperatureStats(LivingEntity entity) {
