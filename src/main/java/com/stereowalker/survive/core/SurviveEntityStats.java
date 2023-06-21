@@ -31,7 +31,6 @@ public class SurviveEntityStats {
 		if(entity != null) {
 			if (getModNBT(entity) != null && getModNBT(entity).contains(waterStatsID, 10)) {
 				stats.read(getModNBT(entity).getCompound(waterStatsID));
-				return stats;
 			}
 		}
 		return stats;
@@ -44,7 +43,6 @@ public class SurviveEntityStats {
 			if(entity != null) {
 				if (getModNBT(entity) != null && getModNBT(entity).contains(energyStatsID, 10)) {
 					stats.read(getModNBT(entity).getCompound(energyStatsID));
-					return stats;
 				}
 			}
 			return stats;
@@ -58,7 +56,6 @@ public class SurviveEntityStats {
 		if(entity != null) {
 			if (getModNBT(entity) != null && getModNBT(entity).contains(temperatureStatsID, 10)) {
 				stats.read(getModNBT(entity).getCompound(temperatureStatsID));
-				return stats;
 			}
 		}
 		return stats;
@@ -69,7 +66,6 @@ public class SurviveEntityStats {
 		if(entity != null) {
 			if (getModNBT(entity) != null && getModNBT(entity).contains(hygieneStatsID, 10)) {
 				stats.read(getModNBT(entity).getCompound(hygieneStatsID));
-				return stats;
 			}
 		}
 		return stats;
@@ -80,7 +76,6 @@ public class SurviveEntityStats {
 		if(entity != null) {
 			if (getModNBT(entity) != null && getModNBT(entity).contains(nutritionStatsID, 10)) {
 				stats.read(getModNBT(entity).getCompound(nutritionStatsID));
-				return stats;
 			}
 		}
 		return stats;
@@ -91,7 +86,6 @@ public class SurviveEntityStats {
 		if(entity != null) {
 			if (getModNBT(entity) != null && getModNBT(entity).contains(wellbeingStatsID, 10)) {
 				stats.read(getModNBT(entity).getCompound(wellbeingStatsID));
-				return stats;
 			}
 		}
 		return stats;
@@ -102,7 +96,6 @@ public class SurviveEntityStats {
 		if(entity != null) {
 			if (getModNBT(entity) != null && getModNBT(entity).contains(sleepStatsID, 10)) {
 				stats.read(getModNBT(entity).getCompound(sleepStatsID));
-				return stats;
 			}
 		}
 		return stats;
