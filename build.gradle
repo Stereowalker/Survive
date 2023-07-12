@@ -1,7 +1,7 @@
 plugins {
 	id 'eclipse'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
     id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -37,7 +37,7 @@ minecraft {
 			args '--username', 'Stereowalker', '--uuid', "$System.env.MINECRAFTUUIDSTEREOWALKER"
 
             mods {
-                modId {
+                "${modId}" {
                     source sourceSets.main
                 }
             }
@@ -52,7 +52,7 @@ minecraft {
 			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
 			
             mods {
-                modId {
+                "${modId}" {
                     source sourceSets.main
                 }
             }
@@ -90,7 +90,7 @@ dependencies {
     //runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.19.2"+/*modMinecraftVersion+*/"-"+patchouliVersion+"")
 	
 	implementation fg.deobf("curse.maven:biomes-o-plenty-220318:"+bopID)
-	implementation fg.deobf("curse.maven:terrablender-563928:"+terrablenderID)
+    implementation fg.deobf("com.github.glitchfiend:TerraBlender-forge:${modMinecraftVersion}-3.0.0.164")
 	implementation fg.deobf("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
 	//implementation fg.deobf("curse.maven:origins-474438:"+originsID)
 	//implementation fg.deobf("curse.maven:create-328085:"+createID)
@@ -119,12 +119,12 @@ task sourcesJar(type: Jar) {
         include 'LICENSE.txt'
     }
 
-    classifier = 'sources'
+    archiveClassifier = 'sources'
 }
 
 task deobfJar(type: Jar) {
 	from sourceSets.main.output
-	classifier = "deobf"
+	archiveClassifier = "deobf"
 }
 
 
@@ -135,7 +135,7 @@ task apiJar(type: Jar) {
     from (sourceSets.main.output) {
         include 'com/stereowalker/survive/api/**'
     }
-	classifier = 'api'
+	archiveClassifier = 'api'
 }
 
 curseforge {
