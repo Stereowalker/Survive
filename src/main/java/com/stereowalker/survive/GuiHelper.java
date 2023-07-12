@@ -3,10 +3,8 @@ package com.stereowalker.survive;
 import java.util.Random;
 
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
 import com.stereowalker.survive.needs.IRealisticEntity;
@@ -19,7 +17,7 @@ import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -38,16 +36,16 @@ public class GuiHelper {
 		event.registerAboveAll("tired", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 			if (Survive.CONFIG.tired_overlay && gui.minecraft.player.hasEffect(SMobEffects.TIREDNESS)) {
 				gui.setupOverlayRenderState(true, false);
-				GuiHelper.renderTiredOverlay(gui);
+				GuiHelper.renderTiredOverlay(gui, mStack);
 			}
 		});
 		event.registerAboveAll("heat_stroke", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 			gui.setupOverlayRenderState(true, false);
-			GuiHelper.renderHeatStroke(gui);
+			GuiHelper.renderHeatStroke(gui, mStack);
 		});
 		event.registerAboveAll("temperature", (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
 			if (!gui.minecraft.options.hideGui && Survive.TEMPERATURE_CONFIG.enabled && !Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
-				gui.setupOverlayRenderState(true, false, GUI_ICONS);
+				gui.setupOverlayRenderState(true, false);
 				GuiHelper.renderTemperature(gui, ScreenOffset.TOP, gui.getCameraPlayer(), mStack, true);
 			}
 		});
@@ -55,7 +53,7 @@ public class GuiHelper {
 			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
 			if (Survive.THIRST_CONFIG.enabled && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
 			{
-				gui.setupOverlayRenderState(true, false, GUI_ICONS);
+				gui.setupOverlayRenderState(true, false);
 				int left = screenWidth / 2 + 91;
 				int top = screenHeight - gui.rightHeight;
 				renderThirst(gui, mStack, new MutableInt(), left, top, true);
@@ -66,7 +64,7 @@ public class GuiHelper {
 			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
 			if (Survive.STAMINA_CONFIG.enabled && !isMounted && !gui.minecraft.options.hideGui && gui.shouldDrawSurvivalElements())
 			{
-				gui.setupOverlayRenderState(true, false, GUI_ICONS);
+				gui.setupOverlayRenderState(true, false);
 				int left = screenWidth / 2 + 91;
 				int top = screenHeight - gui.rightHeight;
 				MutableInt moveUp = new MutableInt();
@@ -78,92 +76,76 @@ public class GuiHelper {
 
 	@SuppressWarnings("resource")
 	@OnlyIn(Dist.CLIENT)
-	public static void renderTemperature(Gui gui, ScreenOffset position, Player playerentity, PoseStack matrixStack, boolean forgeOverlay) {
+	public static void renderTemperature(Gui gui, ScreenOffset position, Player playerentity, GuiGraphics mStack, boolean forgeOverlay) {
 		int x = ScreenHelper.getXOffset(position, gui.minecraft) + Survive.TEMPERATURE_CONFIG.tempXLoc;
 		int y = ScreenHelper.getYOffset(position, gui.minecraft) + Survive.TEMPERATURE_CONFIG.tempYLoc;
 		Minecraft.getInstance().getProfiler().push("temperature");
-		if (!forgeOverlay) {
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, GUI_ICONS);
-		}
+//		if (!forgeOverlay) {
+//			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//			RenderSystem.setShaderTexture(0, GUI_ICONS);
+//		}
 		double displayTemp = SurviveEntityStats.getTemperatureStats(playerentity).getDisplayTemperature();
-//		if (tempLocation > 0) {
-//			double maxTemp = 0.0D;
-//			if (playerentity.getAttribute(SAttributes.HEAT_RESISTANCE) != null) {
-//				maxTemp = playerentity.getAttributeValue(SAttributes.HEAT_RESISTANCE);
-//			}
-//			double div = tempLocation / maxTemp;
-//			displayTemp = Mth.clamp(div, 0, 1.0D+(28.0D/63.0D));
-//		}
-//		if (tempLocation < 0) {
-//			double maxTemp = 0.0D;
-//			if (playerentity.getAttribute(SAttributes.COLD_RESISTANCE) != null) {
-//				maxTemp = playerentity.getAttributeValue(SAttributes.COLD_RESISTANCE);
-//			}
-//			double div = tempLocation / maxTemp;
-//			displayTemp = Mth.clamp(div, -1.0D-(28.0D/63.0D), 0);
-//		}
 		//For Numbers
 		String s = SurviveEntityStats.getTemperatureStats(playerentity).getCelcius()+" °C";
 		if (Minecraft.getInstance().gameMode.hasExperience()) {
 			if (Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HORIZONTAL_BAR)) {
 				if (Survive.TEMPERATURE_CONFIG.tempEffects && displayTemp >= 1) {//Hyperthermia override
-					gui.blit(matrixStack, x-3, y-3, 0, 79, 138, 11);
+					mStack.blit(GUI_ICONS, x-3, y-3, 0, 79, 138, 11);
 				} else if (Survive.TEMPERATURE_CONFIG.tempEffects && displayTemp <= -1) {//Hypothermia override
-					gui.blit(matrixStack, x-3, y-3, 0, 90, 138, 11);
+					mStack.blit(GUI_ICONS, x-3, y-3, 0, 90, 138, 11);
 				} else {
-					gui.blit(matrixStack, x, y, 3, 64, 132, 5);
-					gui.blit(matrixStack, x, y, 3, 69, 132, 5);
+					mStack.blit(GUI_ICONS, x, y, 3, 64, 132, 5);
+					mStack.blit(GUI_ICONS, x, y, 3, 69, 132, 5);
 				}
-				gui.blit(matrixStack, x+Mth.floor(displayTemp*44)+63+(displayTemp>0?1:0), y, 1, 74, 4, 5);
+				mStack.blit(GUI_ICONS, x+Mth.floor(displayTemp*44)+63+(displayTemp>0?1:0), y, 1, 74, 4, 5);
 			}
 			else if (Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.VERTICAL_BAR)) {
 				if (Survive.TEMPERATURE_CONFIG.tempEffects && displayTemp >= 1) {//Hyperthermia override
-					gui.blit(matrixStack, x-3, y-3, 11, 101, 11, 138);
+					mStack.blit(GUI_ICONS, x-3, y-3, 11, 101, 11, 138);
 				} else if (Survive.TEMPERATURE_CONFIG.tempEffects && displayTemp <= -1) {//Hypothermia override
-					gui.blit(matrixStack, x-3, y-3, 00, 101, 11, 138);
+					mStack.blit(GUI_ICONS, x-3, y-3, 00, 101, 11, 138);
 				} else {
-					gui.blit(matrixStack, x, y, 32, 104, 5, 132);
-					gui.blit(matrixStack, x, y, 27, 104, 5, 132);
+					mStack.blit(GUI_ICONS, x, y, 32, 104, 5, 132);
+					mStack.blit(GUI_ICONS, x, y, 27, 104, 5, 132);
 				}
-				gui.blit(matrixStack, x, y-Mth.floor(displayTemp*44)+63-(displayTemp>0?1:0), 22, 104, 5, 5);
+				mStack.blit(GUI_ICONS, x, y-Mth.floor(displayTemp*44)+63-(displayTemp>0?1:0), 22, 104, 5, 5);
 			}
 			else if (Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.NUMBERS)) {
 				if (Survive.TEMPERATURE_CONFIG.displayTempInFahrenheit) {
 					s = SurviveEntityStats.getTemperatureStats(playerentity).getFahrenheit()+" °F";
 				}
 				if (displayTemp >= 1) {
-					Minecraft.getInstance().font.drawShadow(matrixStack, s, x, y, ChatFormatting.GOLD.getColor());
+					mStack.drawString(Minecraft.getInstance().font, s, x, y, ChatFormatting.GOLD.getColor(), false);
 				} else if (displayTemp <= -1) {
-					Minecraft.getInstance().font.drawShadow(matrixStack, s, x, y, ChatFormatting.BLUE.getColor());
+					mStack.drawString(Minecraft.getInstance().font, s, x, y, ChatFormatting.BLUE.getColor(), false);
 				} else {
-					Minecraft.getInstance().font.drawShadow(matrixStack, s, x, y, ChatFormatting.GRAY.getColor());
+					mStack.drawString(Minecraft.getInstance().font, s, x, y, ChatFormatting.GRAY.getColor(), false);
 				}
 			}
 		}
 		if (Survive.CONFIG.nutrition_enabled && (playerentity.getMainHandItem().isEdible() || playerentity.getOffhandItem().isEdible())) {
-			Minecraft.getInstance().font.drawShadow(matrixStack, "Carbs = "+((IRealisticEntity)playerentity).getNutritionData().getCarbLevel(), 0, 0, ChatFormatting.GRAY.getColor());
-			Minecraft.getInstance().font.drawShadow(matrixStack, "Protein = "+((IRealisticEntity)playerentity).getNutritionData().getProteinLevel(), 0, 10, ChatFormatting.GRAY.getColor());
+			mStack.drawString(Minecraft.getInstance().font, "Carbs = "+((IRealisticEntity)playerentity).getNutritionData().getCarbLevel(), 0, 0, ChatFormatting.GRAY.getColor(), false);
+			mStack.drawString(Minecraft.getInstance().font, "Protein = "+((IRealisticEntity)playerentity).getNutritionData().getProteinLevel(), 0, 10, ChatFormatting.GRAY.getColor(), false);
 		}
 		Minecraft.getInstance().getProfiler().pop();
-		if (!forgeOverlay) {
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
-			RenderSystem.enableBlend();
-			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
-		}
+//		if (!forgeOverlay) {
+//			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//			RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
+//			RenderSystem.enableBlend();
+//			RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+//		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void renderThirst(Gui gui, PoseStack matrixStack, MutableInt moveUp, int j1, int k1, boolean forgeOverlay) {
+	public static void renderThirst(Gui gui, GuiGraphics mStack, MutableInt moveUp, int j1, int k1, boolean forgeOverlay) {
 		Player player = (Player)gui.minecraft.getCameraEntity();
 		IRealisticEntity realisticPlayer = (IRealisticEntity)player;
 		int waterL = (int) realisticPlayer.getWaterData().getWaterLevel();
 		gui.minecraft.getProfiler().push("thirst");
-		if (!forgeOverlay) {
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, GUI_ICONS);
-		}
+//		if (!forgeOverlay) {
+//			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//			RenderSystem.setShaderTexture(0, GUI_ICONS);
+//		}
 		for(int k6 = 0; k6 < 10; ++k6) {
 			int i7 = k1;
 			int k7 = 16;
@@ -178,25 +160,25 @@ public class GuiHelper {
 			}
 
 			int k8 = j1 - k6 * 8 - 9;
-			gui.blit(matrixStack, k8, i7 - moveUp.getValue(), 16 + i8 * 9, 54, 9, 9);
+			mStack.blit(GUI_ICONS, k8, i7 - moveUp.getValue(), 16 + i8 * 9, 54, 9, 9);
 			if (k6 * 2 + 1 < waterL) {
-				gui.blit(matrixStack, k8, i7 - moveUp.getValue(), k7 + 36, 54, 9, 9);
+				mStack.blit(GUI_ICONS, k8, i7 - moveUp.getValue(), k7 + 36, 54, 9, 9);
 			}
 
 			if (k6 * 2 + 1 == waterL) {
-				gui.blit(matrixStack, k8, i7 - moveUp.getValue(), k7 + 45, 54, 9, 9);
+				mStack.blit(GUI_ICONS, k8, i7 - moveUp.getValue(), k7 + 45, 54, 9, 9);
 			}
 		}
 		moveUp.add(-10);
 		gui.minecraft.getProfiler().pop();
-		if (!forgeOverlay) {
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
-		}
+//		if (!forgeOverlay) {
+//			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//			RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
+//		}
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void renderEnergyBars(Gui gui, PoseStack matrixStack, MutableInt moveUp, int j1, int k1, boolean forgeOverlay) {
+	public static void renderEnergyBars(Gui gui, GuiGraphics mStack, MutableInt moveUp, int j1, int k1, boolean forgeOverlay) {
 		Random rand = new Random();
 		Player player = (Player)gui.minecraft.getCameraEntity();
 		float maxStamina = (float) player.getAttributeValue(SAttributes.MAX_STAMINA);
@@ -223,41 +205,41 @@ public class GuiHelper {
 				
 				int k8 = j1 - k6 * 8 - 9;
 				if ((k6 * 2 + 1) + (20*i) < Mth.floor(maxStamina)+1) {
-					gui.blit(matrixStack, k8, i7 - moveUp.getValue(), 16 + i8 * 9, 36, 9, 9);
+					mStack.blit(GUI_ICONS, k8, i7 - moveUp.getValue(), 16 + i8 * 9, 36, 9, 9);
 				}
 				if ((k6 * 2 + 1) + (20*i) < l) {
-					gui.blit(matrixStack, k8, i7 - moveUp.getValue(), k7 + 36, 36, 9, 9);
+					mStack.blit(GUI_ICONS, k8, i7 - moveUp.getValue(), k7 + 36, 36, 9, 9);
 				}
 				
 				if ((k6 * 2 + 1) + (20*i)  == l) {
-					gui.blit(matrixStack, k8, i7 - moveUp.getValue(), k7 + 45, 36, 9, 9);
+					mStack.blit(GUI_ICONS, k8, i7 - moveUp.getValue(), k7 + 45, 36, 9, 9);
 				}
 			}
 			moveUp.add(10);
 		}
 		Minecraft.getInstance().getProfiler().pop();
-		if (!forgeOverlay) {
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
-		}
+//		if (!forgeOverlay) {
+//			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//			RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
+//		}
 	}
 
 	@SuppressWarnings("resource")
 	@OnlyIn(Dist.CLIENT)
-	public static void renderTiredOverlay(Gui gui) {
+	public static void renderTiredOverlay(Gui gui, GuiGraphics graphics) {
 		Minecraft.getInstance().getProfiler().push("tired");
 		int amplifier = Minecraft.getInstance().player.getEffect(SMobEffects.TIREDNESS).getAmplifier() + 1;
 		amplifier/=(Survive.CONFIG.tiredTimeStacks/5);
 		amplifier = Mth.clamp(amplifier, 0, 4);
-		gui.renderTextureOverlay(Survive.getInstance().location("textures/misc/sleep_overlay_"+(amplifier)+".png"), 0.5F);
+		gui.renderTextureOverlay(graphics, Survive.getInstance().location("textures/misc/sleep_overlay_"+(amplifier)+".png"), 0.5F);
 		Minecraft.getInstance().getProfiler().pop();
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static void renderHeatStroke(Gui gui)
+	public static void renderHeatStroke(Gui gui, GuiGraphics graphics)
 	{
 		if (((IRoastedEntity)gui.minecraft.player).getTicksRoasted() > 0) {
-			gui.renderTextureOverlay(Survive.getInstance().location("textures/misc/burning_overlay.png"), ((IRoastedEntity)gui.minecraft.player).getPercentRoasted());
+			gui.renderTextureOverlay(graphics, Survive.getInstance().location("textures/misc/burning_overlay.png"), ((IRoastedEntity)gui.minecraft.player).getPercentRoasted());
 		}
 	}
 }

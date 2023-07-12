@@ -5,6 +5,7 @@ import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.SItems;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -52,7 +53,7 @@ public class CanteenFillingRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv) {
+	public ItemStack assemble(CraftingContainer inv, RegistryAccess ra) {
 		int count = 0;
 		Potion savedPotion = null;
 		for (int i = 0; i < inv.getContainerSize(); i++) {

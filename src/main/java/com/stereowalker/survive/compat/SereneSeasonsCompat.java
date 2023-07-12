@@ -52,44 +52,4 @@ public class SereneSeasonsCompat {
 		}
 		return Seasons.NONE;
 	}
-	
-	
-//    /**
-//     * From Serene Seasons, Altered the temp
-//     * @param subSeason
-//     * @param biome
-//     * @param key
-//     * @param pos
-//     * @return
-//     */
-//    public static float getBiomeTemperatureInSeason(sereneseasons.api.season.Season.SubSeason subSeason, Biome biome, ResourceKey<Biome> key, BlockPos pos)
-//    {
-//        boolean tropicalBiome = BiomeConfig.usesTropicalSeasons(key);
-//        float biomeTemp = TemperatureUtil.getTemperature(biome, pos);
-//        if (!tropicalBiome && biome.getBaseTemperature() <= 0.8F && BiomeConfig.enablesSeasonalEffects(key))
-//        {
-//            switch (subSeason)
-//            {
-//                default:
-//                    break;
-//
-//                case LATE_SPRING: case EARLY_AUTUMN:
-//                biomeTemp = Mth.clamp(biomeTemp - 0.1F, -0.5F, 2.0F);
-//                break;
-//
-//                case MID_SPRING: case MID_AUTUMN:
-//                biomeTemp = Mth.clamp(biomeTemp - 0.2F, -0.5F, 2.0F);
-//                break;
-//
-//                case EARLY_SPRING: case LATE_AUTUMN:
-//                biomeTemp = Mth.clamp(biomeTemp - 0.4F, -0.5F, 2.0F);
-//                break;
-//
-//                case EARLY_WINTER: case MID_WINTER: case LATE_WINTER:
-//                biomeTemp = Mth.clamp(biomeTemp - 0.8F, -0.5F, 2.0F);
-//                break;
-//            }
-//        }
-//        return biomeTemp;
-//    }
 }

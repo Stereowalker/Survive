@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.stereowalker.survive.GuiHelper;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.client.gui.SurviveHeartType;
@@ -27,8 +26,7 @@ import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -38,64 +36,40 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 
 @Mixin(Gui.class)
-public abstract class GuiMixin extends GuiComponent {
+public abstract class GuiMixin {
 	@Shadow protected Minecraft minecraft;
-	@Shadow @Final public RandomSource random = RandomSource.create();
+	@Shadow @Final public RandomSource random;
 	@Shadow public Player getCameraPlayer() {return null;}
-	@Shadow public void renderTextureOverlay(ResourceLocation p_168709_, float p_168710_) {}
+	@Shadow public void renderTextureOverlay(GuiGraphics p_282304_, ResourceLocation p_168709_, float p_168710_) {}
 	@Shadow public int screenWidth;
 	@Shadow public int screenHeight;
 	@Shadow protected int tickCount;
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;lerp(FFF)F", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void render2(PoseStack arg0, float arg1, CallbackInfo ci, Window window, Font font, float f) {
+	public void render2(GuiGraphics arg0, float arg1, CallbackInfo ci, Window window, Font font) {
 		if (Survive.CONFIG.tired_overlay && minecraft.player.hasEffect(SMobEffects.TIREDNESS)) {
-			GuiHelper.renderTiredOverlay((Gui)(Object)this);
+			GuiHelper.renderTiredOverlay((Gui)(Object)this, arg0);
 		}
-		GuiHelper.renderHeatStroke((Gui)(Object)this);
+		GuiHelper.renderHeatStroke((Gui)(Object)this, arg0);
 		GuiHelper.renderTemperature((Gui)(Object)this, ScreenOffset.TOP, getCameraPlayer(), arg0, false);
 	}
 
 
-	@Redirect(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderColor(FFFF)V", ordinal = 0))
-	public void hotbarColor(float x, float y, float z, float a) {
+	@Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V"))
+	public void hotbarColor(float p_283031_, GuiGraphics p_282108_, CallbackInfo ci) {
 		Player playerentity = this.getCameraPlayer();
 		if (Survive.TEMPERATURE_CONFIG.enabled && Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
-			double rawTemperature = SurviveEntityStats.getTemperatureStats(playerentity).getTemperatureLevel();
-			double tempLocation = rawTemperature - Survive.DEFAULT_TEMP;
-			double displayTemp = 0;
-			if (tempLocation > 0) {
-				double maxTemp = 0.0D;
-				if (playerentity.getAttribute(SAttributes.HEAT_RESISTANCE) != null) {
-					maxTemp = playerentity.getAttributeValue(SAttributes.HEAT_RESISTANCE);
-				} else {
-					maxTemp = SAttributes.HEAT_RESISTANCE.getDefaultValue();
-				}
-				double div = tempLocation / maxTemp;
-				displayTemp = Mth.clamp(div, 0, 1.0D+(28.0D/63.0D));
-			}
-			if (tempLocation < 0) {
-				double maxTemp = 0.0D;
-				if (playerentity.getAttribute(SAttributes.COLD_RESISTANCE) != null) {
-					maxTemp = playerentity.getAttributeValue(SAttributes.COLD_RESISTANCE);
-				} else {
-					maxTemp = SAttributes.COLD_RESISTANCE.getDefaultValue();
-				}
-				double div = tempLocation / maxTemp;
-				displayTemp = Mth.clamp(div, -1.0D-(28.0D/63.0D), 0);
-			}
+			double displayTemp = SurviveEntityStats.getTemperatureStats(playerentity).getDisplayTemperature();
 
 			float heatTemp = (float) (1.0F - displayTemp);
 			float coldTemp = (float) (1.0F + displayTemp);
 			float whiteTemp = (float) ((1.0F - Math.abs(displayTemp))/2 + 0.5F);
-			RenderSystem.setShaderColor(coldTemp, whiteTemp, heatTemp, 1.0F);
-		} else {
-			RenderSystem.setShaderColor(x, y, z, a);
+			p_282108_.setColor(coldTemp, whiteTemp, heatTemp, 1.0F);
 		}
 	}
 
 	@Inject(method = "renderPlayerHealth", at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/util/profiling/ProfilerFiller;pop()V"), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void addThirstAndOthers(PoseStack pPoseStack, CallbackInfo ci, Player player, int i, boolean flag, long j, int k, FoodData fooddata, int l, int i1, int j1, int k1, float f, int l1, int i2, int j2, int k2, int l2, int i3, int j3, LivingEntity livingentity, int k5, int l5, int i6) {
+	public void addThirstAndOthers(GuiGraphics pPoseStack, CallbackInfo ci, Player player, int i, boolean flag, long j, int k, FoodData fooddata, int l, int i1, int j1, int k1, float f, int l1, int i2, int j2, int k2, int l2, int i3, int j3, LivingEntity livingentity, int k5, int l5, int i6) {
 		RenderSystem.enableBlend();
 		boolean needsAir = false;
 		if (player.isEyeInFluid(FluidTags.WATER) || i6 < l5) {
@@ -118,9 +92,9 @@ public abstract class GuiMixin extends GuiComponent {
 
 
 	@Inject(method = "renderHearts", at = @At(value = "HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-	public void changeHearts(PoseStack p_168689_, Player p_168690_, int p_168691_, int p_168692_, int p_168693_, int p_168694_, float p_168695_, int p_168696_, int p_168697_, int p_168698_, boolean p_168699_, CallbackInfo ci) {
+	public void changeHearts(GuiGraphics p_168689_, Player p_168690_, int p_168691_, int p_168692_, int p_168693_, int p_168694_, float p_168695_, int p_168696_, int p_168697_, int p_168698_, boolean p_168699_, CallbackInfo ci) {
 		SurviveHeartType gui$hearttype = SurviveHeartType.forPlayer(p_168690_);
-		int i = 9 * (p_168690_.level.getLevelData().isHardcore() ? 5 : 0);
+		int i = 9 * (p_168690_.level().getLevelData().isHardcore() ? 5 : 0);
 		int j = Mth.ceil((double)p_168695_ / 2.0D);
 		int k = Mth.ceil((double)p_168698_ / 2.0D);
 		int l = j * 2;
@@ -159,20 +133,11 @@ public abstract class GuiMixin extends GuiComponent {
 				this.renderHeart(p_168689_, gui$hearttype, l1, i2, i, false, flag3);
 			}
 		}
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
 		ci.cancel();
 	}
 
-	protected void renderHeart(PoseStack p_168701_, SurviveHeartType surviveHeartType, int p_168703_, int p_168704_, int p_168705_, boolean p_168706_, boolean p_168707_) {
-		if (surviveHeartType.usesVanilla()) {
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
-		} else {
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, new ResourceLocation(Survive.MOD_ID, "textures/gui/icons.png"));
-		}
-		this.blit(p_168701_, p_168703_, p_168704_, surviveHeartType.getX(p_168707_, p_168706_), p_168705_, 9, 9);
+	protected void renderHeart(GuiGraphics p_168701_, SurviveHeartType surviveHeartType, int p_168703_, int p_168704_, int p_168705_, boolean p_168706_, boolean p_168707_) {
+		p_168701_.blit(surviveHeartType.usesVanilla() ? new ResourceLocation("textures/gui/icons.png") : new ResourceLocation(Survive.MOD_ID, "textures/gui/icons.png"), p_168703_, p_168704_, surviveHeartType.getX(p_168707_, p_168706_), p_168705_, 9, 9);
 	}
 
 }

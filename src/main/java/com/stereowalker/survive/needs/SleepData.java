@@ -28,15 +28,15 @@ public class SleepData extends SurviveData {
 
 	@Override
 	public void tick(Player player) {
-		if (!player.level.isClientSide) {
+		if (!player.level().isClientSide) {
 			ServerPlayer serverplayer = (ServerPlayer)player;
-			Difficulty difficulty = player.level.getDifficulty();
+			Difficulty difficulty = player.level().getDifficulty();
 			if (difficulty == Difficulty.PEACEFUL)
 				this.addAwakeTime(serverplayer, -1);
 			else
 				if (player.isSleeping())
 					addAwakeTime(serverplayer, -player.getSleepTimer());
-				else if (serverplayer.level.dimensionType().bedWorks())
+				else if (serverplayer.level().dimensionType().bedWorks())
 					addAwakeTime(serverplayer, 1);
 				if (player.tickCount % 20 == 0)
 					addTiredEffect(serverplayer);

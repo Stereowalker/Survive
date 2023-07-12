@@ -66,21 +66,18 @@ import com.stereowalker.unionlib.api.collectors.ReloadListeners;
 import com.stereowalker.unionlib.api.creativetabs.CreativeTabBuilder;
 import com.stereowalker.unionlib.api.creativetabs.CreativeTabPopulator;
 import com.stereowalker.unionlib.api.registries.RegistryCollector;
-import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsScreen;
 import com.stereowalker.unionlib.config.ConfigBuilder;
 import com.stereowalker.unionlib.event.potionfluid.FluidToPotionEvent;
 import com.stereowalker.unionlib.event.potionfluid.PotionToFluidEvent;
 import com.stereowalker.unionlib.insert.Inserts;
 import com.stereowalker.unionlib.mod.MinecraftMod;
 import com.stereowalker.unionlib.mod.PacketHolder;
+import com.stereowalker.unionlib.mod.ServerSegment;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -89,8 +86,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -134,7 +129,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 
 	public Survive() 
 	{
-		super("survive", new ResourceLocation(MOD_ID, "textures/icon.png"), LoadType.BOTH);
+		super("survive", () -> new SurviveClientSegment(), () -> new ServerSegment());
 		instance = this;
 		ConfigBuilder.registerConfig(ServerConfig.class);
 		ConfigBuilder.registerConfig(CONFIG);
@@ -245,12 +240,6 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		DataMaps.Server.biomeTemperature.put(location, biomeData);
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public Screen getConfigScreen(Minecraft mc, Screen previousScreen) {
-		return new MinecraftModConfigsScreen(previousScreen, Component.translatable("gui.survive.config.title"), HYGIENE_CONFIG, STAMINA_CONFIG, TEMPERATURE_CONFIG, THIRST_CONFIG, WELLBEING_CONFIG, CONFIG);
-	}
-
 	public void debug(Object message) {
 		if (CONFIG.debugMode)getLogger().debug(message);
 	}
@@ -301,10 +290,9 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	
 	@Override
 	public void registerCreativeTabs(CreativeTabBuilder builder) {
-		builder.addTab(new ResourceLocation("survive:main_tab"), SCreativeModeTab.TAB_MAIN);
+		builder.addTab("main_tab", SCreativeModeTab.TAB_MAIN);
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void populateCreativeTabs(CreativeTabPopulator populator) {
 		//Hygiene related

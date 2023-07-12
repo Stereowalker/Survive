@@ -45,12 +45,12 @@ public class HygieneData extends SurviveData {
 			if (this.needsABath()) {
 				Random rand = new Random();
 				for(int i = 0; i < ((this.uncleanLevel-25)/10)+2; ++i) {
-					player.level.addParticle(SParticleTypes.STINK, player.getRandomX(0.5D), player.getRandomY() - 0.25D, player.getRandomZ(0.5D), (rand.nextDouble() - 0.5D) * 0.5D, -rand.nextDouble() * 0.5D, (rand.nextDouble() - 0.5D) * 0.5D);
+					player.level().addParticle(SParticleTypes.STINK, player.getRandomX(0.5D), player.getRandomY() - 0.25D, player.getRandomZ(0.5D), (rand.nextDouble() - 0.5D) * 0.5D, -rand.nextDouble() * 0.5D, (rand.nextDouble() - 0.5D) * 0.5D);
 				}
 			}
 			if (this.isSqueakyClean()) {
 				Random rand = new Random();
-				player.level.addParticle(SParticleTypes.CLEAN, player.getRandomX(0.5D), player.getRandomY() - 0.25D, player.getRandomZ(0.5D), (rand.nextDouble() - 0.5D) * 0.5D, -rand.nextDouble() * 0.5D, (rand.nextDouble() - 0.5D) * 0.5D);
+				player.level().addParticle(SParticleTypes.CLEAN, player.getRandomX(0.5D), player.getRandomY() - 0.25D, player.getRandomZ(0.5D), (rand.nextDouble() - 0.5D) * 0.5D, -rand.nextDouble() * 0.5D, (rand.nextDouble() - 0.5D) * 0.5D);
 			}
 		}
 	}

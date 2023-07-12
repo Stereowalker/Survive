@@ -7,7 +7,6 @@ import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.unionlib.core.registries.RegistryHolder;
 import com.stereowalker.unionlib.core.registries.RegistryObject;
 
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
@@ -18,13 +17,13 @@ import net.minecraft.world.level.block.Block;
 @RegistryHolder(registry = Item.class)
 public class SItems {
 	@RegistryObject("wool_hat")
-	public static final Item WOOL_HAT = new ArmorItem(SArmorMaterial.WOOL, EquipmentSlot.HEAD, new Item.Properties());
+	public static final Item WOOL_HAT = new ArmorItem(SArmorMaterial.WOOL, ArmorItem.Type.HELMET, new Item.Properties());
 	@RegistryObject("wool_jacket")
-	public static final Item WOOL_JACKET = new ArmorItem(SArmorMaterial.WOOL, EquipmentSlot.CHEST, new Item.Properties());
+	public static final Item WOOL_JACKET = new ArmorItem(SArmorMaterial.WOOL, ArmorItem.Type.CHESTPLATE, new Item.Properties());
 	@RegistryObject("wool_pants")
-	public static final Item WOOL_PANTS = new ArmorItem(SArmorMaterial.WOOL, EquipmentSlot.LEGS, new Item.Properties());
+	public static final Item WOOL_PANTS = new ArmorItem(SArmorMaterial.WOOL, ArmorItem.Type.LEGGINGS, new Item.Properties());
 	@RegistryObject("wool_boots")
-	public static final Item WOOL_BOOTS = new ArmorItem(SArmorMaterial.WOOL, EquipmentSlot.FEET, new Item.Properties());
+	public static final Item WOOL_BOOTS = new ArmorItem(SArmorMaterial.WOOL, ArmorItem.Type.BOOTS, new Item.Properties());
 	@RegistryObject("sugar_water_bottle")
 	public static final Item SUGAR_WATER_BOTTLE = new WaterBottleItem(new Item.Properties().stacksTo(1));
 	@RegistryObject("canteen")
@@ -74,11 +73,11 @@ public class SItems {
 	@RegistryObject("stiffened_honey")
 	public static final Item STIFFENED_HONEY = new Item(new Item.Properties());
 	@RegistryObject("stiffened_honey_helmet")
-	public static final Item STIFFENED_HONEY_HELMET = new ArmorItem(SArmorMaterial.STIFFENED_HONEY, EquipmentSlot.HEAD, new Item.Properties());
+	public static final Item STIFFENED_HONEY_HELMET = new ArmorItem(SArmorMaterial.STIFFENED_HONEY, ArmorItem.Type.HELMET, new Item.Properties());
 	@RegistryObject("stiffened_honey_chestplate")
-	public static final Item STIFFENED_HONEY_CHESTPLATE = new ArmorItem(SArmorMaterial.STIFFENED_HONEY, EquipmentSlot.CHEST, new Item.Properties());
+	public static final Item STIFFENED_HONEY_CHESTPLATE = new ArmorItem(SArmorMaterial.STIFFENED_HONEY, ArmorItem.Type.CHESTPLATE, new Item.Properties());
 	@RegistryObject("stiffened_honey_leggings")
-	public static final Item STIFFENED_HONEY_LEGGINGS = new ArmorItem(SArmorMaterial.STIFFENED_HONEY, EquipmentSlot.LEGS, new Item.Properties());
+	public static final Item STIFFENED_HONEY_LEGGINGS = new ArmorItem(SArmorMaterial.STIFFENED_HONEY, ArmorItem.Type.LEGGINGS, new Item.Properties());
 	@RegistryObject("stiffened_honey_boots")
-	public static final Item STIFFENED_HONEY_BOOTS = new ArmorItem(SArmorMaterial.STIFFENED_HONEY, EquipmentSlot.FEET, new Item.Properties());
+	public static final Item STIFFENED_HONEY_BOOTS = new ArmorItem(SArmorMaterial.STIFFENED_HONEY, ArmorItem.Type.BOOTS, new Item.Properties());
 }

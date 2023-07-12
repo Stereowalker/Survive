@@ -25,7 +25,7 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer {
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;sendPosition()V"))
 	public void tickInject(CallbackInfo ci) {
 		if (this.tickCount%290 == 288) {
-			if (this.level.getDifficulty() != Difficulty.PEACEFUL) {
+			if (this.level().getDifficulty() != Difficulty.PEACEFUL) {
 				new ServerboundThirstMovementPacket(this.input.forwardImpulse, this.input.leftImpulse, this.input.jumping).send();
 			}
 		}

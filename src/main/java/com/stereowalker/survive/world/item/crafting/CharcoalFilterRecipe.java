@@ -6,6 +6,7 @@ import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -51,7 +52,7 @@ public class CharcoalFilterRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv) {
+	public ItemStack assemble(CraftingContainer inv, RegistryAccess ra) {
 		for (int i = 0; i < inv.getContainerSize(); i++) {
 			ItemStack stack = inv.getItem(i);
 			if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) == Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY) {

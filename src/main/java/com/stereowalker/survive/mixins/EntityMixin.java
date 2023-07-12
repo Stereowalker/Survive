@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.Nameable;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -30,12 +31,13 @@ public abstract class EntityMixin extends net.minecraftforge.common.capabilities
 
 	@Shadow @Final protected SynchedEntityData entityData;
 	@Shadow public boolean isInPowderSnow;
-	@Shadow public Level level;
 	@Shadow public int tickCount;
+	@Shadow public Level level() {return null;}
 	@Shadow public EntityType<?> getType() {return null;}
 	@Shadow public boolean isSpectator() {return false;}
 	@Shadow public boolean canFreeze() {return false;}
 	@Shadow public boolean isFullyFrozen() {return false;}
+	@Shadow public DamageSources damageSources() {return null;}
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	public void init_inject(CallbackInfo info) {

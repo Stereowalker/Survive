@@ -12,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
+import com.stereowalker.survive.damagesource.SDamageSources;
+import com.stereowalker.survive.damagesource.SDamageTypes;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.SDamageSource;
 import com.stereowalker.survive.needs.TemperatureData;
@@ -62,7 +64,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 			}
 		}
 
-		return living.hurt(DamageSource.FREEZE, amount);
+		return living.hurt(this.damageSources().freeze(), amount);
 	}
 
 	@Redirect(method = "aiStep", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/LivingEntity;isInPowderSnow:Z"))
@@ -86,7 +88,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	@Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;tryAddFrost()V"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void aiStep_inject_2(CallbackInfo ci) {
-		if (!this.level.isClientSide && this.tickCount % 40 == 0 && this.isFullyRoasted() && this.canRoast()) {
+		if (!this.level().isClientSide && this.tickCount % 40 == 0 && this.isFullyRoasted() && this.canRoast()) {
 			int j = this.getType().is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES) ? 5 : 1;
 
 			float amount = (float)j;
@@ -107,14 +109,14 @@ public abstract class LivingEntityMixin extends EntityMixin {
 				}
 			}
 
-			this.hurt(SDamageSource.ROAST, amount);
+			this.hurt(SDamageSources.source(this.level().registryAccess(), SDamageTypes.ROAST), amount);
 		}
 	}
 
 	@Inject(method = "completeUsingItem", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/item/ItemStack;copy()Lnet/minecraft/world/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void completeUsingItem_inject(CallbackInfo ci, InteractionHand interactionhand, ItemStack copy) {
 		if (!copy.isEdible() && this instanceof IRealisticEntity) {
-			((IRealisticEntity)this).drink(this.level, copy);
+			((IRealisticEntity)this).drink(this.level(), copy);
 		}
 	}
 

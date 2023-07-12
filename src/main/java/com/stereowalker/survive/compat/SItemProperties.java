@@ -20,8 +20,8 @@ public class SItemProperties {
 			if (entity == null) {
 				return 0.0F;
 			} else {
-				if (level == null && entity.level instanceof ClientLevel) {
-					level = (ClientLevel)entity.level;
+				if (level == null && entity.level() instanceof ClientLevel) {
+					level = (ClientLevel)entity.level();
 				}
 
 				if (level == null) {

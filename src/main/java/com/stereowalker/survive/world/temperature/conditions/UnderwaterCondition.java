@@ -55,7 +55,7 @@ public class UnderwaterCondition extends TemperatureChangeCondition<UnderwaterCo
 			boolean flag = true;
 			int i = 0;
 			while(flag) {
-				if (player.level.getFluidState(player.blockPosition().above(i)).is(FluidTags.WATER)) {
+				if (player.level().getFluidState(player.blockPosition().above(i)).is(FluidTags.WATER)) {
 					i++;
 				} else {
 					flag = false;

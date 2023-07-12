@@ -7,6 +7,6 @@ import net.minecraft.world.item.ItemStack;
 public class SCreativeModeTab {
 	public static final CreativeModeTab TAB_MAIN = CreativeModeTab.builder(CreativeModeTab.Row.TOP, 1).title(Component.translatable("itemGroup.survive")).icon(() -> {
 		return new ItemStack(SItems.CANTEEN);
-	   }).displayItems((x,output,z) ->{
+	   }).displayItems((x,output) ->{
 		}).build();
 }

@@ -77,8 +77,8 @@ public class SurviveRegistryEvents
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
-		event.register(SParticleTypes.STINK, HygieneParticle.StinkFactory::new);
-		event.register(SParticleTypes.CLEAN, HygieneParticle.CleanFactory::new);
+		event.registerSpriteSet(SParticleTypes.STINK, HygieneParticle.StinkFactory::new);
+		event.registerSpriteSet(SParticleTypes.CLEAN, HygieneParticle.CleanFactory::new);
 	}
 	
 	@SubscribeEvent

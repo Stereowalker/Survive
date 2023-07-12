@@ -5,6 +5,8 @@ import java.util.Random;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.WeightHandler;
+import com.stereowalker.survive.damagesource.SDamageSources;
+import com.stereowalker.survive.damagesource.SDamageTypes;
 import com.stereowalker.survive.network.protocol.game.ServerboundArmorStaminaPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundRelaxPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhaustionPacket;
@@ -61,7 +63,7 @@ public class StaminaData extends SurviveData {
 	
 	public void eat(Item pItem, ItemStack pStack, LivingEntity entity) {
 		if (pStack.isEdible() && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(pItem))) {
-			if (entity instanceof ServerPlayer && !entity.level.isClientSide) {
+			if (entity instanceof ServerPlayer && !entity.level().isClientSide) {
 				ServerPlayer player = (ServerPlayer)entity;
 				relax(DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(pItem)).getEnergyAmount(), player.getAttributeValue(SAttributes.MAX_STAMINA));
 				save(player);
@@ -79,7 +81,7 @@ public class StaminaData extends SurviveData {
 				new ServerboundStaminaExhaustionPacket(0.0312F).send();
 		}
 		if (player.tickCount%90 == 89) {
-			if (player.level.getDifficulty() != Difficulty.PEACEFUL) {
+			if (player.level().getDifficulty() != Difficulty.PEACEFUL) {
 				new ServerboundArmorStaminaPacket().send();
 			}
 		}
@@ -92,11 +94,11 @@ public class StaminaData extends SurviveData {
 		//Sets the maximum stamina
 		this.maxStamina = Mth.floor(player.getAttributeValue(SAttributes.MAX_STAMINA));
 		//Forces the player awake if their energy is too low and it's day
-		if (player.isSleeping() && player.level.isDay() && this.energyLevel < this.maxStamina/2) {
+		if (player.isSleeping() && player.level().isDay() && this.energyLevel < this.maxStamina/2) {
 			player.sleepCounter = 0;
 		}
 		
-		Difficulty difficulty = player.level.getDifficulty();
+		Difficulty difficulty = player.level().getDifficulty();
 		int energyToRegen = 1 + (player.hasEffect(SMobEffects.WELL_FED) ? new Random().nextInt(2) : 0);
 		this.prevEnergyLevel = this.energyLevel;
 		if (this.energyExhaustionLevel > 10.0F) {
@@ -135,7 +137,7 @@ public class StaminaData extends SurviveData {
 		} else if (this.energyLevel <= 0 && this.energyReserveLevel <= 0) {
 			++this.energyTimer;
 			if (this.energyTimer >= 20) {
-				player.hurt(SDamageSource.OVERWORK, 3.0F);
+				player.hurt(SDamageSources.source(player.level().registryAccess(), SDamageTypes.OVERWORK), 3.0F);
 				//				if (player.getHealth() > 10.0F || difficulty == Difficulty.HARD || player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL) {
 				//				}
 
@@ -144,7 +146,7 @@ public class StaminaData extends SurviveData {
 		} else {
 			this.energyTimer = 0;
 		}
-		if (difficulty == Difficulty.PEACEFUL && player.level.getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION)) {
+		if (difficulty == Difficulty.PEACEFUL && player.level().getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION)) {
 			if (this.isTired() && player.tickCount % 10 == 0) {
 				this.setEnergyLevel(this.getEnergyLevel() + 1);
 			}
@@ -206,7 +208,7 @@ public class StaminaData extends SurviveData {
 	 */
 	public void addExhaustion(Player player, float exhaustion, String reason) {
 		if (!player.getAbilities().invulnerable) {
-			if (!player.level.isClientSide) {
+			if (!player.level().isClientSide) {
 				//				System.out.println("Exhause for "+reason);
 				this.addExhaustion(exhaustion);
 				this.save(player);

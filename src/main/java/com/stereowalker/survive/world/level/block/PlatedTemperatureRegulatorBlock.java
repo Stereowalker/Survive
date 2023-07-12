@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.storage.loot.LootContext.Builder;
+import net.minecraft.world.level.storage.loot.LootParams;
 
 public class PlatedTemperatureRegulatorBlock extends AbstractTemperatureRegulatorBlock implements TemperatureEmitter {
 	public static final EnumProperty<TempRegulationPlateType> TEMP_REG_TYPE = SBlockStateProperties.TEMP_REG_TYPE;
@@ -50,7 +50,7 @@ public class PlatedTemperatureRegulatorBlock extends AbstractTemperatureRegulato
 	}
 	
 	@Override
-	public List<ItemStack> getDrops(BlockState pState, Builder pBuilder) {
+	public List<ItemStack> getDrops(BlockState pState, LootParams.Builder pBuilder) {
 		List<ItemStack> drops = new ArrayList<ItemStack>();
 		drops.addAll(super.getDrops(pState, pBuilder));
 		for (int i = 0; i < pState.getValue(AbstractTemperatureRegulatorBlock.PLATE_COUNT); i++) {

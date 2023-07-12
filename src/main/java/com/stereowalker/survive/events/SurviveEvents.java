@@ -103,14 +103,14 @@ public class SurviveEvents {
 	}
 	
 	public static void desyncClient(Player player) {
-		if (!player.level.isClientSide && DataMaps.Server.syncedClients.containsKey(player.getUUID()) ) {
+		if (!player.level().isClientSide && DataMaps.Server.syncedClients.containsKey(player.getUUID()) ) {
 			Survive.getInstance().getLogger().info("Removing Client ("+player.getDisplayName().getString()+") From Survive Data Sync List");
 			DataMaps.Server.syncedClients.put(player.getUUID(), false); 
 		}
 	}
 
 	public static void sendToClient(LivingEntity living) {
-		if (living != null && !living.level.isClientSide && living instanceof ServerPlayer player) {
+		if (living != null && !living.level().isClientSide && living instanceof ServerPlayer player) {
 			new ClientboundSurvivalStatsPacket(player).send(player);
 			if (!DataMaps.Server.syncedClients.containsKey(player.getUUID()))
 				DataMaps.Server.syncedClients.put(player.getUUID(), false); 
@@ -148,7 +148,7 @@ public class SurviveEvents {
 			return false;
 		} else {
 			Biome biome = world.getBiome(position).value();
-			return biome.getPrecipitation() == Biome.Precipitation.SNOW || 
+			return biome.getPrecipitationAt(position) == Biome.Precipitation.SNOW || 
 					biome.getTemperature(position) <= 0.15F || 
 					ModHelper.isPrimalWinterLoaded() || 
 					(ModHelper.isSereneSeasonsLoaded() && SereneSeasonsCompat.snowsHere(world, position));
@@ -156,13 +156,13 @@ public class SurviveEvents {
 	}
 
 	public static void updateEnvTemperature(LivingEntity living) {
-		if (living != null && living instanceof ServerPlayer player && !living.level.isClientSide) {
+		if (living != null && living instanceof ServerPlayer player && !living.level().isClientSide) {
 			SurviveEntityStats.addWetTime(player, player.isUnderWater() ? 2 : player.isInWaterOrRain() ? 1 : -2);
 		}
 		if (living != null && living instanceof ServerPlayer player) {
 			if (player.isAlive()) {
 				for (ResourceLocation queryId : TemperatureQuery.queries.keySet()) {
-					double queryValue = TemperatureQuery.queries.get(queryId).getA().run(player, SurviveEntityStats.getTemperatureStats(player).getTemperatureLevel(), player.level, player.blockPosition(), true);
+					double queryValue = TemperatureQuery.queries.get(queryId).getA().run(player, SurviveEntityStats.getTemperatureStats(player).getTemperatureLevel(), player.level(), player.blockPosition(), true);
 					TemperatureData.setTemperatureModifier(player, queryId, queryValue, TemperatureQuery.queries.get(queryId).getB());
 				}
 			}
@@ -415,7 +415,7 @@ public class SurviveEvents {
 		float f5 = Mth.sin(-f * ((float)Math.PI / 180F));
 		float f6 = f3 * f4;
 		float f7 = f2 * f4;
-		double d0 = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
+		double d0 = player.getAttribute(ForgeMod.BLOCK_REACH.get()).getValue();
 		Vec3 vec3d1 = vec3d.add((double)f6 * d0, (double)f5 * d0, (double)f7 * d0);
 		return worldIn.clip(new ClipContext(vec3d, vec3d1, ClipContext.Block.OUTLINE, fluidMode, player));
 	}

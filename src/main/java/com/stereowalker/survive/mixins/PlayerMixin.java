@@ -63,10 +63,10 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	public void tickInject(CallbackInfo ci) {
 		SurviveEntityStats.addStatsOnSpawn((Player)(Object)this);
 		//
-		if (!this.level.isClientSide && (Player)(Object)this instanceof ServerPlayer) {
+		if (!this.level().isClientSide && (Player)(Object)this instanceof ServerPlayer) {
 			ServerPlayer player = (ServerPlayer)(Object)this;
 			if (Survive.THIRST_CONFIG.enabled) {
-				if (player.level.getDifficulty() == Difficulty.PEACEFUL && player.level.getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION)) {
+				if (player.level().getDifficulty() == Difficulty.PEACEFUL && player.level().getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION)) {
 					if (getWaterData().needWater() && player.tickCount % 10 == 0) {
 						getWaterData().setWaterLevel(getWaterData().getWaterLevel() + 1);
 					}
@@ -75,7 +75,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			}
 		}
 		//
-		if (!this.level.isClientSide) {
+		if (!this.level().isClientSide) {
 			getStaminaData().baseTick((Player)(Object)this);
 			getHygieneData().baseTick((Player)(Object)this);
 			this.nutritionData.baseTick((Player)(Object)this);

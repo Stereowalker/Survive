@@ -3,6 +3,8 @@ package com.stereowalker.survive.needs;
 import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.config.ServerConfig;
+import com.stereowalker.survive.damagesource.SDamageSources;
+import com.stereowalker.survive.damagesource.SDamageTypes;
 import com.stereowalker.survive.world.effect.SMobEffects;
 
 import net.minecraft.nbt.CompoundTag;
@@ -65,7 +67,7 @@ public class CustomFoodData extends FoodData {
 
 	@Override
 	public void tick(Player pPlayer) {
-		Difficulty difficulty = pPlayer.level.getDifficulty();
+		Difficulty difficulty = pPlayer.level().getDifficulty();
 		//Well fed
 		if (this.wellFed) {
 			if (this.foodLevel == 20) {
@@ -105,7 +107,7 @@ public class CustomFoodData extends FoodData {
 			super.tick(pPlayer);
 			this.tickTimer = tickTimer2+1;
 			if (this.tickTimer >= 10) {
-				pPlayer.hurt(SDamageSource.OVEREAT, 1.0F);
+				pPlayer.hurt(SDamageSources.source(pPlayer.level().registryAccess(), SDamageTypes.OVEREAT), 1.0F);
 				this.tickTimer = 0;
 			}
 		} else {

@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.stereowalker.survive.core.SurviveEntityStats;
-import com.stereowalker.survive.needs.SDamageSource;
+import com.stereowalker.survive.damagesource.SDamageSources;
+import com.stereowalker.survive.damagesource.SDamageTypes;
 import com.stereowalker.survive.needs.StaminaData;
 
 import net.minecraft.world.effect.MobEffect;
@@ -24,12 +25,12 @@ public class UnwellMobEffect extends MobEffect {
 		StaminaData energyStats = SurviveEntityStats.getEnergyStats(entityLivingBaseIn);
 		if (this == SMobEffects.HYPOTHERMIA && entityLivingBaseIn instanceof Player) {
 			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/3.5F)
-				entityLivingBaseIn.hurt(SDamageSource.HYPOTHERMIA, 0.8F);
+				entityLivingBaseIn.hurt(SDamageSources.source(entityLivingBaseIn.level().registryAccess(), SDamageTypes.HYPOTHERMIA), 0.8F);
 			if ((float)energyStats.getEnergyLevel() > ((float)energyStats.getEnergyLevel())*0.3)
 				energyStats.addExhaustion((Player) entityLivingBaseIn, (1.0F * (float)(amplifier + 1)), "Hypothermia effect");
 		} else if (this == SMobEffects.HYPERTHERMIA && entityLivingBaseIn instanceof Player) {
 			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/3.5F)
-				entityLivingBaseIn.hurt(SDamageSource.HYPERTHERMIA, 0.8F);
+				entityLivingBaseIn.hurt(SDamageSources.source(entityLivingBaseIn.level().registryAccess(), SDamageTypes.HYPERTHERMIA), 0.8F);
 			if ((float)energyStats.getEnergyLevel() > ((float)energyStats.getEnergyLevel())*0.3)
 				energyStats.addExhaustion((Player) entityLivingBaseIn, (1.0F * (float)(amplifier + 1)), "Hyperthermia effect");
 		}

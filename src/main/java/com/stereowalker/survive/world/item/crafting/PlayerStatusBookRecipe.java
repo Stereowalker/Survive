@@ -5,6 +5,7 @@ import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.world.item.SItems;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -41,7 +42,7 @@ public class PlayerStatusBookRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv) {
+	public ItemStack assemble(CraftingContainer inv, RegistryAccess ra) {
 		if (!ServerConfig.canCraftStatusBook) return ItemStack.EMPTY;
 		for (int i = 0; i < inv.getContainerSize(); i++) {
 			ItemStack stack = inv.getItem(i);

@@ -71,7 +71,7 @@ public class PurifiedWaterCraftingSerializer implements RecipeSerializer<Purifie
           ingredient.toNetwork(pBuffer);
        }
 
-       pBuffer.writeItem(pRecipe.getResultItem());
+       pBuffer.writeItem(pRecipe.getResultItem(null));
     }
 	
 	protected static NonNullList<Ingredient> add(NonNullList<Ingredient> ing){

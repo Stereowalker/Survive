@@ -73,28 +73,28 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 	public boolean handleOnServer(ServerPlayer sender) {
 		if (Survive.THIRST_CONFIG.enabled) {
 			final ItemStack heldItem = sender.getItemInHand(hand);
-			BlockState block = sender.level.getBlockState(pos);
-			FluidState fluid = sender.level.getFluidState(pos);
+			BlockState block = sender.level().getBlockState(pos);
+			FluidState fluid = sender.level().getFluidState(pos);
 			if (heldItem.isEmpty()) {
 				if (sender.isCrouching()) {
 					WaterData waterStats = ((IRealisticEntity)sender).getWaterData();
 					if (waterStats.needWater()) {
 						boolean flag = false;
 						if (block.getBlock() == Blocks.WATER_CAULDRON) {
-							LayeredCauldronBlock.lowerFillLevel(block, sender.level, pos);
+							LayeredCauldronBlock.lowerFillLevel(block, sender.level(), pos);
 							flag = true;
 						} else if (canDrinkThis(fluid, Survive.THIRST_CONFIG.drinkFromFlowingWater)) {
 							if (shouldRemoveSource(fluid)) {
-								sender.level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+								sender.level().setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 							}
 							flag = true;
-						} else if (sender.level.isRainingAt(pos)) {
+						} else if (sender.level().isRainingAt(pos)) {
 							flag = true;
 						}
 						if (flag) {
 							waterStats.drink((int) waterAmount, (float) hydrationAmount, WaterData.applyThirst(sender, addThirst/*TODO MAKE BIOMES HAVE DIFFERENT THIRST CHANCES*/));
 						}
-						sender.level.playSound(sender, pos, new ItemStack(Items.POTION).getDrinkingSound(), SoundSource.PLAYERS, 0.5F, sender.level.random.nextFloat() * 0.1F + 0.9F);
+						sender.level().playSound(sender, pos, new ItemStack(Items.POTION).getDrinkingSound(), SoundSource.PLAYERS, 0.5F, sender.level().random.nextFloat() * 0.1F + 0.9F);
 						sender.swing(InteractionHand.MAIN_HAND);
 						new ClientboundDrinkSoundPacket(pos).send(sender);
 					}

@@ -136,9 +136,9 @@ public class NeedsCommand {
 		}
 
 		if (pTargets.size() == 1) {
-			source.sendSuccess(Component.translatable("commands.needs.restore."+type.getSerializedName()+".success.single", amount, pTargets.iterator().next().getDisplayName()), true);
+			source.sendSuccess(()->Component.translatable("commands.needs.restore."+type.getSerializedName()+".success.single", amount, pTargets.iterator().next().getDisplayName()), true);
 		} else {
-			source.sendSuccess(Component.translatable("commands.needs.restore."+type.getSerializedName()+".success.multiple", amount, pTargets.size()), true);
+			source.sendSuccess(()->Component.translatable("commands.needs.restore."+type.getSerializedName()+".success.multiple", amount, pTargets.size()), true);
 		}
 		return pTargets.size();
 	}
@@ -180,9 +180,9 @@ public class NeedsCommand {
 		}
 
 		if (pTargets.size() == 1) {
-			source.sendSuccess(Component.translatable("commands.needs.deplete."+type.getSerializedName()+".success.single", amount, pTargets.iterator().next().getDisplayName()), true);
+			source.sendSuccess(()->Component.translatable("commands.needs.deplete."+type.getSerializedName()+".success.single", amount, pTargets.iterator().next().getDisplayName()), true);
 		} else {
-			source.sendSuccess(Component.translatable("commands.needs.deplete."+type.getSerializedName()+".success.multiple", amount, pTargets.size()), true);
+			source.sendSuccess(()->Component.translatable("commands.needs.deplete."+type.getSerializedName()+".success.multiple", amount, pTargets.size()), true);
 		}
 		return pTargets.size();
 	}
@@ -216,8 +216,8 @@ public class NeedsCommand {
 			result = realisticPlayer.getWaterData().getHydrationLevel();
 			break;
 		}
-
-		source.sendSuccess(Component.translatable("commands.needs.query."+type.getSerializedName(), pTarget.getDisplayName(), result), true);
+		final float r = result;
+		source.sendSuccess(()->Component.translatable("commands.needs.query."+type.getSerializedName(), pTarget.getDisplayName(), r), true);
 		return Mth.floor(result);
 	}
 

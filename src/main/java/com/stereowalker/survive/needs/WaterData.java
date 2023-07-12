@@ -5,6 +5,8 @@ import java.util.Random;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.core.SurviveEntityStats;
+import com.stereowalker.survive.damagesource.SDamageSources;
+import com.stereowalker.survive.damagesource.SDamageTypes;
 import com.stereowalker.survive.json.ConsummableJsonHolder;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
@@ -90,7 +92,7 @@ public class WaterData extends SurviveData {
 			}
 		}
 		
-		Difficulty difficulty = player.level.getDifficulty();
+		Difficulty difficulty = player.level().getDifficulty();
 		this.prevWaterLevel = this.waterLevel;
 		
 		int amplifier = -1;
@@ -113,12 +115,12 @@ public class WaterData extends SurviveData {
 				this.waterLevel = Math.max(this.waterLevel - (5 - Mth.ceil(this.waterHydrationLevel)), 0);
 		}
 
-		boolean flag = player.level.getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION);
+		boolean flag = player.level().getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION);
 		if (this.waterLevel >= 40) {
 			++this.waterTimer;
 			if (this.waterTimer >= 10) {
 				if (player.getHealth() > 10.0F || difficulty == Difficulty.HARD || player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL) {
-					player.hurt(SDamageSource.OVERHYDRATE, 1.0F);
+					player.hurt(SDamageSources.source(player.level().registryAccess(), SDamageTypes.OVERHYDRATE), 1.0F);
 				}
 
 				this.waterTimer = 0;
@@ -134,7 +136,7 @@ public class WaterData extends SurviveData {
 			++this.waterTimer;
 			if (this.waterTimer >= 80) {
 				if (player.getHealth() > 10.0F || difficulty == Difficulty.HARD || player.getHealth() > 1.0F && difficulty == Difficulty.NORMAL) {
-					player.hurt(SDamageSource.DEHYDRATE, 1.0F);
+					player.hurt(SDamageSources.source(player.level().registryAccess(), SDamageTypes.DEHYDRATE), 1.0F);
 				}
 
 				this.waterTimer = 0;
@@ -216,7 +218,7 @@ public class WaterData extends SurviveData {
 	 */
 	public void addExhaustion(Player player, float exhaustion) {
 		if (!player.getAbilities().invulnerable) {
-			if (!player.level.isClientSide) {
+			if (!player.level().isClientSide) {
 				this.addExhaustion(exhaustion);
 				save(player);
 			}
