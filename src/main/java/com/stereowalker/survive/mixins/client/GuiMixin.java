@@ -56,7 +56,7 @@ public abstract class GuiMixin {
 
 
 	@Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V"))
-	public void hotbarColor(float p_283031_, GuiGraphics p_282108_, CallbackInfo ci) {
+	public void hotbarColor(float p_283031_, GuiGraphics guiGraphics, CallbackInfo ci) {
 		Player playerentity = this.getCameraPlayer();
 		if (Survive.TEMPERATURE_CONFIG.enabled && Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
 			double displayTemp = SurviveEntityStats.getTemperatureStats(playerentity).getDisplayTemperature();
@@ -64,8 +64,14 @@ public abstract class GuiMixin {
 			float heatTemp = (float) (1.0F - displayTemp);
 			float coldTemp = (float) (1.0F + displayTemp);
 			float whiteTemp = (float) ((1.0F - Math.abs(displayTemp))/2 + 0.5F);
-			p_282108_.setColor(coldTemp, whiteTemp, heatTemp, 1.0F);
+			guiGraphics.setColor(coldTemp, whiteTemp, heatTemp, 1.0F);
 		}
+	}
+
+
+	@Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V"))
+	public void resetHotbarColor(float p_283031_, GuiGraphics guiGraphics, CallbackInfo ci) {
+		guiGraphics.setColor(1f, 1f, 1f, 1f);
 	}
 
 	@Inject(method = "renderPlayerHealth", at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/util/profiling/ProfilerFiller;pop()V"), locals = LocalCapture.CAPTURE_FAILHARD)
