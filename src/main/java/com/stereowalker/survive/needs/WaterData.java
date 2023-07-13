@@ -8,6 +8,7 @@ import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.damagesource.SDamageSources;
 import com.stereowalker.survive.damagesource.SDamageTypes;
 import com.stereowalker.survive.json.ConsummableJsonHolder;
+import com.stereowalker.survive.needs.CustomFoodData.StomachCapacity;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.item.SItems;
@@ -46,7 +47,11 @@ public class WaterData extends SurviveData {
 	 * Add water stats.
 	 */
 	public void drink(int waterLevelIn, float waterHydrationModifier, boolean isUnclean) {
-		this.waterLevel = Math.min(waterLevelIn + this.waterLevel, ServerConfig.stomachCapacity());
+		int capacity = 20;
+		if (ServerConfig.stomachCapacity == StomachCapacity.DOUBLED) capacity = 40;
+		else if (ServerConfig.stomachCapacity == StomachCapacity.LIMITED && this.waterLevel < 20) capacity = 40;
+		else if (ServerConfig.stomachCapacity == StomachCapacity.LIMITED && this.waterLevel >= 20) capacity = this.waterLevel;
+		this.waterLevel = Math.min(waterLevelIn + this.waterLevel, capacity);
 		if (this.waterHydrationLevel >= waterHydrationModifier) {
 			this.waterHydrationLevel = waterHydrationModifier;
 		} else if (this.waterHydrationLevel < waterHydrationModifier) {
@@ -203,7 +208,16 @@ public class WaterData extends SurviveData {
 	 * Get whether the player must drink water.
 	 */
 	public boolean needWater() {
-		return this.waterLevel < ServerConfig.stomachCapacity();
+		switch (ServerConfig.stomachCapacity) {
+			case VANILLA:
+				return this.waterLevel < 20;
+			case LIMITED:
+				return this.waterLevel < 20;
+			case DOUBLED:
+				return this.waterLevel < 40;
+			default:
+				return this.waterLevel < 20;
+		}
 	}
 
 	/**

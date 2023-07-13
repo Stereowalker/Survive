@@ -1,6 +1,8 @@
 package com.stereowalker.survive.needs;
 
 import com.mojang.datafixers.util.Pair;
+import com.stereowalker.survive.FoodUtils;
+import com.stereowalker.survive.FoodUtils.State;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.damagesource.SDamageSources;
@@ -36,18 +38,17 @@ public class CustomFoodData extends FoodData {
 	public void eat(int pFoodLevelModifier, float pSaturationLevelModifier) {
 		int foodLevel = this.foodLevel;
 		super.eat(pFoodLevelModifier, pSaturationLevelModifier);
-		if (ServerConfig.expandedStomachCapacity) {
-			this.foodLevel = Math.min(pFoodLevelModifier + foodLevel, ServerConfig.stomachCapacity());
-			if (this.foodLevel == 20 && foodLevel < 20) {
-				this.wellFed = true;
-			}
+		int capacity = 20;
+		if (ServerConfig.stomachCapacity == StomachCapacity.DOUBLED) capacity = 40;
+		else if (ServerConfig.stomachCapacity == StomachCapacity.LIMITED && this.foodLevel < 20) capacity = 40;
+		else if (ServerConfig.stomachCapacity == StomachCapacity.LIMITED && this.foodLevel >= 20) capacity = this.foodLevel;
+		if (ServerConfig.stomachCapacity == StomachCapacity.DOUBLED || ServerConfig.stomachCapacity == StomachCapacity.LIMITED) {
+			this.foodLevel = Math.min(pFoodLevelModifier + foodLevel, capacity);
+			if (this.foodLevel == 20 && foodLevel < 20) this.wellFed = true;
 			else if (this.foodLevel > 20 && foodLevel < 20 && (pFoodLevelModifier/2) < (this.foodLevel-20)) {
 				this.causeAche = true;
-			} else if (this.foodLevel > 20 && foodLevel >= 20){
-				this.causeAche = true;
-			} else {
-				this.causeAche = false;
-			}
+			} else if (this.foodLevel > 20 && foodLevel >= 20) this.causeAche = true; 
+			else this.causeAche = false;
 		}
 	}
 
@@ -72,9 +73,7 @@ public class CustomFoodData extends FoodData {
 		if (this.wellFed) {
 			if (this.foodLevel == 20) {
 				pPlayer.addEffect(new MobEffectInstance(SMobEffects.WELL_FED, 300, 0));
-			} else {
-				this.wellFed = false;
-			}
+			} else this.wellFed = false;
 		}
 		
 		int amplifier = -1;
@@ -119,7 +118,16 @@ public class CustomFoodData extends FoodData {
 	 * Get whether the player can eat food.
 	 */
 	public boolean canConsumeFood() {
-		return this.needsFood() || this.getFoodLevel() < ServerConfig.stomachCapacity();
+		switch (ServerConfig.stomachCapacity) {
+			case VANILLA:
+				return this.needsFood();
+			case LIMITED:
+				return this.needsFood();
+			case DOUBLED:
+				return this.foodLevel < 40;
+			default:
+				return this.needsFood();
+		}
 	}
 
 	@Override
@@ -139,4 +147,6 @@ public class CustomFoodData extends FoodData {
 		pCompoundTag.putBoolean("foodCauseAche", this.causeAche);
 		pCompoundTag.putBoolean("foodWellFed", this.wellFed);
 	}
+	
+	public enum StomachCapacity {DOUBLED, LIMITED, VANILLA}
 }

@@ -3,6 +3,8 @@ package com.stereowalker.survive.config;
 import java.util.List;
 
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.needs.CustomFoodData;
+import com.stereowalker.survive.needs.CustomFoodData.StomachCapacity;
 import com.stereowalker.unionlib.config.UnionConfig;
 
 import net.minecraftforge.fml.config.ModConfig.Type;
@@ -19,8 +21,7 @@ public class ServerConfig {
 	static final String THIR = "Hunger & Thirst";
 	@UnionConfig.Entry(group = THIR , name = "Expanded Stomach Capacity", type = Type.SERVER)
 	@UnionConfig.Comment(comment = {"Should the player be allowed to eat or drink beyond the maximum capacity"})
-	public static boolean expandedStomachCapacity = true;
-	public static int stomachCapacity() {return (ServerConfig.expandedStomachCapacity?40:20);}
+	public static CustomFoodData.StomachCapacity stomachCapacity = StomachCapacity.LIMITED;
 	
 	//
 	//Hunger
