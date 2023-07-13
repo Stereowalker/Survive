@@ -1,10 +1,18 @@
 {
 	"name": "item.survive.survival_guide",
-	"creative_tab": "survive",
+	"creative_tab": "survive:main_tab",
 	"model": "survive:survival_guide",
 	"book_texture": "patchouli:textures/gui/book_purple.png",
 	"landing_text": "text.survive.survival_guide.landing",
+	"use_resource_pack": true,
 	"show_toasts": true,
 	"i18n": true,
-	"version": 1
+	"macros": {
+    	"$(fresh)": "$(#33aa33)$(l)Fresh$()",
+    	"$(good)": "$(#00aa00)$(l)Good$()",
+    	"$(okay)": "$(#aaaa00)$(l)Okay$()",
+    	"$(spoiling)": "$(#55aa00)$(l)Spoiling$()",
+    	"$(spoiled)": "$(#335500)$(l)Spoiled$()"
+	},
+	"version": 2
 }

@@ -1,0 +1,27 @@
+{
+    "name": "book.survive.entry.spoiling.name",
+    "icon": "minecraft:rotten_flesh",
+    "category": "survive:food",
+    "secret": false,
+    "priority": false,
+    "read_by_default": false,
+    "sortnum": 70,
+    "pages": [
+        {
+            "type": "text",
+            "text": "book.survive.entry.spoiling.page.1"
+        },
+        {
+            "type": "text",
+            "text": "book.survive.entry.spoiling.page.2"
+        },
+        {
+            "type": "text",
+            "text": "book.survive.entry.spoiling.page.3"
+        },
+        {
+            "type": "empty",
+            "draw_filler": false
+        }
+    ]
+}

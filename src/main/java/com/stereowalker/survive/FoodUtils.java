@@ -34,7 +34,7 @@ public class FoodUtils {
 			else if (foodStatus(stack, player.level()) == State.Spoiled)
 				tip.add(Component.literal("Spoiled").setStyle(Style.EMPTY.withColor(0x88aa00)));
 			else
-				tip.add(Component.literal("Okay").setStyle(Style.EMPTY.withColor(0xffffff)));
+				tip.add(Component.literal("Okay").setStyle(Style.EMPTY.withColor(0xffff00)));
 		}
 	}
 	

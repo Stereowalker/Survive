@@ -381,10 +381,6 @@ public class SurviveEvents {
 		Fluid fluid = event.getLevel().getFluidState(blockpos).getType();
 		BlockState stateUnder = event.getLevel().getBlockState(event.getPos().below());
 		if (event.getLevel().isClientSide && event.getItemStack().isEmpty()) {
-			System.out.println(DataMaps.Client.fluid.keySet().size()+" BAsic Ticks "+RegistryHelper.fluids().getKey(fluid));
-			for (ResourceLocation k : DataMaps.Client.fluid.keySet()) {
-				System.out.println(k);
-			}
 			//Source Block Of Water
 			if (DataMaps.Client.fluid.containsKey(RegistryHelper.fluids().getKey(fluid))) {
 				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(RegistryHelper.fluids().getKey(fluid));
