@@ -57,6 +57,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	public void eatInject(Level pLevel, ItemStack pFood, CallbackInfoReturnable<ItemStack> cir) {
 		this.getStaminaData().eat(pFood.getItem(), pFood, this);
 		this.getWaterData().drink(pFood.getItem(), pFood, this);
+		this.getRealFoodData().markAsSpoiled(pFood, this);
 	}
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/world/entity/player/Player;updateIsUnderwater()Z"))

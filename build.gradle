@@ -83,11 +83,11 @@ dependencies {
 	compileOnly fg.deobf("mezz.jei:jei-${modMinecraftVersion}-forge-api:"+jeiVersion)
 	compileOnly fg.deobf("com.stereowalker.combat:C.O.M.B.A.T:1.18.2"+/*modMinecraftVersion+*/"-"+combatVersion+":api")
     //compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
-    compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.19.2-77:api")
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${modMinecraftVersion}-${patchouliVersion}-FORGE:api")
 	
 	runtimeOnly fg.deobf("mezz.jei:jei-${modMinecraftVersion}-forge:"+jeiVersion+"")
 	//runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:"+modMinecraftVersion+"-"+caelusVersion+"") 
-    //runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.19.2"+/*modMinecraftVersion+*/"-"+patchouliVersion+"")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${modMinecraftVersion}-${patchouliVersion}-FORGE")
 	
 	implementation fg.deobf("curse.maven:biomes-o-plenty-220318:"+bopID)
     implementation fg.deobf("com.github.glitchfiend:TerraBlender-forge:${modMinecraftVersion}-3.0.0.164")

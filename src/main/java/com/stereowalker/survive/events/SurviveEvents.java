@@ -7,6 +7,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Triple;
 
 import com.mojang.datafixers.util.Pair;
+import com.stereowalker.survive.FoodUtils;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.api.IBlockPropertyHandler;
 import com.stereowalker.survive.api.IBlockPropertyHandler.PropertyPair;
@@ -166,6 +167,9 @@ public class SurviveEvents {
 					TemperatureData.setTemperatureModifier(player, queryId, queryValue, TemperatureQuery.queries.get(queryId).getB());
 				}
 			}
+		}
+		if (living instanceof Player player) {
+			FoodUtils.giveLifespanToFoodInInventory(player);
 		}
 	}
 

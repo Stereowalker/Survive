@@ -24,6 +24,8 @@ public class CustomFoodData extends FoodData {
 	int uncleanConsumption = 0;
 	boolean causeAche = false;
 	boolean wellFed = false;
+	//Do not serialize
+	FoodUtils.State isSpoiled = State.Okay;
 
 	public CustomFoodData(FoodData originalFoodData) {
 		this.foodLevel = originalFoodData.foodLevel;
@@ -37,7 +39,15 @@ public class CustomFoodData extends FoodData {
 	@Override
 	public void eat(int pFoodLevelModifier, float pSaturationLevelModifier) {
 		int foodLevel = this.foodLevel;
-		super.eat(pFoodLevelModifier, pSaturationLevelModifier);
+		float satMod = 1.0f;
+		
+		if (isSpoiled == State.Spoiled) pFoodLevelModifier = pFoodLevelModifier/2;
+		
+		if (isSpoiled == State.Fresh) satMod = 1.5f;
+		else if (isSpoiled == State.Good) satMod = 1.1f;
+		else if (isSpoiled == State.Spoiling) satMod = 0.9f;
+		else if (isSpoiled == State.Spoiled) satMod = 0.5f;
+		super.eat(pFoodLevelModifier, pSaturationLevelModifier * satMod);
 		int capacity = 20;
 		if (ServerConfig.stomachCapacity == StomachCapacity.DOUBLED) capacity = 40;
 		else if (ServerConfig.stomachCapacity == StomachCapacity.LIMITED && this.foodLevel < 20) capacity = 40;
@@ -58,11 +68,19 @@ public class CustomFoodData extends FoodData {
 		if (pItem.isEdible()) {
 			FoodProperties foodproperties = pStack.getFoodProperties(entity);
 			for (Pair<MobEffectInstance, Float> effect : foodproperties.getEffects()) {
-				if (effect.getFirst().getEffect() == MobEffects.HUNGER) {
+				if (effect.getFirst().getEffect() == MobEffects.HUNGER || isSpoiled == State.Spoiled) {
 					uncleanConsumption++;
 					break;
 				}
 			}
+		}
+	}
+	
+	public void markAsSpoiled(ItemStack stack, LivingEntity living) {
+		isSpoiled = FoodUtils.foodStatus(stack, living.level());
+		if (isSpoiled == State.Spoiled) {
+			living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 1200));
+			living.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200));
 		}
 	}
 

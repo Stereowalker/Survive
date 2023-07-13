@@ -195,6 +195,10 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addInsert(Inserts.LIVING_TICK, SurviveEvents::updateEnvTemperature);
 		collector.addInsert(Inserts.PLAYER_RESTORE, SurviveEvents::restoreStats);
 		collector.addInsert(Inserts.LOGGED_OUT, SurviveEvents::desyncClient);
+		collector.addInsert(Inserts.ITEM_TOOLTIP, (stack, player, tip, flag)->{
+			if (player != null)
+				FoodUtils.applyFoodStatusToTooltip(player, stack, tip);
+		});
 	}
 	
 	@Override

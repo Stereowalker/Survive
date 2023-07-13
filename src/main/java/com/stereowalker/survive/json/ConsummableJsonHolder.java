@@ -27,6 +27,7 @@ public class ConsummableJsonHolder implements JsonHolder {
 	private int hungerAmount = 0;
 	private float saturationAmount = 0;
 	private float hungerChance = 0;
+	private int timeUntilSpoil = 12000;
 	//Stamina
 	private int energyAmount = 0;
 	//Nutrition
@@ -44,6 +45,7 @@ public class ConsummableJsonHolder implements JsonHolder {
 	public ConsummableJsonHolder(ResourceLocation itemID, JsonObject object) {
 		String THIRST = "thirst";
 		String THIRSTY = "thirst_chance";
+		String TimeUntilSpoil = "time_until_spoil";
 		String HUNGER = "hunger";
 		String ENERGY = "energy";
 		String SATURATION = "saturation";
@@ -73,6 +75,12 @@ public class ConsummableJsonHolder implements JsonHolder {
 				if(this.hasMemberAndIsPrimitive(THIRSTY, object)) {
 					setWorkingOn(THIRSTY);
 					thirstChance = object.get(THIRSTY).getAsFloat();
+					stopWorking();
+				}
+				
+				if(this.hasMemberAndIsPrimitive(TimeUntilSpoil, object)) {
+					setWorkingOn(TimeUntilSpoil);
+					timeUntilSpoil = object.get(TimeUntilSpoil).getAsInt();
 					stopWorking();
 				}
 				
@@ -164,6 +172,10 @@ public class ConsummableJsonHolder implements JsonHolder {
 
 	public int getThirstAmount() {
 		return thirstAmount;
+	}
+
+	public int getTimeUntilSpoil() {
+		return timeUntilSpoil;
 	}
 
 	public float getHydrationAmount() {
