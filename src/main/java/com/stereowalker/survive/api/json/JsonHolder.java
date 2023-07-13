@@ -27,6 +27,14 @@ public interface JsonHolder {
 		return f;
 	}
 	
+	public default int workOnInt(String member, JsonObject object) {
+		int i = 0;
+		setWorkingOn(member);
+		i = object.get(member).getAsInt();
+		stopWorking();
+		return i;
+	}
+	
 	public default void stopWorking() {
 		setWorkingOn("NOTHING");
 	}

@@ -3,6 +3,8 @@
 	"thirst": -4,
 	"hydration": 2.2,
 	"thirst_chance": 0.5,
+	"lifespan": 1,
+	"ticks_fresh": 1,
 	"gives_chilled_effect": false,
 	"gives_heated_effect": false,
 	"gives_energizing_effect": false

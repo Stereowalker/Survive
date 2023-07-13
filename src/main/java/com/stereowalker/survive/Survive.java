@@ -199,6 +199,10 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			if (player != null)
 				FoodUtils.applyFoodStatusToTooltip(player, stack, tip);
 		});
+		collector.addInsert(Inserts.MENU_OPEN, (player, menu)->{
+			if (player != null)
+				FoodUtils.giveLifespanToFood(menu.getItems(), player.level().getGameTime());
+		});
 	}
 	
 	@Override

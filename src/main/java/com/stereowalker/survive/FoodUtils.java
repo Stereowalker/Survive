@@ -2,9 +2,11 @@ package com.stereowalker.survive;
 
 import java.util.List;
 
+import com.stereowalker.survive.json.FoodJsonHolder;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
@@ -15,10 +17,10 @@ public class FoodUtils {
 	public enum State {Fresh, Good, Okay, Spoiling, Spoiled}
 	
 	public static final String EXPIRE = "expiry_date";
-	public static void giveLifespanToFoodInInventory(Player player) {
-		player.getInventory().items.forEach((stack) -> {
+	public static void giveLifespanToFood(NonNullList<ItemStack> items, long gametime) {
+		items.forEach((stack) -> {
 			if (stack.isEdible() && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem())) && !stack.getOrCreateTag().contains(EXPIRE)) {
-				stack.getTag().putLong(EXPIRE, player.level().getGameTime() + DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).getTimeUntilSpoil());
+				stack.getTag().putLong(EXPIRE, gametime + DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan());
 			}
 		});
 	}
@@ -40,15 +42,16 @@ public class FoodUtils {
 	
 	public static State foodStatus(ItemStack stack, Level level) {
 		if (stack.getTag() != null && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem())) && stack.getTag().contains(EXPIRE)) {
+			FoodJsonHolder food = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem()));
 			long timeTill = stack.getTag().getInt(EXPIRE) - level.getGameTime();
-			long timeSince = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).getTimeUntilSpoil() - timeTill;
+			long timeSince = food.lifespan() - timeTill;
 			if (timeTill < 0) {
 				return State.Spoiled;
-			} else if (timeTill <= 2400) {
+			} else if (timeTill <= food.ticksFresh() * 2) {
 				return State.Spoiling;
-			} else if (timeSince <= 1200) {
+			} else if (timeSince <= food.ticksFresh()) {
 				return State.Fresh;
-			} else if (timeSince <= 3600) {
+			} else if (timeSince <= food.ticksFresh() * 3) {
 				return State.Good;
 			}
 		}

@@ -27,7 +27,8 @@ public class ConsummableJsonHolder implements JsonHolder {
 	private int hungerAmount = 0;
 	private float saturationAmount = 0;
 	private float hungerChance = 0;
-	private int timeUntilSpoil = 12000;
+	private int timeFresh = 12000;
+	private int lifespan = 156000;
 	//Stamina
 	private int energyAmount = 0;
 	//Nutrition
@@ -44,8 +45,6 @@ public class ConsummableJsonHolder implements JsonHolder {
 	
 	public ConsummableJsonHolder(ResourceLocation itemID, JsonObject object) {
 		String THIRST = "thirst";
-		String THIRSTY = "thirst_chance";
-		String TimeUntilSpoil = "time_until_spoil";
 		String HUNGER = "hunger";
 		String ENERGY = "energy";
 		String SATURATION = "saturation";
@@ -71,18 +70,10 @@ public class ConsummableJsonHolder implements JsonHolder {
 					if (hydrationAmount < 1.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data $s from JSON: Hydration should not be less than 1.0", itemID);
 					hydrationAmount = Mth.clamp(hydrationAmount, 1.0f, 4.0f);
 				}
-				
-				if(this.hasMemberAndIsPrimitive(THIRSTY, object)) {
-					setWorkingOn(THIRSTY);
-					thirstChance = object.get(THIRSTY).getAsFloat();
-					stopWorking();
-				}
-				
-				if(this.hasMemberAndIsPrimitive(TimeUntilSpoil, object)) {
-					setWorkingOn(TimeUntilSpoil);
-					timeUntilSpoil = object.get(TimeUntilSpoil).getAsInt();
-					stopWorking();
-				}
+
+				thirstChance = this.workOnFloat("thirst_chance", object);
+				lifespan = this.workOnInt("lifespan", object);
+				timeFresh = this.workOnInt("ticks_fresh", object);
 				
 				if(this.hasMemberAndIsPrimitive(HUNGER, object)) {
 					setWorkingOn(HUNGER);
@@ -174,8 +165,12 @@ public class ConsummableJsonHolder implements JsonHolder {
 		return thirstAmount;
 	}
 
-	public int getTimeUntilSpoil() {
-		return timeUntilSpoil;
+	public int lifespan() {
+		return lifespan + timeFresh;
+	}
+
+	public int ticksFresh() {
+		return timeFresh;
 	}
 
 	public float getHydrationAmount() {

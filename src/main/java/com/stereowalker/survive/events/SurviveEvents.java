@@ -169,7 +169,7 @@ public class SurviveEvents {
 			}
 		}
 		if (living instanceof Player player) {
-			FoodUtils.giveLifespanToFoodInInventory(player);
+			FoodUtils.giveLifespanToFood(player.getInventory().items, player.level().getGameTime());
 		}
 	}
 
