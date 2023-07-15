@@ -67,6 +67,9 @@ public class Config implements ConfigObject {
 			"Be warned, this is not for the faint of heart.",
 			"A lot of the mechanics in this mod become a lot more unreasonable without enchantments"})
 	public boolean disable_enchantments = false;
+	
+	@UnionConfig.Entry(group = "Micellaneous" , name = "Enable Food Spoiling", type = Type.COMMON)
+	public boolean enable_food_spoiling = false;
 
 	//
 	//Other mods

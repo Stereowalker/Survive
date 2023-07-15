@@ -18,15 +18,23 @@ public class FoodUtils {
 	
 	public static final String EXPIRE = "expiry_date";
 	public static void giveLifespanToFood(NonNullList<ItemStack> items, long gametime) {
-		items.forEach((stack) -> {
-			if (stack.isEdible() && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem())) && !stack.getOrCreateTag().contains(EXPIRE)) {
-				stack.getTag().putLong(EXPIRE, gametime + DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan());
-			}
-		});
+		if (Survive.CONFIG.enable_food_spoiling) {
+			items.forEach((stack) -> {
+				if (stack.isEdible() && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem())) && !stack.getOrCreateTag().contains(EXPIRE)) {
+					stack.getTag().putLong(EXPIRE, gametime + DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan());
+				}
+			});
+		} else {
+			items.forEach((stack) -> {
+				if (stack.getOrCreateTag().contains(EXPIRE)) {
+					stack.getTag().remove(EXPIRE);
+				}
+			});
+		}
 	}
 	
 	public static void applyFoodStatusToTooltip(Player player, ItemStack stack, List<Component> tip) {
-		if (stack.isEdible()) {
+		if (stack.isEdible() && Survive.CONFIG.enable_food_spoiling) {
 			 if (foodStatus(stack, player.level()) == State.Fresh)
 				tip.add(Component.literal("Fresh").setStyle(Style.EMPTY.withColor(0x88ff88)));
 			else if (foodStatus(stack, player.level()) == State.Good)
@@ -41,7 +49,7 @@ public class FoodUtils {
 	}
 	
 	public static State foodStatus(ItemStack stack, Level level) {
-		if (stack.getTag() != null && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem())) && stack.getTag().contains(EXPIRE)) {
+		if (stack.getTag() != null && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem())) && stack.getTag().contains(EXPIRE) && Survive.CONFIG.enable_food_spoiling) {
 			FoodJsonHolder food = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem()));
 			long timeTill = stack.getTag().getInt(EXPIRE) - level.getGameTime();
 			long timeSince = food.lifespan() - timeTill;
