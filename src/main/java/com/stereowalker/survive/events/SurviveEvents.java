@@ -50,6 +50,7 @@ import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
@@ -569,6 +570,16 @@ public class SurviveEvents {
 				return +(0.05F * (float)(player.getEffect(SMobEffects.HEATED).getAmplifier() + 1));
 			else
 				return 0;
+		});
+		TemperatureQuery.registerQuery("survive:main_held_item", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
+			if (player.getMainHandItem().getItem() == Items.TORCH && DataMaps.Server.blockTemperature.containsKey(RegistryHelper.blocks().getKey(Blocks.TORCH))) {
+				return DataMaps.Server.blockTemperature.get(RegistryHelper.blocks().getKey(Blocks.TORCH)).getTemperatureModifier();
+			} else return 0;
+		});
+		TemperatureQuery.registerQuery("survive:off_held_item", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
+			if (player.getOffhandItem().getItem() == Items.TORCH && DataMaps.Server.blockTemperature.containsKey(RegistryHelper.blocks().getKey(Blocks.TORCH))) {
+				return DataMaps.Server.blockTemperature.get(RegistryHelper.blocks().getKey(Blocks.TORCH)).getTemperatureModifier();
+			} else return 0;
 		});
 		System.out.println("Done Resistering Temperature Queries");
 	}
