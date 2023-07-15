@@ -1,0 +1,19 @@
+{
+    "name": "book.survive.entry.armor_weight.name",
+    "icon": "minecraft:iron_chestplate",
+    "category": "survive:stamina",
+    "secret": false,
+    "priority": false,
+    "read_by_default": false,
+    "sortnum": 70,
+    "pages": [
+        {
+            "type": "text",
+            "text": "book.survive.entry.armor_weight.page.1"
+        },
+        {
+            "type": "text",
+            "text": "book.survive.entry.armor_weight.page.2"
+        }
+    ]
+}

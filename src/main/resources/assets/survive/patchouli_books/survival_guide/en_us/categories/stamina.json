@@ -1,0 +1,7 @@
+{
+	"name": "book.survive.category.stamina.name",
+	"description": "book.survive.category.stamina.desc",
+	"icon": "minecraft:iron_chestplate",
+	"sortnum": 1,
+	"secret": false
+}
