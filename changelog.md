@@ -1,4 +1,6 @@
-- Use UnionLib methods to allow for version compatibility
-- Added OnlyIn markers for clientbound packets
-- Added an icon and missing translation for the well fed effect
-- Moved enchantments to unionlib's registries
+- Ported to 1.20.1
+- Modified the option to enable/disable extended stomach capacity to include the ability to eat beyond the max capacity just once
+- Added a Food Spoiling mechanic
+- Fix player getting stomach ache even if the module is disabled
+- Holding a torch in your main or offhand now raises your temperature
+- Added an entry in the Survival Guide for Armor Weight

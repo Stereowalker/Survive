@@ -1,46 +1,7 @@
-[8.0.9]
-- Use UnionLib methods to allow for version compatibility
-- Added OnlyIn markers for clientbound packets
-- Added an icon and missing translation for the well fed effect
-- Moved enchantments to unionlib's registries
-
-[8.0.8]
-- Used newest version of UnionLib
-
-[8.0.7]
-- Moved some events to UnionLib's event system
-- Reworked hydration
-- Players temperature now drop when hot and thirst is above 8 notches
-- Reduced the duration of somach ache to 10 seconds and prevented it from ticking down when the player is full
-- Illnesses can now have a certain intensity applied to them
-- Added a way to view your status by combining a thermometer with a written book
-- Reworked the NBT structure for Wellbeing and Nutrition Data
-- Fix players not being able to drink water from water blocks in a server after the first person to log in (Fixes #279)
-- Fix inability for nearby players to hear when water is drunk from a block by another player
-- Re-enabled JEI integration
-- All apples manipulate thirst and replenish stamina
-
-[8.0.6]
-- Fix server not starting
-- Update pack format
-
-[8.0.5]
-- Fix HUD elements not showing up
-- Awake timer now ticks down when the world is set to peaceful
-
-[8.0.4]
-- Used newer Serene Seasons methods
-- Fix inability to connect to servers
-- Updated Ukranian translation (Credits to unroman) 
-
-[8.0.3]
-- Fix inability to load on servers
-
-[8.0.2]
-- The minimum amount of food required for stamina generation can now be set in the config
-
-[8.0.1]
-- Prevented players from getting upset stomach in creative or spectator
-
-[8.0.0]
-- Ported to 1.19.3
+[9.0.0]
+- Ported to 1.20.1
+- Modified the option to enable/disable extended stomach capacity to include the ability to eat beyond the max capacity just once
+- Added a Food Spoiling mechanic
+- Fix player getting stomach ache even if the module is disabled
+- Holding a torch in your main or offhand now raises your temperature
+- Added an entry in the Survival Guide for Armor Weight
