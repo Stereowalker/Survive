@@ -100,17 +100,19 @@ public class WaterData extends SurviveData {
 		Difficulty difficulty = player.level().getDifficulty();
 		this.prevWaterLevel = this.waterLevel;
 		
-		int amplifier = -1;
-		int duration = 210;
-		if (this.waterLevel > 36) amplifier = 4;
-		else if (this.waterLevel > 32) amplifier = 3;
-		else if (this.waterLevel > 28) amplifier = 2;
-		else if (this.waterLevel > 24) amplifier = 1;
-		else if (this.waterLevel > 20) amplifier = 0;
-		MobEffectInstance upsetStomach = player.getEffect(SMobEffects.UPSET_STOMACH);
-		if (!player.isSpectator() && !player.isCreative())
-			if (amplifier > 0 && (upsetStomach == null || upsetStomach.getDuration() <= 210 || upsetStomach.getAmplifier() < amplifier))
-				player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, duration, amplifier));
+		if (ServerConfig.stomachCapacity != StomachCapacity.VANILLA) {
+			int amplifier = -1;
+			int duration = 210;
+			if (this.waterLevel > 36) amplifier = 4;
+			else if (this.waterLevel > 32) amplifier = 3;
+			else if (this.waterLevel > 28) amplifier = 2;
+			else if (this.waterLevel > 24) amplifier = 1;
+			else if (this.waterLevel > 20) amplifier = 0;
+			MobEffectInstance upsetStomach = player.getEffect(SMobEffects.UPSET_STOMACH);
+			if (!player.isSpectator() && !player.isCreative())
+				if (amplifier > 0 && (upsetStomach == null || upsetStomach.getDuration() <= 210 || upsetStomach.getAmplifier() < amplifier))
+					player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, duration, amplifier));
+		}
 		
 		if (this.waterExhaustionLevel > 4.0F) {
 			this.waterExhaustionLevel -= 4.0F;

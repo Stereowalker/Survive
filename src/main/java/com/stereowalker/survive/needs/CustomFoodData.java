@@ -52,7 +52,7 @@ public class CustomFoodData extends FoodData {
 		if (ServerConfig.stomachCapacity == StomachCapacity.DOUBLED) capacity = 40;
 		else if (ServerConfig.stomachCapacity == StomachCapacity.LIMITED && this.foodLevel < 20) capacity = 40;
 		else if (ServerConfig.stomachCapacity == StomachCapacity.LIMITED && this.foodLevel >= 20) capacity = this.foodLevel;
-		if (ServerConfig.stomachCapacity == StomachCapacity.DOUBLED || ServerConfig.stomachCapacity == StomachCapacity.LIMITED) {
+		if (ServerConfig.stomachCapacity != StomachCapacity.VANILLA) {
 			this.foodLevel = Math.min(pFoodLevelModifier + foodLevel, capacity);
 			if (this.foodLevel == 20 && foodLevel < 20) this.wellFed = true;
 			else if (this.foodLevel > 20 && foodLevel < 20 && (pFoodLevelModifier/2) < (this.foodLevel-20)) {
@@ -94,17 +94,19 @@ public class CustomFoodData extends FoodData {
 			} else this.wellFed = false;
 		}
 		
-		int amplifier = -1;
-		int duration = 210;
-		if (this.foodLevel > 36) amplifier = 4;
-		else if (this.foodLevel > 32) amplifier = 3;
-		else if (this.foodLevel > 28) amplifier = 2;
-		else if (this.foodLevel > 24) amplifier = 1;
-		else if (this.foodLevel > 20) amplifier = 0;
-		MobEffectInstance upsetStomach = pPlayer.getEffect(SMobEffects.UPSET_STOMACH);
-		if (!pPlayer.isSpectator() && !pPlayer.isCreative())
-			if (amplifier > 0 && (upsetStomach == null || upsetStomach.getDuration() <= 210 || upsetStomach.getAmplifier() < amplifier))
-				pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, duration, amplifier));
+		if (ServerConfig.stomachCapacity != StomachCapacity.VANILLA) {
+			int amplifier = -1;
+			int duration = 210;
+			if (this.foodLevel > 36) amplifier = 4;
+			else if (this.foodLevel > 32) amplifier = 3;
+			else if (this.foodLevel > 28) amplifier = 2;
+			else if (this.foodLevel > 24) amplifier = 1;
+			else if (this.foodLevel > 20) amplifier = 0;
+			MobEffectInstance upsetStomach = pPlayer.getEffect(SMobEffects.UPSET_STOMACH);
+			if (!pPlayer.isSpectator() && !pPlayer.isCreative())
+				if (amplifier > 0 && (upsetStomach == null || upsetStomach.getDuration() <= 210 || upsetStomach.getAmplifier() < amplifier))
+					pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, duration, amplifier));
+		}
 		
 		if (Survive.WELLBEING_CONFIG.enabled) {
 			//Essentially causes the player to get ill when drinking bad water
