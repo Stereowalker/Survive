@@ -66,6 +66,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.event.world.SleepFinishedTimeEvent;
@@ -104,13 +105,22 @@ public class SurviveEvents {
 			stats.save(player);
 		}
 	}
+	
+	@SubscribeEvent
+	public static void desyncClient(PlayerLoggedOutEvent event) {
+		if (!event.getEntity().level.isClientSide && DataMaps.Server.syncedClients.containsKey(event.getEntity().getUUID()) ) {
+			DataMaps.Server.syncedClients.put(event.getEntity().getUUID(), false); 
+		}
+	}
 
 	@SubscribeEvent
 	public static void sendToClient(LivingUpdateEvent event) {
 		if (event.getEntityLiving() != null && !event.getEntityLiving().level.isClientSide && event.getEntityLiving() instanceof ServerPlayer) {
 			ServerPlayer player = (ServerPlayer)event.getEntityLiving();
 			Survive.getInstance().channel.sendTo(new ClientboundSurvivalStatsPacket(player), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
-			if (!DataMaps.Server.syncedToClient) {
+			if (!DataMaps.Server.syncedClients.containsKey(player.getUUID()))
+				DataMaps.Server.syncedClients.put(player.getUUID(), false); 
+			if (!DataMaps.Server.syncedClients.get(player.getUUID())) {
 				Survive.getInstance().getLogger().info("Syncing All Data To Client ("+player.getDisplayName().getString()+")");
 				Survive.getInstance().getLogger().info("Syncing Armor Data");
 				MutableInt a = new MutableInt(0);
@@ -126,7 +136,7 @@ public class SurviveEvents {
 					i.increment();;
 				});
 				Survive.getInstance().getLogger().info("Done with Fluids");
-				DataMaps.Server.syncedToClient = true;
+				DataMaps.Server.syncedClients.put(player.getUUID(), true); 
 			}
 		}
 	}

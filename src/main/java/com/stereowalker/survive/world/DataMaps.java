@@ -1,6 +1,7 @@
 package com.stereowalker.survive.world;
 
 import java.util.Map;
+import java.util.UUID;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -19,7 +20,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class DataMaps {
 	public static class Server {
-		public static boolean syncedToClient = false;
+		public static final Map<UUID, Boolean> syncedClients = Maps.newHashMap();
 		public static final Map<ResourceLocation, FoodProperties> defaultFood = Maps.newHashMap();
 		public static final Map<ResourceLocation, FoodJsonHolder> consummableItem = Maps.newHashMap();
 		public static final Map<ResourceLocation, PotionJsonHolder> potionDrink = Maps.newHashMap();

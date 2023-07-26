@@ -63,7 +63,7 @@ public class ArmorDataManager implements IResourceReloadListener<Map<ResourceLoc
 	@Override
 	public CompletableFuture<Void> apply(Map<ResourceLocation, ArmorJsonHolder> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.runAsync(() -> {
-			DataMaps.Server.syncedToClient = false;
+			DataMaps.Server.syncedClients.clear();
 			for (ResourceLocation drinkId : data.keySet()) {
 				Survive.registerArmorTemperatures(drinkId, data.get(drinkId));
 			}
