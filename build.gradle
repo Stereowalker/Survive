@@ -14,7 +14,8 @@ buildscript {
 }
 
 plugins {
-  id "com.matthewprenger.cursegradle" version "1.4.0"
+	id "com.matthewprenger.cursegradle" version "1.4.0"
+	id "com.modrinth.minotaur" version "2.+"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -173,6 +174,20 @@ curseforge {
 	options {
     	debug = false // defaults to false
   	}		
+}
+
+modrinth {
+    token = "$System.env.MODRINTH_TOKEN"
+    projectId = modId
+    versionNumber = "${project.version}"
+    versionType = "release"
+    uploadFile = jar
+    gameVersions = [modMinecraftVersion, "1.20"]
+    loaders = ["${project.modLoader}".toLowerCase()]
+	changelog = file('changelog.md').text
+    dependencies {
+        required.project "unionlib"
+    }
 }
 
 // Example configuration to allow publishing using the maven-publish task
