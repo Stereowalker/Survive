@@ -1,6 +1,3 @@
-- Ported to 1.20.1
-- Modified the option to enable/disable extended stomach capacity to include the ability to eat beyond the max capacity just once
-- Added a Food Spoiling mechanic
-- Fix player getting stomach ache even if the module is disabled
-- Holding a torch in your main or offhand now raises your temperature
-- Added an entry in the Survival Guide for Armor Weight
+- Fixed food not stacking when the food spoiling is disabled
+- Food now spoils by the minute they're created rather than the tick they're created
+- (by Un roman) Update uk_ua.json
