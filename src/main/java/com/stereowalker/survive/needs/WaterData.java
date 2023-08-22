@@ -24,7 +24,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.GameRules;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -65,8 +67,9 @@ public class WaterData extends SurviveData {
 	public void drink(Item pItem, ItemStack pStack, LivingEntity entity) {
 		if (entity != null && entity instanceof ServerPlayer) {
 			ServerPlayer player = (ServerPlayer)entity;
-			if ((pItem == Items.POTION || pItem == SItems.FILLED_CANTEEN) && DataMaps.Server.potionDrink.containsKey(RegistryHelper.potions().getKey(PotionUtils.getPotion(pStack)))) {
-				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(RegistryHelper.potions().getKey(PotionUtils.getPotion(pStack)));
+			Potion potion = PotionUtils.getPotion(pStack);
+			if (potion != Potions.EMPTY && DataMaps.Server.potionDrink.containsKey(RegistryHelper.potions().getKey(potion))) {
+				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(RegistryHelper.potions().getKey(potion));
 				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(entity, drinkData.getThirstChance()));
 				if (drinkData.isHeated())entity.addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
 				if (drinkData.isChilled())entity.addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
