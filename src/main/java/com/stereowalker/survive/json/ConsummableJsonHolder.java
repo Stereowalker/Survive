@@ -27,8 +27,6 @@ public class ConsummableJsonHolder implements JsonHolder {
 	private int hungerAmount = 0;
 	private float saturationAmount = 0;
 	private float hungerChance = 0;
-	private int timeFresh = 12000;
-	private int lifespan = 156000;
 	//Stamina
 	private int energyAmount = 0;
 	//Nutrition
@@ -72,8 +70,6 @@ public class ConsummableJsonHolder implements JsonHolder {
 				}
 
 				thirstChance = this.workOnFloat("thirst_chance", object);
-				lifespan = this.workOnInt("lifespan", object);
-				timeFresh = this.workOnInt("ticks_fresh", object);
 				
 				if(this.hasMemberAndIsPrimitive(HUNGER, object)) {
 					setWorkingOn(HUNGER);
@@ -163,14 +159,6 @@ public class ConsummableJsonHolder implements JsonHolder {
 
 	public int getThirstAmount() {
 		return thirstAmount;
-	}
-
-	public int lifespan() {
-		return lifespan + timeFresh;
-	}
-
-	public int ticksFresh() {
-		return timeFresh;
 	}
 
 	public float getHydrationAmount() {
