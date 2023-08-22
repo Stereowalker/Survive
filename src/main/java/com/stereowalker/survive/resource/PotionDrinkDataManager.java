@@ -67,4 +67,9 @@ public class PotionDrinkDataManager implements IResourceReloadListener<Map<Resou
 			}
 		});
 	}
+
+	@Override
+	public ResourceLocation id() {
+		return new ResourceLocation("survive:potion_data");
+	}
 }

@@ -67,4 +67,9 @@ public class BlockTemperatureDataManager implements IResourceReloadListener<Map<
 			}
 		});
 	}
+
+	@Override
+	public ResourceLocation id() {
+		return new ResourceLocation("survive:block_data");
+	}
 }

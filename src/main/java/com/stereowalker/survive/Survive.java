@@ -210,22 +210,18 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		super.modifyDefaultEntityAttributes(modifier);
 		modifier.addToEntity(EntityType.PLAYER, SAttributes.COLD_RESISTANCE, SAttributes.HEAT_RESISTANCE, SAttributes.MAX_STAMINA);
 	}
-
+	
 	@Override
-	public void registerServerboundPackets(PacketCollector collector) {
-		collector.registerPacket(ServerboundArmorStaminaPacket.class, (packetBuffer) -> {return new ServerboundArmorStaminaPacket(packetBuffer);});
-		collector.registerPacket(ServerboundThirstMovementPacket.class, (packetBuffer) -> {return new ServerboundThirstMovementPacket(packetBuffer);});
-		collector.registerPacket(ServerboundInteractWithWaterPacket.class, (packetBuffer) -> {return new ServerboundInteractWithWaterPacket(packetBuffer);});
-		collector.registerPacket(ServerboundStaminaExhaustionPacket.class, ServerboundStaminaExhaustionPacket::new);
-		collector.registerPacket(ServerboundRelaxPacket.class, ServerboundRelaxPacket::new);
-		collector.registerPacket(ServerboundPlayerStatusBookPacket.class, ServerboundPlayerStatusBookPacket::new);
-	}
-
-	@Override
-	public void registerClientboundPackets(PacketCollector collector) {
-		collector.registerPacket(ClientboundSurvivalStatsPacket.class, (packetBuffer) -> {return new ClientboundSurvivalStatsPacket(packetBuffer);});
-		collector.registerPacket(ClientboundDrinkSoundPacket.class, (packetBuffer) -> {return new ClientboundDrinkSoundPacket(packetBuffer);});
-		collector.registerPacket(ClientboundDataTransferPacket.class, (packetBuffer) -> {return new ClientboundDataTransferPacket(packetBuffer);});
+	public void registerPackets(PacketCollector collector) {
+		collector.registerServerboundPacket(location(""), ServerboundArmorStaminaPacket.class, (packetBuffer) -> {return new ServerboundArmorStaminaPacket(packetBuffer);});
+		collector.registerServerboundPacket(location(""), ServerboundThirstMovementPacket.class, (packetBuffer) -> {return new ServerboundThirstMovementPacket(packetBuffer);});
+		collector.registerServerboundPacket(location(""), ServerboundInteractWithWaterPacket.class, (packetBuffer) -> {return new ServerboundInteractWithWaterPacket(packetBuffer);});
+		collector.registerServerboundPacket(location(""), ServerboundStaminaExhaustionPacket.class, ServerboundStaminaExhaustionPacket::new);
+		collector.registerServerboundPacket(location(""), ServerboundRelaxPacket.class, ServerboundRelaxPacket::new);
+		collector.registerServerboundPacket(location(""), ServerboundPlayerStatusBookPacket.class, ServerboundPlayerStatusBookPacket::new);
+		collector.registerClientboundPacket(location(""), ClientboundSurvivalStatsPacket.class, (packetBuffer) -> {return new ClientboundSurvivalStatsPacket(packetBuffer);});
+		collector.registerClientboundPacket(location(""), ClientboundDrinkSoundPacket.class, (packetBuffer) -> {return new ClientboundDrinkSoundPacket(packetBuffer);});
+		collector.registerClientboundPacket(location(""), ClientboundDataTransferPacket.class, (packetBuffer) -> {return new ClientboundDataTransferPacket(packetBuffer);});
 	}
 
 	//TODO: FInd Somewhere to put all these

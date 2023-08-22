@@ -67,4 +67,9 @@ public class BiomeTemperatureDataManager implements IResourceReloadListener<Map<
 			}
 		});
 	}
+
+	@Override
+	public ResourceLocation id() {
+		return new ResourceLocation("survive:biome_data");
+	}
 }

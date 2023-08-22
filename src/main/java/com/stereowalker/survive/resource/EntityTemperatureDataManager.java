@@ -67,4 +67,9 @@ public class EntityTemperatureDataManager implements IResourceReloadListener<Map
 			}
 		});
 	}
+
+	@Override
+	public ResourceLocation id() {
+		return new ResourceLocation("survive:entity_data");
+	}
 }

@@ -68,4 +68,9 @@ public class FluidDataManager implements IResourceReloadListener<Map<ResourceLoc
 			}
 		});
 	}
+
+	@Override
+	public ResourceLocation id() {
+		return new ResourceLocation("survive:fluid_data");
+	}
 }

@@ -69,4 +69,9 @@ public class ArmorDataManager implements IResourceReloadListener<Map<ResourceLoc
 			}
 		});
 	}
+
+	@Override
+	public ResourceLocation id() {
+		return new ResourceLocation("survive:armor_data");
+	}
 }

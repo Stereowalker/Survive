@@ -110,4 +110,9 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 			}
 		});
 	}
+
+	@Override
+	public ResourceLocation id() {
+		return new ResourceLocation("survive:item_data");
+	}
 }

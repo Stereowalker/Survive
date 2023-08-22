@@ -63,7 +63,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-	maven {url = "https://dvs1.progwml6.com/files/maven/"}// JEI
+	//maven {url = "https://dvs1.progwml6.com/files/maven/"}// JEI
 	maven {url "https://modmaven.dev/" }// UnionLib
 	maven {url = "https://maven.theillusivec4.top/"}
 	maven {url 'https://maven.blamejared.com'}
