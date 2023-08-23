@@ -1,3 +1,3 @@
-- Fixed food not stacking when the food spoiling is disabled
-- Food now spoils by the minute they're created rather than the tick they're created
-- (by Un roman) Update uk_ua.json
+- Updated to use the latest version of UnionLib
+- Any item that can be recognised as a potion by the game will get it's water data from potions instead
+- Fixed canteens not replenishing thirst
