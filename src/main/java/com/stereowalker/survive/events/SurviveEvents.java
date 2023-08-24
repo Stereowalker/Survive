@@ -126,12 +126,19 @@ public class SurviveEvents {
 				});
 				Survive.getInstance().getLogger().info("Done with Armors");
 				Survive.getInstance().getLogger().info("Syncing Fluid Data");
-				MutableInt i = new MutableInt(0);
+				MutableInt f = new MutableInt(0);
 				DataMaps.Server.fluid.forEach((key, value) -> {
+					new ClientboundDataTransferPacket(key, value, f.getValue() == 0).send(player);
+					f.increment();;
+				});
+				Survive.getInstance().getLogger().info("Done with Fluids");
+				Survive.getInstance().getLogger().info("Syncing Biome Data");
+				MutableInt i = new MutableInt(0);
+				DataMaps.Server.biome.forEach((key, value) -> {
 					new ClientboundDataTransferPacket(key, value, i.getValue() == 0).send(player);
 					i.increment();;
 				});
-				Survive.getInstance().getLogger().info("Done with Fluids");
+				Survive.getInstance().getLogger().info("Done with Biomes");
 				DataMaps.Server.syncedClients.put(player.getUUID(), true); 
 			}
 		}
@@ -194,8 +201,8 @@ public class SurviveEvents {
 		switch (type) {
 		case SUN:
 			float sunIntensity = 5.0f;
-			if (world.getBiome(pos).unwrapKey().isPresent() && DataMaps.Server.biomeTemperature.containsKey(world.getBiome(pos).unwrapKey().get().location())) {
-				sunIntensity = DataMaps.Server.biomeTemperature.get(world.getBiome(pos).unwrapKey().get().location()).getSunIntensity();
+			if (world.getBiome(pos).unwrapKey().isPresent() && DataMaps.Server.biome.containsKey(world.getBiome(pos).unwrapKey().get().location())) {
+				sunIntensity = DataMaps.Server.biome.get(world.getBiome(pos).unwrapKey().get().location()).getSunIntensity();
 			}
 			if (skyLight > 5.0F) return gameTime*sunIntensity;
 			else return -1.0F * sunIntensity;
@@ -364,7 +371,11 @@ public class SurviveEvents {
 			Fluid fluid = event.getLevel().getFluidState(blockpos).getType();
 			if (DataMaps.Client.fluid.containsKey(RegistryHelper.fluids().getKey(fluid))) {
 				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(RegistryHelper.fluids().getKey(fluid));
-				new ServerboundInteractWithWaterPacket(blockpos, fluidHolder.getThirstChance(), fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
+				float thirstChance = fluidHolder.getThirstChance();
+				if (DataMaps.Client.biome.containsKey(event.getLevel().getBiome(blockpos).unwrapKey().get().location())) {
+					thirstChance = DataMaps.Client.biome.get(event.getLevel().getBiome(blockpos).unwrapKey().get().location()).getThirstChance();
+				}
+				new ServerboundInteractWithWaterPacket(blockpos, thirstChance, fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
 			}
 			//Air Block
 			if (event.getLevel().isRainingAt(blockpos)) {
@@ -463,8 +474,8 @@ public class SurviveEvents {
 			float seasonMod = 0;
 			if (ModHelper.isSereneSeasonsLoaded()) {
 				Season season = SereneSeasonsCompat.modifyTemperatureBySeason(level, pos);
-				if (level.getBiome(pos).unwrapKey().isPresent() && DataMaps.Server.biomeTemperature.containsKey(level.getBiome(pos).unwrapKey().get().location())) {
-					seasonMod = DataMaps.Server.biomeTemperature.get(level.getBiome(pos).unwrapKey().get().location()).getSeasonModifiers().get(season);
+				if (level.getBiome(pos).unwrapKey().isPresent() && DataMaps.Server.biome.containsKey(level.getBiome(pos).unwrapKey().get().location())) {
+					seasonMod = DataMaps.Server.biome.get(level.getBiome(pos).unwrapKey().get().location()).getSeasonModifiers().get(season);
 				} else {
 					seasonMod = season.getModifier();
 				}
@@ -486,8 +497,8 @@ public class SurviveEvents {
 		});
 		//Internal
 		TemperatureQuery.registerQuery("survive:wetness", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
-			if (level.getBiome(pos).unwrapKey().isPresent() && DataMaps.Server.biomeTemperature.containsKey(level.getBiome(pos).unwrapKey().get().location())) {
-				float f = DataMaps.Server.biomeTemperature.get(level.getBiome(pos).unwrapKey().get().location()).getWetnessModifier();
+			if (level.getBiome(pos).unwrapKey().isPresent() && DataMaps.Server.biome.containsKey(level.getBiome(pos).unwrapKey().get().location())) {
+				float f = DataMaps.Server.biome.get(level.getBiome(pos).unwrapKey().get().location()).getWetnessModifier();
 				return ((double)(SurviveEntityStats.getWetTime(player)) / -1800.0D) * f;
 			} else {
 				return (double)(SurviveEntityStats.getWetTime(player)) / -1800.0D;

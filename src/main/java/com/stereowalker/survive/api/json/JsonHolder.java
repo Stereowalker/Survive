@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.stereowalker.survive.json.ArmorJsonHolder;
+import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.survive.json.FluidJsonHolder;
 
 import net.minecraft.nbt.CompoundTag;
@@ -35,6 +36,20 @@ public interface JsonHolder {
 		return i;
 	}
 	
+	public default float workOnFloatIfAvailable(String member, JsonObject object, float defaultValue) {
+		if (this.hasMemberAndIsPrimitive(member, object))
+			return workOnFloat(member, object);
+		else
+			return defaultValue;
+	}
+	
+	public default int workOnIntIfAvailable(String member, JsonObject object, int defaultValue) {
+		if (this.hasMemberAndIsPrimitive(member, object))
+			return workOnInt(member, object);
+		else
+			return defaultValue;
+	}
+	
 	public default void stopWorking() {
 		setWorkingOn("NOTHING");
 	}
@@ -58,6 +73,7 @@ public interface JsonHolder {
 	public static ImmutableMap<String, Class<? extends JsonHolder>> HOLD = new ImmutableMap.Builder<String, Class<? extends JsonHolder>>()
 			.put("Lcom/stereowalker/survive/json/ArmorJsonHolder;", ArmorJsonHolder.class)
 			.put("Lcom/stereowalker/survive/json/FluidJsonHolder;", FluidJsonHolder.class)
+			.put("Lcom/stereowalker/survive/json/BiomeJsonHolder;", BiomeJsonHolder.class)
 			.build();
 	public static JsonHolder deserialize(CompoundTag input, Class<? extends JsonHolder> jsonClass) {
 		try {

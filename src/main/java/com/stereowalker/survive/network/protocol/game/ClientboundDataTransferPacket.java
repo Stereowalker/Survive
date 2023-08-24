@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.api.json.JsonHolder;
 import com.stereowalker.survive.json.ArmorJsonHolder;
+import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.survive.json.FluidJsonHolder;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.unionlib.network.protocol.game.ClientboundUnionPacket;
@@ -67,6 +68,16 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 			statMap.putAll(DataMaps.Client.fluid);
 			statMap.put(stat, (FluidJsonHolder) settings);
 			DataMaps.Client.fluid = ImmutableMap.copyOf(statMap);
+		}
+		if (settings instanceof BiomeJsonHolder) {
+			if (this.clear) {
+				Survive.getInstance().getLogger().info("Clearing Client Side Biome Data");
+				DataMaps.Client.biome = ImmutableMap.of();
+			}
+			Map<ResourceLocation,BiomeJsonHolder> statMap = new HashMap<>();
+			statMap.putAll(DataMaps.Client.biome);
+			statMap.put(stat, (BiomeJsonHolder) settings);
+			DataMaps.Client.biome = ImmutableMap.copyOf(statMap);
 		}
 		return true;
 	}

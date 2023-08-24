@@ -11,7 +11,7 @@ import java.util.concurrent.Executor;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.json.BiomeTemperatureJsonHolder;
+import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
 
 import net.minecraft.resources.ResourceLocation;
@@ -24,11 +24,11 @@ import net.minecraftforge.registries.ForgeRegistries;
  * Loads block temperatures from json
  * @author Stereowalker
  */
-public class BiomeTemperatureDataManager implements IResourceReloadListener<Map<ResourceLocation, BiomeTemperatureJsonHolder>> {
+public class BiomeTemperatureDataManager implements IResourceReloadListener<Map<ResourceLocation, BiomeJsonHolder>> {
 	@Override
-	public CompletableFuture<Map<ResourceLocation, BiomeTemperatureJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
+	public CompletableFuture<Map<ResourceLocation, BiomeJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
-			Map<ResourceLocation, BiomeTemperatureJsonHolder> drinkMap = new HashMap<>();
+			Map<ResourceLocation, BiomeJsonHolder> drinkMap = new HashMap<>();
 
 			for (Entry<ResourceLocation, Resource> resource : manager.listResources("survive_modifiers/biomes", (s) -> s.toString().endsWith(".json")).entrySet()) {
 				ResourceLocation blockId = new ResourceLocation(
@@ -42,7 +42,7 @@ public class BiomeTemperatureDataManager implements IResourceReloadListener<Map<
 								InputStreamReader reader = new InputStreamReader(stream)) {
 							
 							JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
-							BiomeTemperatureJsonHolder biomeData = new BiomeTemperatureJsonHolder(blockId, object);
+							BiomeJsonHolder biomeData = new BiomeJsonHolder(blockId, object);
 							Survive.getInstance().getLogger().info("Found biome temperature modifier for the biome "+blockId);
 							
 							drinkMap.put(blockId, biomeData);
@@ -60,7 +60,7 @@ public class BiomeTemperatureDataManager implements IResourceReloadListener<Map<
 	}
 
 	@Override
-	public CompletableFuture<Void> apply(Map<ResourceLocation, BiomeTemperatureJsonHolder> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
+	public CompletableFuture<Void> apply(Map<ResourceLocation, BiomeJsonHolder> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.runAsync(() -> {
 			for (ResourceLocation drinkId : data.keySet()) {
 				Survive.registerBiomeTemperatures(drinkId, data.get(drinkId));

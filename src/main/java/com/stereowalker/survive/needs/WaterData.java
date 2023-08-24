@@ -11,7 +11,6 @@ import com.stereowalker.survive.json.ConsummableJsonHolder;
 import com.stereowalker.survive.needs.CustomFoodData.StomachCapacity;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
-import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.nbt.CompoundTag;
@@ -23,7 +22,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;

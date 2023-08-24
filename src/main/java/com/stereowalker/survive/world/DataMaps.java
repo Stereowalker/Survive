@@ -6,7 +6,7 @@ import java.util.UUID;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.stereowalker.survive.json.ArmorJsonHolder;
-import com.stereowalker.survive.json.BiomeTemperatureJsonHolder;
+import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.survive.json.FluidJsonHolder;
@@ -28,7 +28,7 @@ public class DataMaps {
 		public static final Map<ResourceLocation, FluidJsonHolder> fluid = Maps.newHashMap();
 		public static final Map<ResourceLocation, BlockTemperatureJsonHolder> blockTemperature = Maps.newHashMap();
 		public static final Map<ResourceLocation, EntityTemperatureJsonHolder> entityTemperature = Maps.newHashMap();
-		public static final Map<ResourceLocation, BiomeTemperatureJsonHolder> biomeTemperature = Maps.newHashMap();
+		public static final Map<ResourceLocation, BiomeJsonHolder> biome = Maps.newHashMap();
 	}
 	@OnlyIn(Dist.CLIENT)
 	public static class Client {
@@ -39,6 +39,6 @@ public class DataMaps {
 		public static ImmutableMap<ResourceLocation, FluidJsonHolder> fluid = ImmutableMap.of();
 		public static ImmutableMap<ResourceLocation, BlockTemperatureJsonHolder> blockTemperature = ImmutableMap.of();
 		public static ImmutableMap<ResourceLocation, EntityTemperatureJsonHolder> entityTemperature = ImmutableMap.of();
-		public static ImmutableMap<ResourceLocation, BiomeTemperatureJsonHolder> biomeTemperature = ImmutableMap.of();
+		public static ImmutableMap<ResourceLocation, BiomeJsonHolder> biome = ImmutableMap.of();
 	}
 }

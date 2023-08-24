@@ -18,35 +18,36 @@ import com.stereowalker.survive.world.seasons.Season;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
-public class BiomeTemperatureJsonHolder implements JsonHolder {
+public class BiomeJsonHolder implements JsonHolder {
 	private static final Marker BLOCK_TEMPERATURE_DATA = MarkerManager.getMarker("BLOCK_TEMPERATURE_DATA");
 
 	private ResourceLocation biomeID;
+	private final float thirst_chance;
+	private final int unwell_intensity;
 	private final float temperature;
 	private final float wetnessModifier;
 	private final float sun_intensity;
 	private final Pair<Float, Float> altitude_level_modifier;
 	private final Map<Season,Float> seasonModifiers;
 
-	public BiomeTemperatureJsonHolder(ResourceLocation biomeID, JsonObject object) {
+	public BiomeJsonHolder(ResourceLocation biomeID, JsonObject object) {
 		String ALTITUDE_LEVEL_MODIFIER = "altitude_level_modifier";
 		String SEASON_MODIFIER = "season_modifier";
 
 		float temperatureIn = 0;
-		float wetnessModiIn = 1;
 		float sunIntensitIn = 5;
 		Pair<Float, Float> altitude_level_modifierIn = Pair.of(1.0f, 1.0f);
 		Map<Season,Float> seasonModifiersIn = Maps.newHashMap();
 
 		this.biomeID = biomeID;
+		wetnessModifier = this.workOnFloatIfAvailable("wetness_modifier", object, 1f);
+		thirst_chance = this.workOnFloatIfAvailable("thirst_chance", object, 0.5f);
+		unwell_intensity = this.workOnIntIfAvailable("unwell_intensity", object, 3);
 		if(object.entrySet().size() != 0) {
 			try {
 				stopWorking();
 				if(this.hasMemberAndIsPrimitive("temperature", object)) {
 					temperatureIn = workOnFloat("temperature", object);
-				}
-				if(this.hasMemberAndIsPrimitive("wetness_modifier", object)) {
-					wetnessModiIn = workOnFloat("wetness_modifier", object);
 				}
 				if(this.hasMemberAndIsPrimitive("sun_intensity", object)) {
 					sunIntensitIn = workOnFloat("sun_intensity", object);
@@ -107,7 +108,6 @@ public class BiomeTemperatureJsonHolder implements JsonHolder {
 		}
 		this.seasonModifiers = seasonModifiersIn;
 		this.temperature = temperatureIn;
-		this.wetnessModifier = wetnessModiIn;
 		this.sun_intensity = sunIntensitIn;
 		this.altitude_level_modifier = altitude_level_modifierIn;
 	}
@@ -159,5 +159,13 @@ public class BiomeTemperatureJsonHolder implements JsonHolder {
 	@Override
 	public JsonHolder deserialize(CompoundTag input) {
 		return null;
+	}
+
+	public float getThirstChance() {
+		return thirst_chance;
+	}
+
+	public int getUnwellIntensity() {
+		return unwell_intensity;
 	}
 }

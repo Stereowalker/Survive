@@ -2,7 +2,7 @@ package com.stereowalker.survive.needs;
 
 import com.google.common.collect.ImmutableList;
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.json.BiomeTemperatureJsonHolder;
+import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
@@ -51,8 +51,8 @@ public class TemperatureUtil {
 		float f = (float)(TEMPERATURE_NOISE.getValue((double)((float)pos.getX() / 8.0F), (double)((float)pos.getZ() / 8.0F), false) * 4.0D);
 		float modifier = 1.0f;
 		float t = biome.value().getBaseTemperature();
-		if (biome.unwrapKey().isPresent() && DataMaps.Server.biomeTemperature.containsKey(biome.unwrapKey().get().location())) {
-			BiomeTemperatureJsonHolder temperatureData = DataMaps.Server.biomeTemperature.get(biome.unwrapKey().get().location());
+		if (biome.unwrapKey().isPresent() && DataMaps.Server.biome.containsKey(biome.unwrapKey().get().location())) {
+			BiomeJsonHolder temperatureData = DataMaps.Server.biome.get(biome.unwrapKey().get().location());
 			t = (temperatureData.getTemperature() + 2) / 2;
 			if (pos.getY() > 64.0F) {
 				modifier = temperatureData.getAltitudeLevelModifier().getFirst();

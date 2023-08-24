@@ -18,7 +18,7 @@ import com.stereowalker.survive.config.WellbeingConfig;
 import com.stereowalker.survive.core.cauldron.SCauldronInteraction;
 import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.json.ArmorJsonHolder;
-import com.stereowalker.survive.json.BiomeTemperatureJsonHolder;
+import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.survive.json.FoodJsonHolder;
@@ -240,8 +240,8 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	public static void registerEntityTemperatures(ResourceLocation location, EntityTemperatureJsonHolder drinkData) {
 		DataMaps.Server.entityTemperature.put(location, drinkData);
 	}
-	public static void registerBiomeTemperatures(ResourceLocation location, BiomeTemperatureJsonHolder biomeData) {
-		DataMaps.Server.biomeTemperature.put(location, biomeData);
+	public static void registerBiomeTemperatures(ResourceLocation location, BiomeJsonHolder biomeData) {
+		DataMaps.Server.biome.put(location, biomeData);
 	}
 
 	public void debug(Object message) {
