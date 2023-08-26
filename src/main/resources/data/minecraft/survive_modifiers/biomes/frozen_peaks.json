@@ -6,6 +6,8 @@
 		"upper": 1.0,
 		"lower": 1.0
 	},
+	"thirst_chance": 0.1,
+	"unwell_intensity": 1,
 	"season_modifier": 
 	{
 		"survive:winter_begin": -0.6,
