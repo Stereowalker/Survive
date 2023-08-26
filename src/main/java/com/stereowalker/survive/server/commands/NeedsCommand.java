@@ -123,10 +123,10 @@ public class NeedsCommand {
 				sleepData.addAwakeTime(player, -Mth.floor(amount));
 				break;
 			case THIRST:
-				waterData.drink(Mth.floor(amount), waterData.getHydrationLevel(), true);
+				waterData.drink(Mth.floor(amount), waterData.getHydrationLevel(), 0, false);
 				break;
 			case HYDRATION:
-				waterData.drink(0, waterData.getHydrationLevel()+amount, true);
+				waterData.drink(0, waterData.getHydrationLevel()+amount, 0, false);
 				break;
 			}
 			sleepData.save(player);

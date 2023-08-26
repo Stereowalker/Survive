@@ -40,6 +40,7 @@ public class WaterData extends SurviveData {
 	@SuppressWarnings("unused")
 	private int prevWaterLevel = 20;
 	private int uncleanConsumption = 0;
+	private int uncleanStacks = 0;
 
 	public WaterData() {
 		this.waterHydrationLevel = 4.0F;
@@ -48,7 +49,7 @@ public class WaterData extends SurviveData {
 	/**
 	 * Add water stats.
 	 */
-	public void drink(int waterLevelIn, float waterHydrationModifier, boolean isUnclean) {
+	public void drink(int waterLevelIn, float waterHydrationModifier, int uncleanStack, boolean isUnclean) {
 		int capacity = 20;
 		if (ServerConfig.stomachCapacity == StomachCapacity.DOUBLED) capacity = 40;
 		else if (ServerConfig.stomachCapacity == StomachCapacity.LIMITED && this.waterLevel < 20) capacity = 40;
@@ -60,6 +61,7 @@ public class WaterData extends SurviveData {
 			this.waterHydrationLevel = Mth.clamp(this.waterHydrationLevel + (waterHydrationModifier * Survive.THIRST_CONFIG.hydration_restoration), 1.0f, waterHydrationModifier);
 		}
 		if (isUnclean) {
+			uncleanStacks += uncleanStack;
 			uncleanConsumption++;
 		}
 	}
@@ -69,20 +71,25 @@ public class WaterData extends SurviveData {
 			ServerPlayer player = (ServerPlayer)entity;
 			Potion potion = PotionUtils.getPotion(pStack);
 			float biomef = -1;
-			if (pStack.getTag() != null && pStack.getTag().contains("biome_source") && DataMaps.Server.biome.containsKey(new ResourceLocation(pStack.getTag().getString("biome_source")))) {
-				BiomeJsonHolder biomeData = DataMaps.Server.biome.get(new ResourceLocation(pStack.getTag().getString("biome_source")));
-				biomef = biomeData.getThirstChance();
+			int stacks = 0;
+			if (pStack.getTag() != null && pStack.getTag().contains("biome_source")) {
+				ResourceLocation biomeSource = new ResourceLocation(pStack.getTag().getString("biome_source"));
+				if (DataMaps.Server.biome.containsKey(biomeSource)) {
+					BiomeJsonHolder biomeData = DataMaps.Server.biome.get(biomeSource);
+					biomef = biomeData.getThirstChance();
+					stacks = biomeData.getUnwellIntensity();
+				}	
 			}
 			if (potion != Potions.EMPTY && DataMaps.Server.potionDrink.containsKey(RegistryHelper.potions().getKey(potion))) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(RegistryHelper.potions().getKey(potion));
-				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(entity, biomef != -1 ? biomef : drinkData.getThirstChance()));
+				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), stacks, applyThirst(entity, biomef != -1 ? biomef : drinkData.getThirstChance()));
 				if (drinkData.isHeated())entity.addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
 				if (drinkData.isChilled())entity.addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
 				if (drinkData.isEnergizing())entity.addEffect(new MobEffectInstance(SMobEffects.ENERGIZED, 60*20*5));
 			}
 			else if (DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(pItem))) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(pItem));
-				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(entity, biomef != -1 ? biomef : drinkData.getThirstChance()));
+				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), stacks, applyThirst(entity, biomef != -1 ? biomef : drinkData.getThirstChance()));
 				if (drinkData.isHeated())entity.addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
 				if (drinkData.isChilled())entity.addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
 				if (drinkData.isEnergizing())entity.addEffect(new MobEffectInstance(SMobEffects.ENERGIZED, 60*20*5));
@@ -163,7 +170,7 @@ public class WaterData extends SurviveData {
 		if (Survive.WELLBEING_CONFIG.enabled) {
 			//Essentially causes the player to get ill when drinking bad water
 			if (uncleanConsumption >= 3) {
-				((IRealisticEntity)player).getWellbeingData().setTimer(2400, 6000, "drinking unpurified water");
+				((IRealisticEntity)player).getWellbeingData().setTimer(2400, 6000, Mth.ceil((float)uncleanStacks/(float)uncleanConsumption), "drinking unpurified water");
 				uncleanConsumption = 0;
 			}
 		}
@@ -191,6 +198,7 @@ public class WaterData extends SurviveData {
 			this.waterHydrationLevel = compound.getFloat("waterHydrationLevel");
 			this.waterExhaustionLevel = compound.getFloat("waterExhaustionLevel");
 			this.uncleanConsumption = compound.getInt("uncleanComsumption");
+			this.uncleanStacks = compound.getInt("uncleanStacks");
 		}
 
 	}
@@ -205,6 +213,7 @@ public class WaterData extends SurviveData {
 		compound.putFloat("waterHydrationLevel", this.waterHydrationLevel);
 		compound.putFloat("waterExhaustionLevel", this.waterExhaustionLevel);
 		compound.putInt("uncleanComsumption", this.uncleanConsumption);
+		compound.putInt("uncleanStacks", this.uncleanStacks);
 	}
 
 	/**

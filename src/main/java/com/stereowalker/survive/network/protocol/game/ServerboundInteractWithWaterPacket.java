@@ -1,8 +1,10 @@
 package com.stereowalker.survive.network.protocol.game;
 
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.WaterData;
+import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
 
@@ -92,7 +94,12 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 							flag = true;
 						}
 						if (flag) {
-							waterStats.drink((int) waterAmount, (float) hydrationAmount, WaterData.applyThirst(sender, addThirst/*TODO MAKE BIOMES HAVE DIFFERENT THIRST CHANCES*/));
+							int stacks = 0;
+							if (DataMaps.Server.biome.containsKey(sender.level().getBiome(pos).unwrapKey().get().location())) {
+								BiomeJsonHolder biomeData = DataMaps.Server.biome.get(sender.level().getBiome(pos).unwrapKey().get().location());
+								stacks = biomeData.getUnwellIntensity();
+							}
+							waterStats.drink((int) waterAmount, (float) hydrationAmount, stacks, WaterData.applyThirst(sender, addThirst));
 						}
 						sender.level().playSound(sender, pos, new ItemStack(Items.POTION).getDrinkingSound(), SoundSource.PLAYERS, 0.5F, sender.level().random.nextFloat() * 0.1F + 0.9F);
 						sender.swing(InteractionHand.MAIN_HAND);

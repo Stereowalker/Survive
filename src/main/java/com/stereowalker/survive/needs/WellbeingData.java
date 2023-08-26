@@ -37,6 +37,20 @@ public class WellbeingData extends SurviveData {
 		}
 	}
 
+	/**
+	 * Sets the time (in ticks) before the player becomes unwell
+	 * @param min - The minimum amount of ticks
+	 * @param max - The maximum amount of ticks
+	 * @param intensity - This sets the amplifier of the illness
+	 */
+	public void setTimer(int min, int max, int intensity, String reason) {
+		if (this.timeUntilUnwell == 0 && this.isWell && this.shouldTick()) {
+			this.timeUntilUnwell = min+this.rng.nextInt(max-min);
+			this.reason = reason;
+			this.intensity = intensity;
+		}
+	}
+
 	public WellbeingData() {
 		super();
 		this.isWell = true;
@@ -60,22 +74,24 @@ public class WellbeingData extends SurviveData {
 			this.isWell = false;
 			//Set custom timers
 			this.timeUntilWell = 6000;
-			int max = 0;
-			for (int i = 1; i <= 9; i++) max+=i;
-			int nte = rng.nextInt(max+1);
-			for (int i = 9; i >= 0; i--) {
-				if (nte >= max) {
-					this.intensity = i;
-					break;
-				}
-				else max -= 10 - i;
+			if (this.intensity == -1) {
+				int max = 0;
+				for (int i = 1; i <= 9; i++) max+=i;
+				int nte = rng.nextInt(max+1);
+				for (int i = 9; i >= 0; i--) {
+					if (nte >= max) {
+						this.intensity = i;
+						break;
+					}
+					else max -= 10 - i;
+				}	
 			}
 			
 			int rgn = rng.nextInt(2);
 			if (rgn == 0)
-				player.addEffect(new MobEffectInstance(SMobEffects.SLOWNESS_ILLNESS, 6000, this.intensity));
+				player.addEffect(new MobEffectInstance(SMobEffects.SLOWNESS_ILLNESS, this.timeUntilWell, this.intensity));
 			else
-				player.addEffect(new MobEffectInstance(SMobEffects.WEAKNESS_ILLNESS, 6000, this.intensity));
+				player.addEffect(new MobEffectInstance(SMobEffects.WEAKNESS_ILLNESS, this.timeUntilWell, this.intensity));
 		}
 		//As long as the player is not well
 		else if (this.timeUntilWell > 1 && !this.isWell) {
