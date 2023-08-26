@@ -21,8 +21,11 @@ public class FoodUtils {
 		if (Survive.CONFIG.enable_food_spoiling) {
 			items.forEach((stack) -> {
 				if (stack.isEdible() && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem())) && !stack.getOrCreateTag().contains(EXPIRE)) {
-					long shaveAMinuteOff = gametime - (gametime % (20 * 60));
-					stack.getTag().putLong(EXPIRE, shaveAMinuteOff + DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan());
+					long lifespan = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan();
+					if (lifespan > 0) {
+						long shaveAMinuteOff = gametime - (gametime % (20 * 60));
+						stack.getTag().putLong(EXPIRE, shaveAMinuteOff + DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan());
+					}
 				}
 			});
 		} else {

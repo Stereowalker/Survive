@@ -19,8 +19,8 @@ public class FoodJsonHolder extends ConsummableJsonHolder {
 		if(object.entrySet().size() != 0) {
 			stopWorking();
 			try {
-				lifespan = this.workOnInt("lifespan", object);
-				timeFresh = this.workOnInt("ticks_fresh", object);
+				lifespan = this.workOnIntIfAvailable("lifespan", object, 0);
+				timeFresh = this.workOnIntIfAvailable("ticks_fresh", object, 0);
 				stopWorking();
 			} catch (ClassCastException e) {
 				Survive.getInstance().getLogger().warn(MARKER, "Loading food & drink data $s from JSON: Parsing element %s: element was wrong type!", e, itemID, getworkingOn());
