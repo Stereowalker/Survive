@@ -1,0 +1,25 @@
+{
+	"temperature": 1.4,
+	"wetness_modifier": 1,
+	"altitude_level_modifier": {
+		"upper": 1.0,
+		"lower": 1.0
+	},
+	"thirst_chance": 0.75,
+	"unwell_intensity": 6,
+	"season_modifier": 
+	{
+		"survive:winter_begin": -0.6,
+		"survive:winter_midst": -0.9,
+		"survive:winter_close": -0.6,
+		"survive:spring_begin": -0.3,
+		"survive:spring_midst": 0.0,
+		"survive:spring_close": 0.3,
+		"survive:summer_begin": 0.6,
+		"survive:summer_midst": 0.9,
+		"survive:summer_close": 0.6,
+		"survive:autumn_begin": 0.3,
+		"survive:autumn_midst": 0.0,
+		"survive:autumn_close": -0.3
+	}
+}
