@@ -29,6 +29,17 @@ public class BiomeJsonHolder implements JsonHolder {
 	private final float sun_intensity;
 	private final Pair<Float, Float> altitude_level_modifier;
 	private final Map<Season,Float> seasonModifiers;
+	
+	public BiomeJsonHolder(CompoundTag nbt) {
+		this.biomeID = new ResourceLocation(nbt.getString("id"));
+		this.thirst_chance = nbt.getFloat("thirst_chance");
+		this.unwell_intensity = nbt.getInt("unwell_intensity");
+		this.temperature = nbt.getFloat("temperature");
+		this.wetnessModifier = nbt.getFloat("wetnessModifier");
+		this.sun_intensity = nbt.getFloat("sun_intensity");
+		altitude_level_modifier = null;
+		seasonModifiers = null;
+	}
 
 	public BiomeJsonHolder(ResourceLocation biomeID, JsonObject object) {
 		String ALTITUDE_LEVEL_MODIFIER = "altitude_level_modifier";
@@ -41,7 +52,7 @@ public class BiomeJsonHolder implements JsonHolder {
 
 		this.biomeID = biomeID;
 		wetnessModifier = this.workOnFloatIfAvailable("wetness_modifier", object, 1f);
-		thirst_chance = this.workOnFloatIfAvailable("thirst_chance", object, 0.5f);
+		thirst_chance = this.workOnFloatIfAvailable("thirst_chance", object, -1f);
 		unwell_intensity = this.workOnIntIfAvailable("unwell_intensity", object, 3);
 		if(object.entrySet().size() != 0) {
 			try {
@@ -137,7 +148,14 @@ public class BiomeJsonHolder implements JsonHolder {
 
 	@Override
 	public CompoundTag serialize() {
-		return null;
+		CompoundTag nbt = new CompoundTag();
+		nbt.putString("id", this.biomeID.toString());
+		nbt.putInt("unwell_intensity", this.unwell_intensity);
+		nbt.putFloat("thirst_chance", this.thirst_chance);
+		nbt.putFloat("temperature", this.temperature);
+		nbt.putFloat("wetnessModifier", this.wetnessModifier);
+		nbt.putFloat("sun_intensity", this.sun_intensity);
+		return nbt;
 	}
 
 	String wo = "NOTHING";

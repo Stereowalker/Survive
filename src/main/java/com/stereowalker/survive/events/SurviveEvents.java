@@ -16,6 +16,7 @@ import com.stereowalker.survive.compat.SereneSeasonsCompat;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempMode;
+import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.survive.json.FluidJsonHolder;
@@ -103,7 +104,7 @@ public class SurviveEvents {
 			stats.save(player);
 		}
 	}
-	
+
 	public static void desyncClient(Player player) {
 		if (!player.level().isClientSide && DataMaps.Server.syncedClients.containsKey(player.getUUID()) ) {
 			Survive.getInstance().getLogger().info("Removing Client ("+player.getDisplayName().getString()+") From Survive Data Sync List");
@@ -138,7 +139,7 @@ public class SurviveEvents {
 					new ClientboundDataTransferPacket(key, value, i.getValue() == 0).send(player);
 					i.increment();;
 				});
-				Survive.getInstance().getLogger().info("Done with Biomes");
+				Survive.getInstance().getLogger().info("Done syncing "+i+" biomes");
 				DataMaps.Server.syncedClients.put(player.getUUID(), true); 
 			}
 		}
@@ -373,7 +374,9 @@ public class SurviveEvents {
 				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(RegistryHelper.fluids().getKey(fluid));
 				float thirstChance = fluidHolder.getThirstChance();
 				if (DataMaps.Client.biome.containsKey(event.getLevel().getBiome(blockpos).unwrapKey().get().location())) {
-					thirstChance = DataMaps.Client.biome.get(event.getLevel().getBiome(blockpos).unwrapKey().get().location()).getThirstChance();
+					BiomeJsonHolder biomeData = DataMaps.Client.biome.get(event.getLevel().getBiome(blockpos).unwrapKey().get().location());
+					if (biomeData.getThirstChance() >= 0)
+						thirstChance = biomeData.getThirstChance();
 				}
 				new ServerboundInteractWithWaterPacket(blockpos, thirstChance, fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
 			}

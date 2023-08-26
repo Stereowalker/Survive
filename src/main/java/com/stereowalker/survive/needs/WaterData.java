@@ -7,6 +7,7 @@ import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.damagesource.SDamageSources;
 import com.stereowalker.survive.damagesource.SDamageTypes;
+import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.survive.json.ConsummableJsonHolder;
 import com.stereowalker.survive.needs.CustomFoodData.StomachCapacity;
 import com.stereowalker.survive.world.DataMaps;
@@ -14,6 +15,7 @@ import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
@@ -66,16 +68,21 @@ public class WaterData extends SurviveData {
 		if (entity != null && entity instanceof ServerPlayer) {
 			ServerPlayer player = (ServerPlayer)entity;
 			Potion potion = PotionUtils.getPotion(pStack);
+			float biomef = -1;
+			if (pStack.getTag() != null && pStack.getTag().contains("biome_source") && DataMaps.Server.biome.containsKey(new ResourceLocation(pStack.getTag().getString("biome_source")))) {
+				BiomeJsonHolder biomeData = DataMaps.Server.biome.get(new ResourceLocation(pStack.getTag().getString("biome_source")));
+				biomef = biomeData.getThirstChance();
+			}
 			if (potion != Potions.EMPTY && DataMaps.Server.potionDrink.containsKey(RegistryHelper.potions().getKey(potion))) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(RegistryHelper.potions().getKey(potion));
-				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(entity, drinkData.getThirstChance()));
+				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(entity, biomef != -1 ? biomef : drinkData.getThirstChance()));
 				if (drinkData.isHeated())entity.addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
 				if (drinkData.isChilled())entity.addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
 				if (drinkData.isEnergizing())entity.addEffect(new MobEffectInstance(SMobEffects.ENERGIZED, 60*20*5));
 			}
 			else if (DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(pItem))) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(pItem));
-				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(entity, drinkData.getThirstChance()));
+				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), applyThirst(entity, biomef != -1 ? biomef : drinkData.getThirstChance()));
 				if (drinkData.isHeated())entity.addEffect(new MobEffectInstance(SMobEffects.HEATED, 30*20));
 				if (drinkData.isChilled())entity.addEffect(new MobEffectInstance(SMobEffects.CHILLED, 30*20));
 				if (drinkData.isEnergizing())entity.addEffect(new MobEffectInstance(SMobEffects.ENERGIZED, 60*20*5));

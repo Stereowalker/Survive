@@ -24,7 +24,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  * Loads block temperatures from json
  * @author Stereowalker
  */
-public class BiomeTemperatureDataManager implements IResourceReloadListener<Map<ResourceLocation, BiomeJsonHolder>> {
+public class BiomeDataManager implements IResourceReloadListener<Map<ResourceLocation, BiomeJsonHolder>> {
 	@Override
 	public CompletableFuture<Map<ResourceLocation, BiomeJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
@@ -36,22 +36,20 @@ public class BiomeTemperatureDataManager implements IResourceReloadListener<Map<
 						resource.getKey().getPath().replace("survive_modifiers/biomes/", "").replace(".json", "")
 						);
 
-				if (ForgeRegistries.BIOMES.containsKey(blockId)) {
-					try {
-						try (InputStream stream = resource.getValue().open(); 
-								InputStreamReader reader = new InputStreamReader(stream)) {
-							
-							JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
-							BiomeJsonHolder biomeData = new BiomeJsonHolder(blockId, object);
-							Survive.getInstance().getLogger().info("Found biome temperature modifier for the biome "+blockId);
-							
-							drinkMap.put(blockId, biomeData);
-						}
-					} catch (Exception e) {
-						Survive.getInstance().getLogger().warn("Error reading the biomes temperature modifier for the biome " + blockId + "!", e);
+				if (!ForgeRegistries.BIOMES.containsKey(blockId)) {
+					Survive.getInstance().getLogger().warn("Did not find biome " + blockId + " in the forge registry. This is a temporary warning and will be removed after the fabric release");
+				}
+				try {
+					try (InputStream stream = resource.getValue().open(); 
+							InputStreamReader reader = new InputStreamReader(stream)) {
+
+						JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
+						BiomeJsonHolder biomeData = new BiomeJsonHolder(blockId, object);
+						drinkMap.put(blockId, biomeData);
+						Survive.getInstance().getLogger().info("Registered modifier for the biome \""+blockId+"\"");
 					}
-				} else {
-					Survive.getInstance().getLogger().warn("No such biome exists with the block id " + blockId + "!");
+				} catch (Exception e) {
+					Survive.getInstance().getLogger().warn("Error reading the biomes temperature modifier for the biome " + blockId + "!", e);
 				}
 			}
 

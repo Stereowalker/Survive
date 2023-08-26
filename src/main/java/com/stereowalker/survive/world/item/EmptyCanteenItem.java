@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -46,12 +47,12 @@ public class EmptyCanteenItem extends Item {
 					//TODO: Replace with canteen fill sounds
 					levelIn.playSound(playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
 					levelIn.gameEvent(playerIn, GameEvent.FLUID_PICKUP, blockpos);
-					return InteractionResultHolder.sidedSuccess(this.turnCanteenIntoItem(itemstack, playerIn, CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), i, SPotions.PURIFIED_WATER)), levelIn.isClientSide());
+					return InteractionResultHolder.sidedSuccess(this.turnCanteenIntoItem(itemstack, blockpos, playerIn, CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), i, SPotions.PURIFIED_WATER)), levelIn.isClientSide());
 				}
 				if (levelIn.getFluidState(blockpos).is(FluidTags.WATER)) {
 					levelIn.playSound(playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
 					levelIn.gameEvent(playerIn, GameEvent.FLUID_PICKUP, blockpos);
-					return InteractionResultHolder.sidedSuccess(this.turnCanteenIntoItem(itemstack, playerIn, CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), i, Potions.WATER)), levelIn.isClientSide());
+					return InteractionResultHolder.sidedSuccess(this.turnCanteenIntoItem(itemstack, blockpos, playerIn, CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), i, Potions.WATER)), levelIn.isClientSide());
 				}
 				return InteractionResultHolder.pass(itemstack);
 			}
@@ -59,9 +60,11 @@ public class EmptyCanteenItem extends Item {
 		}
 	}
 
-	protected ItemStack turnCanteenIntoItem(ItemStack canteenStack, Player playerIn, ItemStack pFilledBottleStack) {
-		playerIn.awardStat(Stats.ITEM_USED.get(this));
-		return ItemUtils.createFilledResult(canteenStack, playerIn, pFilledBottleStack);
+	protected ItemStack turnCanteenIntoItem(ItemStack canteenStack, BlockPos fillPos, Player pPlayer, ItemStack pFilledBottleStack) {
+		pPlayer.awardStat(Stats.ITEM_USED.get(this));
+		if (PotionUtils.getPotion(pFilledBottleStack) == Potions.WATER)
+			pFilledBottleStack.getTag().putString("biome_source", pPlayer.level().getBiome(fillPos).unwrapKey().get().location().toString());
+		return ItemUtils.createFilledResult(canteenStack, pPlayer, pFilledBottleStack);
 	}
 
 }

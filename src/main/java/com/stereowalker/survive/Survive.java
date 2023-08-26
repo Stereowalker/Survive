@@ -34,7 +34,7 @@ import com.stereowalker.survive.network.protocol.game.ServerboundRelaxPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhaustionPacket;
 import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
 import com.stereowalker.survive.resource.ArmorDataManager;
-import com.stereowalker.survive.resource.BiomeTemperatureDataManager;
+import com.stereowalker.survive.resource.BiomeDataManager;
 import com.stereowalker.survive.resource.BlockTemperatureDataManager;
 import com.stereowalker.survive.resource.EntityTemperatureDataManager;
 import com.stereowalker.survive.resource.FluidDataManager;
@@ -115,7 +115,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	public static final PotionDrinkDataManager potionReloader = new PotionDrinkDataManager();
 	public static final ArmorDataManager armorReloader = new ArmorDataManager();
 	public static final BlockTemperatureDataManager blockReloader = new BlockTemperatureDataManager();
-	public static final BiomeTemperatureDataManager biomeReloader = new BiomeTemperatureDataManager();
+	public static final BiomeDataManager biomeReloader = new BiomeDataManager();
 	public static final EntityTemperatureDataManager entityReloader = new EntityTemperatureDataManager();
 	public static final FluidDataManager fluidReloader = new FluidDataManager();
 	private static Survive instance;

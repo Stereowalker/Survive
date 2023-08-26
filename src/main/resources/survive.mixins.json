@@ -18,7 +18,8 @@
 	"PigMixin",
 	"IceBlockMixin",
 	"MobEffectMixin",
-	"WrittenBookItemMixin"
+	"WrittenBookItemMixin",
+	"BottleItemMixin"
   ],
   "client": [
   	"client.GuiMixin",
