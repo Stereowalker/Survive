@@ -1,3 +1,6 @@
-- Updated to use the latest version of UnionLib
-- Any item that can be recognised as a potion by the game will get it's water data from potions instead
-- Fixed canteens not replenishing thirst
+- Biomes can now manipulate the odds of getting the thirst effect
+- Water bottles and canteens remember which biome they're sourced from
+- The intensity of getting an illness when drinking water is controlled by the biome the water is sourced from
+- Reduced the odds of getting thirst with cold/snowy biome water
+- Raised the odds of getting thirst when drinking swamp water
+- Not providing "lifespan" & "ticks_fresh" or setting both values to 0 will make the item not have a lifespan
