@@ -35,7 +35,7 @@ import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhausti
 import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
 import com.stereowalker.survive.resource.ArmorDataManager;
 import com.stereowalker.survive.resource.BiomeDataManager;
-import com.stereowalker.survive.resource.BlockTemperatureDataManager;
+import com.stereowalker.survive.resource.BlockDataManager;
 import com.stereowalker.survive.resource.EntityTemperatureDataManager;
 import com.stereowalker.survive.resource.FluidDataManager;
 import com.stereowalker.survive.resource.ItemConsummableDataManager;
@@ -59,6 +59,7 @@ import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.PurifiedWaterFluid;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.spellcraft.SSpells;
+import com.stereowalker.unionlib.api.collectors.ConfigCollector;
 import com.stereowalker.unionlib.api.collectors.DefaultAttributeModifier;
 import com.stereowalker.unionlib.api.collectors.InsertCollector;
 import com.stereowalker.unionlib.api.collectors.PacketCollector;
@@ -66,7 +67,6 @@ import com.stereowalker.unionlib.api.collectors.ReloadListeners;
 import com.stereowalker.unionlib.api.creativetabs.CreativeTabBuilder;
 import com.stereowalker.unionlib.api.creativetabs.CreativeTabPopulator;
 import com.stereowalker.unionlib.api.registries.RegistryCollector;
-import com.stereowalker.unionlib.config.ConfigBuilder;
 import com.stereowalker.unionlib.event.potionfluid.FluidToPotionEvent;
 import com.stereowalker.unionlib.event.potionfluid.PotionToFluidEvent;
 import com.stereowalker.unionlib.insert.Inserts;
@@ -92,7 +92,6 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(value = "survive")
@@ -114,7 +113,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	public static final ItemConsummableDataManager consummableReloader = new ItemConsummableDataManager();
 	public static final PotionDrinkDataManager potionReloader = new PotionDrinkDataManager();
 	public static final ArmorDataManager armorReloader = new ArmorDataManager();
-	public static final BlockTemperatureDataManager blockReloader = new BlockTemperatureDataManager();
+	public static final BlockDataManager blockReloader = new BlockDataManager();
 	public static final BiomeDataManager biomeReloader = new BiomeDataManager();
 	public static final EntityTemperatureDataManager entityReloader = new EntityTemperatureDataManager();
 	public static final FluidDataManager fluidReloader = new FluidDataManager();
@@ -131,16 +130,6 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	{
 		super("survive", () -> new SurviveClientSegment(), () -> new ServerSegment());
 		instance = this;
-		ConfigBuilder.registerConfig(ServerConfig.class);
-		ConfigBuilder.registerConfig(CONFIG);
-		ConfigBuilder.registerConfig(HYGIENE_CONFIG); 
-		ConfigBuilder.registerConfig(TEMPERATURE_CONFIG);
-		ConfigBuilder.registerConfig(THIRST_CONFIG);
-		ConfigBuilder.registerConfig(WELLBEING_CONFIG);
-		ConfigBuilder.registerConfig(STAMINA_CONFIG);
-		new FluidSTags();
-		new ItemSTags();
-		eventBus().addListener(this::setup);
 		eventBus().addListener(this::clientRegistries);
 		eventBus().addListener((Consumer<RegisterGuiOverlaysEvent>) event -> {
 			GuiHelper.registerOverlays(event);
@@ -159,13 +148,45 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			}
 		});
 		isPrimalWinterLoaded = ModList.get().isLoaded("primalwinter");
-		if (isCombatLoaded()) {
-			SSpells.registerAll(eventBus());
-		}
-		if (isOriginsLoaded()) {
-			OriginsCompat.initOriginsPatcher();
-		}
+	}
+	
+	@Override
+	public void onModConstruct() {
+		new FluidSTags();
+		new ItemSTags();
+		if (isCombatLoaded())SSpells.registerAll(eventBus());
+		if (isOriginsLoaded())OriginsCompat.initOriginsPatcher();
 		BlockPropertyHandlerImpl.init();
+	}
+	
+	@Override
+	public void onModStartup() {
+		SCauldronInteraction.bootStrap();
+		BrewingRecipes.addBrewingRecipes();
+		CGameRules.init();
+
+		for(Item item : ForgeRegistries.ITEMS) {
+			if (item.isEdible())
+				DataMaps.Server.defaultFood.put(ForgeRegistries.ITEMS.getKey(item), item.getFoodProperties());
+		}
+	}
+	
+	@Override
+	public void onModStartupInClient() {
+		RenderType frendertype = RenderType.translucent();
+		ItemBlockRenderTypes.setRenderLayer(SFluids.PURIFIED_WATER, frendertype);
+		ItemBlockRenderTypes.setRenderLayer(SFluids.FLOWING_PURIFIED_WATER, frendertype);
+	}
+	
+	@Override
+	public void setupConfigs(ConfigCollector collector) {
+		collector.registerConfig(ServerConfig.class);
+		collector.registerConfig(CONFIG);
+		collector.registerConfig(HYGIENE_CONFIG); 
+		collector.registerConfig(TEMPERATURE_CONFIG);
+		collector.registerConfig(THIRST_CONFIG);
+		collector.registerConfig(WELLBEING_CONFIG);
+		collector.registerConfig(STAMINA_CONFIG);
 	}
 	
 	public void registerCommands(RegisterCommandsEvent event) {
@@ -248,24 +269,8 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		if (CONFIG.debugMode)getLogger().debug(message);
 	}
 
-	@SuppressWarnings("deprecation")
-	private void setup(final FMLCommonSetupEvent event)
-	{
-		SCauldronInteraction.bootStrap();
-		BrewingRecipes.addBrewingRecipes();
-		CGameRules.init();
-
-		for(Item item : ForgeRegistries.ITEMS) {
-			if (item.isEdible())
-				DataMaps.Server.defaultFood.put(ForgeRegistries.ITEMS.getKey(item), item.getFoodProperties());
-		}
-	}
-
 	public void clientRegistries(final FMLClientSetupEvent event)
 	{
-		RenderType frendertype = RenderType.translucent();
-		ItemBlockRenderTypes.setRenderLayer(SFluids.PURIFIED_WATER, frendertype);
-		ItemBlockRenderTypes.setRenderLayer(SFluids.FLOWING_PURIFIED_WATER, frendertype);
 		event.enqueueWork(()->{
 			SItemProperties.registerAll();
 		});
