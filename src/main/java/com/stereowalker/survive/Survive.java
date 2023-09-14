@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.stereowalker.survive.commands.SCommands;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.compat.SItemProperties;
 import com.stereowalker.survive.config.Config;
@@ -40,6 +39,7 @@ import com.stereowalker.survive.resource.EntityTemperatureDataManager;
 import com.stereowalker.survive.resource.FluidDataManager;
 import com.stereowalker.survive.resource.ItemConsummableDataManager;
 import com.stereowalker.survive.resource.PotionDrinkDataManager;
+import com.stereowalker.survive.server.commands.NeedsCommand;
 import com.stereowalker.survive.tags.FluidSTags;
 import com.stereowalker.survive.tags.ItemSTags;
 import com.stereowalker.survive.world.DataMaps;
@@ -59,6 +59,7 @@ import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.PurifiedWaterFluid;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.spellcraft.SSpells;
+import com.stereowalker.unionlib.api.collectors.CommandCollector;
 import com.stereowalker.unionlib.api.collectors.ConfigCollector;
 import com.stereowalker.unionlib.api.collectors.DefaultAttributeModifier;
 import com.stereowalker.unionlib.api.collectors.InsertCollector;
@@ -88,7 +89,6 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -134,7 +134,6 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		eventBus().addListener((Consumer<RegisterGuiOverlaysEvent>) event -> {
 			GuiHelper.registerOverlays(event);
 		});
-		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		//		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.addListener((Consumer<PotionToFluidEvent>) event -> {
 			if (event.getPotion() == SPotions.PURIFIED_WATER) {
@@ -189,8 +188,9 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.registerConfig(STAMINA_CONFIG);
 	}
 	
-	public void registerCommands(RegisterCommandsEvent event) {
-		SCommands.registerCommands(event.getDispatcher());
+	@Override
+	public void setupCommands(CommandCollector collector) {
+		NeedsCommand.register(collector.dispatcher());
 	}
 
 	@Override
