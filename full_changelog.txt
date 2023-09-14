@@ -1,3 +1,6 @@
+[9.0.4]
+- Updated UnionLib to 10.2
+
 [9.0.3]
 - Biomes can now manipulate the odds of getting the thirst effect
 - Water bottles and canteens remember which biome they're sourced from

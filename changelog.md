@@ -1,6 +1,1 @@
-- Biomes can now manipulate the odds of getting the thirst effect
-- Water bottles and canteens remember which biome they're sourced from
-- The intensity of getting an illness when drinking water is controlled by the biome the water is sourced from
-- Reduced the odds of getting thirst with cold/snowy biome water
-- Raised the odds of getting thirst when drinking swamp water
-- Not providing "lifespan" & "ticks_fresh" or setting both values to 0 will make the item not have a lifespan
+- Updated UnionLib to 10.2
