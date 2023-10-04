@@ -3,8 +3,12 @@ package com.stereowalker.survive;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import com.google.common.collect.Lists;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.compat.SItemProperties;
 import com.stereowalker.survive.config.Config;
@@ -87,6 +91,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
+import net.minecraft.world.level.storage.loot.entries.LootTableReference;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
@@ -216,6 +224,33 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addInsert(Inserts.LIVING_TICK, SurviveEvents::updateEnvTemperature);
 		collector.addInsert(Inserts.PLAYER_RESTORE, SurviveEvents::restoreStats);
 		collector.addInsert(Inserts.LOGGED_OUT, SurviveEvents::desyncClient);
+		collector.addInsert(Inserts.LOOT_TABLE_LOAD, (id,lootTable,cancel)->{
+			String ANIMAL_LOOT = "entities/animal_fat";
+			List<Pair<ResourceLocation, List<String>>> LOOT_MODIFIERS = Lists.newArrayList(
+					Pair.of(new ResourceLocation("entities/sheep"), Lists.newArrayList(ANIMAL_LOOT)),
+					Pair.of(new ResourceLocation("entities/chicken"), Lists.newArrayList(ANIMAL_LOOT)),
+					Pair.of(new ResourceLocation("entities/cow"), Lists.newArrayList(ANIMAL_LOOT)),
+					Pair.of(new ResourceLocation("entities/pig"), Lists.newArrayList(ANIMAL_LOOT))
+					);
+			
+
+			BiFunction<String, Integer, LootPoolEntryContainer.Builder<?>> getInjectEntry = (name, weight) -> {
+				ResourceLocation table = Survive.getInstance().location("inject/" + name);
+				return LootTableReference.lootTableReference(table).setWeight(weight);
+			};
+			
+			LOOT_MODIFIERS.forEach((pair) -> {
+				if(id.equals(pair.getKey())) {
+					pair.getValue().forEach((file) -> {
+						Survive.getInstance().debug("Injecting \""+file+"\" in "+pair.getKey());
+						lootTable.get().addPool(LootPool.lootPool()
+								.add(getInjectEntry.apply(file, 1))
+								.setBonusRolls(UniformGenerator.between(0.0F, 1.0F))
+								.name("survive_inject").build());
+					});
+				}
+			});
+		});
 		collector.addInsert(Inserts.ITEM_TOOLTIP, (stack, player, tip, flag)->{
 			if (player != null)
 				FoodUtils.applyFoodStatusToTooltip(player, stack, tip);
