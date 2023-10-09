@@ -1,3 +1,6 @@
+[9.0.5]
+- Updated UnionLib to 10.2.2
+
 [9.0.4]
 - Updated UnionLib to 10.2
 
