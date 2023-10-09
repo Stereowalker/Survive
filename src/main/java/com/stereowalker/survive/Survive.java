@@ -224,6 +224,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addInsert(Inserts.LIVING_TICK, SurviveEvents::updateEnvTemperature);
 		collector.addInsert(Inserts.PLAYER_RESTORE, SurviveEvents::restoreStats);
 		collector.addInsert(Inserts.LOGGED_OUT, SurviveEvents::desyncClient);
+		collector.addInsert(Inserts.LEVEL_LOAD, SurviveEvents::addReload);
 		collector.addInsert(Inserts.LOOT_TABLE_LOAD, (id,lootTable,cancel)->{
 			String ANIMAL_LOOT = "entities/animal_fat";
 			List<Pair<ResourceLocation, List<String>>> LOOT_MODIFIERS = Lists.newArrayList(

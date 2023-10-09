@@ -8,23 +8,17 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.stereowalker.survive.GuiHelper;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.client.gui.SurviveHeartType;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
-import com.stereowalker.survive.world.effect.SMobEffects;
-import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
-import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -44,15 +38,6 @@ public abstract class GuiMixin {
 	@Shadow public int screenWidth;
 	@Shadow public int screenHeight;
 	@Shadow protected int tickCount;
-
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;lerp(FFF)F", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void render2(GuiGraphics arg0, float arg1, CallbackInfo ci, Window window, Font font) {
-		if (Survive.CONFIG.tired_overlay && minecraft.player.hasEffect(SMobEffects.TIREDNESS)) {
-			GuiHelper.renderTiredOverlay((Gui)(Object)this, arg0);
-		}
-		GuiHelper.renderHeatStroke((Gui)(Object)this, arg0);
-		GuiHelper.renderTemperature((Gui)(Object)this, ScreenOffset.TOP, getCameraPlayer(), arg0, false);
-	}
 
 
 	@Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V"))
