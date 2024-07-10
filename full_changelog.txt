@@ -1,3 +1,6 @@
+[10.0.0]
+- Backported 1.21 changes
+
 [9.0.5]
 - Updated UnionLib to 10.2.2
 
