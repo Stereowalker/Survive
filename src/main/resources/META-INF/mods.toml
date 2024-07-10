@@ -1,50 +1,48 @@
 
 modLoader="javafml"
-loaderVersion="[46,)"
-license="CC BY-NC-ND 4.0"
-issueTrackerURL="https://github.com/Stereowalker/Survive/issues"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+issueTrackerURL="https://github.com/Stereowalker/survive/issues"
 logoFile="logo.png"
 [[mods]]
-modId="survive"
-version="${file.jarVersion}"
-displayName="Survive"
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
 updateJSONURL="https://raw.githubusercontent.com/Stereowalker/My-Home-Page/main/update_files/survive.json"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/survive"
 credits="I'd like to thank all my supporters on Patreon for giving me a reason to continue modding, ChainmailPickaxe for the nice textures, and you for downloading and playing with this mod"
-authors="Stereowalker"
-description='''
-Adds new survival mechanics like thirst, body temperature, sleep management and stamina
-'''
+authors="${mod_authors}"
+description='''${mod_description}'''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.survive]] #optional
+[[dependencies.${mod_id}]] #optional
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[46,)" #mandatory
+    versionRange="[50,)" #mandatory
     ordering="NONE"
     side="BOTH"
 # Here's another dependency
-[[dependencies.survive]]
+[[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.20,1.21)"
+    versionRange="[1.20.6,1.21)"
     ordering="NONE"
     side="BOTH"
 	
-[[dependencies.survive]]
+[[dependencies.${mod_id}]]
     modId="unionlib"
     mandatory=true
-    versionRange="[10.2.2,10.3.0)"
+    versionRange="[11.0.2,12.0.0)"
     ordering="NONE"
     side="BOTH"
 	
-[[dependencies.survive]]
+[[dependencies.${mod_id}]]
     modId="combat"
     mandatory=false
     versionRange="[1.18.2-9.0.0-beta,)"
     ordering="NONE"
     side="BOTH"
 	
-[[dependencies.survive]]
+[[dependencies.${mod_id}]]
     modId="sereneseasons"
     mandatory=false
     versionRange="[1.18.2-7.0.0.13,)"
