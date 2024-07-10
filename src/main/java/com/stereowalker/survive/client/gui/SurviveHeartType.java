@@ -1,10 +1,9 @@
 package com.stereowalker.survive.client.gui;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.TempDisplayMode;
 import com.stereowalker.survive.needs.IRoastedEntity;
-import com.stereowalker.survive.world.effect.SMobEffects;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -12,41 +11,118 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public enum SurviveHeartType {
-	CONTAINER(0, false, true),
-	NORMAL(2, true, true),
-	POISIONED(4, true, true),
-	WITHERED(6, true, true),
-	ABSORBING(8, false, true),
-	FROZEN(9, false, true),
-	HYPO(0, false, false),
-	HYPER(2, false, false),
-	ROASTED(4, false, false);
+	CONTAINER(
+			new ResourceLocation("hud/heart/container"),
+			new ResourceLocation("hud/heart/container_blinking"),
+			new ResourceLocation("hud/heart/container"),
+			new ResourceLocation("hud/heart/container_blinking"),
+			new ResourceLocation("hud/heart/container_hardcore"),
+			new ResourceLocation("hud/heart/container_hardcore_blinking"),
+			new ResourceLocation("hud/heart/container_hardcore"),
+			new ResourceLocation("hud/heart/container_hardcore_blinking")
+			),
+	NORMAL(
+			new ResourceLocation("hud/heart/full"),
+			new ResourceLocation("hud/heart/full_blinking"),
+			new ResourceLocation("hud/heart/half"),
+			new ResourceLocation("hud/heart/half_blinking"),
+			new ResourceLocation("hud/heart/hardcore_full"),
+			new ResourceLocation("hud/heart/hardcore_full_blinking"),
+			new ResourceLocation("hud/heart/hardcore_half"),
+			new ResourceLocation("hud/heart/hardcore_half_blinking")
+			),
+	POISIONED(
+			new ResourceLocation("hud/heart/poisoned_full"),
+			new ResourceLocation("hud/heart/poisoned_full_blinking"),
+			new ResourceLocation("hud/heart/poisoned_half"),
+			new ResourceLocation("hud/heart/poisoned_half_blinking"),
+			new ResourceLocation("hud/heart/poisoned_hardcore_full"),
+			new ResourceLocation("hud/heart/poisoned_hardcore_full_blinking"),
+			new ResourceLocation("hud/heart/poisoned_hardcore_half"),
+			new ResourceLocation("hud/heart/poisoned_hardcore_half_blinking")
+			),
+	WITHERED(
+			new ResourceLocation("hud/heart/withered_full"),
+			new ResourceLocation("hud/heart/withered_full_blinking"),
+			new ResourceLocation("hud/heart/withered_half"),
+			new ResourceLocation("hud/heart/withered_half_blinking"),
+			new ResourceLocation("hud/heart/withered_hardcore_full"),
+			new ResourceLocation("hud/heart/withered_hardcore_full_blinking"),
+			new ResourceLocation("hud/heart/withered_hardcore_half"),
+			new ResourceLocation("hud/heart/withered_hardcore_half_blinking")
+			),
+	ABSORBING(
+			new ResourceLocation("hud/heart/absorbing_full"),
+			new ResourceLocation("hud/heart/absorbing_full_blinking"),
+			new ResourceLocation("hud/heart/absorbing_half"),
+			new ResourceLocation("hud/heart/absorbing_half_blinking"),
+			new ResourceLocation("hud/heart/absorbing_hardcore_full"),
+			new ResourceLocation("hud/heart/absorbing_hardcore_full_blinking"),
+			new ResourceLocation("hud/heart/absorbing_hardcore_half"),
+			new ResourceLocation("hud/heart/absorbing_hardcore_half_blinking")
+			),
+	FROZEN(
+			new ResourceLocation("hud/heart/frozen_full"),
+			new ResourceLocation("hud/heart/frozen_full_blinking"),
+			new ResourceLocation("hud/heart/frozen_half"),
+			new ResourceLocation("hud/heart/frozen_half_blinking"),
+			new ResourceLocation("hud/heart/frozen_hardcore_full"),
+			new ResourceLocation("hud/heart/frozen_hardcore_full_blinking"),
+			new ResourceLocation("hud/heart/frozen_hardcore_half"),
+			new ResourceLocation("hud/heart/frozen_hardcore_half_blinking")
+			),
+	ROASTED(
+			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_full"),
+			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_full_blinking"),
+			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_half"),
+			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_half_blinking"),
+			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_hardcore_full"),
+			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_hardcore_full_blinking"),
+			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_hardcore_half"),
+			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_hardcore_half_blinking")
+			);
 
-	private final int index;
-	private final boolean canBlink;
-	private final boolean useVanilla;
+	private final ResourceLocation full;
+	private final ResourceLocation fullBlinking;
+	private final ResourceLocation half;
+	private final ResourceLocation halfBlinking;
+	private final ResourceLocation hardcoreFull;
+	private final ResourceLocation hardcoreFullBlinking;
+	private final ResourceLocation hardcoreHalf;
+	private final ResourceLocation hardcoreHalfBlinking;
 
-	private SurviveHeartType(int index, boolean p_168730_, boolean useVanilla) {
-		this.index = index;
-		this.canBlink = p_168730_;
-		this.useVanilla = useVanilla;
+	private SurviveHeartType(
+			final ResourceLocation pFull,
+			final ResourceLocation pFullBlinking,
+			final ResourceLocation pHalf,
+			final ResourceLocation pHalfBlinking,
+			final ResourceLocation pHardcoreFull,
+			final ResourceLocation pHardcoreBlinking,
+			final ResourceLocation pHardcoreHalf,
+			final ResourceLocation pHardcoreHalfBlinking
+			) {
+		this.full = pFull;
+		this.fullBlinking = pFullBlinking;
+		this.half = pHalf;
+		this.halfBlinking = pHalfBlinking;
+		this.hardcoreFull = pHardcoreFull;
+		this.hardcoreFullBlinking = pHardcoreBlinking;
+		this.hardcoreHalf = pHardcoreHalf;
+		this.hardcoreHalfBlinking = pHardcoreHalfBlinking;
 	}
 
-	public int getX(boolean p_168735_, boolean p_168736_) {
-		int i;
-		if (this == CONTAINER) {
-			i = p_168736_ ? 1 : 0;
+	public ResourceLocation getSprite(boolean pHardcore, boolean pHalfHeart, boolean pBlinking) {
+		if (!pHardcore) {
+			if (pHalfHeart) {
+				return pBlinking ? this.halfBlinking : this.half;
+			} else {
+				return pBlinking ? this.fullBlinking : this.full;
+			}
+		} else if (pHalfHeart) {
+			return pBlinking ? this.hardcoreHalfBlinking : this.hardcoreHalf;
 		} else {
-			int j = p_168735_ ? 1 : 0;
-			int k = this.canBlink && p_168736_ ? 2 : 0;
-			i = j + k;
+			return pBlinking ? this.hardcoreFullBlinking : this.hardcoreFull;
 		}
-
-		return 16 + (this.index * 2 + i) * 9;
-	}
-
-	public boolean usesVanilla() {
-		return useVanilla;
 	}
 
 	public static SurviveHeartType forPlayer(Player p_168733_) {
@@ -59,10 +135,6 @@ public enum SurviveHeartType {
 			gui$hearttype = FROZEN;
 		} else if (((IRoastedEntity)p_168733_).isFullyRoasted()) {
 			gui$hearttype = ROASTED;
-		} else if (p_168733_.hasEffect(SMobEffects.DEPRECIATED_HYPERTHERMIA) && Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR) && Survive.TEMPERATURE_CONFIG.tempEffects) {
-			gui$hearttype = HYPER;
-		} else if (p_168733_.hasEffect(SMobEffects.DEPRECIATED_HYPOTHERMIA) && Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR) && Survive.TEMPERATURE_CONFIG.tempEffects) {
-			gui$hearttype = HYPO;
 		} else {
 			gui$hearttype = NORMAL;
 		}

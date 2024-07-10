@@ -50,42 +50,42 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 							FoodJsonHolder drinkData = new FoodJsonHolder(drinkId, object);
 
 							//Overrides the current food if it is edible. Omitting any modifiers will set that modifier to what is is by default
-							if (ForgeRegistries.ITEMS.getValue(drinkId).isEdible() && DataMaps.Server.defaultFood.containsKey(drinkId)) {
-								ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().nutrition = drinkData.overwritesDefaultHunger() ? drinkData.getHungerAmount() : DataMaps.Server.defaultFood.get(drinkId).getNutrition();
-								ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().saturationModifier = drinkData.overwritesDefaultSaturation() ? drinkData.getSaturationAmount() : DataMaps.Server.defaultFood.get(drinkId).getSaturationModifier();
-
-								Pair<MobEffectInstance, Float> defaultEffect = null;
-								Pair<MobEffectInstance, Float> itemEffect = null;
-								for (Pair<MobEffectInstance, Float> effect : ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().getEffects()) {
-									if (effect.getFirst().getEffect() == MobEffects.HUNGER) {
-										itemEffect = effect;
-									}
-								}
-
-								for (Pair<MobEffectInstance, Float> effect : DataMaps.Server.defaultFood.get(drinkId).getEffects()) {
-									if (effect.getFirst().getEffect() == MobEffects.HUNGER) {
-										defaultEffect = effect;
-									}
-								}
-
-								if (itemEffect != null) {
-									ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().getEffects().remove(itemEffect);
-								}
-
-								if (drinkData.overwritesDefaultHungerChance()) {
-									ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().getEffects().add(Pair.of(new MobEffectInstance(MobEffects.HUNGER, 30*20, 0), drinkData.getHungerChance()));
-								} else if (defaultEffect != null) {
-									ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().getEffects().add(defaultEffect);
-								}
-							}
+//							if (ForgeRegistries.ITEMS.getValue(drinkId).isEdible() && DataMaps.Server.defaultFood.containsKey(drinkId)) {
+//								ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().nutrition = drinkData.overwritesDefaultHunger() ? drinkData.getHungerAmount() : DataMaps.Server.defaultFood.get(drinkId).getNutrition();
+//								ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().saturationModifier = drinkData.overwritesDefaultSaturation() ? drinkData.getSaturationAmount() : DataMaps.Server.defaultFood.get(drinkId).getSaturationModifier();
+//
+//								Pair<MobEffectInstance, Float> defaultEffect = null;
+//								Pair<MobEffectInstance, Float> itemEffect = null;
+//								for (Pair<MobEffectInstance, Float> effect : ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().getEffects()) {
+//									if (effect.getFirst().getEffect() == MobEffects.HUNGER) {
+//										itemEffect = effect;
+//									}
+//								}
+//
+//								for (Pair<MobEffectInstance, Float> effect : DataMaps.Server.defaultFood.get(drinkId).getEffects()) {
+//									if (effect.getFirst().getEffect() == MobEffects.HUNGER) {
+//										defaultEffect = effect;
+//									}
+//								}
+//
+//								if (itemEffect != null) {
+//									ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().getEffects().remove(itemEffect);
+//								}
+//
+//								if (drinkData.overwritesDefaultHungerChance()) {
+//									ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().getEffects().add(Pair.of(new MobEffectInstance(MobEffects.HUNGER, 30*20, 0), drinkData.getHungerChance()));
+//								} else if (defaultEffect != null) {
+//									ForgeRegistries.ITEMS.getValue(drinkId).getFoodProperties().getEffects().add(defaultEffect);
+//								}
+//							}
 							//Makes any item edible if it naturally isn't supposed to be edible
-							if (drinkData.overwritesDefaultFood() && !ForgeRegistries.ITEMS.getValue(drinkId).isEdible()) {
-								ForgeRegistries.ITEMS.getValue(drinkId).foodProperties = (new FoodProperties.Builder()).nutrition(drinkData.getHungerAmount()).saturationMod(drinkData.getSaturationAmount()).effect(() -> new MobEffectInstance(MobEffects.HUNGER, 600, 0), drinkData.getHungerChance()).build();
-							}
+//							if (drinkData.overwritesDefaultFood() && !ForgeRegistries.ITEMS.getValue(drinkId).isEdible()) {
+//								ForgeRegistries.ITEMS.getValue(drinkId).foodProperties = (new FoodProperties.Builder()).nutrition(drinkData.getHungerAmount()).saturationMod(drinkData.getSaturationAmount()).effect(() -> new MobEffectInstance(MobEffects.HUNGER, 600, 0), drinkData.getHungerChance()).build();
+//							}
 							//Makes non edible items that were edible no longer edible. Basically, if a datapack that made stone edible was removed, this will reset the edibility of stone
-							if (!DataMaps.Server.defaultFood.containsKey(drinkId) && !drinkData.overwritesDefaultFood() && ForgeRegistries.ITEMS.getValue(drinkId).isEdible()) {
-								ForgeRegistries.ITEMS.getValue(drinkId).foodProperties = null;
-							}
+//							if (!DataMaps.Server.defaultFood.containsKey(drinkId) && !drinkData.overwritesDefaultFood() && ForgeRegistries.ITEMS.getValue(drinkId).isEdible()) {
+//								ForgeRegistries.ITEMS.getValue(drinkId).foodProperties = null;
+//							}
 							Survive.getInstance().getLogger().info("Found item consummable data for "+drinkId);
 							
 							drinkMap.put(drinkId, drinkData);

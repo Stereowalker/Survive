@@ -11,7 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -65,21 +65,21 @@ public abstract class AbstractTemperatureRegulatorBlock extends Block {
 	public abstract boolean canAddPlate(BlockState pState, ItemStack plate);
 	public abstract boolean canRemovePlates(BlockState pState);
 	public abstract ItemStack getPlateStack(BlockState pState);
-
+	
 	@Override
-	public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+	public ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
 		int plate_count = pState.getValue(PLATE_COUNT);
-		if (plate_count < 4 && canAddPlate(pState, pPlayer.getItemInHand(pHand))) {
-			return handlePlates(pPlayer.getItemInHand(pHand), pState, pLevel, pPos, true);
-		} else if (plate_count > 0 && canRemovePlates(pState) && pPlayer.getItemInHand(pHand).isEmpty()) {
+		if (plate_count < 4 && canAddPlate(pState, pStack)) {
+			return handlePlates(pStack, pState, pLevel, pPos, true);
+		} else if (plate_count > 0 && canRemovePlates(pState) && pStack.isEmpty()) {
 			pPlayer.addItem(getPlateStack(pState));
-			return handlePlates(pPlayer.getItemInHand(pHand), pState, pLevel, pPos, false);
+			return handlePlates(pStack, pState, pLevel, pPos, false);
 		} else {
-			return InteractionResult.PASS;
+			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 		}
 	}
 
-	public InteractionResult handlePlates(ItemStack plate, BlockState pState, Level pLevel, BlockPos pPos, boolean add) {
+	public ItemInteractionResult handlePlates(ItemStack plate, BlockState pState, Level pLevel, BlockPos pPos, boolean add) {
 		int plate_count = pState.getValue(PLATE_COUNT);
 		int newCount = plate_count+(add?1:-1);
 
@@ -109,7 +109,7 @@ public abstract class AbstractTemperatureRegulatorBlock extends Block {
 		if (alteredPlates) {
 			pLevel.playLocalSound(pPos.getX(), pPos.getY(), pPos.getZ(), SoundEvents.STONE_PLACE, SoundSource.BLOCKS, 1.0F + pLevel.random.nextFloat(), 0, false);
 		}
-		return InteractionResult.sidedSuccess(pLevel.isClientSide);
+		return ItemInteractionResult.sidedSuccess(pLevel.isClientSide);
 	}
 
 	@Override

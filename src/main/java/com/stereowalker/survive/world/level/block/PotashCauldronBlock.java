@@ -1,8 +1,5 @@
 package com.stereowalker.survive.world.level.block;
 
-import java.util.Random;
-import java.util.function.Predicate;
-
 import com.stereowalker.survive.core.cauldron.SCauldronInteraction;
 import com.stereowalker.survive.world.item.HygieneItems;
 
@@ -21,12 +18,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class PotashCauldronBlock extends LayeredCauldronBlock {
 
-	public static final Predicate<Biome.Precipitation> NONE = (p_153526_) -> {
-		return false;
-	};
-
 	public PotashCauldronBlock(BlockBehaviour.Properties properties) {
-		super(properties, NONE, SCauldronInteraction.POTASH);
+		super(Biome.Precipitation.NONE, SCauldronInteraction.POTASH, properties);
 	}
 
 	@Override

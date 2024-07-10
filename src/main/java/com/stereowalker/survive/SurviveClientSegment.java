@@ -1,11 +1,16 @@
 package com.stereowalker.survive;
 
+import java.util.Random;
+
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.IRoastedEntity;
 import com.stereowalker.survive.world.effect.SMobEffects;
+import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector.Order;
 import com.stereowalker.unionlib.api.gui.GuiRenderer;
@@ -19,10 +24,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class SurviveClientSegment extends ClientSegment {
 
@@ -39,8 +48,35 @@ public class SurviveClientSegment extends ClientSegment {
 
 	@Override
 	public void setupGuiOverlays(OverlayCollector collector) {
+		//Should Render after food ideally
+		MutableInt rightHeight = new MutableInt(49);
+		collector.register("reset", Order.END, (gui,renderer,width,height)->{
+			rightHeight.setValue(49);
+		});
+		collector.register("thirst_level", Order.END, (gui,renderer,width,height)->{
+			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
+			if (Survive.THIRST_CONFIG.enabled && !isMounted && !gui.minecraft.options.hideGui && gui.minecraft.gameMode.canHurtPlayer())
+			{
+//				gui.setupOverlayRenderState(true, false);
+				int left = width / 2 + 91;
+				int top = height - rightHeight.intValue();
+				renderThirst(gui, renderer, left, top, true);
+				rightHeight.add(10);
+			}
+		});
+		collector.register("stamina_level", Order.END, (gui,renderer,width,height)->{
+			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
+			if (Survive.STAMINA_CONFIG.enabled && !isMounted && !gui.minecraft.options.hideGui && gui.minecraft.gameMode.canHurtPlayer())
+			{
+//				gui.setupOverlayRenderState(true, false);
+				int left = width / 2 + 91;
+				int top = height - rightHeight.intValue();
+				renderEnergyBars(gui, renderer, rightHeight, left, top, true);
+//				gui.rightHeight += moveUp.getValue();
+			}
+		});
 		collector.register("tired", Order.END, (gui,renderer,width,height)->{
-			if (!Survive.CONFIG.tired_overlay && gui.minecraft.player.hasEffect(SMobEffects.TIREDNESS)) {
+			if (!Survive.CONFIG.tired_overlay && gui.minecraft.player.hasEffect(SMobEffects.TIREDNESS.holder())) {
 //				gui.setupOverlayRenderState(true, false);
 				RenderSystem.enableBlend();
 				RenderSystem.defaultBlendFunc();
@@ -120,7 +156,7 @@ public class SurviveClientSegment extends ClientSegment {
 				}
 			}
 		}
-		if (Survive.CONFIG.nutrition_enabled && (playerentity.getMainHandItem().isEdible() || playerentity.getOffhandItem().isEdible())) {
+		if (Survive.CONFIG.nutrition_enabled && (playerentity.getMainHandItem().has(DataComponents.FOOD) || playerentity.getOffhandItem().has(DataComponents.FOOD))) {
 			renderer.drawString("Carbs = "+((IRealisticEntity)playerentity).getNutritionData().getCarbLevel(), 0, 0, ChatFormatting.GRAY.getColor(), false);
 			renderer.drawString("Protein = "+((IRealisticEntity)playerentity).getNutritionData().getProteinLevel(), 0, 10, ChatFormatting.GRAY.getColor(), false);
 		}
@@ -144,10 +180,85 @@ public class SurviveClientSegment extends ClientSegment {
 	@SuppressWarnings("resource")
 	public static void renderTiredOverlay(Gui gui, GuiRenderer graphics) {
 		Minecraft.getInstance().getProfiler().push("tired");
-		int amplifier = Minecraft.getInstance().player.getEffect(SMobEffects.TIREDNESS).getAmplifier() + 1;
+		int amplifier = Minecraft.getInstance().player.getEffect(SMobEffects.TIREDNESS.holder()).getAmplifier() + 1;
 		amplifier/=(Survive.CONFIG.tiredTimeStacks/5);
 		amplifier = Mth.clamp(amplifier, 0, 4);
 		gui.renderTextureOverlay(graphics.guiGraphics(), Survive.getInstance().location("textures/misc/sleep_overlay_"+(amplifier)+".png"), 0.5F);
+		Minecraft.getInstance().getProfiler().pop();
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static void renderThirst(Gui gui, GuiRenderer graphics, int j1, int k1, boolean forgeOverlay) {
+		Player player = (Player)gui.minecraft.getCameraEntity();
+		IRealisticEntity realisticPlayer = (IRealisticEntity)player;
+		int waterL = (int) realisticPlayer.getWaterData().getWaterLevel();
+		gui.minecraft.getProfiler().push("thirst");
+		for(int k6 = 0; k6 < 10; ++k6) {
+			int i7 = k1;
+			int k7 = 16;
+			int i8 = 0;
+			if (player.hasEffect(SMobEffects.THIRST.holder())) {
+				k7 += 36;
+				i8 = 13;
+			}
+
+			if (realisticPlayer.getWaterData().getHydrationLevel() <= 0.0F && gui.tickCount % (waterL * 3 + 1) == 0) {
+				i7 = k1 + (gui.random.nextInt(3) - 1);
+			}
+
+			int k8 = j1 - k6 * 8 - 9;
+			graphics.blit(GUI_ICONS, k8, i7, 16 + i8 * 9, 54, 9, 9);
+			if (k6 * 2 + 1 < waterL) {
+				graphics.blit(GUI_ICONS, k8, i7, k7 + 36, 54, 9, 9);
+			}
+
+			if (k6 * 2 + 1 == waterL) {
+				graphics.blit(GUI_ICONS, k8, i7, k7 + 45, 54, 9, 9);
+			}
+		}
+		gui.minecraft.getProfiler().pop();
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static void renderEnergyBars(Gui gui, GuiRenderer graphics, MutableInt moveUp, int j1, int k1, boolean forgeOverlay) {
+		Random rand = new Random();
+		Player player = (Player)gui.minecraft.getCameraEntity();
+		float maxStamina = (float) player.getAttributeValue(SAttributes.MAX_STAMINA.holder());
+		int l = (int) SurviveEntityStats.getEnergyStats(player).getEnergyLevel();
+		if (SurviveEntityStats.getEnergyStats(player).isExhausted()) l = (int) SurviveEntityStats.getEnergyStats(player).getReserveLevel();
+		Minecraft.getInstance().getProfiler().push("energy");
+		if (!forgeOverlay) {
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShaderTexture(0, GUI_ICONS);
+		}
+		for (int i = 0; i < Mth.ceil((float)maxStamina/20.0F); i++) {
+			for(int k6 = 0; k6 < 10; ++k6) {
+				int i7 = k1;
+				int k7 = 16;
+				int i8 = 0;
+				if (SurviveEntityStats.getEnergyStats(player).isExhausted()) {
+					k7 += 36;
+					i8 = 13;
+				}
+				
+				if (player.getFoodData().getSaturationLevel() <= 0.0F && gui.getGuiTicks() % (l * 3 + 1) == 0) {
+					i7 = k1 + (rand.nextInt(3) - 1);
+				}
+				
+				int k8 = j1 - k6 * 8 - 9;
+				if ((k6 * 2 + 1) + (20*i) < Mth.floor(maxStamina)+1) {
+					graphics.blit(GUI_ICONS, k8, i7, 16 + i8 * 9, 36, 9, 9);
+				}
+				if ((k6 * 2 + 1) + (20*i) < l) {
+					graphics.blit(GUI_ICONS, k8, i7, k7 + 36, 36, 9, 9);
+				}
+				
+				if ((k6 * 2 + 1) + (20*i)  == l) {
+					graphics.blit(GUI_ICONS, k8, i7, k7 + 45, 36, 9, 9);
+				}
+			}
+			moveUp.add(10);
+		}
 		Minecraft.getInstance().getProfiler().pop();
 	}
 

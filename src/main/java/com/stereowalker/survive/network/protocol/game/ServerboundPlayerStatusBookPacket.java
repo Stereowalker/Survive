@@ -1,27 +1,31 @@
 package com.stereowalker.survive.network.protocol.game;
 
+import java.util.List;
 import java.util.function.Function;
 
+import com.google.common.collect.Lists;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.Filterable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.WrittenBookContent;
 
 public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
-	private CompoundTag book;
+	private WrittenBookContent book;
 	private boolean celcius;
 	private String sleepPage;
 	private String tempPage;
 
-	public ServerboundPlayerStatusBookPacket(final CompoundTag book, final boolean celcius, final String sleepPage, final String tempPage) {
+	public ServerboundPlayerStatusBookPacket(final WrittenBookContent book, final boolean celcius, final String sleepPage, final String tempPage) {
 		super(Survive.getInstance().channel);
 		this.book = book;
 		this.celcius = celcius;
@@ -29,9 +33,9 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 		this.tempPage = tempPage;
 	}
 
-	public ServerboundPlayerStatusBookPacket(FriendlyByteBuf byteBuf) {
+	public ServerboundPlayerStatusBookPacket(RegistryFriendlyByteBuf byteBuf) {
 		super(byteBuf, Survive.getInstance().channel);
-		this.book = byteBuf.readAnySizeNbt();
+		this.book = WrittenBookContent.STREAM_CODEC.decode(byteBuf);
 		this.celcius = byteBuf.readBoolean();
 		this.sleepPage = byteBuf.readUtf();
 		this.tempPage = byteBuf.readUtf();
@@ -39,7 +43,7 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 
 	@Override
 	public void encode(final FriendlyByteBuf byteBuf) {
-		byteBuf.writeNbt(this.book);
+		WrittenBookContent.STREAM_CODEC.encode((RegistryFriendlyByteBuf)byteBuf, this.book);
 		byteBuf.writeBoolean(this.celcius);
 		byteBuf.writeUtf(this.sleepPage);
 		byteBuf.writeUtf(this.tempPage);
@@ -48,10 +52,9 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 	@Override
 	public boolean handleOnServer(ServerPlayer sender) {
 		if (sender.getItemInHand(InteractionHand.MAIN_HAND).getItem().equals(Items.WRITTEN_BOOK) && sender instanceof IRealisticEntity real) {
-			CompoundTag compoundtag = this.book;
-			ListTag listtag = compoundtag.getList("pages", 8);
+			List<Filterable<Component>> contents = Lists.newArrayList();
 			int pages = 6;
-			if (listtag.size() < pages) while (listtag.size() < pages) listtag.add(listtag.size(), (Tag)StringTag.valueOf(""));
+			if (contents.size() < pages) while (contents.size() < pages) contents.add(contents.size(), Filterable.passThrough(Component.literal("")));
 			String status0 = "§2§nGeneral:§r\n"+
 					"Water Level = "+real.getWaterData().getWaterLevel()+"\n"+
 					"Hydration = "+real.getWaterData().getHydrationLevel()+"\n"+
@@ -73,16 +76,22 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 			status4+= "Carbohydrates = "+real.getNutritionData().getCarbLevel()+"\n"+
 					"Proteins = "+real.getNutritionData().getProteinLevel()+"\n";
 
-			Function<String, Tag> ft = (s) -> (Tag)StringTag.valueOf("{\"text\":\""+s.replaceAll("\n", "\\\\n")+"\"}");
-			listtag.set(0, ft.apply(status0));
-			listtag.set(1, ft.apply(status1));
-			listtag.set(2, ft.apply(String.format(this.sleepPage, real.getSleepData().getDaysAwake())));
-			listtag.set(3, ft.apply(status3));
-			listtag.set(4, ft.apply(status4));
-			listtag.set(5, ft.apply(String.format(this.tempPage, (!celcius ? (real.getTemperatureData().getFahrenheit()+" °F") : (real.getTemperatureData().getCelcius()+" °C")))));
-			compoundtag.put("pages", listtag);
-			sender.getItemInHand(InteractionHand.MAIN_HAND).setTag(compoundtag);
+			Function<String, Filterable<Component>> ft = (s) -> Filterable.passThrough(Component.literal("{\"text\":\""+s.replaceAll("\n", "\\\\n")+"\"}"));
+			contents.set(0, ft.apply(status0));
+			contents.set(1, ft.apply(status1));
+			contents.set(2, ft.apply(String.format(this.sleepPage, real.getSleepData().getDaysAwake())));
+			contents.set(3, ft.apply(status3));
+			contents.set(4, ft.apply(status4));
+			contents.set(5, ft.apply(String.format(this.tempPage, (!celcius ? (real.getTemperatureData().getFahrenheit()+" °F") : (real.getTemperatureData().getCelcius()+" °C")))));
+			
+			sender.getItemInHand(InteractionHand.MAIN_HAND).set(DataComponents.WRITTEN_BOOK_CONTENT, book.withReplacedPages(contents));
 		}
 		return true;
+	}
+	
+	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "serverbound_player_status_book");
+	@Override
+	public ResourceLocation id() {
+		return id;
 	}
 }

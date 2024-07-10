@@ -5,6 +5,8 @@ import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ServerboundThirstMovementPacket extends ServerboundUnionPacket {
@@ -19,7 +21,7 @@ public class ServerboundThirstMovementPacket extends ServerboundUnionPacket {
 		this.jump = jump;
 	}
 
-	public ServerboundThirstMovementPacket(FriendlyByteBuf byteBuf) {
+	public ServerboundThirstMovementPacket(RegistryFriendlyByteBuf byteBuf) {
 		super(byteBuf, Survive.getInstance().channel);
 		this.moveF = byteBuf.readFloat();
 		this.moveS = byteBuf.readFloat();
@@ -52,5 +54,11 @@ public class ServerboundThirstMovementPacket extends ServerboundUnionPacket {
 			((IRealisticEntity)sender).getWaterData().addExhaustion(sender, 0.1F*moveMul);
 		}
 		return true;
+	}
+	
+	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "serverbound_thirst_movement");
+	@Override
+	public ResourceLocation id() {
+		return id;
 	}
 }

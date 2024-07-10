@@ -7,6 +7,8 @@ import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ServerboundArmorStaminaPacket extends ServerboundUnionPacket {
@@ -15,7 +17,7 @@ public class ServerboundArmorStaminaPacket extends ServerboundUnionPacket {
 		super(Survive.getInstance().channel);
 	}
 
-	public ServerboundArmorStaminaPacket(FriendlyByteBuf packetBuffer) {
+	public ServerboundArmorStaminaPacket(RegistryFriendlyByteBuf packetBuffer) {
 		super(packetBuffer, Survive.getInstance().channel);
 	}
 
@@ -35,5 +37,11 @@ public class ServerboundArmorStaminaPacket extends ServerboundUnionPacket {
 			SurviveEntityStats.setStaminaStats(sender, stats);
 		}
 		return true;
+	}
+	
+	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "serverbound_interact_with_water");
+	@Override
+	public ResourceLocation id() {
+		return id;
 	}
 }

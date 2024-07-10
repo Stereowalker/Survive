@@ -108,7 +108,7 @@ public class NeedsCommand {
 			HygieneData hygieneData = SurviveEntityStats.getHygieneStats(player);
 			switch (type)  {
 			case STAMINA:
-				staminaData.relax(Mth.floor(amount), player.getAttributeValue(SAttributes.MAX_STAMINA));
+				staminaData.relax(Mth.floor(amount), player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 				break;
 			case HUNGER:
 				player.getFoodData().setFoodLevel(Mth.floor(amount));

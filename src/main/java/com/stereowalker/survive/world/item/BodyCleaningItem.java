@@ -37,14 +37,10 @@ public class BodyCleaningItem extends Item {
 				cleaning = this.cleanValue;
 			}
 			stats.clean(cleaning, false);
-			playerIn.getItemInHand(handIn).hurtAndBreak(1, playerIn, (anim) ->{
-				anim.broadcastBreakEvent(EquipmentSlot.MAINHAND);
-			});
+			playerIn.getItemInHand(handIn).hurtAndBreak(1, playerIn, EquipmentSlot.MAINHAND);
 			stats.save(playerIn);
 		} else {
-			playerIn.getItemInHand(handIn).hurtAndBreak(2, playerIn, (anim) ->{
-				anim.broadcastBreakEvent(EquipmentSlot.MAINHAND);
-			});
+			playerIn.getItemInHand(handIn).hurtAndBreak(2, playerIn, EquipmentSlot.MAINHAND);
 		}
 		return super.use(worldIn, playerIn, handIn);
 	}

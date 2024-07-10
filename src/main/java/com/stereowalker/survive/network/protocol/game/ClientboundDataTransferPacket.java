@@ -14,6 +14,7 @@ import com.stereowalker.unionlib.network.protocol.game.ClientboundUnionPacket;
 
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -30,7 +31,7 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 		this.clear = clear;
 	}
 
-	public ClientboundDataTransferPacket(FriendlyByteBuf byteBuf) {
+	public ClientboundDataTransferPacket(RegistryFriendlyByteBuf byteBuf) {
 		super(byteBuf, Survive.getInstance().channel);
 		this.stat = byteBuf.readResourceLocation();
 		String cl = byteBuf.readUtf();
@@ -80,5 +81,11 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 			DataMaps.Client.biome = ImmutableMap.copyOf(statMap);
 		}
 		return true;
+	}
+
+	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "clientbound_data_transfer");
+	@Override
+	public ResourceLocation id() {
+		return id;
 	}
 }

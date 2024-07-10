@@ -1,18 +1,15 @@
 package com.stereowalker.survive.world.item.crafting;
 
-import java.util.Random;
-
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
@@ -21,8 +18,8 @@ import net.minecraft.world.level.Level;
 
 public class CharcoalFilterRecipe extends CustomRecipe {
 
-	public CharcoalFilterRecipe(ResourceLocation idIn, CraftingBookCategory pCategory) {
-		super(idIn, pCategory);
+	public CharcoalFilterRecipe(CraftingBookCategory pCategory) {
+		super(pCategory);
 	}
 
 	@Override
@@ -31,13 +28,14 @@ public class CharcoalFilterRecipe extends CustomRecipe {
 		int waterBottle = 0;
 		for (int i = 0; i < inv.getContainerSize(); i++) {
 			ItemStack stack = inv.getItem(i);
+			PotionContents contents = stack.get(DataComponents.POTION_CONTENTS);
 			if (stack.getItem() == SItems.CHARCOAL_FILTER) {
 				charcoalFilter++;
-			} else if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) == Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY) {
+			} else if (stack.getItem() == Items.POTION && contents != null && contents.is(Potions.WATER)) {
 				waterBottle++;
 			} else if (stack.getItem() == Items.WATER_BUCKET) {
 				waterBottle++;
-			} else if (stack.getItem() == SItems.FILLED_CANTEEN && PotionUtils.getPotion(stack) == Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY) {
+			} else if (stack.getItem() == SItems.FILLED_CANTEEN && contents != null && contents.is(Potions.WATER)) {
 				waterBottle++;
 			} else if (stack.getItem() == SItems.WATER_BOWL) {
 				waterBottle++;
@@ -52,15 +50,20 @@ public class CharcoalFilterRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv, RegistryAccess ra) {
+	public ItemStack assemble(CraftingContainer inv, HolderLookup.Provider ra) {
 		for (int i = 0; i < inv.getContainerSize(); i++) {
 			ItemStack stack = inv.getItem(i);
-			if (stack.getItem() == Items.POTION && PotionUtils.getPotion(stack) == Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY) {
-				return PotionUtils.setPotion(stack.copy(), SPotions.PURIFIED_WATER);
+			PotionContents contents = stack.get(DataComponents.POTION_CONTENTS);
+			if (stack.getItem() == Items.POTION && contents != null && contents.is(Potions.WATER)) {
+				ItemStack copy = stack.copy();
+				copy.set(DataComponents.POTION_CONTENTS, new PotionContents(SPotions.PURIFIED_WATER.holder()));
+				return copy;
 			} else if (stack.getItem() == SItems.WATER_BOWL) {
 				return new ItemStack(SItems.PURIFIED_WATER_BOWL);
-			} else if (stack.getItem() == SItems.FILLED_CANTEEN && PotionUtils.getPotion(stack) == Potions.WATER && PotionUtils.getPotion(stack) != Potions.EMPTY) {
-				return PotionUtils.setPotion(stack.copy(), SPotions.PURIFIED_WATER);
+			} else if (stack.getItem() == SItems.FILLED_CANTEEN && contents != null && contents.is(Potions.WATER)) {
+				ItemStack copy = stack.copy();
+				copy.set(DataComponents.POTION_CONTENTS, new PotionContents(SPotions.PURIFIED_WATER.holder()));
+				return copy;
 			} else if (stack.getItem() == Items.WATER_BUCKET) {
 				return new ItemStack(SItems.PURIFIED_WATER_BUCKET);
 			}
@@ -76,7 +79,8 @@ public class CharcoalFilterRecipe extends CustomRecipe {
 			ItemStack itemstack = inv.getItem(i);
 			if (itemstack.getItem() == SItems.CHARCOAL_FILTER) {
 				ItemStack filterClone = itemstack.copy();
-				if (filterClone.hurt(1, RandomSource.create(), null)) {
+				filterClone.shrink(1);
+				if (filterClone.isEmpty()) {
 					nonnulllist.set(i, ItemStack.EMPTY);
 				} else {
 					nonnulllist.set(i, filterClone);

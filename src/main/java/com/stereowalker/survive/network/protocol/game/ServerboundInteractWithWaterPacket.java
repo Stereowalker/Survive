@@ -10,6 +10,8 @@ import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -41,7 +43,7 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 		this(pos, addThirst, waterAmount, 0, hand);
 	}
 
-	public ServerboundInteractWithWaterPacket(FriendlyByteBuf packetBuffer) {
+	public ServerboundInteractWithWaterPacket(RegistryFriendlyByteBuf packetBuffer) {
 		super(packetBuffer, Survive.getInstance().channel);
 		this.pos = packetBuffer.readBlockPos();
 		this.addThirst = packetBuffer.readFloat();
@@ -120,5 +122,11 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 
 	public static boolean isValidContainerSource(double waterAmount) {
 		return waterAmount >= 3.0D;
+	}
+	
+	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "serverbound_interact_with_water");
+	@Override
+	public ResourceLocation id() {
+		return id;
 	}
 }

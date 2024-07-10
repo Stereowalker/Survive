@@ -1,15 +1,12 @@
 package com.stereowalker.survive.mixins;
 
-import java.util.Map;
-
 import org.spongepowered.asm.mixin.Mixin;
 
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.world.level.block.SBlocks;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.cauldron.CauldronInteraction;
-import net.minecraft.world.item.Item;
+import net.minecraft.core.cauldron.CauldronInteraction.InteractionMap;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractCauldronBlock;
 import net.minecraft.world.level.block.Block;
@@ -21,7 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 @Mixin(LayeredCauldronBlock.class)
 public abstract class LayeredCauldronBlockMixin extends AbstractCauldronBlock {
 
-	public LayeredCauldronBlockMixin(Properties pProperties, Map<Item, CauldronInteraction> pInteractions) {
+	public LayeredCauldronBlockMixin(Properties pProperties, InteractionMap pInteractions) {
 		super(pProperties, pInteractions);
 	}
 

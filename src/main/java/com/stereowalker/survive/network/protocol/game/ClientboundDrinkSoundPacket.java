@@ -7,6 +7,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +24,7 @@ public class ClientboundDrinkSoundPacket extends ClientboundUnionPacket {
 		this.pos = pos;
 	}
 
-	public ClientboundDrinkSoundPacket(FriendlyByteBuf byteBuf) {
+	public ClientboundDrinkSoundPacket(RegistryFriendlyByteBuf byteBuf) {
 		super(byteBuf, Survive.getInstance().channel);
 		this.pos = byteBuf.readBlockPos();
 	}
@@ -38,5 +40,11 @@ public class ClientboundDrinkSoundPacket extends ClientboundUnionPacket {
 		Minecraft.getInstance().player.level().playLocalSound(this.pos.getX(), this.pos.getY(), this.pos.getZ(), new ItemStack(Items.POTION).getDrinkingSound(), SoundSource.PLAYERS, 0.5F, Minecraft.getInstance().player.level().random.nextFloat() * 0.1F + 0.9F, false);
 		Minecraft.getInstance().player.swing(InteractionHand.MAIN_HAND);
 		return true;
+	}
+
+	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "clientbound_drink_sound");
+	@Override
+	public ResourceLocation id() {
+		return id;
 	}
 }

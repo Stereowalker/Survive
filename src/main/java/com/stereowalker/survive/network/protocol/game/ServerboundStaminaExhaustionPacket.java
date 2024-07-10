@@ -6,6 +6,8 @@ import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ServerboundStaminaExhaustionPacket extends ServerboundUnionPacket {
@@ -16,7 +18,7 @@ public class ServerboundStaminaExhaustionPacket extends ServerboundUnionPacket {
 		this.exhaustion = exhaustion;
 	}
 
-	public ServerboundStaminaExhaustionPacket(FriendlyByteBuf packetBuffer) {
+	public ServerboundStaminaExhaustionPacket(RegistryFriendlyByteBuf packetBuffer) {
 		super(packetBuffer, Survive.getInstance().channel);
 		this.exhaustion = packetBuffer.readFloat();
 	}
@@ -34,5 +36,11 @@ public class ServerboundStaminaExhaustionPacket extends ServerboundUnionPacket {
 			SurviveEntityStats.setStaminaStats(sender, stats);
 		}
 		return true;
+	}
+	
+	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "serverbound_stamina_exhaustion");
+	@Override
+	public ResourceLocation id() {
+		return id;
 	}
 }

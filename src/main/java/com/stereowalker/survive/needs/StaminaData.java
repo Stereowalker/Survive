@@ -17,6 +17,7 @@ import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -62,10 +63,10 @@ public class StaminaData extends SurviveData {
 	}
 	
 	public void eat(Item pItem, ItemStack pStack, LivingEntity entity) {
-		if (pStack.isEdible() && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(pItem))) {
+		if (pStack.has(DataComponents.FOOD) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(pItem))) {
 			if (entity instanceof ServerPlayer && !entity.level().isClientSide) {
 				ServerPlayer player = (ServerPlayer)entity;
-				relax(DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(pItem)).getEnergyAmount(), player.getAttributeValue(SAttributes.MAX_STAMINA));
+				relax(DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(pItem)).getEnergyAmount(), player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 				save(player);
 			}
 		}
@@ -92,14 +93,14 @@ public class StaminaData extends SurviveData {
 	 */
 	public void tick(Player player) {
 		//Sets the maximum stamina
-		this.maxStamina = Mth.floor(player.getAttributeValue(SAttributes.MAX_STAMINA));
+		this.maxStamina = Mth.floor(player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 		//Forces the player awake if their energy is too low and it's day
 		if (player.isSleeping() && player.level().isDay() && this.energyLevel < this.maxStamina/2) {
 			player.sleepCounter = 0;
 		}
 		
 		Difficulty difficulty = player.level().getDifficulty();
-		int energyToRegen = 1 + (player.hasEffect(SMobEffects.WELL_FED) ? new Random().nextInt(2) : 0);
+		int energyToRegen = 1 + (player.hasEffect(SMobEffects.WELL_FED.holder()) ? new Random().nextInt(2) : 0);
 		this.prevEnergyLevel = this.energyLevel;
 		if (this.energyExhaustionLevel > 10.0F) {
 			this.energyExhaustionLevel -= 10.0F;
@@ -271,7 +272,7 @@ public class StaminaData extends SurviveData {
 		for (Player player : event.getLevel().players()) {
 			StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
 			int staminaToRecover = Mth.ceil(((float)(event.getNewTime()-event.getLevel().dayTime())/Survive.STAMINA_CONFIG.sleepTime)*(energyStats.maxStamina+6));
-			energyStats.relax(staminaToRecover, player.getAttributeValue(SAttributes.MAX_STAMINA));
+			energyStats.relax(staminaToRecover, player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 			SurviveEntityStats.setStaminaStats(player, energyStats);
 		}
 	}

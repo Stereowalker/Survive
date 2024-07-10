@@ -1,81 +1,48 @@
 package com.stereowalker.survive.world.item.crafting;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 
 public class PurifiedWaterCraftingSerializer implements RecipeSerializer<PurifiedWaterCraftingRecipe> {
-    static int MAX_WIDTH = 3;
-    static int MAX_HEIGHT = 3;
-    public PurifiedWaterCraftingRecipe fromJson(ResourceLocation pRecipeId, JsonObject pJson) {
-       String s = GsonHelper.getAsString(pJson, "group", "");
-       NonNullList<Ingredient> nonnulllist = add(itemsFromJson(GsonHelper.getAsJsonArray(pJson, "ingredients")));
-       CraftingBookCategory craftingbookcategory = CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(pJson, "category", (String)null), CraftingBookCategory.MISC);
-       if (nonnulllist.isEmpty()) {
-          throw new JsonParseException("No ingredients for shapeless recipe");
-       } else if (nonnulllist.size() > MAX_WIDTH * MAX_HEIGHT) {
-          throw new JsonParseException("Too many ingredients for shapeless recipe. The maximum is " + (MAX_WIDTH * MAX_HEIGHT));
-       } else {
-          ItemStack itemstack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(pJson, "result"));
-          return new PurifiedWaterCraftingRecipe(pRecipeId, s, craftingbookcategory, itemstack, add(nonnulllist));
-       }
-    }
 
-    private static NonNullList<Ingredient> itemsFromJson(JsonArray pIngredientArray) {
-       NonNullList<Ingredient> nonnulllist = NonNullList.create();
+	private static PurifiedWaterCraftingRecipe fromNetwork(RegistryFriendlyByteBuf p_335962_) {
+		String s = p_335962_.readUtf();
+		CraftingBookCategory craftingbookcategory = p_335962_.readEnum(CraftingBookCategory.class);
+		int i = p_335962_.readVarInt();
+		NonNullList<Ingredient> nonnulllist = add(NonNullList.withSize(i, Ingredient.EMPTY));
+		nonnulllist.replaceAll(p_327214_ -> Ingredient.CONTENTS_STREAM_CODEC.decode(p_335962_));
+		ItemStack itemstack = ItemStack.STREAM_CODEC.decode(p_335962_);
+		return new PurifiedWaterCraftingRecipe(s, craftingbookcategory, itemstack, add(nonnulllist));
+	}
 
-       for(int i = 0; i < pIngredientArray.size(); ++i) {
-          Ingredient ingredient = Ingredient.fromJson(pIngredientArray.get(i));
-          if (/* TODO: Wait for an implementation on forge's end to this net.minecraftforge.common.ForgeConfig.SERVER.skipEmptyShapelessCheck.get()*/ true || !ingredient.isEmpty()) {
-             nonnulllist.add(ingredient);
-          }
-       }
+	private static void toNetwork(RegistryFriendlyByteBuf p_329239_, PurifiedWaterCraftingRecipe p_44282_) {
+		p_329239_.writeUtf(p_44282_.getGroup());
+		p_329239_.writeEnum(p_44282_.category());
+		NonNullList<Ingredient> nonnulllist = add(p_44282_.getIngredients());
+		p_329239_.writeVarInt(nonnulllist.size());
 
-       return nonnulllist;
-    }
+		for (Ingredient ingredient : nonnulllist) {
+			Ingredient.CONTENTS_STREAM_CODEC.encode(p_329239_, ingredient);
+		}
 
-    public PurifiedWaterCraftingRecipe fromNetwork(ResourceLocation pRecipeId, FriendlyByteBuf pBuffer) {
-       String s = pBuffer.readUtf();
-       CraftingBookCategory craftingbookcategory = pBuffer.readEnum(CraftingBookCategory.class);
-       int i = pBuffer.readVarInt();
-       NonNullList<Ingredient> nonnulllist = NonNullList.withSize(i, Ingredient.EMPTY);
+		ItemStack.STREAM_CODEC.encode(p_329239_, p_44282_.getResultItem(null));
+	}
 
-       for(int j = 0; j < nonnulllist.size(); ++j) {
-          nonnulllist.set(j, Ingredient.fromNetwork(pBuffer));
-       }
-
-       ItemStack itemstack = pBuffer.readItem();
-       return new PurifiedWaterCraftingRecipe(pRecipeId, s, craftingbookcategory, itemstack, add(nonnulllist));
-    }
-
-    public void toNetwork(FriendlyByteBuf pBuffer, PurifiedWaterCraftingRecipe pRecipe) {
-       pBuffer.writeUtf(pRecipe.getGroup());
-       pBuffer.writeEnum(pRecipe.category());
-       NonNullList<Ingredient> nonnulllist = add(pRecipe.getIngredients());
-       pBuffer.writeVarInt(nonnulllist.size());
-
-       for(Ingredient ingredient : nonnulllist) {
-          ingredient.toNetwork(pBuffer);
-       }
-
-       pBuffer.writeItem(pRecipe.getResultItem(null));
-    }
-	
 	protected static NonNullList<Ingredient> add(NonNullList<Ingredient> ing){
-		ItemStack potion = PotionUtils.setPotion(new ItemStack(Items.POTION), SPotions.PURIFIED_WATER);
+		ItemStack potion = PotionContents.createItemStack(Items.POTION, SPotions.PURIFIED_WATER.holder());
 		if (ing.get(ing.size()-1).test(potion)) {
 			return ing;
 		} else {
@@ -87,4 +54,44 @@ public class PurifiedWaterCraftingSerializer implements RecipeSerializer<Purifie
 			return nonnulllist;
 		}
 	}
- }
+
+
+	private static final MapCodec<PurifiedWaterCraftingRecipe> CODEC = RecordCodecBuilder.mapCodec(
+			p_327212_ -> p_327212_.group(
+					Codec.STRING.optionalFieldOf("group", "").forGetter(p_299460_ -> p_299460_.getGroup()),
+					CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(p_297437_ -> p_297437_.category()),
+					ItemStack.STRICT_CODEC.fieldOf("result").forGetter(p_300770_ -> p_300770_.getResultItem(null)),
+					Ingredient.CODEC_NONEMPTY
+					.listOf()
+					.fieldOf("ingredients")
+					.flatXmap(
+							p_297969_ -> {
+								Ingredient[] aingredient = p_297969_.stream().filter(p_298915_ -> !p_298915_.isEmpty()).toArray(Ingredient[]::new);
+								if (aingredient.length == 0) {
+									return DataResult.error(() -> "No ingredients for shapeless recipe");
+								} else {
+									return aingredient.length > /*ShapedRecipe.MAX_WIDTH*/3 * /*ShapedRecipe.MAX_HEIGHT*/3
+											? DataResult.error(() -> "Too many ingredients for shapeless recipe")
+													: DataResult.success(add(NonNullList.of(Ingredient.EMPTY, aingredient)));
+								}
+							},
+							DataResult::success
+							)
+					.forGetter(p_298509_ -> add(p_298509_.getIngredients()))
+					)
+			.apply(p_327212_, PurifiedWaterCraftingRecipe::new)
+			);
+	public static final StreamCodec<RegistryFriendlyByteBuf, PurifiedWaterCraftingRecipe> STREAM_CODEC = StreamCodec.of(
+			PurifiedWaterCraftingSerializer::toNetwork, PurifiedWaterCraftingSerializer::fromNetwork
+			);
+
+	@Override
+	public MapCodec<PurifiedWaterCraftingRecipe> codec() {
+		return CODEC;
+	}
+
+	@Override
+	public StreamCodec<RegistryFriendlyByteBuf, PurifiedWaterCraftingRecipe> streamCodec() {
+		return STREAM_CODEC;
+	}
+}

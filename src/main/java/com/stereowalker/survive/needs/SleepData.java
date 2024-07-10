@@ -44,8 +44,8 @@ public class SleepData extends SurviveData {
 	}
 
 	public void addTiredEffect(ServerPlayer player) {
-		if (tirednessAmplifier(player) >= 0 && !player.hasEffect(SMobEffects.ENERGIZED)) {
-			player.addEffect(new MobEffectInstance(SMobEffects.TIREDNESS, 200, Math.min(tirednessAmplifier(player), Survive.CONFIG.tiredTimeStacks), false, false, true));
+		if (tirednessAmplifier(player) >= 0 && !player.hasEffect(SMobEffects.ENERGIZED.holder())) {
+			player.addEffect(new MobEffectInstance(SMobEffects.TIREDNESS.holder(), 200, Math.min(tirednessAmplifier(player), Survive.CONFIG.tiredTimeStacks), false, false, true));
 		}
 	}
 

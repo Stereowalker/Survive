@@ -2,7 +2,6 @@ package com.stereowalker.survive.core;
 
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.needs.HygieneData;
-import com.stereowalker.survive.needs.NutritionData;
 import com.stereowalker.survive.needs.SleepData;
 import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.needs.TemperatureData;
@@ -36,7 +35,7 @@ public class SurviveEntityStats {
 	}
 	
 	public static StaminaData getEnergyStats(LivingEntity entity) {
-		StaminaData stats = new StaminaData(entity.getAttributeValue(SAttributes.MAX_STAMINA));
+		StaminaData stats = new StaminaData(entity.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 		if(entity != null) {
 			if (getModNBT(entity) != null && getModNBT(entity).contains(energyStatsID, 10)) {
 				stats.read(getModNBT(entity).getCompound(energyStatsID));
@@ -176,7 +175,7 @@ public class SurviveEntityStats {
 					setWaterStats(player, new WaterData());
 				}
 				if (!compound.contains(energyStatsID)) {
-					setStaminaStats(player, new StaminaData(player.getAttributeValue(SAttributes.MAX_STAMINA)));
+					setStaminaStats(player, new StaminaData(player.getAttributeValue(SAttributes.MAX_STAMINA.holder())));
 				}
 				if (!compound.contains(temperatureStatsID)) {
 					setTemperatureStats(player, new TemperatureData());

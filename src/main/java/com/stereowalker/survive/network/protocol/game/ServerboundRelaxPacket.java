@@ -7,6 +7,8 @@ import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ServerboundRelaxPacket extends ServerboundUnionPacket {
@@ -17,7 +19,7 @@ public class ServerboundRelaxPacket extends ServerboundUnionPacket {
 		this.amount = amount;
 	}
 
-	public ServerboundRelaxPacket(FriendlyByteBuf packetBuffer) {
+	public ServerboundRelaxPacket(RegistryFriendlyByteBuf packetBuffer) {
 		super(packetBuffer, Survive.getInstance().channel);
 		this.amount = packetBuffer.readVarInt();
 	}
@@ -31,9 +33,15 @@ public class ServerboundRelaxPacket extends ServerboundUnionPacket {
 	public boolean handleOnServer(ServerPlayer sender) {
 		if (Survive.STAMINA_CONFIG.enabled) {
 			StaminaData stats = SurviveEntityStats.getEnergyStats(sender);
-			stats.relax(this.amount, sender.getAttributeValue(SAttributes.MAX_STAMINA));
+			stats.relax(this.amount, sender.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 			stats.save(sender);
 		}
 		return true;
+	}
+	
+	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "serverbound_relax");
+	@Override
+	public ResourceLocation id() {
+		return id;
 	}
 }

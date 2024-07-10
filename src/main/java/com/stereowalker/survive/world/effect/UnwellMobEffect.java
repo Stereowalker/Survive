@@ -3,15 +3,8 @@ package com.stereowalker.survive.world.effect;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.stereowalker.survive.core.SurviveEntityStats;
-import com.stereowalker.survive.damagesource.SDamageSources;
-import com.stereowalker.survive.damagesource.SDamageTypes;
-import com.stereowalker.survive.needs.StaminaData;
-
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class UnwellMobEffect extends MobEffect {
@@ -21,42 +14,8 @@ public class UnwellMobEffect extends MobEffect {
 	}
 
 	@Override
-	public void applyEffectTick(LivingEntity entityLivingBaseIn, int amplifier) {
-		StaminaData energyStats = SurviveEntityStats.getEnergyStats(entityLivingBaseIn);
-		if (this == SMobEffects.HYPOTHERMIA && entityLivingBaseIn instanceof Player) {
-			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/3.5F)
-				entityLivingBaseIn.hurt(SDamageSources.source(entityLivingBaseIn.level().registryAccess(), SDamageTypes.HYPOTHERMIA), 0.8F);
-			if ((float)energyStats.getEnergyLevel() > ((float)energyStats.getEnergyLevel())*0.3)
-				energyStats.addExhaustion((Player) entityLivingBaseIn, (1.0F * (float)(amplifier + 1)), "Hypothermia effect");
-		} else if (this == SMobEffects.HYPERTHERMIA && entityLivingBaseIn instanceof Player) {
-			if (entityLivingBaseIn.getHealth() > entityLivingBaseIn.getMaxHealth()/3.5F)
-				entityLivingBaseIn.hurt(SDamageSources.source(entityLivingBaseIn.level().registryAccess(), SDamageTypes.HYPERTHERMIA), 0.8F);
-			if ((float)energyStats.getEnergyLevel() > ((float)energyStats.getEnergyLevel())*0.3)
-				energyStats.addExhaustion((Player) entityLivingBaseIn, (1.0F * (float)(amplifier + 1)), "Hyperthermia effect");
-		}
-		energyStats.save(entityLivingBaseIn);
-		super.applyEffectTick(entityLivingBaseIn, amplifier);
-	}
-
-	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier) {
-		if (this == SMobEffects.HYPOTHERMIA) {
-			int k = 160 >> amplifier;
-			if (k > 0) {
-				return duration % k == 0;
-			} else {
-				return true;
-			}
-		} else if (this == SMobEffects.HYPERTHERMIA) {
-			int k = 160 >> amplifier;
-			if (k > 0) {
-				return duration % k == 0;
-			} else {
-				return true;
-			}
-		} else {
-			return false;
-		}
+	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+		return false;
 	}
 
 	@Override

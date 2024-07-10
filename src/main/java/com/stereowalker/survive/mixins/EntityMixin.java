@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -38,10 +39,12 @@ public abstract class EntityMixin extends net.minecraftforge.common.capabilities
 	@Shadow public boolean canFreeze() {return false;}
 	@Shadow public boolean isFullyFrozen() {return false;}
 	@Shadow public DamageSources damageSources() {return null;}
+	@Shadow protected abstract void defineSynchedData(SynchedEntityData.Builder pBuilder);
 
-	@Inject(method = "<init>", at = @At("TAIL"))
-	public void init_inject(CallbackInfo info) {
-		this.entityData.define(DATA_TICKS_ROASTED, 0);
+	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;defineSynchedData(Lnet/minecraft/network/syncher/SynchedEntityData$Builder;)V"))
+	public void init_inject(Entity e, SynchedEntityData.Builder synchedentitydata$builder) {
+		defineSynchedData(synchedentitydata$builder);
+		synchedentitydata$builder.define(DATA_TICKS_ROASTED, 0);
 	}
 
 	@Inject(method = "saveWithoutId", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getUUID()Ljava/util/UUID;"), locals = LocalCapture.CAPTURE_FAILHARD)

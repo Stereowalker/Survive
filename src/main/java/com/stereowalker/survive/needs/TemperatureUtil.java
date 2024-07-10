@@ -16,27 +16,27 @@ import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
 
 public class TemperatureUtil {
 	public static double firstHeat(Player player) {
-		return Survive.DEFAULT_TEMP + (player.getAttributeValue(SAttributes.HEAT_RESISTANCE) * 1.0D);
+		return Survive.DEFAULT_TEMP + (player.getAttributeValue(SAttributes.HEAT_RESISTANCE.holder()) * 1.0D);
 	}
 
 	public static double secondHeat(Player player) {
-		return Survive.DEFAULT_TEMP + (player.getAttributeValue(SAttributes.HEAT_RESISTANCE) * 1.0D+(21.0D/63.0D));
+		return Survive.DEFAULT_TEMP + (player.getAttributeValue(SAttributes.HEAT_RESISTANCE.holder()) * 1.0D+(21.0D/63.0D));
 	}
 
 	public static double maxHeat(Player player) {
-		return Survive.DEFAULT_TEMP + (player.getAttributeValue(SAttributes.HEAT_RESISTANCE) * 1.0D+(28.0D/63.0D));
+		return Survive.DEFAULT_TEMP + (player.getAttributeValue(SAttributes.HEAT_RESISTANCE.holder()) * 1.0D+(28.0D/63.0D));
 	}
 	
 	public static double firstCold(Player player) {
-		return Survive.DEFAULT_TEMP - (player.getAttributeValue(SAttributes.COLD_RESISTANCE) * 1.0D);
+		return Survive.DEFAULT_TEMP - (player.getAttributeValue(SAttributes.COLD_RESISTANCE.holder()) * 1.0D);
 	}
 	
 	public static double secondCold(Player player) {
-		return Survive.DEFAULT_TEMP - (player.getAttributeValue(SAttributes.COLD_RESISTANCE) * 1.0D+(21.0D/63.0D));
+		return Survive.DEFAULT_TEMP - (player.getAttributeValue(SAttributes.COLD_RESISTANCE.holder()) * 1.0D+(21.0D/63.0D));
 	}
 
 	public static double maxCold(Player player) {
-		return Survive.DEFAULT_TEMP - (player.getAttributeValue(SAttributes.COLD_RESISTANCE) * 1.0D+(28.0D/63.0D));
+		return Survive.DEFAULT_TEMP - (player.getAttributeValue(SAttributes.COLD_RESISTANCE.holder()) * 1.0D+(28.0D/63.0D));
 	}
 
 

@@ -15,15 +15,17 @@ import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
+import mezz.jei.library.plugins.vanilla.brewing.PotionSubtypeInterpreter;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 @JeiPlugin
@@ -38,39 +40,39 @@ public class JEICompat implements IModPlugin {
 	public void registerRecipes(IRecipeRegistration registration) {
 		IJeiHelpers jeiHelpers = registration.getJeiHelpers();
 		IStackHelper stackHelper = jeiHelpers.getStackHelper();
-		List<CraftingRecipe> collection = new ArrayList<CraftingRecipe>();
-		collection.add(new ShapelessRecipe(Survive.getInstance().location("player_status_book"), "status_book", 
+		List<RecipeHolder<CraftingRecipe>> collection = new ArrayList<RecipeHolder<CraftingRecipe>>();
+		collection.add(new RecipeHolder<CraftingRecipe>(Survive.getInstance().location("player_status_book"), new ShapelessRecipe("status_book", 
 				CraftingBookCategory.MISC, Survive.convertToPlayerStatusBook(new ItemStack(Items.WRITTEN_BOOK)), 
 				NonNullList.of(Ingredient.EMPTY, 
 						Ingredient.of(SItems.THERMOMETER), 
-						Ingredient.of(Items.WRITTEN_BOOK))));
-		collection.add(new ShapelessRecipe(Survive.getInstance().location("purified_water_bucket_from_charcoal_filtering"), "charcoal_filtering", 
+						Ingredient.of(Items.WRITTEN_BOOK)))));
+		collection.add(new RecipeHolder<CraftingRecipe>(Survive.getInstance().location("purified_water_bucket_from_charcoal_filtering"), new ShapelessRecipe("charcoal_filtering", 
 				CraftingBookCategory.MISC, new ItemStack(SItems.PURIFIED_WATER_BUCKET), 
 				NonNullList.of(Ingredient.EMPTY, 
 						Ingredient.of(SItems.CHARCOAL_FILTER), 
-						Ingredient.of(Items.WATER_BUCKET))));
-		collection.add(new ShapelessRecipe(Survive.getInstance().location("purified_water_bowl_from_charcoal_filtering"), "charcoal_filtering", 
+						Ingredient.of(Items.WATER_BUCKET)))));
+		collection.add(new RecipeHolder<CraftingRecipe>(Survive.getInstance().location("purified_water_bowl_from_charcoal_filtering"), new ShapelessRecipe("charcoal_filtering", 
 				CraftingBookCategory.MISC, new ItemStack(SItems.PURIFIED_WATER_BOWL), 
 				NonNullList.of(Ingredient.EMPTY, 
 						Ingredient.of(SItems.CHARCOAL_FILTER), 
-						Ingredient.of(SItems.WATER_BOWL))));
-		collection.add(new ShapelessRecipe(Survive.getInstance().location("purified_water_canteen_from_charcoal_filtering"), "charcoal_filtering", 
-				CraftingBookCategory.MISC, CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), Survive.THIRST_CONFIG.canteen_fill_amount, SPotions.PURIFIED_WATER), 
+						Ingredient.of(SItems.WATER_BOWL)))));
+		collection.add(new RecipeHolder<CraftingRecipe>(Survive.getInstance().location("purified_water_canteen_from_charcoal_filtering"), new ShapelessRecipe("charcoal_filtering", 
+				CraftingBookCategory.MISC, CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), Survive.THIRST_CONFIG.canteen_fill_amount, SPotions.PURIFIED_WATER.holder()), 
 				NonNullList.of(Ingredient.EMPTY, 
 						Ingredient.of(SItems.CHARCOAL_FILTER), 
-						Ingredient.of(CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), Survive.THIRST_CONFIG.canteen_fill_amount, Potions.WATER)))));
-		collection.add(new ShapelessRecipe(Survive.getInstance().location("purified_water_bottle_from_charcoal_filtering"), "charcoal_filtering", 
-				CraftingBookCategory.MISC, PotionUtils.setPotion(new ItemStack(Items.POTION), SPotions.PURIFIED_WATER),
+						Ingredient.of(CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), Survive.THIRST_CONFIG.canteen_fill_amount, Potions.WATER))))));
+		collection.add(new RecipeHolder<CraftingRecipe>(Survive.getInstance().location("purified_water_bottle_from_charcoal_filtering"), new ShapelessRecipe("charcoal_filtering", 
+				CraftingBookCategory.MISC, PotionContents.createItemStack(Items.POTION, SPotions.PURIFIED_WATER.holder()),
 				NonNullList.of(Ingredient.EMPTY, 
 						Ingredient.of(SItems.CHARCOAL_FILTER), 
-						Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER)))));
+						Ingredient.of(PotionContents.createItemStack(Items.POTION, Potions.WATER))))));
 		collection.addAll(CanteenFillingRecipeMaker.createRecipes(stackHelper));
 		registration.addRecipes(RecipeTypes.CRAFTING, collection);
 	}
 
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registration) {
-		registration.useNbtForSubtypes(SItems.FILLED_CANTEEN);
+		registration.registerSubtypeInterpreter(SItems.FILLED_CANTEEN, PotionSubtypeInterpreter.INSTANCE);
 	}
 
 }

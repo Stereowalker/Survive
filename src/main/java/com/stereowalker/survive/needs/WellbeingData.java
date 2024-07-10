@@ -89,9 +89,9 @@ public class WellbeingData extends SurviveData {
 			
 			int rgn = rng.nextInt(2);
 			if (rgn == 0)
-				player.addEffect(new MobEffectInstance(SMobEffects.SLOWNESS_ILLNESS, this.timeUntilWell, this.intensity));
+				player.addEffect(new MobEffectInstance(SMobEffects.SLOWNESS_ILLNESS.holder(), this.timeUntilWell, this.intensity));
 			else
-				player.addEffect(new MobEffectInstance(SMobEffects.WEAKNESS_ILLNESS, this.timeUntilWell, this.intensity));
+				player.addEffect(new MobEffectInstance(SMobEffects.WEAKNESS_ILLNESS.holder(), this.timeUntilWell, this.intensity));
 		}
 		//As long as the player is not well
 		else if (this.timeUntilWell > 1 && !this.isWell) {
@@ -114,38 +114,38 @@ public class WellbeingData extends SurviveData {
 			double f = 0;
 			if (tempLocation > 0) {
 				double maxTemp = 0.0D;
-				if (player.getAttribute(SAttributes.HEAT_RESISTANCE) != null) {
-					maxTemp = player.getAttributeValue(SAttributes.HEAT_RESISTANCE);
+				if (player.getAttribute(SAttributes.HEAT_RESISTANCE.holder()) != null) {
+					maxTemp = player.getAttributeValue(SAttributes.HEAT_RESISTANCE.holder());
 				}
 				double div = tempLocation / maxTemp;
 				f = Mth.clamp(div, 0, 1.0D+(28.0D/63.0D));
 			}
 			if (tempLocation < 0) {
 				double maxTemp = 0.0D;
-				if (player.getAttribute(SAttributes.COLD_RESISTANCE) != null) {
-					maxTemp = player.getAttributeValue(SAttributes.COLD_RESISTANCE);
+				if (player.getAttribute(SAttributes.COLD_RESISTANCE.holder()) != null) {
+					maxTemp = player.getAttributeValue(SAttributes.COLD_RESISTANCE.holder());
 				}
 				double div = tempLocation / maxTemp;
 				f = Mth.clamp(div, -1.0D-(28.0D/63.0D), 0);
 			}
 
-			if (f > 0.7f && !player.hasEffect(SMobEffects.HYPERTHERMIA)) {
+			if (f > 0.7f && !player.hasEffect(SMobEffects.HYPERTHERMIA.holder())) {
 				this.timeUntilHyperthermia--;
 			} else {
 				this.timeUntilHyperthermia = 6000;
 			}
 
-			if (f < -0.7f && !player.hasEffect(SMobEffects.HYPOTHERMIA)) {
+			if (f < -0.7f && !player.hasEffect(SMobEffects.HYPOTHERMIA.holder())) {
 				this.timeUntilHypothermia--;
 			} else {
 				this.timeUntilHypothermia = 6000;
 			}
 
 			if (this.timeUntilHyperthermia <= 0) {
-				if (!player.hasEffect(SMobEffects.HYPERTHERMIA))player.addEffect(new MobEffectInstance(SMobEffects.HYPERTHERMIA, 6000));
+				if (!player.hasEffect(SMobEffects.HYPERTHERMIA.holder()))player.addEffect(new MobEffectInstance(SMobEffects.HYPERTHERMIA.holder(), 6000));
 			}
 			if (this.timeUntilHypothermia <= 0) {
-				if (!player.hasEffect(SMobEffects.HYPOTHERMIA))player.addEffect(new MobEffectInstance(SMobEffects.HYPOTHERMIA, 6000));
+				if (!player.hasEffect(SMobEffects.HYPOTHERMIA.holder()))player.addEffect(new MobEffectInstance(SMobEffects.HYPOTHERMIA.holder(), 6000));
 			}
 		}
 	}

@@ -23,12 +23,15 @@ import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeCo
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeConditions;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -36,7 +39,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -67,7 +69,8 @@ public class SurviveRegistryEvents
 	@OnlyIn(Dist.CLIENT)
 	public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
 		event.register((stack, tintIndex) -> {
-			return tintIndex > 0 ? -1 : PotionUtils.getPotion(stack) == SPotions.PURIFIED_WATER ? Survive.PURIFIED_WATER_COLOR : PotionUtils.getColor(stack);
+			PotionContents contents = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+			return tintIndex > 0 ? -1 : contents.potion().get().value() == SPotions.PURIFIED_WATER.holder() ? Survive.PURIFIED_WATER_COLOR : FastColor.ARGB32.opaque(contents.getColor());
 	      }, Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION);
 		event.register((stack, tintIndex) -> {
 			return TemperatureRegulatorPlateItem.getColor(stack);
@@ -84,20 +87,21 @@ public class SurviveRegistryEvents
 	@SubscribeEvent
 	public static void registerParticlesz(final RegisterEvent event) {
 		event.register(RegistryHelper.particleTypeKey(), (helper) -> SParticleTypes.registerAll(helper));
-		event.register(RegistryHelper.potionKey(), (helper) -> SPotions.registerAll(helper));
 		event.register(SurviveRegistries.CONDITION, (helper) -> TemperatureChangeConditions.registerAll(helper));
 		event.register(SurviveRegistries.SEASON, (helper) -> Seasons.registerAll(helper));
 		event.register(ForgeRegistries.Keys.FLUID_TYPES, (helper) -> helper.register(new ResourceLocation("survive:purified_water"), PurifiedWaterFluid.TYPE));
-		if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS))
-        {			
-			CraftingHelper.register(ModuleEnabledCondition.Serializer.INSTANCE);
-        }
+//		if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS))
+//        {			
+//        }
+		event.register(ForgeRegistries.Keys.CONDITION_SERIALIZERS, (reg) -> {
+			reg.register(new ResourceLocation("survive", "module_enabled"), ModuleEnabledCondition.CODEC);
+		});
 		new SLootItemConditions();
-		MobEffects.FIRE_RESISTANCE.addAttributeModifier(SAttributes.HEAT_RESISTANCE, "795606d6-4ac6-4ae7-8311-63ccdb293eb4", 5.0D, AttributeModifier.Operation.ADDITION);
+		MobEffects.FIRE_RESISTANCE.value().addAttributeModifier(SAttributes.HEAT_RESISTANCE.holder(), "795606d6-4ac6-4ae7-8311-63ccdb293eb4", 5.0D, AttributeModifier.Operation.ADD_VALUE);
 		Survive.POTION_FLUID_MAP = 
-				new ImmutableMap.Builder<Potion, List<Fluid>>()
+				new ImmutableMap.Builder<Holder<Potion>, List<Fluid>>()
 				.put(Potions.WATER, Lists.newArrayList(Fluids.FLOWING_WATER, Fluids.WATER))
-				.put(SPotions.PURIFIED_WATER, Lists.newArrayList(SFluids.FLOWING_PURIFIED_WATER, SFluids.PURIFIED_WATER)).build();
+				.put(SPotions.PURIFIED_WATER.holder(), Lists.newArrayList(SFluids.FLOWING_PURIFIED_WATER, SFluids.PURIFIED_WATER)).build();
 	}
 	
 	@SubscribeEvent

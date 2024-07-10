@@ -4,9 +4,11 @@ import java.util.List;
 
 import com.stereowalker.survive.json.FoodJsonHolder;
 import com.stereowalker.survive.world.DataMaps;
+import com.stereowalker.survive.world.item.component.SDataComponents;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
@@ -16,29 +18,28 @@ import net.minecraft.world.level.Level;
 public class FoodUtils {
 	public enum State {Fresh, Good, Okay, Spoiling, Spoiled}
 	
-	public static final String EXPIRE = "expiry_date";
 	public static void giveLifespanToFood(NonNullList<ItemStack> items, long gametime) {
 		if (Survive.CONFIG.enable_food_spoiling) {
 			items.forEach((stack) -> {
-				if (stack.isEdible() && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem())) && !stack.getOrCreateTag().contains(EXPIRE)) {
+				if (stack.has(DataComponents.FOOD) && !stack.has(SDataComponents.EXPIRE_TIME) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
 					long lifespan = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan();
 					if (lifespan > 0) {
 						long shaveAMinuteOff = gametime - (gametime % (20 * 60));
-						stack.getTag().putLong(EXPIRE, shaveAMinuteOff + DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan());
+						stack.set(SDataComponents.EXPIRE_TIME, shaveAMinuteOff + DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan());
 					}
 				}
 			});
 		} else {
 			items.forEach((stack) -> {
-				if (stack.getTag() != null && stack.getTag().contains(EXPIRE)) {
-					stack.getTag().remove(EXPIRE);
+				if (stack.has(SDataComponents.EXPIRE_TIME)) {
+					stack.remove(SDataComponents.EXPIRE_TIME);
 				}
 			});
 		}
 	}
 	
 	public static void applyFoodStatusToTooltip(Player player, ItemStack stack, List<Component> tip) {
-		if (stack.isEdible() && Survive.CONFIG.enable_food_spoiling) {
+		if (stack.has(DataComponents.FOOD) && Survive.CONFIG.enable_food_spoiling) {
 			 if (foodStatus(stack, player.level()) == State.Fresh)
 				tip.add(Component.literal("Fresh").setStyle(Style.EMPTY.withColor(0x88ff88)));
 			else if (foodStatus(stack, player.level()) == State.Good)
@@ -53,9 +54,9 @@ public class FoodUtils {
 	}
 	
 	public static State foodStatus(ItemStack stack, Level level) {
-		if (stack.getTag() != null && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem())) && stack.getTag().contains(EXPIRE) && Survive.CONFIG.enable_food_spoiling) {
+		if (stack.has(SDataComponents.EXPIRE_TIME) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem())) && Survive.CONFIG.enable_food_spoiling) {
 			FoodJsonHolder food = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem()));
-			long timeTill = stack.getTag().getInt(EXPIRE) - level.getGameTime();
+			long timeTill = stack.get(SDataComponents.EXPIRE_TIME) - level.getGameTime();
 			long timeSince = food.lifespan() - timeTill;
 			if (timeTill < 0) {
 				return State.Spoiled;

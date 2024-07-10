@@ -1,8 +1,8 @@
 package com.stereowalker.survive.world.level.storage.loot.predicates;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.stereowalker.survive.config.ServerConfig;
 
 import net.minecraft.server.level.ServerLevel;
@@ -15,8 +15,15 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
  * Both checks are optional.
  */
 public class AnimalFatLoot implements LootItemCondition {
+	
+	public static final MapCodec<AnimalFatLoot> CODEC = RecordCodecBuilder.mapCodec(
+	        p_297208_ -> p_297208_.group(
+	        			Codec.INT.fieldOf("value").forGetter((a)->0)
+	                )
+	                .apply(p_297208_, AnimalFatLoot::new)
+	    );
 
-	AnimalFatLoot() {
+	AnimalFatLoot(int x) {
 	}
 
 	public LootItemConditionType getType() {
@@ -36,22 +43,7 @@ public class AnimalFatLoot implements LootItemCondition {
 
 	public static class Builder implements LootItemCondition.Builder {
 		public AnimalFatLoot build() {
-			return new AnimalFatLoot();
-		}
-	}
-
-	public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<AnimalFatLoot> {
-		/**
-		 * Serialize the value by putting its data into the JsonObject.
-		 */
-		public void serialize(JsonObject p_82079_, AnimalFatLoot p_82080_, JsonSerializationContext p_82081_) {
-		}
-
-		/**
-		 * Deserialize a value by reading it from the JsonObject.
-		 */
-		public AnimalFatLoot deserialize(JsonObject p_82087_, JsonDeserializationContext p_82088_) {
-			return new AnimalFatLoot();
+			return new AnimalFatLoot(0);
 		}
 	}
 }

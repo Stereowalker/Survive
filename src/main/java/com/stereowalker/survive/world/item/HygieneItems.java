@@ -1,5 +1,6 @@
 package com.stereowalker.survive.world.item;
 
+import com.stereowalker.survive.world.item.component.SDataComponents;
 import com.stereowalker.unionlib.core.registries.RegistryHolder;
 import com.stereowalker.unionlib.core.registries.RegistryObject;
 
@@ -54,5 +55,5 @@ public class HygieneItems {
 	@RegistryObject("soap_mix")
 	public static final Item SOAP_MIX = new Item(new Item.Properties());
 	@RegistryObject("soap_bottle")
-	public static final Item SOAP_BOTTLE = new SoapItem(new Item.Properties().craftRemainder(Items.GLASS_BOTTLE), 2, 20);
+	public static final Item SOAP_BOTTLE = new SoapItem(new Item.Properties().craftRemainder(Items.GLASS_BOTTLE).component(SDataComponents.SOAP_LEFT, 20), 2, 20);
 }

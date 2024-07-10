@@ -4,7 +4,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -15,12 +14,10 @@ import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.damagesource.SDamageSources;
 import com.stereowalker.survive.damagesource.SDamageTypes;
 import com.stereowalker.survive.needs.IRealisticEntity;
-import com.stereowalker.survive.needs.SDamageSource;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.TemperatureUtil;
-import com.stereowalker.survive.world.DataMaps;
-import com.stereowalker.survive.world.item.SItems;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
@@ -30,8 +27,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Level;
 
 @Mixin(LivingEntity.class)
@@ -115,7 +110,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	@Inject(method = "completeUsingItem", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/item/ItemStack;copy()Lnet/minecraft/world/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void completeUsingItem_inject(CallbackInfo ci, InteractionHand interactionhand, ItemStack copy) {
-		if (!copy.isEdible() && this instanceof IRealisticEntity) {
+		if (!copy.has(DataComponents.FOOD) && this instanceof IRealisticEntity) {
 			((IRealisticEntity)this).drink(this.level(), copy);
 		}
 	}

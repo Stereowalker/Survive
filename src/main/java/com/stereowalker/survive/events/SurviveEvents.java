@@ -42,7 +42,6 @@ import com.stereowalker.unionlib.util.math.UnionMathHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -67,7 +66,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
@@ -85,7 +83,7 @@ public class SurviveEvents {
 				if (SurviveEntityStats.getSleepStats(player).getAwakeTimer() > time(0) - 5000 && Survive.CONFIG.canSleepDuringDay) {
 					event.setResult(Result.ALLOW);
 				}
-				else if (SurviveEntityStats.getEnergyStats(player).getEnergyLevel() < player.getAttributeValue(SAttributes.MAX_STAMINA)/2) {
+				else if (SurviveEntityStats.getEnergyStats(player).getEnergyLevel() < player.getAttributeValue(SAttributes.MAX_STAMINA.holder())/2) {
 					event.setResult(Result.ALLOW);
 				}
 			}
@@ -295,7 +293,7 @@ public class SurviveEvents {
 		case ENTITY:
 			float totalEntityTemp = 0;
 			rangeInBlocks = 5;
-			for (Entity entity : world.getEntitiesOfClass(Entity.class, new AABB(pos.offset(rangeInBlocks, rangeInBlocks, rangeInBlocks), pos.offset(-rangeInBlocks, -rangeInBlocks, -rangeInBlocks)))) {
+			for (Entity entity : world.getEntitiesOfClass(Entity.class, AABB.encapsulatingFullBlocks(pos.offset(rangeInBlocks, rangeInBlocks, rangeInBlocks), pos.offset(-rangeInBlocks, -rangeInBlocks, -rangeInBlocks)))) {
 				float sourceRange = DataMaps.Server.entityTemperature.containsKey(RegistryHelper.entityTypes().getKey(entity.getType())) ? DataMaps.Server.entityTemperature.get(RegistryHelper.entityTypes().getKey(entity.getType())).getRange() : 5;
 				if (pos.closerThan(entity.blockPosition(), sourceRange)) {
 					if (DataMaps.Server.entityTemperature.containsKey(RegistryHelper.entityTypes().getKey(entity.getType()))) {
@@ -365,7 +363,7 @@ public class SurviveEvents {
 	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickEmpty event) {
-		HitResult raytraceresult = rayTrace(event.getLevel(), event.getEntity(), ClipContext.Fluid.SOURCE_ONLY);
+		HitResult raytraceresult = getPlayerPOVHitResult(event.getLevel(), event.getEntity(), ClipContext.Fluid.SOURCE_ONLY);
 		BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
 		if (event.getLevel().isClientSide && event.getItemStack().isEmpty() && event.getHand() == InteractionHand.MAIN_HAND) {
 			//Source Block Of Water
@@ -390,7 +388,7 @@ public class SurviveEvents {
 	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickBlock event) {
-		HitResult raytraceresult = rayTrace(event.getLevel(), event.getEntity(), ClipContext.Fluid.SOURCE_ONLY);
+		HitResult raytraceresult = getPlayerPOVHitResult(event.getLevel(), event.getEntity(), ClipContext.Fluid.SOURCE_ONLY);
 		BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
 		BlockState state = event.getLevel().getBlockState(event.getPos());
 		Fluid fluid = event.getLevel().getFluidState(blockpos).getType();
@@ -419,21 +417,12 @@ public class SurviveEvents {
 			}
 		}
 	}
-
-	protected static HitResult rayTrace(Level worldIn, LivingEntity player, ClipContext.Fluid fluidMode) {
-		float f = player.getXRot();
-		float f1 = player.getYRot();
-		Vec3 vec3d = player.getEyePosition(1.0F);
-		float f2 = Mth.cos(-f1 * ((float)Math.PI / 180F) - (float)Math.PI);
-		float f3 = Mth.sin(-f1 * ((float)Math.PI / 180F) - (float)Math.PI);
-		float f4 = -Mth.cos(-f * ((float)Math.PI / 180F));
-		float f5 = Mth.sin(-f * ((float)Math.PI / 180F));
-		float f6 = f3 * f4;
-		float f7 = f2 * f4;
-		double d0 = player.getAttribute(ForgeMod.BLOCK_REACH.get()).getValue();
-		Vec3 vec3d1 = vec3d.add((double)f6 * d0, (double)f5 * d0, (double)f7 * d0);
-		return worldIn.clip(new ClipContext(vec3d, vec3d1, ClipContext.Block.OUTLINE, fluidMode, player));
-	}
+	
+	protected static BlockHitResult getPlayerPOVHitResult(Level pLevel, Player pPlayer, ClipContext.Fluid pFluidMode) {
+        Vec3 vec3 = pPlayer.getEyePosition();
+        Vec3 vec31 = vec3.add(pPlayer.calculateViewVector(pPlayer.getXRot(), pPlayer.getYRot()).scale(pPlayer.blockInteractionRange()));
+        return pLevel.clip(new ClipContext(vec3, vec31, ClipContext.Block.OUTLINE, pFluidMode, pPlayer));
+    }
 
 	public static void restoreStats(Player thisPlayer, Player thatPlayer, boolean keepEverything) {
 		SurviveEntityStats.getOrCreateModNBT(thisPlayer);
@@ -573,14 +562,14 @@ public class SurviveEvents {
 			return armorMod;
 		});
 		TemperatureQuery.registerQuery("survive:chilled_effect", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
-			if (player.hasEffect(SMobEffects.CHILLED))
-				return -(0.05F * (float)(player.getEffect(SMobEffects.CHILLED).getAmplifier() + 1));
+			if (player.hasEffect(SMobEffects.CHILLED.holder()))
+				return -(0.05F * (float)(player.getEffect(SMobEffects.CHILLED.holder()).getAmplifier() + 1));
 			else
 				return 0;
 		});
 		TemperatureQuery.registerQuery("survive:heated_effect", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
-			if (player.hasEffect(SMobEffects.HEATED))
-				return +(0.05F * (float)(player.getEffect(SMobEffects.HEATED).getAmplifier() + 1));
+			if (player.hasEffect(SMobEffects.HEATED.holder()))
+				return +(0.05F * (float)(player.getEffect(SMobEffects.HEATED.holder()).getAmplifier() + 1));
 			else
 				return 0;
 		});

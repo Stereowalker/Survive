@@ -7,7 +7,6 @@ import com.google.common.collect.Maps;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.hooks.SurviveHooks;
-import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.temperature.TemperatureModifier;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
@@ -18,7 +17,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -154,16 +152,16 @@ public class TemperatureData extends SurviveData {
 		double tempLocation = this.temperatureLevel - Survive.DEFAULT_TEMP;
 		if (tempLocation > 0) {
 			double maxTemp = 0.0D;
-			if (player.getAttribute(SAttributes.HEAT_RESISTANCE) != null) {
-				maxTemp = player.getAttributeValue(SAttributes.HEAT_RESISTANCE);
+			if (player.getAttribute(SAttributes.HEAT_RESISTANCE.holder()) != null) {
+				maxTemp = player.getAttributeValue(SAttributes.HEAT_RESISTANCE.holder());
 			}
 			double div = tempLocation / maxTemp;
 			this.displayTemperature = Mth.clamp(div, 0, 1.0D+(28.0D/63.0D));
 		}
 		if (tempLocation < 0) {
 			double maxTemp = 0.0D;
-			if (player.getAttribute(SAttributes.COLD_RESISTANCE) != null) {
-				maxTemp = player.getAttributeValue(SAttributes.COLD_RESISTANCE);
+			if (player.getAttribute(SAttributes.COLD_RESISTANCE.holder()) != null) {
+				maxTemp = player.getAttributeValue(SAttributes.COLD_RESISTANCE.holder());
 			}
 			double div = tempLocation / maxTemp;
 			this.displayTemperature = Mth.clamp(div, -1.0D-(28.0D/63.0D), 0);
@@ -181,27 +179,6 @@ public class TemperatureData extends SurviveData {
 				if (this.hypTimer > 0) {
 					this.hypTimer--;
 				} else if (this.hypTimer == 0) {
-					if (!player.hasEffect(SMobEffects.DEPRECIATED_HYPERTHERMIA) && !player.hasEffect(SMobEffects.DEPRECIATED_HYPOTHERMIA)) {
-						if (this.temperatureLevel > maxHeat1 && this.temperatureLevel <= maxHeat2) {
-							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPERTHERMIA, 100, 0));
-						}
-						else if (this.temperatureLevel > maxHeat2 && this.temperatureLevel <= maxHeat3) {
-							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPERTHERMIA, 100, 1));
-						}
-						else if (this.temperatureLevel > maxHeat3) {
-							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPERTHERMIA, 100, 2));
-						}
-
-						if (this.temperatureLevel < maxCold1 && this.temperatureLevel >= maxCold2) {
-							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPOTHERMIA, 100, 0));
-						}
-						else if (this.temperatureLevel < maxCold2 && this.temperatureLevel >= maxCold3) {
-							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPOTHERMIA, 100, 1));
-						}
-						else if (this.temperatureLevel < maxCold3) {
-							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPOTHERMIA, 100, 2));
-						}
-					}
 				}
 			} else if (this.hypTimer < Survive.TEMPERATURE_CONFIG.tempGrace){
 				this.hypTimer++;

@@ -4,14 +4,13 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.SItems;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -19,13 +18,13 @@ import net.minecraft.world.level.Level;
 
 public class CanteenFillingRecipe extends CustomRecipe {
 
-	public CanteenFillingRecipe(ResourceLocation idIn, CraftingBookCategory pCategory) {
-		super(idIn, pCategory);
+	public CanteenFillingRecipe(CraftingBookCategory pCategory) {
+		super(pCategory);
 	}
 
 	@Override
 	public boolean matches(CraftingContainer inv, Level worldIn) {
-		Potion savedPotion = null;
+		PotionContents savedPotion = null;
 		int bottles = 0;
 		int canteens = 0;
 		for (int i = 0; i < inv.getContainerSize(); i++) {
@@ -35,9 +34,9 @@ public class CanteenFillingRecipe extends CustomRecipe {
 			}
 			else if (stack.getItem() == Items.POTION) {
 				if (savedPotion == null) {
-					savedPotion = PotionUtils.getPotion(stack);
+					savedPotion = stack.get(DataComponents.POTION_CONTENTS);
 					bottles++;
-				} else if (savedPotion.equals(PotionUtils.getPotion(stack))) {
+				} else if (savedPotion.potion().get().value().equals(stack.get(DataComponents.POTION_CONTENTS).potion().get().value())) {
 					bottles++;
 				} else {
 					return false;
@@ -53,14 +52,14 @@ public class CanteenFillingRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv, RegistryAccess ra) {
+	public ItemStack assemble(CraftingContainer inv, HolderLookup.Provider ra) {
 		int count = 0;
-		Potion savedPotion = null;
+		PotionContents savedPotion = null;
 		for (int i = 0; i < inv.getContainerSize(); i++) {
 			ItemStack stack = inv.getItem(i);
 			if (stack.getItem() == Items.POTION) {
 				count++;
-				savedPotion = PotionUtils.getPotion(stack);
+				savedPotion = stack.get(DataComponents.POTION_CONTENTS);
 			}
 		}
 		if (savedPotion != null && count > 0) {

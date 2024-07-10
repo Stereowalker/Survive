@@ -8,6 +8,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,7 +26,7 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 		this(SurviveEntityStats.getModNBT(player));
 	}
 
-	public ClientboundSurvivalStatsPacket(FriendlyByteBuf byteBuf) {
+	public ClientboundSurvivalStatsPacket(RegistryFriendlyByteBuf byteBuf) {
 		super(byteBuf, Survive.getInstance().channel);
 		this.stats = byteBuf.readNbt();
 	}
@@ -39,5 +41,11 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 	public boolean handleOnClient(LocalPlayer sender) {
 		SurviveEntityStats.setModNBT(this.stats, Minecraft.getInstance().player);
 		return true;
+	}
+
+	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "clientbound_survival_stats");
+	@Override
+	public ResourceLocation id() {
+		return id;
 	}
 }
