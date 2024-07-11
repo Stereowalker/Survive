@@ -1,5 +1,9 @@
-[10.0.0 - onwards]
-- Backported 1.21 changes
+[10.0.1]
+- Use VersionHelper to create new ResourceLocations
+- Removed unnecessary mob effects
+
+[10.0.0]
+- Ported to 1.21
 
 [9.0.5]
 - Updated UnionLib to 10.2.2

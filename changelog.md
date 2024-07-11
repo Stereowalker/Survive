@@ -1,1 +1,3 @@
-- Backported 1.21 changes
+- Use VersionHelper to create new ResourceLocations
+- Removed unnecessary mob effects
+- Ported to 1.21
