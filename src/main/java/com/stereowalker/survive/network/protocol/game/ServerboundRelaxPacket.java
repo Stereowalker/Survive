@@ -5,6 +5,7 @@ import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -39,7 +40,7 @@ public class ServerboundRelaxPacket extends ServerboundUnionPacket {
 		return true;
 	}
 	
-	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "serverbound_relax");
+	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_relax");
 	@Override
 	public ResourceLocation id() {
 		return id;

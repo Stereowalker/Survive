@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.level.block.SBlocks;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
@@ -119,7 +120,7 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
         {
             consumer.accept(new IClientFluidTypeExtensions()
             {
-                private static final ResourceLocation UNDERWATER_LOCATION = new ResourceLocation("textures/misc/underwater.png");
+                private static final ResourceLocation UNDERWATER_LOCATION = VersionHelper.toLoc("textures/misc/underwater.png");
 
                 @Override
                 public ResourceLocation getStillTexture()

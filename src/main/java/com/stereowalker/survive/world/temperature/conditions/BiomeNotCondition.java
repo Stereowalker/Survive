@@ -2,6 +2,7 @@ package com.stereowalker.survive.world.temperature.conditions;
 
 import com.google.gson.JsonObject;
 import com.stereowalker.unionlib.util.RegistryHelper;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -26,14 +27,14 @@ public class BiomeNotCondition extends TemperatureChangeCondition<BiomeNotCondit
 		if(object.has("biome") && object.get("biome").isJsonPrimitive()) {
 			biomeIn = object.get("biome").getAsString();
 		}
-		return new Instance(temperatureIn, new ResourceLocation(biomeIn));
+		return new Instance(temperatureIn, VersionHelper.toLoc(biomeIn));
 	}
 	
 	@Override
 	public Instance createInstance(CompoundTag nbt) {
 		float temperatureIn = nbt.getFloat("temperature");
 		String biomeIn = nbt.getString("biome");
-		return new Instance(temperatureIn, new ResourceLocation(biomeIn));
+		return new Instance(temperatureIn, VersionHelper.toLoc(biomeIn));
 	}
 
 	static class Instance extends TemperatureChangeInstance {

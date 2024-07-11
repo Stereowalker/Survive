@@ -10,6 +10,7 @@ import com.stereowalker.survive.hooks.SurviveHooks;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.temperature.TemperatureModifier;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
+import com.stereowalker.unionlib.util.VersionHelper;
 import com.stereowalker.unionlib.util.NBTHelper.NbtType;
 
 import net.minecraft.nbt.CompoundTag;
@@ -116,7 +117,7 @@ public class TemperatureData extends SurviveData {
 	}
 
 //	public static void setTemperatureModifier(LivingEntity entity, String id, double value) {
-//		setTemperatureModifier(entity, new ResourceLocation(id), value);
+//		setTemperatureModifier(entity, VersionHelper.toLoc(id), value);
 //	}
 //
 //	public static void setTemperatureModifier(LivingEntity entity, ResourceLocation id, double value) {
@@ -124,7 +125,7 @@ public class TemperatureData extends SurviveData {
 //	}
 
 	public static void setTemperatureModifier(LivingEntity entity, String id, double value, ContributingFactor factor) {
-		setTemperatureModifier(entity, new ResourceLocation(id), value, factor);
+		setTemperatureModifier(entity, VersionHelper.toLoc(id), value, factor);
 	}
 
 	public static void setTemperatureModifier(LivingEntity entity, ResourceLocation id, double value, ContributingFactor factor) {

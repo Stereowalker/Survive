@@ -3,6 +3,7 @@ package com.stereowalker.survive.network.protocol.game;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -56,7 +57,7 @@ public class ServerboundThirstMovementPacket extends ServerboundUnionPacket {
 		return true;
 	}
 	
-	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "serverbound_thirst_movement");
+	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_thirst_movement");
 	@Override
 	public ResourceLocation id() {
 		return id;

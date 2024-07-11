@@ -1,5 +1,6 @@
 package com.stereowalker.survive.world.temperature;
 
+import com.stereowalker.unionlib.util.VersionHelper;
 import com.stereowalker.unionlib.util.math.UnionMathHelper;
 
 import net.minecraft.nbt.CompoundTag;
@@ -45,7 +46,7 @@ public class TemperatureModifier {
 	}
 	
 	public void read(CompoundTag nbt) {
-		this.id = new ResourceLocation(nbt.getString("id"));
+		this.id = VersionHelper.toLoc(nbt.getString("id"));
 		this.mod = nbt.getDouble("mod");
 		this.factor = nbt.getInt("factor") >= ContributingFactor.values().length ? ContributingFactor.INTERNAL : ContributingFactor.values()[nbt.getInt("factor")];
 	}

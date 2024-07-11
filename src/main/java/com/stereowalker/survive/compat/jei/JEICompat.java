@@ -7,6 +7,7 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -33,7 +34,7 @@ public class JEICompat implements IModPlugin {
 
 	@Override
 	public ResourceLocation getPluginUid() {
-		return new ResourceLocation("survive:recipe_handler");
+		return VersionHelper.toLoc("survive:recipe_handler");
 	}
 	
 	@Override

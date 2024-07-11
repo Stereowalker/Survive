@@ -7,6 +7,7 @@ import com.stereowalker.survive.needs.WaterData;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -124,7 +125,7 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 		return waterAmount >= 3.0D;
 	}
 	
-	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "serverbound_interact_with_water");
+	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_interact_with_water");
 	@Override
 	public ResourceLocation id() {
 		return id;

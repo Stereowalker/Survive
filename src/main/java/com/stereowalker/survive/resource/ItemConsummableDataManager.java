@@ -15,6 +15,7 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.json.FoodJsonHolder;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -36,7 +37,7 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 			Map<ResourceLocation, FoodJsonHolder> drinkMap = new HashMap<>();
 
 			for (Entry<ResourceLocation, Resource> resource : manager.listResources("survive_modifiers/consumables/items", (s) -> s.toString().endsWith(".json")).entrySet()) {
-				ResourceLocation drinkId = new ResourceLocation(
+				ResourceLocation drinkId = VersionHelper.toLoc(
 						resource.getKey().getNamespace(),
 						resource.getKey().getPath().replace("survive_modifiers/consumables/items/", "").replace(".json", "")
 						);
@@ -113,6 +114,6 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 
 	@Override
 	public ResourceLocation id() {
-		return new ResourceLocation("survive:item_data");
+		return VersionHelper.toLoc("survive:item_data");
 	}
 }

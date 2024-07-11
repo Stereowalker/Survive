@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.FriendlyByteBuf;
@@ -89,7 +90,7 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 		return true;
 	}
 	
-	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "serverbound_player_status_book");
+	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_player_status_book");
 	@Override
 	public ResourceLocation id() {
 		return id;

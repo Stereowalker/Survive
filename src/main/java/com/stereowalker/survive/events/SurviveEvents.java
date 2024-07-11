@@ -37,6 +37,7 @@ import com.stereowalker.survive.world.temperature.TemperatureQuery;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
+import com.stereowalker.unionlib.util.VersionHelper;
 import com.stereowalker.unionlib.util.math.UnionMathHelper;
 
 import net.minecraft.core.BlockPos;
@@ -479,7 +480,7 @@ public class SurviveEvents {
 		TemperatureQuery.registerQuery("survive:dimension", ContributingFactor.ENVIRONMENTAL, (player, temp, level, pos, applyTemp)->{
 			for (String dimensionList : ServerConfig.dimensionModifiers) {
 				String[] dimension = dimensionList.split(",");
-				ResourceLocation loc = new ResourceLocation(dimension[0]);
+				ResourceLocation loc = VersionHelper.toLoc(dimension[0]);
 				if (RegistryHelper.matchesRegistryKey(loc, level.dimension())) {
 					return Float.parseFloat(dimension[1]);
 				}

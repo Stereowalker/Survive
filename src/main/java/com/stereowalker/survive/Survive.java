@@ -83,6 +83,7 @@ import com.stereowalker.unionlib.insert.Inserts;
 import com.stereowalker.unionlib.mod.MinecraftMod;
 import com.stereowalker.unionlib.mod.PacketHolder;
 import com.stereowalker.unionlib.mod.ServerSegment;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -256,10 +257,10 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addInsert(Inserts.LOOT_TABLE_LOAD, (id,lootTable,cancel)->{
 			String ANIMAL_LOOT = "entities/animal_fat";
 			List<Pair<ResourceLocation, List<String>>> LOOT_MODIFIERS = Lists.newArrayList(
-					Pair.of(new ResourceLocation("entities/sheep"), Lists.newArrayList(ANIMAL_LOOT)),
-					Pair.of(new ResourceLocation("entities/chicken"), Lists.newArrayList(ANIMAL_LOOT)),
-					Pair.of(new ResourceLocation("entities/cow"), Lists.newArrayList(ANIMAL_LOOT)),
-					Pair.of(new ResourceLocation("entities/pig"), Lists.newArrayList(ANIMAL_LOOT))
+					Pair.of(VersionHelper.toLoc("entities/sheep"), Lists.newArrayList(ANIMAL_LOOT)),
+					Pair.of(VersionHelper.toLoc("entities/chicken"), Lists.newArrayList(ANIMAL_LOOT)),
+					Pair.of(VersionHelper.toLoc("entities/cow"), Lists.newArrayList(ANIMAL_LOOT)),
+					Pair.of(VersionHelper.toLoc("entities/pig"), Lists.newArrayList(ANIMAL_LOOT))
 					);
 			
 			BiFunction<String, Integer, LootPoolEntryContainer.Builder<?>> getInjectEntry = (name, weight) -> {

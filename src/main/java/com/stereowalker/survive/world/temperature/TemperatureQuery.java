@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.Maps;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +26,7 @@ public interface TemperatureQuery {
 		queries.put(id, new Tuple<>(query, factor));
 	}
 	public static void registerQuery(String id, ContributingFactor factor, TemperatureQuery query) {
-		registerQuery(new ResourceLocation(id), factor, query);
+		registerQuery(VersionHelper.toLoc(id), factor, query);
 	}
 	
 	double run(@Nullable Player player, double temp, Level level, BlockPos pos, boolean applyTemp);

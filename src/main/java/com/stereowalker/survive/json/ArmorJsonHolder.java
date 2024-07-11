@@ -14,6 +14,7 @@ import com.stereowalker.survive.api.json.JsonHolder;
 import com.stereowalker.survive.core.registries.SurviveRegistries;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeCondition;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -27,13 +28,13 @@ public class ArmorJsonHolder implements JsonHolder {
 	private final float weightModifier;
 	
 	public ArmorJsonHolder(CompoundTag nbt) {
-		this.itemID = new ResourceLocation(nbt.getString("id"));
+		this.itemID = VersionHelper.toLoc(nbt.getString("id"));
 		this.weightModifier = nbt.getFloat("weight_modifier");
 		this.temperatureModifier = Lists.newArrayList();
 		
 		nbt.getList("temperature_modifiers", 10).forEach((comp) -> {
 			CompoundTag nbt2 = (CompoundTag) comp;
-			this.temperatureModifier.add(Pair.of(nbt2.getString("condition"), SurviveRegistries.ForgeRegistry.CONDITION.getValue(new ResourceLocation(nbt2.getString("condition"))).createInstance(nbt2.getCompound("contents"))));
+			this.temperatureModifier.add(Pair.of(nbt2.getString("condition"), SurviveRegistries.ForgeRegistry.CONDITION.getValue(VersionHelper.toLoc(nbt2.getString("condition"))).createInstance(nbt2.getCompound("contents"))));
 		});
 	}
 	
@@ -54,11 +55,11 @@ public class ArmorJsonHolder implements JsonHolder {
 							if(object2 != null && object2.entrySet().size() != 0) {
 								if(object2.has("condition") && object2.get("condition").isJsonPrimitive()) {
 									setWorkingOn("condition");
-									condition = SurviveRegistries.ForgeRegistry.CONDITION.getValue(new ResourceLocation(object2.get("condition").getAsString()));
+									condition = SurviveRegistries.ForgeRegistry.CONDITION.getValue(VersionHelper.toLoc(object2.get("condition").getAsString()));
 									if (condition != null) {
 										temperatureModifierIn.add(Pair.of(object2.get("condition").getAsString(), condition.createInstance(object2)));
 									} else {
-										Survive.getInstance().getLogger().error("Error loading armor data {} from JSON: The condition {} does not exist", itemID,  new ResourceLocation(object2.get("condition").getAsString()));
+										Survive.getInstance().getLogger().error("Error loading armor data {} from JSON: The condition {} does not exist", itemID,  VersionHelper.toLoc(object2.get("condition").getAsString()));
 									}
 									stopWorking();
 								}
