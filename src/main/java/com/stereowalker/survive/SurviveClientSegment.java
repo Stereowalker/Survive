@@ -18,6 +18,7 @@ import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsSc
 import com.stereowalker.unionlib.mod.ClientSegment;
 import com.stereowalker.unionlib.util.ScreenHelper;
 import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -35,10 +36,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class SurviveClientSegment extends ClientSegment {
 
-	public static final ResourceLocation GUI_ICONS = new ResourceLocation(Survive.MOD_ID, "textures/gui/icons.png");
+	public static final ResourceLocation GUI_ICONS = VersionHelper.toLoc(Survive.MOD_ID, "textures/gui/icons.png");
 	@Override
 	public ResourceLocation getModIcon() {
-		return new ResourceLocation(Survive.MOD_ID, "textures/icon.png");
+		return VersionHelper.toLoc(Survive.MOD_ID, "textures/icon.png");
 	}
 
 	@Override

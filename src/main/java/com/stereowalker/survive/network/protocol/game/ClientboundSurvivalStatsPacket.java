@@ -3,6 +3,7 @@ package com.stereowalker.survive.network.protocol.game;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.unionlib.network.protocol.game.ClientboundUnionPacket;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -43,7 +44,7 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 		return true;
 	}
 
-	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "clientbound_survival_stats");
+	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "clientbound_survival_stats");
 	@Override
 	public ResourceLocation id() {
 		return id;

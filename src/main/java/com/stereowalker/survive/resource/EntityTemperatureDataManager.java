@@ -13,6 +13,7 @@ import com.google.gson.JsonParser;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -31,7 +32,7 @@ public class EntityTemperatureDataManager implements IResourceReloadListener<Map
 			Map<ResourceLocation, EntityTemperatureJsonHolder> drinkMap = new HashMap<>();
 
 			for (Entry<ResourceLocation, Resource> resource : manager.listResources("survive_modifiers/entities", (s) -> s.toString().endsWith(".json")).entrySet()) {
-				ResourceLocation entityId = new ResourceLocation(
+				ResourceLocation entityId = VersionHelper.toLoc(
 						resource.getKey().getNamespace(),
 						resource.getKey().getPath().replace("survive_modifiers/entities/", "").replace(".json", "")
 						);
@@ -70,6 +71,6 @@ public class EntityTemperatureDataManager implements IResourceReloadListener<Map
 
 	@Override
 	public ResourceLocation id() {
-		return new ResourceLocation("survive:entity_data");
+		return VersionHelper.toLoc("survive:entity_data");
 	}
 }

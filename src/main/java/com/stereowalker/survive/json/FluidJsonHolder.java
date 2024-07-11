@@ -6,6 +6,7 @@ import org.apache.logging.log4j.MarkerManager;
 import com.google.gson.JsonObject;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.api.json.JsonHolder;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -24,7 +25,7 @@ public class FluidJsonHolder implements JsonHolder {
 	private float thirstChance = 0;
 	
 	public FluidJsonHolder(CompoundTag nbt) {
-		this.itemID = new ResourceLocation(nbt.getString("id"));
+		this.itemID = VersionHelper.toLoc(nbt.getString("id"));
 		this.thirstAmount = nbt.getInt("thirst_amount");
 		this.hydrationAmount = nbt.getFloat("hydration_amount");
 		this.thirstChance = nbt.getFloat("thirst_chance");

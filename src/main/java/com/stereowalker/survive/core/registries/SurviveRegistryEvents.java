@@ -22,10 +22,10 @@ import com.stereowalker.survive.world.seasons.Seasons;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeCondition;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeConditions;
 import com.stereowalker.unionlib.util.RegistryHelper;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -89,12 +89,12 @@ public class SurviveRegistryEvents
 		event.register(RegistryHelper.particleTypeKey(), (helper) -> SParticleTypes.registerAll(helper));
 		event.register(SurviveRegistries.CONDITION, (helper) -> TemperatureChangeConditions.registerAll(helper));
 		event.register(SurviveRegistries.SEASON, (helper) -> Seasons.registerAll(helper));
-		event.register(ForgeRegistries.Keys.FLUID_TYPES, (helper) -> helper.register(new ResourceLocation("survive:purified_water"), PurifiedWaterFluid.TYPE));
+		event.register(ForgeRegistries.Keys.FLUID_TYPES, (helper) -> helper.register(VersionHelper.toLoc("survive:purified_water"), PurifiedWaterFluid.TYPE));
 //		if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS))
 //        {			
 //        }
 		event.register(ForgeRegistries.Keys.CONDITION_SERIALIZERS, (reg) -> {
-			reg.register(new ResourceLocation("survive", "module_enabled"), ModuleEnabledCondition.CODEC);
+			reg.register(VersionHelper.toLoc("survive", "module_enabled"), ModuleEnabledCondition.CODEC);
 		});
 		new SLootItemConditions();
 		MobEffects.FIRE_RESISTANCE.value().addAttributeModifier(SAttributes.HEAT_RESISTANCE.holder(), "795606d6-4ac6-4ae7-8311-63ccdb293eb4", 5.0D, AttributeModifier.Operation.ADD_VALUE);

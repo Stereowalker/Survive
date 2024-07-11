@@ -2,6 +2,7 @@ package com.stereowalker.survive.client.gui;
 
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.needs.IRoastedEntity;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
@@ -12,74 +13,74 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public enum SurviveHeartType {
 	CONTAINER(
-			new ResourceLocation("hud/heart/container"),
-			new ResourceLocation("hud/heart/container_blinking"),
-			new ResourceLocation("hud/heart/container"),
-			new ResourceLocation("hud/heart/container_blinking"),
-			new ResourceLocation("hud/heart/container_hardcore"),
-			new ResourceLocation("hud/heart/container_hardcore_blinking"),
-			new ResourceLocation("hud/heart/container_hardcore"),
-			new ResourceLocation("hud/heart/container_hardcore_blinking")
+			VersionHelper.toLoc("hud/heart/container"),
+			VersionHelper.toLoc("hud/heart/container_blinking"),
+			VersionHelper.toLoc("hud/heart/container"),
+			VersionHelper.toLoc("hud/heart/container_blinking"),
+			VersionHelper.toLoc("hud/heart/container_hardcore"),
+			VersionHelper.toLoc("hud/heart/container_hardcore_blinking"),
+			VersionHelper.toLoc("hud/heart/container_hardcore"),
+			VersionHelper.toLoc("hud/heart/container_hardcore_blinking")
 			),
 	NORMAL(
-			new ResourceLocation("hud/heart/full"),
-			new ResourceLocation("hud/heart/full_blinking"),
-			new ResourceLocation("hud/heart/half"),
-			new ResourceLocation("hud/heart/half_blinking"),
-			new ResourceLocation("hud/heart/hardcore_full"),
-			new ResourceLocation("hud/heart/hardcore_full_blinking"),
-			new ResourceLocation("hud/heart/hardcore_half"),
-			new ResourceLocation("hud/heart/hardcore_half_blinking")
+			VersionHelper.toLoc("hud/heart/full"),
+			VersionHelper.toLoc("hud/heart/full_blinking"),
+			VersionHelper.toLoc("hud/heart/half"),
+			VersionHelper.toLoc("hud/heart/half_blinking"),
+			VersionHelper.toLoc("hud/heart/hardcore_full"),
+			VersionHelper.toLoc("hud/heart/hardcore_full_blinking"),
+			VersionHelper.toLoc("hud/heart/hardcore_half"),
+			VersionHelper.toLoc("hud/heart/hardcore_half_blinking")
 			),
 	POISIONED(
-			new ResourceLocation("hud/heart/poisoned_full"),
-			new ResourceLocation("hud/heart/poisoned_full_blinking"),
-			new ResourceLocation("hud/heart/poisoned_half"),
-			new ResourceLocation("hud/heart/poisoned_half_blinking"),
-			new ResourceLocation("hud/heart/poisoned_hardcore_full"),
-			new ResourceLocation("hud/heart/poisoned_hardcore_full_blinking"),
-			new ResourceLocation("hud/heart/poisoned_hardcore_half"),
-			new ResourceLocation("hud/heart/poisoned_hardcore_half_blinking")
+			VersionHelper.toLoc("hud/heart/poisoned_full"),
+			VersionHelper.toLoc("hud/heart/poisoned_full_blinking"),
+			VersionHelper.toLoc("hud/heart/poisoned_half"),
+			VersionHelper.toLoc("hud/heart/poisoned_half_blinking"),
+			VersionHelper.toLoc("hud/heart/poisoned_hardcore_full"),
+			VersionHelper.toLoc("hud/heart/poisoned_hardcore_full_blinking"),
+			VersionHelper.toLoc("hud/heart/poisoned_hardcore_half"),
+			VersionHelper.toLoc("hud/heart/poisoned_hardcore_half_blinking")
 			),
 	WITHERED(
-			new ResourceLocation("hud/heart/withered_full"),
-			new ResourceLocation("hud/heart/withered_full_blinking"),
-			new ResourceLocation("hud/heart/withered_half"),
-			new ResourceLocation("hud/heart/withered_half_blinking"),
-			new ResourceLocation("hud/heart/withered_hardcore_full"),
-			new ResourceLocation("hud/heart/withered_hardcore_full_blinking"),
-			new ResourceLocation("hud/heart/withered_hardcore_half"),
-			new ResourceLocation("hud/heart/withered_hardcore_half_blinking")
+			VersionHelper.toLoc("hud/heart/withered_full"),
+			VersionHelper.toLoc("hud/heart/withered_full_blinking"),
+			VersionHelper.toLoc("hud/heart/withered_half"),
+			VersionHelper.toLoc("hud/heart/withered_half_blinking"),
+			VersionHelper.toLoc("hud/heart/withered_hardcore_full"),
+			VersionHelper.toLoc("hud/heart/withered_hardcore_full_blinking"),
+			VersionHelper.toLoc("hud/heart/withered_hardcore_half"),
+			VersionHelper.toLoc("hud/heart/withered_hardcore_half_blinking")
 			),
 	ABSORBING(
-			new ResourceLocation("hud/heart/absorbing_full"),
-			new ResourceLocation("hud/heart/absorbing_full_blinking"),
-			new ResourceLocation("hud/heart/absorbing_half"),
-			new ResourceLocation("hud/heart/absorbing_half_blinking"),
-			new ResourceLocation("hud/heart/absorbing_hardcore_full"),
-			new ResourceLocation("hud/heart/absorbing_hardcore_full_blinking"),
-			new ResourceLocation("hud/heart/absorbing_hardcore_half"),
-			new ResourceLocation("hud/heart/absorbing_hardcore_half_blinking")
+			VersionHelper.toLoc("hud/heart/absorbing_full"),
+			VersionHelper.toLoc("hud/heart/absorbing_full_blinking"),
+			VersionHelper.toLoc("hud/heart/absorbing_half"),
+			VersionHelper.toLoc("hud/heart/absorbing_half_blinking"),
+			VersionHelper.toLoc("hud/heart/absorbing_hardcore_full"),
+			VersionHelper.toLoc("hud/heart/absorbing_hardcore_full_blinking"),
+			VersionHelper.toLoc("hud/heart/absorbing_hardcore_half"),
+			VersionHelper.toLoc("hud/heart/absorbing_hardcore_half_blinking")
 			),
 	FROZEN(
-			new ResourceLocation("hud/heart/frozen_full"),
-			new ResourceLocation("hud/heart/frozen_full_blinking"),
-			new ResourceLocation("hud/heart/frozen_half"),
-			new ResourceLocation("hud/heart/frozen_half_blinking"),
-			new ResourceLocation("hud/heart/frozen_hardcore_full"),
-			new ResourceLocation("hud/heart/frozen_hardcore_full_blinking"),
-			new ResourceLocation("hud/heart/frozen_hardcore_half"),
-			new ResourceLocation("hud/heart/frozen_hardcore_half_blinking")
+			VersionHelper.toLoc("hud/heart/frozen_full"),
+			VersionHelper.toLoc("hud/heart/frozen_full_blinking"),
+			VersionHelper.toLoc("hud/heart/frozen_half"),
+			VersionHelper.toLoc("hud/heart/frozen_half_blinking"),
+			VersionHelper.toLoc("hud/heart/frozen_hardcore_full"),
+			VersionHelper.toLoc("hud/heart/frozen_hardcore_full_blinking"),
+			VersionHelper.toLoc("hud/heart/frozen_hardcore_half"),
+			VersionHelper.toLoc("hud/heart/frozen_hardcore_half_blinking")
 			),
 	ROASTED(
-			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_full"),
-			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_full_blinking"),
-			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_half"),
-			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_half_blinking"),
-			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_hardcore_full"),
-			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_hardcore_full_blinking"),
-			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_hardcore_half"),
-			new ResourceLocation(Survive.MOD_ID, "hud/heart/roasted_hardcore_half_blinking")
+			VersionHelper.toLoc(Survive.MOD_ID, "hud/heart/roasted_full"),
+			VersionHelper.toLoc(Survive.MOD_ID, "hud/heart/roasted_full_blinking"),
+			VersionHelper.toLoc(Survive.MOD_ID, "hud/heart/roasted_half"),
+			VersionHelper.toLoc(Survive.MOD_ID, "hud/heart/roasted_half_blinking"),
+			VersionHelper.toLoc(Survive.MOD_ID, "hud/heart/roasted_hardcore_full"),
+			VersionHelper.toLoc(Survive.MOD_ID, "hud/heart/roasted_hardcore_full_blinking"),
+			VersionHelper.toLoc(Survive.MOD_ID, "hud/heart/roasted_hardcore_half"),
+			VersionHelper.toLoc(Survive.MOD_ID, "hud/heart/roasted_hardcore_half_blinking")
 			);
 
 	private final ResourceLocation full;

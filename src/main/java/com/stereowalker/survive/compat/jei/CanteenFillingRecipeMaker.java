@@ -6,6 +6,7 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.unionlib.util.RegistryHelper;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import mezz.jei.api.helpers.IStackHelper;
 import net.minecraft.core.NonNullList;
@@ -34,7 +35,7 @@ public final class CanteenFillingRecipeMaker {
 				NonNullList<Ingredient> inputs = NonNullList.of(Ingredient.EMPTY,
 						canteenIngredient, potionIngredient, potionIngredient, potionIngredient
 				);
-				ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "survive.fill.canteen." + output.getDescriptionId());
+				ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "survive.fill.canteen." + output.getDescriptionId());
 				return new RecipeHolder<CraftingRecipe>(id, new ShapelessRecipe(group, CraftingBookCategory.MISC, output, inputs));
 			})
 			.toList();

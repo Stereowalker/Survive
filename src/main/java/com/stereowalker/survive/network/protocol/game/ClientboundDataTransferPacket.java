@@ -11,6 +11,7 @@ import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.survive.json.FluidJsonHolder;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.unionlib.network.protocol.game.ClientboundUnionPacket;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -83,7 +84,7 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 		return true;
 	}
 
-	public static ResourceLocation id = new ResourceLocation(Survive.MOD_ID, "clientbound_data_transfer");
+	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "clientbound_data_transfer");
 	@Override
 	public ResourceLocation id() {
 		return id;

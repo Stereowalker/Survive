@@ -2,19 +2,20 @@ package com.stereowalker.survive.tags;
 
 import com.stereowalker.survive.Survive;
 import com.stereowalker.unionlib.util.RegistryHelper;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class ItemSTags {
-	public static final TagKey<Item> ANIMAL_FAT = create(new ResourceLocation("animal_fat"));
+	public static final TagKey<Item> ANIMAL_FAT = create(VersionHelper.toLoc("animal_fat"));
 
 	public ItemSTags() {
 	}
 
 	private static TagKey<Item> create(String pName) {
-		return TagKey.create(RegistryHelper.itemKey(), new ResourceLocation(Survive.MOD_ID, pName));
+		return TagKey.create(RegistryHelper.itemKey(), VersionHelper.toLoc(Survive.MOD_ID, pName));
 	}
 
 	public static TagKey<Item> create(ResourceLocation name) {

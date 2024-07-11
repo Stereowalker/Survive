@@ -2,10 +2,10 @@ package com.stereowalker.survive.core.registries;
 
 import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeCondition;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
 
@@ -15,7 +15,7 @@ public class SurviveRegistries {
 
 	private static <T> ResourceKey<Registry<T>> key(String name)
     {
-        return ResourceKey.createRegistryKey(new ResourceLocation(name));
+        return ResourceKey.createRegistryKey(VersionHelper.toLoc(name));
     }
 	
 	public class ForgeRegistry {

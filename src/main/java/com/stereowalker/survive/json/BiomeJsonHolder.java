@@ -14,6 +14,7 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.api.json.JsonHolder;
 import com.stereowalker.survive.core.registries.SurviveRegistries;
 import com.stereowalker.survive.world.seasons.Season;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +32,7 @@ public class BiomeJsonHolder implements JsonHolder {
 	private final Map<Season,Float> seasonModifiers;
 	
 	public BiomeJsonHolder(CompoundTag nbt) {
-		this.biomeID = new ResourceLocation(nbt.getString("id"));
+		this.biomeID = VersionHelper.toLoc(nbt.getString("id"));
 		this.thirst_chance = nbt.getFloat("thirst_chance");
 		this.unwell_intensity = nbt.getInt("unwell_intensity");
 		this.temperature = nbt.getFloat("temperature");
@@ -68,7 +69,7 @@ public class BiomeJsonHolder implements JsonHolder {
 					for (Entry<String, JsonElement> elem : object.get(SEASON_MODIFIER).getAsJsonObject().entrySet()) {
 						Season season = null;
 						setWorkingOn(elem.getKey());
-						season = SurviveRegistries.ForgeRegistry.SEASON.getValue(new ResourceLocation(elem.getKey()));
+						season = SurviveRegistries.ForgeRegistry.SEASON.getValue(VersionHelper.toLoc(elem.getKey()));
 						if (season != null) {
 							if(elem.getValue().isJsonPrimitive()) {
 								seasonModifiersIn.put(season, elem.getValue().getAsFloat());
@@ -76,7 +77,7 @@ public class BiomeJsonHolder implements JsonHolder {
 								Survive.getInstance().getLogger().error("Error loading biome data {} from JSON: The season's modifier does not exist", biomeID);
 							}
 						} else {
-							Survive.getInstance().getLogger().error("Error loading biome data {} from JSON: The season {} does not exist", biomeID,  new ResourceLocation(elem.getKey()));
+							Survive.getInstance().getLogger().error("Error loading biome data {} from JSON: The season {} does not exist", biomeID,  VersionHelper.toLoc(elem.getKey()));
 						}
 					}
 					stopWorking();
