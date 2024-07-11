@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "survive:warming",
+    "survive:cooling",
+    "survive:adjusted_warming",
+    "survive:adjusted_cooling"
+  ]
+}

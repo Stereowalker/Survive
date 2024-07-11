@@ -1,31 +1,64 @@
 package com.stereowalker.survive.world.item.enchantment;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+
+import com.stereowalker.survive.Survive;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 public class SEnchantmentHelper extends EnchantmentHelper {
 
 	public static int getCoolingModifier(ItemStack stack) {
-		return getItemEnchantmentLevel(TemperatureEnchantments.COOLING, stack);
+		MutableInt mutablefloat = new MutableInt();
+		ItemEnchantments itemenchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+
+		has(stack, null);
+        for (Entry<Holder<Enchantment>> entry : itemenchantments.entrySet()) {
+        	if (entry.getKey().value().effects().has(Survive.COOLING.get()))
+        		mutablefloat.add(entry.getIntValue());
+        }
+        return mutablefloat.intValue();
 	}
 
 	public static int getWarmingModifier(ItemStack stack) {
-		return getItemEnchantmentLevel(TemperatureEnchantments.WARMING, stack);
+		MutableInt mutablefloat = new MutableInt();
+		ItemEnchantments itemenchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+
+		has(stack, null);
+        for (Entry<Holder<Enchantment>> entry : itemenchantments.entrySet()) {
+        	if (entry.getKey().value().effects().has(Survive.WARMING.get()))
+        		mutablefloat.add(entry.getIntValue());
+        }
+        return mutablefloat.intValue();
 	}
 
 	public static int getFeatherweightModifier(ItemStack stack) {
-		return getItemEnchantmentLevel(StaminaEnchantments.FEATHERWEIGHT, stack);
+		MutableInt mutablefloat = new MutableInt();
+		ItemEnchantments itemenchantments = stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+
+		has(stack, null);
+        for (Entry<Holder<Enchantment>> entry : itemenchantments.entrySet()) {
+        	if (entry.getKey().value().effects().has(Survive.FEATHERS.get()))
+        		mutablefloat.add(entry.getIntValue());
+        }
+        return mutablefloat.intValue();
 	}
 	
 	public static boolean hasAdjustedCooling(ItemStack stack) {
-		return getItemEnchantmentLevel(TemperatureEnchantments.ADJUSTED_COOLING, stack) > 0;
+		return has(stack, Survive.AUTO_COOLING.get());
 	}
 
 	public static boolean hasAdjustedWarming(ItemStack stack) {
-		return getItemEnchantmentLevel(TemperatureEnchantments.ADJUSTED_WARMING, stack) > 0;
+		return has(stack, Survive.AUTO_WARMING.get());
 	}
 
 	public static boolean hasWeightless(ItemStack stack) {
-		return getItemEnchantmentLevel(StaminaEnchantments.WEIGHTLESS, stack) > 0;
+		return has(stack, Survive.WEIGHTLESS.get());
 	}
 }

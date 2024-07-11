@@ -16,6 +16,7 @@ import com.stereowalker.survive.client.gui.SurviveHeartType;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
 
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +34,7 @@ public abstract class GuiMixin {
 
 
 	@Inject(method = "renderItemHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V"))
-	public void hotbarColor(GuiGraphics guiGraphics, float p_283031_, CallbackInfo ci) {
+	public void hotbarColor(GuiGraphics guiGraphics, DeltaTracker pDeltaTracker, CallbackInfo ci) {
 		Player playerentity = this.getCameraPlayer();
 		if (Survive.TEMPERATURE_CONFIG.enabled && Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
 			double displayTemp = SurviveEntityStats.getTemperatureStats(playerentity).getDisplayTemperature();
@@ -47,7 +48,7 @@ public abstract class GuiMixin {
 
 
 	@Inject(method = "renderItemHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;popPose()V"))
-	public void resetHotbarColor(GuiGraphics guiGraphics, float p_283031_, CallbackInfo ci) {
+	public void resetHotbarColor(GuiGraphics guiGraphics, DeltaTracker pDeltaTracker, CallbackInfo ci) {
 		guiGraphics.setColor(1f, 1f, 1f, 1f);
 	}
 

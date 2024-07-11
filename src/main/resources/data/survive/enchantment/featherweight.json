@@ -1,0 +1,35 @@
+{
+  "anvil_cost": 1,
+  "description": {
+    "translate": "enchantment.survive.featherweight"
+  },
+  "effects": {
+    "survive:feathers": [
+      {
+        "effect": {
+          "type": "minecraft:add",
+          "value": {
+            "type": "minecraft:linear",
+            "base": 1.0,
+            "per_level_above_first": 1.0
+          }
+        }
+      }
+    ]
+  },
+  "exclusive_set": "#survive:exclusive_set/weight",
+  "max_cost": {
+    "base": 26,
+    "per_level_above_first": 5
+  },
+  "max_level": 5,
+  "min_cost": {
+    "base": 6,
+    "per_level_above_first": 5
+  },
+  "slots": [
+    "armor"
+  ],
+  "supported_items": "#minecraft:enchantable/armor",
+  "weight": 10
+}

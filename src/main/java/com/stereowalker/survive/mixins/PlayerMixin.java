@@ -58,7 +58,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	}
 	
 	@Inject(method = "eat", at = @At("HEAD"))
-	public void eatInject(Level pLevel, ItemStack pFood, CallbackInfoReturnable<ItemStack> cir) {
+	public void eatInject(Level pLevel, ItemStack pFood, FoodProperties pFoodProperties, CallbackInfoReturnable<ItemStack> cir) {
 		if (pFood.has(DataComponents.FOOD) && foodData instanceof CustomFoodData custom) {
 			FoodProperties foodproperties = pFood.get(DataComponents.FOOD);
 			for (PossibleEffect effect : foodproperties.effects()) {
@@ -135,9 +135,8 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		}
 	}
 
-//	@Inject(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;eat(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;)V"))
-	@Inject(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;eat(Lnet/minecraft/world/item/ItemStack;)V"))
-	public void addNutrients(Level arg0, ItemStack p_213357_2_, CallbackInfoReturnable<ItemStack> cir) {
+	@Inject(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;eat(Lnet/minecraft/world/food/FoodProperties;)V"))
+	public void addNutrients(Level arg0, ItemStack p_213357_2_, FoodProperties pFoodProperties, CallbackInfoReturnable<ItemStack> cir) {
 		if (Survive.CONFIG.nutrition_enabled) {
 			float protein = 1;
 			float carbs = 1;

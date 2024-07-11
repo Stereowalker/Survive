@@ -7,11 +7,11 @@ import com.stereowalker.survive.world.item.SItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -23,11 +23,11 @@ public class CanteenFillingRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean matches(CraftingContainer inv, Level worldIn) {
+	public boolean matches(CraftingInput inv, Level worldIn) {
 		PotionContents savedPotion = null;
 		int bottles = 0;
 		int canteens = 0;
-		for (int i = 0; i < inv.getContainerSize(); i++) {
+		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.getItem(i);
 			if (stack.getItem() == SItems.CANTEEN) {
 				canteens++;
@@ -52,10 +52,10 @@ public class CanteenFillingRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv, HolderLookup.Provider ra) {
+	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider ra) {
 		int count = 0;
 		PotionContents savedPotion = null;
-		for (int i = 0; i < inv.getContainerSize(); i++) {
+		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.getItem(i);
 			if (stack.getItem() == Items.POTION) {
 				count++;
@@ -69,8 +69,8 @@ public class CanteenFillingRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingContainer pContainer) {
-		NonNullList<ItemStack> nonnulllist = NonNullList.withSize(pContainer.getContainerSize(), ItemStack.EMPTY);
+	public NonNullList<ItemStack> getRemainingItems(CraftingInput pContainer) {
+		NonNullList<ItemStack> nonnulllist = NonNullList.withSize(pContainer.size(), ItemStack.EMPTY);
 	      for(int i = 0; i < nonnulllist.size(); ++i) {
 	         ItemStack item = pContainer.getItem(i);
 	         if (item.hasCraftingRemainingItem()) {

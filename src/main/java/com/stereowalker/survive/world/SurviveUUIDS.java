@@ -1,10 +1,14 @@
 package com.stereowalker.survive.world;
 
+import com.stereowalker.unionlib.util.VersionHelper;
+
+import net.minecraft.resources.ResourceLocation;
+
 public class SurviveUUIDS {
-	public static final String COLD_RESISTANCE = "5cebe402-4f28-4d41-8539-2496f900ef90";
-	public static final String UNWELL_SLOWNESS = "7107DE5E-7CE8-4030-940E-514C1F160891";
-	public static final String UNWELL_WEAKNESS = "7107DE5E-7CE8-4030-940E-514C1F160892";
-	public static final String UPSET___STOMACH = "7107DE5E-7CE8-4030-940E-514C1F160893";
-	public static final String WELL_FED_SPEED_ = "7107DE5E-7CE8-4030-940E-514C1F160894";
-	public static final String WELL_FED_DAMAGE = "7107DE5E-7CE8-4030-940E-514C1F160895";
+	public static final ResourceLocation COLD_RESISTANCE = VersionHelper.toLoc("survive:cold_res");
+	public static final ResourceLocation UNWELL_SLOWNESS = VersionHelper.toLoc("survive:unwell_slow");
+	public static final ResourceLocation UNWELL_WEAKNESS = VersionHelper.toLoc("survive:unwell_weak");
+	public static final ResourceLocation UPSET___STOMACH = VersionHelper.toLoc("survive:bad_stomach");
+	public static final ResourceLocation WELL_FED_SPEED_ = VersionHelper.toLoc("survive:well_fed_speed");
+	public static final ResourceLocation WELL_FED_DAMAGE = VersionHelper.toLoc("survive:well_fed_dmg");
 }

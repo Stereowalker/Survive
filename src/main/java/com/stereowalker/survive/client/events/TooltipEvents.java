@@ -60,7 +60,7 @@ public class TooltipEvents {
 		boolean showTemp = false;
 		if ((Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights) || Survive.TEMPERATURE_CONFIG.enabled) {
 			for(EquipmentSlot type : EquipmentSlot.values()) {
-				if (event.getEntity() != null && event.getItemStack().canEquip(type, event.getEntity()) && type.getType() == Type.ARMOR) {
+				if (event.getEntity() != null && event.getItemStack().canEquip(type, event.getEntity()) && type.getType() == Type.HUMANOID_ARMOR) {
 					showWeight = Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights;
 					showTemp = Survive.TEMPERATURE_CONFIG.enabled;
 					break;

@@ -3,7 +3,6 @@ package com.stereowalker.survive.world.item.crafting;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -11,6 +10,7 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 
@@ -21,7 +21,7 @@ public class WaterBottleSmeltingRecipe extends SmeltingRecipe {
 	}
 
 	@Override
-	public boolean matches(Container pInv, Level pLevel) {
+	public boolean matches(SingleRecipeInput pInv, Level pLevel) {
 		if (pInv.getItem(0).get(DataComponents.POTION_CONTENTS).potion().get() == Potions.WATER) return this.ingredient.test(pInv.getItem(0)); else return false;
 	}
 

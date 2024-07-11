@@ -1,0 +1,24 @@
+{
+  "anvil_cost": 1,
+  "description": {
+    "translate": "enchantment.survive.adjusted_warming"
+  },
+  "effects": {
+    "survive:auto_warming": {}
+  },
+  "exclusive_set": "#survive:exclusive_set/temperature",
+  "max_cost": {
+    "base": 75,
+    "per_level_above_first": 25
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 25,
+    "per_level_above_first": 25
+  },
+  "slots": [
+    "armor"
+  ],
+  "supported_items": "#minecraft:enchantable/armor",
+  "weight": 2
+}

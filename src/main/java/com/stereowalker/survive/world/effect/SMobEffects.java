@@ -5,6 +5,7 @@ import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.core.registries.Housing;
 import com.stereowalker.unionlib.core.registries.RegistryHolder;
 import com.stereowalker.unionlib.core.registries.RegistryObject;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -16,14 +17,14 @@ public class SMobEffects {
 	@RegistryObject("thirst")
 	public static final Housing<MobEffect> THIRST = Housing.create(() -> new ThirstMobEffect(MobEffectCategory.HARMFUL, 5797459));
 	@RegistryObject("heat_resistance")
-	public static final Housing<MobEffect> HEAT_RESISTANCE = Housing.create(() -> new HeatedAndChilledMobEffect(MobEffectCategory.BENEFICIAL, 12221756).addAttributeModifier(SAttributes.HEAT_RESISTANCE.holder(), "795606d6-4ac6-4ae7-8311-63ccdb293eb3", 20.0D, AttributeModifier.Operation.ADD_VALUE));
+	public static final Housing<MobEffect> HEAT_RESISTANCE = Housing.create(() -> new HeatedAndChilledMobEffect(MobEffectCategory.BENEFICIAL, 12221756).addAttributeModifier(SAttributes.HEAT_RESISTANCE.holder(), VersionHelper.toLoc("survive:heat_res"), 20.0D, AttributeModifier.Operation.ADD_VALUE));
 	@RegistryObject("cold_resistance")
 	public static final Housing<MobEffect> COLD_RESISTANCE = Housing.create(() -> new HeatedAndChilledMobEffect(MobEffectCategory.BENEFICIAL, 5750248).addAttributeModifier(SAttributes.COLD_RESISTANCE.holder(), SurviveUUIDS.COLD_RESISTANCE, 20.0D, AttributeModifier.Operation.ADD_VALUE));
 	@RegistryObject("tiredness")
 	public static final Housing<MobEffect> TIREDNESS = Housing.create(() -> new TirednessMobEffect(MobEffectCategory.BENEFICIAL, 0xaa6666)
-			.addAttributeModifier(Attributes.MOVEMENT_SPEED, "7107DE5E-7CE8-4030-940E-514C1F160891", (double)-0.005F, AttributeModifier.Operation.ADD_VALUE)
-			.addAttributeModifier(Attributes.BLOCK_BREAK_SPEED, "55FCED67-E92A-486E-9800-B47F202C4387", (double)-0.2F, AttributeModifier.Operation.ADD_VALUE)
-			.addAttributeModifier(Attributes.ATTACK_DAMAGE, "5cebe402-4f28-4d41-8539-2496f900ef99", -0.4D, AttributeModifier.Operation.ADD_VALUE));
+			.addAttributeModifier(Attributes.MOVEMENT_SPEED, VersionHelper.toLoc("survive:tired_speed"), (double)-0.005F, AttributeModifier.Operation.ADD_VALUE)
+			.addAttributeModifier(Attributes.BLOCK_BREAK_SPEED, VersionHelper.toLoc("survive:tired_blocks"), (double)-0.2F, AttributeModifier.Operation.ADD_VALUE)
+			.addAttributeModifier(Attributes.ATTACK_DAMAGE, VersionHelper.toLoc("survive:tired_dmg"), -0.4D, AttributeModifier.Operation.ADD_VALUE));
 	@RegistryObject("chilled")
 	public static final Housing<MobEffect> CHILLED = Housing.create(() -> new HeatedAndChilledMobEffect(MobEffectCategory.BENEFICIAL, 5750248));
 	@RegistryObject("heated")

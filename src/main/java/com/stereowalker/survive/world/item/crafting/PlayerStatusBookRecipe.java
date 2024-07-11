@@ -6,10 +6,10 @@ import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.component.SDataComponents;
 
 import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -21,11 +21,11 @@ public class PlayerStatusBookRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean matches(CraftingContainer inv, Level worldIn) {
+	public boolean matches(CraftingInput inv, Level worldIn) {
 		if (!ServerConfig.canCraftStatusBook) return false;
 		int thermometer = 0;
 		int book = 0;
-		for (int i = 0; i < inv.getContainerSize(); i++) {
+		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.getItem(i);
 			if (stack.getItem() == SItems.THERMOMETER) {
 				thermometer++;
@@ -40,9 +40,9 @@ public class PlayerStatusBookRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingContainer inv, Provider pRegistries) {
+	public ItemStack assemble(CraftingInput inv, Provider pRegistries) {
 		if (!ServerConfig.canCraftStatusBook) return ItemStack.EMPTY;
-		for (int i = 0; i < inv.getContainerSize(); i++) {
+		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.getItem(i);
 			if (stack.getItem() == Items.WRITTEN_BOOK) {
 				return Survive.convertToPlayerStatusBook(stack);

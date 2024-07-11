@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -60,8 +61,6 @@ import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
 import com.stereowalker.survive.world.item.component.SDataComponents;
 import com.stereowalker.survive.world.item.crafting.SRecipeSerializer;
-import com.stereowalker.survive.world.item.enchantment.StaminaEnchantments;
-import com.stereowalker.survive.world.item.enchantment.TemperatureEnchantments;
 import com.stereowalker.survive.world.level.CGameRules;
 import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.PurifiedWaterFluid;
@@ -89,10 +88,12 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Unit;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -101,16 +102,21 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.component.WrittenBookContent;
+import net.minecraft.world.item.enchantment.ConditionalEffect;
+import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
 @Mod(value = "survive")
 public class Survive extends MinecraftMod implements PacketHolder {
@@ -171,7 +177,31 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			}
 		});
 		isPrimalWinterLoaded = ModList.get().isLoaded("primalwinter");
+		
+		//Remove Later
+		DeferredRegister<DataComponentType<?>> c = DeferredRegister.create(Registries.ENCHANTMENT_EFFECT_COMPONENT_TYPE, MOD_ID);
+		COOLING = c.register("cooling", () -> new DataComponentType.Builder<List<ConditionalEffect<EnchantmentValueEffect>>>()
+				.persistent(ConditionalEffect.codec(EnchantmentValueEffect.CODEC, LootContextParamSets.ENCHANTED_DAMAGE).listOf()).build());
+		WARMING = c.register("warming", () -> new DataComponentType.Builder<List<ConditionalEffect<EnchantmentValueEffect>>>()
+				.persistent(ConditionalEffect.codec(EnchantmentValueEffect.CODEC, LootContextParamSets.ENCHANTED_DAMAGE).listOf()).build());
+		FEATHERS = c.register("feathers", () -> new DataComponentType.Builder<List<ConditionalEffect<EnchantmentValueEffect>>>()
+				.persistent(ConditionalEffect.codec(EnchantmentValueEffect.CODEC, LootContextParamSets.ENCHANTED_DAMAGE).listOf()).build());
+		AUTO_COOLING = c.register("auto_cooling", () -> new DataComponentType.Builder<Unit>()
+				.persistent(Unit.CODEC).build());
+		AUTO_WARMING = c.register("auto_warming", () -> new DataComponentType.Builder<Unit>()
+				.persistent(Unit.CODEC).build());
+		WEIGHTLESS = c.register("weightless", () -> new DataComponentType.Builder<Unit>()
+				.persistent(Unit.CODEC).build());
 	}
+    public static RegistryObject<DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> COOLING;
+    public static RegistryObject<DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> WARMING;
+    public static RegistryObject<DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> FEATHERS;
+    public static RegistryObject<DataComponentType<Unit>> AUTO_COOLING;
+    public static RegistryObject<DataComponentType<Unit>> AUTO_WARMING;
+    public static RegistryObject<DataComponentType<Unit>> WEIGHTLESS;
+    //
+	
+	
 	
 	@Override
 	public void onModConstruct() {
@@ -239,12 +269,6 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addRegistryHolder(SDataComponents.class);
 		collector.addRegistryHolder(SArmorMaterials.class);
 		collector.addRegistryHolder(SPotions.class);
-		if (Survive.STAMINA_CONFIG.enabled) {
-			collector.addRegistryHolder(StaminaEnchantments.class);
-		}
-		if (Survive.TEMPERATURE_CONFIG.enabled) {
-			collector.addRegistryHolder(TemperatureEnchantments.class);
-		}
 	}
 	
 	@Override

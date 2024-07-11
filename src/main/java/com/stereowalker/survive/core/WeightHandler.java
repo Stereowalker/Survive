@@ -29,7 +29,7 @@ public class WeightHandler {
 	public static float getTotalArmorWeight(LivingEntity player) {
 		float totalWeight = 0.124F;
 		for (EquipmentSlot slot : EquipmentSlot.values()) {
-			if (slot.getType() == Type.ARMOR) {
+			if (slot.getType() == Type.HUMANOID_ARMOR) {
 				ItemStack stack = player.getItemBySlot(slot);
 				if (Survive.STAMINA_CONFIG.enable_weights) {
 					totalWeight += getArmorWeight(stack);

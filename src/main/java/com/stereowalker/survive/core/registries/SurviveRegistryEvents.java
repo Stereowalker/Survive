@@ -97,7 +97,7 @@ public class SurviveRegistryEvents
 			reg.register(VersionHelper.toLoc("survive", "module_enabled"), ModuleEnabledCondition.CODEC);
 		});
 		new SLootItemConditions();
-		MobEffects.FIRE_RESISTANCE.value().addAttributeModifier(SAttributes.HEAT_RESISTANCE.holder(), "795606d6-4ac6-4ae7-8311-63ccdb293eb4", 5.0D, AttributeModifier.Operation.ADD_VALUE);
+		MobEffects.FIRE_RESISTANCE.value().addAttributeModifier(SAttributes.HEAT_RESISTANCE.holder(), VersionHelper.toLoc("fire_heat_res"), 5.0D, AttributeModifier.Operation.ADD_VALUE);
 		Survive.POTION_FLUID_MAP = 
 				new ImmutableMap.Builder<Holder<Potion>, List<Fluid>>()
 				.put(Potions.WATER, Lists.newArrayList(Fluids.FLOWING_WATER, Fluids.WATER))

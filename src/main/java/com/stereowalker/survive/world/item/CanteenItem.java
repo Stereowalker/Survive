@@ -122,7 +122,7 @@ public class CanteenItem extends Item {
 	 * How long it takes to use or consume an item
 	 */
 	@Override
-	public int getUseDuration(ItemStack stack) {
+	public int getUseDuration(ItemStack stack, LivingEntity pEntity) {
 		return 32;
 	}
 

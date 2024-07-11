@@ -544,7 +544,7 @@ public class SurviveEvents {
 		TemperatureQuery.registerQuery("survive:armor", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
 			double armorMod = 0.0D;
 			for (EquipmentSlot slot : EquipmentSlot.values()) {
-				if (slot.getType() == Type.ARMOR) {
+				if (slot.getType() == Type.HUMANOID_ARMOR) {
 					if (!player.getItemBySlot(slot).isEmpty()) {
 						Item armor = player.getItemBySlot(slot).getItem();
 						float modifier = 1.0F;
