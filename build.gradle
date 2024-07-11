@@ -92,9 +92,10 @@ dependencies {
 	//runtimeOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
     //runtimeOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE")
 	
-	implementation ("curse.maven:biomes-o-plenty-220318:"+bopID)
+    implementation ("com.github.glitchfiend:GlitchCore-forge:${_minecraft_version}-2.0.0.2")
     implementation ("com.github.glitchfiend:TerraBlender-forge:${_minecraft_version}-4.0.0.1")
-	implementation ("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
+    implementation ("com.github.glitchfiend:SereneSeasons-forge:${_minecraft_version}-${_serene_seasons_version}")
+    implementation ("com.github.glitchfiend:BiomesOPlenty-forge:${_minecraft_version}-${_bop_version}")
 	//implementation ("curse.maven:origins-474438:"+originsID)
 	//implementation ("curse.maven:create-328085:"+createID)
 	//implementation ("curse.maven:flywheel-486392:"+flywheelID)
