@@ -192,6 +192,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 				.persistent(Unit.CODEC).build());
 		WEIGHTLESS = c.register("weightless", () -> new DataComponentType.Builder<Unit>()
 				.persistent(Unit.CODEC).build());
+		c.register(eventBus());
 	}
     public static RegistryObject<DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> COOLING;
     public static RegistryObject<DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> WARMING;
