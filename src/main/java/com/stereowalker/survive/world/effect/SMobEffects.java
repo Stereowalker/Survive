@@ -13,12 +13,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 
 @RegistryHolder(registry = MobEffect.class)
 public class SMobEffects {
-	@Deprecated
-	@RegistryObject("depreciated_hypothermia")
-	public static final Housing<MobEffect> DEPRECIATED_HYPOTHERMIA = Housing.create(() -> new HeatedAndChilledMobEffect(MobEffectCategory.HARMFUL, 5750248));
-	@Deprecated
-	@RegistryObject("depreciated_hyperthermia")
-	public static final Housing<MobEffect> DEPRECIATED_HYPERTHERMIA = Housing.create(() -> new HeatedAndChilledMobEffect(MobEffectCategory.HARMFUL, 16750592));
 	@RegistryObject("thirst")
 	public static final Housing<MobEffect> THIRST = Housing.create(() -> new ThirstMobEffect(MobEffectCategory.HARMFUL, 5797459));
 	@RegistryObject("heat_resistance")
