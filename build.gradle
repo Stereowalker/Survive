@@ -2,7 +2,7 @@ plugins {
 	id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
     id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -93,7 +93,7 @@ dependencies {
     //runtimeOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE")
 	
 	implementation ("curse.maven:biomes-o-plenty-220318:"+bopID)
-    implementation ("com.github.glitchfiend:TerraBlender-forge:${_minecraft_version}-3.5.0.5")
+    implementation ("com.github.glitchfiend:TerraBlender-forge:${_minecraft_version}-4.0.0.1")
 	implementation ("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
 	//implementation ("curse.maven:origins-474438:"+originsID)
 	//implementation ("curse.maven:create-328085:"+createID)
