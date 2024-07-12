@@ -1,20 +1,14 @@
 plugins {
-	id 'eclipse'
+	id 'java-library'
+    id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'net.neoforged.gradle.userdev' version '7.0.145'
     id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "2.+"
 }
 
-mixin {
-    add sourceSets.main, "${_mod_name}-refmap.json"
-    config "${_mod_id}.mixins.json"
-}
-
-version = _minecraft_version + "-" +modVersion
+version = _minecraft_version + "-" +modVersion+"-"+modLoader
 group = modGroup
 archivesBaseName = _mod_name
 
@@ -23,47 +17,39 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 println('Mod Name: ' + _mod_name + ', Mod Version: ' + modVersion + ', Minecraft Version: ' + _minecraft_version + ', '+modLoader+' Version: ' + _loader_version)
 
+
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+}
+
 minecraft {
-    mappings channel: mappingsChannel, version: mappingsVersion
-    reobf = false
-    copyIdeResources = true
-    //makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-    runs {
-    	configureEach {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-        }
-        client {
-            workingDirectory project.file('run/client')
-            // Recommended logging level for the console
-            property 'mixin.env.remapRefMap', 'true'
-			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-			args '--username', 'Stereowalker', '--uuid', "$System.env.MINECRAFTUUIDSTEREOWALKER"
+  accessTransformers {
+    file('src/main/resources/META-INF/accesstransformer.cfg')
+  }
+}
 
-            mods {
-                "${_mod_id}" {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run/server')
-            property 'mixin.env.remapRefMap', 'true'
-			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-			
-            mods {
-                "${_mod_id}" {
-                    source sourceSets.main
-                }
-            }
-        }
+runs {
+    configureEach {
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+        systemProperty 'forge.logging.console.level', 'debug'
+        modSource project.sourceSets.main
+    }
+    client {
+        systemProperty 'forge.enabledGameTestNamespaces', project._mod_id
+        workingDirectory project.file('run/Neo-Client')
+    }
+    server {
+        systemProperty 'forge.enabledGameTestNamespaces', project._mod_id
+        workingDirectory project.file('run/Neo-Server')
+        programArgument '--nogui'
     }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}
 
 repositories {
 	//maven {url = "https://dvs1.progwml6.com/files/maven/"}// JEI
@@ -76,30 +62,27 @@ repositories {
 }
 
 dependencies {
-	minecraft 'net.minecraftforge:forge:' + _minecraft_version + '-' + _loader_version
-	annotationProcessor "org.spongepowered:mixin:${modMixinVersion}:processor"
-	implementation "org.spongepowered:mixin:${modMixinVersion}"
+	implementation "net.neoforged:neoforge:${_loader_version}"
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
 	implementation ("com.stereowalker.unionlib:UnionLib:"+_minecraft_version+"-"+unionLibVersion+"-"+modLoader+"")
 	
 	compileOnly ("mezz.jei:jei-${_minecraft_version}-common-api:"+jeiVersion)
-	compileOnly ("mezz.jei:jei-${_minecraft_version}-forge-api:"+jeiVersion)
+	compileOnly ("mezz.jei:jei-${_minecraft_version}-neoforge-api:"+jeiVersion)
 	compileOnly ("com.stereowalker.combat:C.O.M.B.A.T:1.18.2"+/*_minecraft_version+*/"-"+combatVersion+":api")
     //compileOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
     //compileOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE:api")
 	
-	implementation ("mezz.jei:jei-${_minecraft_version}-forge:"+jeiVersion+"")
+	implementation ("mezz.jei:jei-${_minecraft_version}-neoforge:"+jeiVersion+"")
 	//runtimeOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
     //runtimeOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE")
 	
-    implementation ("com.github.glitchfiend:GlitchCore-forge:${_minecraft_version}-2.0.0.2")
-    implementation ("com.github.glitchfiend:TerraBlender-forge:${_minecraft_version}-4.0.0.1")
-    implementation ("com.github.glitchfiend:SereneSeasons-forge:${_minecraft_version}-${_serene_seasons_version}")
-    implementation ("com.github.glitchfiend:BiomesOPlenty-forge:${_minecraft_version}-${_bop_version}")
+    implementation ("com.github.glitchfiend:GlitchCore-neoforge:${_minecraft_version}-2.0.0.2")
+    implementation ("com.github.glitchfiend:TerraBlender-neoforge:${_minecraft_version}-4.0.0.1")
+    implementation ("com.github.glitchfiend:SereneSeasons-neoforge:${_minecraft_version}-${_serene_seasons_version}")
+    implementation ("com.github.glitchfiend:BiomesOPlenty-neoforge:${_minecraft_version}-${_bop_version}")
 	//implementation ("curse.maven:origins-474438:"+originsID)
 	//implementation ("curse.maven:create-328085:"+createID)
 	//implementation ("curse.maven:flywheel-486392:"+flywheelID)
-	implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -151,7 +134,7 @@ curseforge {
 		changelogType = "markdown"
 		releaseType = 'release'
 		addGameVersion(_minecraft_version)
-        addGameVersion("Forge")
+        addGameVersion("${project.modLoader}")
 		relations {
       		requiredDependency 'unionlib'
 		}	
@@ -194,7 +177,7 @@ tasks.named('processResources', ProcessResources).configure {
             mod_authors: _mod_authors, mod_description: _mod_description,
     ]
     inputs.properties replaceProperties
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+    filesMatching(['META-INF/neoforge.mods.toml', 'pack.mcmeta']) {
         expand replaceProperties/* + [project: project]*/
     }
 }
@@ -243,14 +226,4 @@ artifacts {
 	archives sourcesJar
 	archives deobfJar
 	archives apiJar
-}
-
-eclipse {
-    synchronizationTasks 'genEclipseRuns'
-}
-//Remove later
-sourceSets.each {
-    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
-    it.output.resourcesDir = dir
-    it.java.destinationDirectory = dir
 }

@@ -13,11 +13,15 @@ displayURL="https://www.curseforge.com/minecraft/mc-mods/survive"
 credits="I'd like to thank all my supporters on Patreon for giving me a reason to continue modding, ChainmailPickaxe for the nice textures, and you for downloading and playing with this mod"
 authors="${mod_authors}"
 description='''${mod_description}'''
+[[mixins]]
+config="${mod_id}.mixins.json"
+[[accessTransformers]]
+file="META-INF/accesstransformer.cfg"
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.${mod_id}]] #optional
-    modId="forge" #mandatory
+    modId="neoforge" #mandatory
     mandatory=true #mandatory
-    versionRange="[51,)" #mandatory
+    versionRange="[21.0.0-beta,)" #mandatory
     ordering="NONE"
     side="BOTH"
 # Here's another dependency
@@ -32,13 +36,6 @@ description='''${mod_description}'''
     modId="unionlib"
     mandatory=true
     versionRange="[12.0.0,13.0.0)"
-    ordering="NONE"
-    side="BOTH"
-	
-[[dependencies.${mod_id}]]
-    modId="combat"
-    mandatory=false
-    versionRange="[1.18.2-9.0.0-beta,)"
     ordering="NONE"
     side="BOTH"
 	
