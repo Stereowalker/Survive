@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -111,12 +110,12 @@ import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 @Mod(value = "survive")
 public class Survive extends MinecraftMod implements PacketHolder {
@@ -165,13 +164,13 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		instance = this;
 		eventBus().addListener(this::clientRegistries);
 		//		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.addListener((Consumer<PotionToFluidEvent>) event -> {
+		NeoForge.EVENT_BUS.addListener((Consumer<PotionToFluidEvent>) event -> {
 			if (event.getPotion() == SPotions.PURIFIED_WATER.holder()) {
 				event.setFluid(SFluids.PURIFIED_WATER);
 				event.setFlowingFluid(SFluids.FLOWING_PURIFIED_WATER);
 			}
 		});
-		MinecraftForge.EVENT_BUS.addListener((Consumer<FluidToPotionEvent.FromStateEvent>) event -> {
+		NeoForge.EVENT_BUS.addListener((Consumer<FluidToPotionEvent.FromStateEvent>) event -> {
 			if (event.getFluid().getType() instanceof PurifiedWaterFluid) {
 				event.setPotion(SPotions.PURIFIED_WATER.holder());
 			}
@@ -194,12 +193,12 @@ public class Survive extends MinecraftMod implements PacketHolder {
 				.persistent(Unit.CODEC).build());
 		c.register(eventBus());
 	}
-    public static RegistryObject<DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> COOLING;
-    public static RegistryObject<DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> WARMING;
-    public static RegistryObject<DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> FEATHERS;
-    public static RegistryObject<DataComponentType<Unit>> AUTO_COOLING;
-    public static RegistryObject<DataComponentType<Unit>> AUTO_WARMING;
-    public static RegistryObject<DataComponentType<Unit>> WEIGHTLESS;
+    public static DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> COOLING;
+    public static DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> WARMING;
+    public static DeferredHolder<DataComponentType<?>, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>>> FEATHERS;
+    public static DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> AUTO_COOLING;
+    public static DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> AUTO_WARMING;
+    public static DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> WEIGHTLESS;
     //
 	
 	

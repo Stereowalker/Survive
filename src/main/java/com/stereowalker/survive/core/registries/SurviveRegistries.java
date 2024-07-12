@@ -6,8 +6,7 @@ import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryManager;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 
 public class SurviveRegistries {
 	public static final ResourceKey<Registry<TemperatureChangeCondition<?>>> CONDITION = key("survive:temperature_change_condition");
@@ -19,7 +18,7 @@ public class SurviveRegistries {
     }
 	
 	public class ForgeRegistry {
-		public static final IForgeRegistry<TemperatureChangeCondition<?>> CONDITION = RegistryManager.ACTIVE.getRegistry(SurviveRegistries.CONDITION);
-		public static final IForgeRegistry<Season> SEASON = RegistryManager.ACTIVE.getRegistry(SurviveRegistries.SEASON);
+		public static final Registry<TemperatureChangeCondition<?>> CONDITION = new RegistryBuilder<>(SurviveRegistries.CONDITION).sync(true).maxId(Integer.MAX_VALUE - 1).create();
+		public static final Registry<Season> SEASON = new RegistryBuilder<>(SurviveRegistries.SEASON).sync(true).maxId(Integer.MAX_VALUE - 1).create();
 	}
 }

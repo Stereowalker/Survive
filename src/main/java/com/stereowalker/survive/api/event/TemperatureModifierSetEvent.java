@@ -2,9 +2,10 @@ package com.stereowalker.survive.api.event;
 
 import com.stereowalker.survive.world.temperature.TemperatureModifier;
 
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
 
-public class TemperatureModifierSetEvent extends Event {
+public class TemperatureModifierSetEvent extends Event implements ICancellableEvent {
 	TemperatureModifier modifier;
 	
 	public TemperatureModifierSetEvent(TemperatureModifier modifier) {
@@ -18,4 +19,12 @@ public class TemperatureModifierSetEvent extends Event {
 	public void setModifier(TemperatureModifier modifier) {
 		this.modifier = modifier;
 	}
+
+    /**
+     * @see #setSuccessful(boolean)
+     */
+    @Override
+    public void setCanceled(boolean canceled) {
+        ICancellableEvent.super.setCanceled(canceled);
+    }
 }

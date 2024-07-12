@@ -10,21 +10,16 @@ import java.util.concurrent.Executor;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.json.FoodJsonHolder;
-import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
 import com.stereowalker.unionlib.util.VersionHelper;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Loads the item drink data from json
@@ -42,7 +37,7 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 						resource.getKey().getPath().replace("survive_modifiers/consumables/items/", "").replace(".json", "")
 						);
 
-				if (ForgeRegistries.ITEMS.containsKey(drinkId)) {
+				if (BuiltInRegistries.ITEM.containsKey(drinkId)) {
 					try {
 						try (InputStream stream = resource.getValue().open(); 
 								InputStreamReader reader = new InputStreamReader(stream)) {

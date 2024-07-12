@@ -16,11 +16,11 @@ import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
 import com.stereowalker.unionlib.util.VersionHelper;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Maps marker type to texture.
@@ -38,7 +38,7 @@ public class ArmorDataManager implements IResourceReloadListener<Map<ResourceLoc
 						resource.getKey().getPath().replace("survive_modifiers/armors/", "").replace(".json", "")
 						);
 
-				if (ForgeRegistries.ITEMS.containsKey(drinkId)) {
+				if (BuiltInRegistries.ITEM.containsKey(drinkId)) {
 					try {
 						try (InputStream stream = resource.getValue().open(); 
 								InputStreamReader reader = new InputStreamReader(stream)) {

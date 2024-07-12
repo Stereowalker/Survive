@@ -1,12 +1,11 @@
 package com.stereowalker.survive.world.item.crafting.conditions;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.stereowalker.survive.Survive;
 
-import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.neoforged.neoforge.common.conditions.ICondition;
 
 
 public record ModuleEnabledCondition(String module) implements ICondition 
@@ -22,7 +21,7 @@ public record ModuleEnabledCondition(String module) implements ICondition
 //  }
 
     @Override
-    public boolean test(IContext context, DynamicOps<?> ops) {
+    public boolean test(IContext context) {
     	switch (module) {
 		case "hygiene":
 			return Survive.HYGIENE_CONFIG.enabled;

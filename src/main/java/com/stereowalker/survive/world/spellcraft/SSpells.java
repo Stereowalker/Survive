@@ -8,7 +8,7 @@ package com.stereowalker.survive.world.spellcraft;
 //import com.stereowalker.survive.Survive;
 //import com.stereowalker.survive.world.effect.SMobEffects;
 //
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.neoforged.bus.api.IEventBus;
 //import net.minecraftforge.registries.DeferredRegister;
 
 public class SSpells {

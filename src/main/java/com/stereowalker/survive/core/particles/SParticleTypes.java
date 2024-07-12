@@ -9,7 +9,7 @@ import com.stereowalker.survive.Survive;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
+import net.neoforged.neoforge.registries.RegisterEvent.RegisterHelper;
 
 public class SParticleTypes {
 	public static final Map<ResourceLocation, ParticleType<?>> PARTICLES = new HashMap<ResourceLocation, ParticleType<?>>();

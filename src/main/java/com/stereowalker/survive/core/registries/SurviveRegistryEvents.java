@@ -17,9 +17,7 @@ import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.PurifiedWaterFluid;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.level.storage.loot.predicates.SLootItemConditions;
-import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.seasons.Seasons;
-import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeCondition;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeConditions;
 import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.VersionHelper;
@@ -35,18 +33,17 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.NewRegistryEvent;
-import net.minecraftforge.registries.RegisterEvent;
-import net.minecraftforge.registries.RegistryBuilder;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
-@Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(bus=EventBusSubscriber.Bus.MOD)
 public class SurviveRegistryEvents
 {
 	private static final int MAX_VARINT = Integer.MAX_VALUE - 1;
@@ -89,11 +86,11 @@ public class SurviveRegistryEvents
 		event.register(RegistryHelper.particleTypeKey(), (helper) -> SParticleTypes.registerAll(helper));
 		event.register(SurviveRegistries.CONDITION, (helper) -> TemperatureChangeConditions.registerAll(helper));
 		event.register(SurviveRegistries.SEASON, (helper) -> Seasons.registerAll(helper));
-		event.register(ForgeRegistries.Keys.FLUID_TYPES, (helper) -> helper.register(VersionHelper.toLoc("survive:purified_water"), PurifiedWaterFluid.TYPE));
+		event.register(NeoForgeRegistries.Keys.FLUID_TYPES, (helper) -> helper.register(VersionHelper.toLoc("survive:purified_water"), PurifiedWaterFluid.TYPE));
 //		if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS))
 //        {			
 //        }
-		event.register(ForgeRegistries.Keys.CONDITION_SERIALIZERS, (reg) -> {
+		event.register(NeoForgeRegistries.Keys.CONDITION_CODECS, (reg) -> {
 			reg.register(VersionHelper.toLoc("survive", "module_enabled"), ModuleEnabledCondition.CODEC);
 		});
 		new SLootItemConditions();
@@ -106,7 +103,7 @@ public class SurviveRegistryEvents
 	
 	@SubscribeEvent
 	public static void registerSurviveRegistries(final NewRegistryEvent event) {
-		event.create(new RegistryBuilder<TemperatureChangeCondition<?>>().setName(SurviveRegistries.CONDITION.location()).setMaxID(MAX_VARINT));
-		event.create(new RegistryBuilder<Season>().setName(Survive.getInstance().location("season")).setMaxID(MAX_VARINT));
+		event.register(SurviveRegistries.ForgeRegistry.CONDITION);
+		event.register(SurviveRegistries.ForgeRegistry.SEASON);
 	}
 }

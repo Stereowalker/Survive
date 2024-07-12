@@ -15,11 +15,11 @@ import net.minecraft.server.level.ServerPlayer;
 public class ServerboundArmorStaminaPacket extends ServerboundUnionPacket {
 
 	public ServerboundArmorStaminaPacket() {
-		super(Survive.getInstance().channel);
+		super(null);
 	}
 
 	public ServerboundArmorStaminaPacket(RegistryFriendlyByteBuf packetBuffer) {
-		super(packetBuffer, Survive.getInstance().channel);
+		super(packetBuffer);
 	}
 
 	@Override

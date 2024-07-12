@@ -4,14 +4,14 @@ import com.stereowalker.survive.api.event.TemperatureModifierSetEvent;
 import com.stereowalker.survive.world.temperature.TemperatureModifier;
 
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 
 public class SurviveHooks {
 
 	public static TemperatureModifier getTemperatureModifer(LivingEntity entity, TemperatureModifier originalModifier)
 	{
 		TemperatureModifierSetEvent event = new TemperatureModifierSetEvent(originalModifier);
-		if (MinecraftForge.EVENT_BUS.post(event))
+		if (NeoForge.EVENT_BUS.post(event).isCanceled())
 		{
 			return originalModifier.setMod(0);
 		}

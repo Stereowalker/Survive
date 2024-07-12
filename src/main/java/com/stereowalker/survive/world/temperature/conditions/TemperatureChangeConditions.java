@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import com.stereowalker.survive.Survive;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
+import net.neoforged.neoforge.registries.RegisterEvent.RegisterHelper;
 
 public class TemperatureChangeConditions {
 	public static final Map<ResourceLocation, TemperatureChangeCondition<?>> CONDITION_LIST = new HashMap<ResourceLocation, TemperatureChangeCondition<?>>();

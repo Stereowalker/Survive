@@ -18,10 +18,10 @@ import com.stereowalker.survive.api.IBlockPropertyHandler.PropertyPair;
 import com.stereowalker.survive.api.json.JsonHolder;
 import com.stereowalker.survive.json.property.BlockPropertyHandlerImpl;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class BlockTemperatureJsonHolder implements JsonHolder {
 	private static final Marker BLOCK_TEMPERATURE_DATA = MarkerManager.getMarker("BLOCK_TEMPERATURE_DATA");
@@ -114,7 +114,7 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 
 		List<Triple<IBlockPropertyHandler<?>, List<PropertyPair<?>>, Map<String, Float>>> toRemove = Lists.newArrayList();
 		for (Triple<IBlockPropertyHandler<?>, List<PropertyPair<?>>, Map<String, Float>> prop : stateChangePropertyIn) {
-			if (!ForgeRegistries.BLOCKS.getValue(blockID).defaultBlockState().hasProperty(prop.getLeft().derivedProperty())) {
+			if (!BuiltInRegistries.BLOCK.get(blockID).defaultBlockState().hasProperty(prop.getLeft().derivedProperty())) {
 				Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data {} from JSON: This block has doesn't have the \"{}\" property, please remove this line", blockID, prop.getLeft().derivedProperty().getName());
 				toRemove.add(prop);
 			}
@@ -122,10 +122,10 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 		toRemove.forEach((s) -> stateChangePropertyIn.remove(s));
 
 		if (usesLevelPropertyIn 
-				&& ForgeRegistries.BLOCKS.getValue(blockID).defaultBlockState().hasProperty(BlockStateProperties.LEVEL) 
-				&& ForgeRegistries.BLOCKS.getValue(blockID).defaultBlockState().hasProperty(BlockStateProperties.LEVEL_CAULDRON)
-				&& ForgeRegistries.BLOCKS.getValue(blockID).defaultBlockState().hasProperty(BlockStateProperties.LEVEL_COMPOSTER)
-				&& ForgeRegistries.BLOCKS.getValue(blockID).defaultBlockState().hasProperty(BlockStateProperties.LEVEL_FLOWING)) {
+				&& BuiltInRegistries.BLOCK.get(blockID).defaultBlockState().hasProperty(BlockStateProperties.LEVEL) 
+				&& BuiltInRegistries.BLOCK.get(blockID).defaultBlockState().hasProperty(BlockStateProperties.LEVEL_CAULDRON)
+				&& BuiltInRegistries.BLOCK.get(blockID).defaultBlockState().hasProperty(BlockStateProperties.LEVEL_COMPOSTER)
+				&& BuiltInRegistries.BLOCK.get(blockID).defaultBlockState().hasProperty(BlockStateProperties.LEVEL_FLOWING)) {
 			Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: This block does not have the level property, please set this to false", blockID);
 			usesLevelPropertyIn = false;
 		}

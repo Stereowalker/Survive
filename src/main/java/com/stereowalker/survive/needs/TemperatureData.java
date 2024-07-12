@@ -10,8 +10,8 @@ import com.stereowalker.survive.hooks.SurviveHooks;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.temperature.TemperatureModifier;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
-import com.stereowalker.unionlib.util.VersionHelper;
 import com.stereowalker.unionlib.util.NBTHelper.NbtType;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -20,8 +20,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class TemperatureData extends SurviveData {
 	private double temperatureLevel = 0;

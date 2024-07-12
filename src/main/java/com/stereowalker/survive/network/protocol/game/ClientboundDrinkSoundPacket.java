@@ -14,19 +14,19 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class ClientboundDrinkSoundPacket extends ClientboundUnionPacket {
 	private BlockPos pos;
 
 	public ClientboundDrinkSoundPacket(final BlockPos pos) {
-		super(Survive.getInstance().channel);
+		super(null);
 		this.pos = pos;
 	}
 
 	public ClientboundDrinkSoundPacket(RegistryFriendlyByteBuf byteBuf) {
-		super(byteBuf, Survive.getInstance().channel);
+		super(byteBuf);
 		this.pos = byteBuf.readBlockPos();
 	}
 

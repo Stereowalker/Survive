@@ -15,12 +15,12 @@ public class ServerboundStaminaExhaustionPacket extends ServerboundUnionPacket {
 	private float exhaustion;
 	
 	public ServerboundStaminaExhaustionPacket(final float exhaustion) {
-		super(Survive.getInstance().channel);
+		super(null);
 		this.exhaustion = exhaustion;
 	}
 
 	public ServerboundStaminaExhaustionPacket(RegistryFriendlyByteBuf packetBuffer) {
-		super(packetBuffer, Survive.getInstance().channel);
+		super(packetBuffer);
 		this.exhaustion = packetBuffer.readFloat();
 	}
 

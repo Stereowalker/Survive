@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import com.stereowalker.survive.Survive;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
+import net.neoforged.neoforge.registries.RegisterEvent.RegisterHelper;
 
 public class Seasons {
 	public static final Map<ResourceLocation, Season> SEASON_LIST = new HashMap<ResourceLocation, Season>();

@@ -12,14 +12,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 	private CompoundTag stats;
 
 	public ClientboundSurvivalStatsPacket(final CompoundTag statsIn) {
-		super(Survive.getInstance().channel);
+		super(null);
 		this.stats = statsIn;
 	}
 	
@@ -28,7 +28,7 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 	}
 
 	public ClientboundSurvivalStatsPacket(RegistryFriendlyByteBuf byteBuf) {
-		super(byteBuf, Survive.getInstance().channel);
+		super(byteBuf);
 		this.stats = byteBuf.readNbt();
 	}
 

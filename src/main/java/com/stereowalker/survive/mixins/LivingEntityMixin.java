@@ -32,10 +32,6 @@ import net.minecraft.world.level.Level;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends EntityMixin {
 
-	public LivingEntityMixin(EntityType<?> pEntityType, Level pLevel) {
-		super(pEntityType, pLevel);
-	}
-
 	@Shadow public abstract ItemStack getItemBySlot(EquipmentSlot pSlot);
 	@Shadow public boolean hurt(DamageSource pSource, float pAmount) {return false;}
 

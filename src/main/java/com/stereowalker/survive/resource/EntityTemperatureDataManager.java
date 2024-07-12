@@ -15,11 +15,11 @@ import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
 import com.stereowalker.unionlib.util.VersionHelper;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Loads block temperatures from json
@@ -37,7 +37,7 @@ public class EntityTemperatureDataManager implements IResourceReloadListener<Map
 						resource.getKey().getPath().replace("survive_modifiers/entities/", "").replace(".json", "")
 						);
 
-				if (ForgeRegistries.ENTITY_TYPES.containsKey(entityId)) {
+				if (BuiltInRegistries.ENTITY_TYPE.containsKey(entityId)) {
 					try {
 						try (InputStream stream = resource.getValue().open(); 
 								InputStreamReader reader = new InputStreamReader(stream)) {

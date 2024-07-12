@@ -9,7 +9,7 @@ import com.stereowalker.survive.Survive;
 //import io.github.edwinmindcraft.calio.api.event.DynamicRegistrationEvent;
 //import io.github.edwinmindcraft.origins.api.origin.Origin;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
+//import net.minecraftforge.common.MinecraftForge;
 
 public class OriginsCompat {
 	public static void initOriginsPatcher() {
