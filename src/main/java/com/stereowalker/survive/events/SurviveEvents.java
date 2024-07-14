@@ -29,7 +29,6 @@ import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPa
 import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWaterPacket;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
-import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.item.enchantment.SEnchantmentHelper;
 import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
@@ -68,33 +67,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
-import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber
 public class SurviveEvents {
-	@SubscribeEvent
-	public static void allowSleep(SleepingTimeCheckEvent event) {
-		if (Survive.CONFIG.enable_sleep) {
-			if (event.getEntity() instanceof ServerPlayer) {
-				ServerPlayer player = (ServerPlayer)event.getEntity();
-				if (SurviveEntityStats.getSleepStats(player).getAwakeTimer() > time(0) - 5000 && Survive.CONFIG.canSleepDuringDay) {
-					event.setResult(Result.ALLOW);
-				}
-				else if (SurviveEntityStats.getEnergyStats(player).getEnergyLevel() < player.getAttributeValue(SAttributes.MAX_STAMINA.holder())/2) {
-					event.setResult(Result.ALLOW);
-				}
-			}
-		}
-	}
-
-	public static int time(int i) {
-		return Survive.CONFIG.initialTiredTime+(Survive.CONFIG.tiredTimeStep*i);
-	}
-
+	
 	@SubscribeEvent
 	public static void manageSleep(SleepFinishedTimeEvent event) {
 		for (Player player : event.getLevel().players()) {
