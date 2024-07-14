@@ -2,6 +2,7 @@ package com.stereowalker.survive.events;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Triple;
@@ -35,6 +36,7 @@ import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
 import com.stereowalker.survive.world.temperature.TemperatureQuery;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
+import com.stereowalker.unionlib.api.insert.InsertSetter;
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.VersionHelper;
@@ -50,6 +52,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Player.BedSleepingProblem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
@@ -69,31 +72,12 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
 
 @EventBusSubscriber
 public class SurviveEvents {
-	@SubscribeEvent
-	public static void allowSleep(CanPlayerSleepEvent event) {//TODO: I'll need to figure out if CanContinueSleepingEvent should be used
-		if (Survive.CONFIG.enable_sleep) {
-			if (event.getEntity() instanceof ServerPlayer) {
-				ServerPlayer player = (ServerPlayer)event.getEntity();
-				if (SurviveEntityStats.getSleepStats(player).getAwakeTimer() > time(0) - 5000 && Survive.CONFIG.canSleepDuringDay) {
-					event.setProblem(null);
-				}
-				else if (SurviveEntityStats.getEnergyStats(player).getEnergyLevel() < player.getAttributeValue(SAttributes.MAX_STAMINA.holder())/2) {
-					event.setProblem(null);
-				}
-			}
-		}
-	}
-
-	public static int time(int i) {
-		return Survive.CONFIG.initialTiredTime+(Survive.CONFIG.tiredTimeStep*i);
-	}
-
+	
 	@SubscribeEvent
 	public static void manageSleep(SleepFinishedTimeEvent event) {
 		for (Player player : event.getLevel().players()) {
