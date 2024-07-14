@@ -67,25 +67,24 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
-import net.minecraftforge.event.level.SleepFinishedTimeEvent;
-import net.minecraftforge.eventbus.api.Event.Result;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
 
 @EventBusSubscriber
 public class SurviveEvents {
 	@SubscribeEvent
-	public static void allowSleep(SleepingTimeCheckEvent event) {
+	public static void allowSleep(CanPlayerSleepEvent event) {//TODO: I'll need to figure out if CanContinueSleepingEvent should be used
 		if (Survive.CONFIG.enable_sleep) {
 			if (event.getEntity() instanceof ServerPlayer) {
 				ServerPlayer player = (ServerPlayer)event.getEntity();
 				if (SurviveEntityStats.getSleepStats(player).getAwakeTimer() > time(0) - 5000 && Survive.CONFIG.canSleepDuringDay) {
-					event.setResult(Result.ALLOW);
+					event.setProblem(null);
 				}
 				else if (SurviveEntityStats.getEnergyStats(player).getEnergyLevel() < player.getAttributeValue(SAttributes.MAX_STAMINA.holder())/2) {
-					event.setResult(Result.ALLOW);
+					event.setProblem(null);
 				}
 			}
 		}

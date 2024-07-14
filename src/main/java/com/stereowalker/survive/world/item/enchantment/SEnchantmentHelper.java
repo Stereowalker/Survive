@@ -20,7 +20,7 @@ public class SEnchantmentHelper extends EnchantmentHelper {
 
 		has(stack, null);
         for (Entry<Holder<Enchantment>> entry : itemenchantments.entrySet()) {
-        	if (entry.getKey().value().effects().has(Survive.COOLING.get()))
+        	if (entry.getKey().value().effects().has(Survive.COOLING.value()))
         		mutablefloat.add(entry.getIntValue());
         }
         return mutablefloat.intValue();
@@ -32,7 +32,7 @@ public class SEnchantmentHelper extends EnchantmentHelper {
 
 		has(stack, null);
         for (Entry<Holder<Enchantment>> entry : itemenchantments.entrySet()) {
-        	if (entry.getKey().value().effects().has(Survive.WARMING.get()))
+        	if (entry.getKey().value().effects().has(Survive.WARMING.value()))
         		mutablefloat.add(entry.getIntValue());
         }
         return mutablefloat.intValue();
@@ -44,21 +44,21 @@ public class SEnchantmentHelper extends EnchantmentHelper {
 
 		has(stack, null);
         for (Entry<Holder<Enchantment>> entry : itemenchantments.entrySet()) {
-        	if (entry.getKey().value().effects().has(Survive.FEATHERS.get()))
+        	if (entry.getKey().value().effects().has(Survive.FEATHERS.value()))
         		mutablefloat.add(entry.getIntValue());
         }
         return mutablefloat.intValue();
 	}
 	
 	public static boolean hasAdjustedCooling(ItemStack stack) {
-		return has(stack, Survive.AUTO_COOLING.get());
+		return has(stack, Survive.AUTO_COOLING.value());
 	}
 
 	public static boolean hasAdjustedWarming(ItemStack stack) {
-		return has(stack, Survive.AUTO_WARMING.get());
+		return has(stack, Survive.AUTO_WARMING.value());
 	}
 
 	public static boolean hasWeightless(ItemStack stack) {
-		return has(stack, Survive.WEIGHTLESS.get());
+		return has(stack, Survive.WEIGHTLESS.value());
 	}
 }

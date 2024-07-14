@@ -70,7 +70,7 @@ public class SItems {
 	@RegistryObject("charcoal_filter")
 	public static final Item CHARCOAL_FILTER = new Item(new Item.Properties().durability(10));
 	@RegistryObject("purified_water_bucket")
-	public static final Item PURIFIED_WATER_BUCKET = new BucketItem(() -> SFluids.PURIFIED_WATER, (new Item.Properties()).craftRemainder(Items.BUCKET).stacksTo(1));
+	public static final Item PURIFIED_WATER_BUCKET = new BucketItem(SFluids.PURIFIED_WATER, (new Item.Properties()).craftRemainder(Items.BUCKET).stacksTo(1));
 	@RegistryObject("magma_paste")
 	public static final Item MAGMA_PASTE = new Item(new Item.Properties());
 	@RegistryObject("stiffened_honey")

@@ -40,7 +40,7 @@ public class ServerboundArmorStaminaPacket extends ServerboundUnionPacket {
 		return true;
 	}
 	
-	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_interact_with_water");
+	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_armor_stamina");
 	@Override
 	public ResourceLocation id() {
 		return id;

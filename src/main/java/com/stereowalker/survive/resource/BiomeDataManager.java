@@ -19,7 +19,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Loads block temperatures from json
@@ -36,10 +35,12 @@ public class BiomeDataManager implements IResourceReloadListener<Map<ResourceLoc
 						resource.getKey().getNamespace(),
 						resource.getKey().getPath().replace("survive_modifiers/biomes/", "").replace(".json", "")
 						);
-
-				if (!ForgeRegistries.BIOMES.containsKey(blockId)) {
-					Survive.getInstance().getLogger().warn("Did not find biome " + blockId + " in the forge registry. This is a temporary warning and will be removed after the fabric release");
-				}
+				
+				/*TODO: Neo release and i should be able to check which biomes are loaded.
+				 * this is a job for future me*/
+//				if (!Registries.BIOME.containsKey(blockId)) {
+//					Survive.getInstance().getLogger().warn("Did not find biome " + blockId + " in the forge registry. This is a temporary warning and will be removed after the fabric release");
+//				}
 				try {
 					try (InputStream stream = resource.getValue().open(); 
 							InputStreamReader reader = new InputStreamReader(stream)) {

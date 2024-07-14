@@ -27,12 +27,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.level.SleepFinishedTimeEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
 
 @EventBusSubscriber
 public class StaminaData extends SurviveData {
@@ -255,14 +255,16 @@ public class StaminaData extends SurviveData {
 
 	@SubscribeEvent
 	public static void rightClickEmpty(PlayerInteractEvent.RightClickEmpty clickItem) {
-		if(!clickItem.isCanceled() && clickItem.getEntity() instanceof LocalPlayer && clickItem.getCancellationResult().consumesAction()) {
+		if (/* !clickItem.isCanceled() && */clickItem
+				.getEntity() instanceof LocalPlayer/* && clickItem.getCancellationResult().consumesAction() */) {
 			new ServerboundStaminaExhaustionPacket(0.3125F).send();
 		}
 	}
 
 	@SubscribeEvent
 	public static void leftClickEmpty(PlayerInteractEvent.LeftClickEmpty clickItem) {
-		if(!clickItem.isCanceled() && clickItem.getEntity() instanceof LocalPlayer && clickItem.getCancellationResult().consumesAction()) {
+		if (/* !clickItem.isCanceled() && */clickItem
+				.getEntity() instanceof LocalPlayer/* && clickItem.getCancellationResult().consumesAction() */) {
 			new ServerboundStaminaExhaustionPacket(0.3125F).send();
 		}
 	}

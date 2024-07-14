@@ -18,9 +18,9 @@ public class UnwellMobEffect extends MobEffect {
 		return false;
 	}
 
-	@Override
-	public List<ItemStack> getCurativeItems() {
-		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
-		return ret;
-	}
+//	@Override
+//	public List<ItemStack> getCurativeItems() {
+//		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+//		return ret;
+//	}
 }

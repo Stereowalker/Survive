@@ -19,6 +19,7 @@ import com.stereowalker.unionlib.util.VersionHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class ArmorJsonHolder implements JsonHolder {
     private static final Marker ARMOR_DATA = MarkerManager.getMarker("ARMOR_DATA");
@@ -34,7 +35,7 @@ public class ArmorJsonHolder implements JsonHolder {
 		
 		nbt.getList("temperature_modifiers", 10).forEach((comp) -> {
 			CompoundTag nbt2 = (CompoundTag) comp;
-			this.temperatureModifier.add(Pair.of(nbt2.getString("condition"), SurviveRegistries.ForgeRegistry.CONDITION.getValue(VersionHelper.toLoc(nbt2.getString("condition"))).createInstance(nbt2.getCompound("contents"))));
+			this.temperatureModifier.add(Pair.of(nbt2.getString("condition"), SurviveRegistries.ForgeRegistry.CONDITION.get(VersionHelper.toLoc(nbt2.getString("condition"))).createInstance(nbt2.getCompound("contents"))));
 		});
 	}
 	
@@ -55,7 +56,7 @@ public class ArmorJsonHolder implements JsonHolder {
 							if(object2 != null && object2.entrySet().size() != 0) {
 								if(object2.has("condition") && object2.get("condition").isJsonPrimitive()) {
 									setWorkingOn("condition");
-									condition = SurviveRegistries.ForgeRegistry.CONDITION.getValue(VersionHelper.toLoc(object2.get("condition").getAsString()));
+									condition = SurviveRegistries.ForgeRegistry.CONDITION.get(VersionHelper.toLoc(object2.get("condition").getAsString()));
 									if (condition != null) {
 										temperatureModifierIn.add(Pair.of(object2.get("condition").getAsString(), condition.createInstance(object2)));
 									} else {

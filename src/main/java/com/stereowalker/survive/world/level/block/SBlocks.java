@@ -16,7 +16,7 @@ import net.minecraft.world.level.material.MapColor;
 @RegistryHolder(registry = Block.class)
 public class SBlocks {
 	@RegistryObject("purified_water")
-	public static final Block PURIFIED_WATER = new LiquidBlock(() -> SFluids.PURIFIED_WATER, BlockBehaviour.Properties.of().mapColor(MapColor.WATER).noCollission().strength(100.0F).noLootTable());
+	public static final Block PURIFIED_WATER = new LiquidBlock(SFluids.PURIFIED_WATER, BlockBehaviour.Properties.of().mapColor(MapColor.WATER).noCollission().strength(100.0F).noLootTable());
 	@RegistryObject("purified_water_cauldron")
 	public static final Block PURIFIED_WATER_CAULDRON = new LayeredCauldronBlock(Precipitation.NONE, SCauldronInteraction.PURIFIED_WATER, BlockBehaviour.Properties.ofLegacyCopy(Blocks.CAULDRON));
 	@RegistryObject("potash_cauldron")
