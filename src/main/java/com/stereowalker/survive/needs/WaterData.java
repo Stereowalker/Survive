@@ -80,7 +80,7 @@ public class WaterData extends SurviveData {
 					stacks = biomeData.getUnwellIntensity();
 				}	
 			}
-			if (potion != PotionContents.EMPTY && DataMaps.Server.potionDrink.containsKey(RegistryHelper.potions().getKey(potion.potion().get().value()))) {
+			if (potion != null && DataMaps.Server.potionDrink.containsKey(RegistryHelper.potions().getKey(potion.potion().get().value()))) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(RegistryHelper.potions().getKey(potion.potion().get().value()));
 				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), stacks, applyThirst(entity, biomef != -1 ? biomef : drinkData.getThirstChance()));
 				if (drinkData.isHeated())entity.addEffect(new MobEffectInstance(SMobEffects.HEATED.holder(), 30*20));

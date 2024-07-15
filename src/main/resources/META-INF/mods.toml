@@ -32,7 +32,7 @@ description='''${mod_description}'''
     modId="unionlib"
     mandatory=true
     versionRange="[12.0.0,13.0.0)"
-    ordering="NONE"
+    ordering="BEFORE"
     side="BOTH"
 	
 [[dependencies.${mod_id}]]
