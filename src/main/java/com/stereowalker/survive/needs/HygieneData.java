@@ -14,11 +14,11 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 public class HygieneData extends SurviveData {
-	private int uncleanLevel = 10;
+	private int uncleanLevel = 5;
 	private int hygieneTimer;
 
 	public HygieneData() {
-		this.uncleanLevel = 20;
+		this.uncleanLevel = 15;
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class HygieneData extends SurviveData {
 	 * Get whether the player should take a shower.
 	 */
 	public boolean needsABath() {
-		return this.uncleanLevel > 25;
+		return this.uncleanLevel > 30;
 	}
 
 	/**
