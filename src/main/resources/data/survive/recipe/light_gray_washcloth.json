@@ -1,0 +1,19 @@
+{
+	"conditions": [{
+		"type": "survive:module_enabled",
+		"module": "hygiene"
+	}],
+  "type": "minecraft:crafting_shapeless",
+  "group": "washcloth",
+  "ingredients": [
+    {
+      "item": "survive:white_washcloth"
+    },
+    {
+      "item": "minecraft:light_gray_dye"
+    }
+  ],
+  "result": {
+    "id": "survive:light_gray_washcloth"
+  }
+}

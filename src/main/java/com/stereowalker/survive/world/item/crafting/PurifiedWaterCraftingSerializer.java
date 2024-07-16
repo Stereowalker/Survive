@@ -22,7 +22,7 @@ public class PurifiedWaterCraftingSerializer implements RecipeSerializer<Purifie
 		String s = p_335962_.readUtf();
 		CraftingBookCategory craftingbookcategory = p_335962_.readEnum(CraftingBookCategory.class);
 		int i = p_335962_.readVarInt();
-		NonNullList<Ingredient> nonnulllist = add(NonNullList.withSize(i, Ingredient.EMPTY));
+		NonNullList<Ingredient> nonnulllist = NonNullList.withSize(i, Ingredient.EMPTY);
 		nonnulllist.replaceAll(p_327214_ -> Ingredient.CONTENTS_STREAM_CODEC.decode(p_335962_));
 		ItemStack itemstack = ItemStack.STREAM_CODEC.decode(p_335962_);
 		return new PurifiedWaterCraftingRecipe(s, craftingbookcategory, itemstack, add(nonnulllist));

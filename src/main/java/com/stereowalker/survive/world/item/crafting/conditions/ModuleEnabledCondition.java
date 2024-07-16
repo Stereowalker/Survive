@@ -12,7 +12,7 @@ import net.minecraftforge.common.crafting.conditions.ICondition;
 public record ModuleEnabledCondition(String module) implements ICondition 
 {
     public static final MapCodec<ModuleEnabledCondition> CODEC = RecordCodecBuilder.mapCodec(b -> b.group(
-        Codec.STRING.fieldOf("modid").forGetter(ModuleEnabledCondition::module)
+        Codec.STRING.fieldOf("module").forGetter(ModuleEnabledCondition::module)
     ).apply(b, ModuleEnabledCondition::new));
     
 //  @Override

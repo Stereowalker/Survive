@@ -1,0 +1,16 @@
+{
+	"neoforge:conditions": [{
+		"type": "survive:module_enabled",
+		"module": "hygiene"
+	}],
+  	"type": "minecraft:crafting_shapeless",
+  	"ingredients": [
+    	{
+      		"item": "minecraft:sponge"
+    	}
+  	],
+  	"result": {
+    	"count": 7
+    	"id": "survive:bath_sponge",
+  	}
+}

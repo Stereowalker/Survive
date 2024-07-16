@@ -19,10 +19,14 @@ public class WaterBottleSmeltingRecipe extends SmeltingRecipe {
 	public WaterBottleSmeltingRecipe(String pGroup, CookingBookCategory pCategory, Ingredient pIngredient, ItemStack pResult, float pExperience, int pCookingTime) {
 		super(pGroup, pCategory, Ingredient.of(PotionContents.createItemStack(Items.POTION, Potions.WATER)), PotionContents.createItemStack(Items.POTION, SPotions.PURIFIED_WATER.holder()), pExperience, pCookingTime);
 	}
+	
+	public WaterBottleSmeltingRecipe(String pGroup, CookingBookCategory pCategory, float pExperience, int pCookingTime) {
+		this(pGroup, pCategory, null, null, pExperience, pCookingTime);
+	}
 
 	@Override
 	public boolean matches(SingleRecipeInput pInv, Level pLevel) {
-		if (pInv.getItem(0).get(DataComponents.POTION_CONTENTS).potion().get() == Potions.WATER) return this.ingredient.test(pInv.getItem(0)); else return false;
+		if (pInv.getItem(0).has(DataComponents.POTION_CONTENTS) && pInv.getItem(0).get(DataComponents.POTION_CONTENTS).potion().get() == Potions.WATER) return this.ingredient.test(pInv.getItem(0)); else return false;
 	}
 
 	@Override
