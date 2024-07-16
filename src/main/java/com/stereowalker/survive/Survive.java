@@ -434,7 +434,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			populator.getParams().holders().lookup(Registries.POTION).ifPresent(p_327138_ -> {
 //				if (potion != Potions.EMPTY) {
 //				}
-                generatePotionEffectTypes(populator.getOutput(), p_327138_, Items.POTION, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                generatePotionEffectTypes(populator.getOutput(), p_327138_, SItems.FILLED_CANTEEN, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
             });
 			populator.addItems(SItems.WATER_BOWL);
 			populator.addItems(SItems.PURIFIED_WATER_BOWL);
