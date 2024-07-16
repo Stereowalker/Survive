@@ -22,12 +22,10 @@ public class WaterBottleCookingSerializer extends SimpleCookingSerializer<WaterB
 	            p_296927_ -> p_296927_.group(
 	                        Codec.STRING.optionalFieldOf("group", "").forGetter(p_296921_ -> ""),
 	                        CookingBookCategory.CODEC.fieldOf("category").orElse(CookingBookCategory.MISC).forGetter(p_296924_ -> CookingBookCategory.MISC),
-	                        Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(p_296920_ -> null),
-	                        ItemStack.STRICT_SINGLE_ITEM_CODEC.fieldOf("result").forGetter(p_296923_ -> null),
 	                        Codec.FLOAT.fieldOf("experience").orElse(0.0F).forGetter(p_296922_ -> 0f),
-	                        Codec.INT.fieldOf("cookingtime").orElse(pCookingTime).forGetter(p_296919_ -> /*this.defaultCookingTime*/200)
+	                        Codec.INT.fieldOf("cookingtime").orElse(pCookingTime).forGetter(p_296919_ -> /*this.defaultCookingTime*/pCookingTime)
 	                    )
-	                    .apply(p_296927_, pFactory::create)
+	                    .apply(p_296927_, WaterBottleSmeltingRecipe::new)
 	        );
         this.streamCodec = StreamCodec.of(this::toNetwork, this::fromNetwork);
 	}
