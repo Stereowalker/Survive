@@ -1,0 +1,12 @@
+{
+	"neoforge:conditions": [{
+		"type": "survive:module_enabled",
+		"module": "hygiene"
+	}],
+	"type": "minecraft:smelting",
+	"ingredient": {
+		"item": "minecraft:charcoal"
+	},
+	"id": "survive:wood_ash",
+	"cookingtime": 100
+}

@@ -1,0 +1,16 @@
+{
+	"conditions": [{
+		"type": "survive:module_enabled",
+		"module": "hygiene"
+	}],
+	"type": "minecraft:smelting",
+	"ingredient": {
+		"item": "survive:soap_mix"
+	},
+	"result": {
+		"id": "survive:soap_bottle",
+		"components": { "survive:soap_left": 20}
+	},
+	"experience": 0.25,
+	"cookingtime": 200
+}
