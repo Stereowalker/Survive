@@ -56,7 +56,7 @@ public abstract class WrittenBookItemMixin extends Item{
 		if (pIsSelected) {
 			WrittenBookContent writtenbookcontent = pStack.get(DataComponents.WRITTEN_BOOK_CONTENT);
 			if (writtenbookcontent.generation() == 0 && pStack.has(SDataComponents.STATUS_OWNER) && pEntity instanceof Player player && player instanceof IRealisticEntity real) {
-				if (pStack.get(SDataComponents.STATUS_OWNER) == UUID.fromString("00000000-0000-0000-0000-000000000000")) {
+				if (pStack.get(SDataComponents.STATUS_OWNER).equals(new UUID(0L, 0L))) {
 					pStack.set(SDataComponents.STATUS_OWNER, player.getUUID());
 				}
 				if (pStack.get(SDataComponents.STATUS_OWNER).equals(player.getUUID()) && pLevel.isClientSide) {
@@ -75,7 +75,7 @@ public abstract class WrittenBookItemMixin extends Item{
 	
 	@Inject(method = "appendHoverText", at = @At("TAIL"))
 	public void appendHoverText_inject(ItemStack pStack, TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag, CallbackInfo ci) {
-		if (pStack.has(SDataComponents.STATUS_OWNER)) {
+		if (pStack.has(SDataComponents.STATUS_OWNER) && !pStack.get(SDataComponents.STATUS_OWNER).equals(new UUID(0L, 0L))) {
 			String s = "";
 			Level pLevel = Minecraft.getInstance().level;
 			if (pLevel != null) {
