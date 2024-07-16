@@ -67,8 +67,10 @@ public class SItems {
 	public static final Item SMALL_HEATING_PLATE = new TemperatureRegulatorPlateItem(TempRegulationPlateType.HEATER, TempRegulationPlateSize.SMALL, new Item.Properties().stacksTo(64));
 	@RegistryObject("small_cooling_plate")
 	public static final Item SMALL_COOLING_PLATE = new TemperatureRegulatorPlateItem(TempRegulationPlateType.CHILLER, TempRegulationPlateSize.SMALL, new Item.Properties().stacksTo(64));
+	@RegistryObject("used_charcoal_filter")
+	public static final Item USED_CHARCOAL_FILTER = new Item(new Item.Properties().durability(10));
 	@RegistryObject("charcoal_filter")
-	public static final Item CHARCOAL_FILTER = new Item(new Item.Properties().durability(10));
+	public static final Item CHARCOAL_FILTER = new Item(new Item.Properties().stacksTo(32));
 	@RegistryObject("purified_water_bucket")
 	public static final Item PURIFIED_WATER_BUCKET = new BucketItem(SFluids.PURIFIED_WATER, (new Item.Properties()).craftRemainder(Items.BUCKET).stacksTo(1));
 	@RegistryObject("magma_paste")

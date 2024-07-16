@@ -450,6 +450,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			populator.addItems(SItems.SMALL_HEATING_PLATE);
 			populator.addItems(SItems.SMALL_COOLING_PLATE);
 			populator.addItems(SItems.CHARCOAL_FILTER);
+			populator.addItems(SItems.USED_CHARCOAL_FILTER);
 			populator.addItems(SItems.PURIFIED_WATER_BUCKET);
 			populator.addItems(SItems.MAGMA_PASTE);
 		}
