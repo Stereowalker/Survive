@@ -372,8 +372,10 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		result.applyComponents(stack.getComponents());
 		result.set(SDataComponents.STATUS_OWNER, UUID.fromString("00000000-0000-0000-0000-000000000000"));
 		WrittenBookContent book = result.get(DataComponents.WRITTEN_BOOK_CONTENT);
-		WrittenBookContent b = new WrittenBookContent(book.title(), book.author(), 0, book.pages(), book.resolved());
-		result.set(DataComponents.WRITTEN_BOOK_CONTENT, b);
+		if (book != null) {
+			WrittenBookContent b = new WrittenBookContent(book.title(), book.author(), 0, book.pages(), book.resolved());
+			result.set(DataComponents.WRITTEN_BOOK_CONTENT, b);
+		}
 		return result;
 	}
 	
