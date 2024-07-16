@@ -67,7 +67,7 @@ public class SurviveRegistryEvents
 	public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
 		event.register((stack, tintIndex) -> {
 			PotionContents contents = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
-			return tintIndex > 0 ? -1 : contents.potion().get().value() == SPotions.PURIFIED_WATER.holder() ? Survive.PURIFIED_WATER_COLOR : FastColor.ARGB32.opaque(contents.getColor());
+			return tintIndex > 0 ? -1 : contents.is(SPotions.PURIFIED_WATER.holder()) ? Survive.PURIFIED_WATER_COLOR : FastColor.ARGB32.opaque(contents.getColor());
 	      }, Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION);
 		event.register((stack, tintIndex) -> {
 			return TemperatureRegulatorPlateItem.getColor(stack);

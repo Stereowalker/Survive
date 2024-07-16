@@ -122,7 +122,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class Survive extends MinecraftMod implements PacketHolder {
 
 	public static final float DEFAULT_TEMP = 37.0F;
-	public static final int PURIFIED_WATER_COLOR = 0x41d3f8;
+	public static final int PURIFIED_WATER_COLOR = 0xFF41d3f8;
 	public static Map<Holder<Potion>,List<Fluid>> POTION_FLUID_MAP;
 	public static final String MOD_ID = "survive";
 
