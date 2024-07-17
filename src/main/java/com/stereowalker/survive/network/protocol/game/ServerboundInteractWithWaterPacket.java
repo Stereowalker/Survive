@@ -124,6 +124,10 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 	public static boolean isValidContainerSource(double waterAmount) {
 		return waterAmount >= 3.0D;
 	}
+
+	public static boolean isValidStack(ItemStack stack) {
+		return stack.getItem() == Items.BOWL || stack.isEmpty();
+	}
 	
 	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_interact_with_water");
 	@Override

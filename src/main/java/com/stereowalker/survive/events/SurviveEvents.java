@@ -2,7 +2,6 @@ package com.stereowalker.survive.events;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Triple;
@@ -30,13 +29,12 @@ import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPa
 import com.stereowalker.survive.network.protocol.game.ServerboundInteractWithWaterPacket;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
-import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.item.enchantment.SEnchantmentHelper;
 import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
 import com.stereowalker.survive.world.temperature.TemperatureQuery;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
-import com.stereowalker.unionlib.api.insert.InsertSetter;
+import com.stereowalker.unionlib.api.insert.InsertResultCanceller;
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.VersionHelper;
@@ -52,8 +50,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Player.BedSleepingProblem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -349,7 +347,7 @@ public class SurviveEvents {
 	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickEmpty event) {
 		HitResult raytraceresult = getPlayerPOVHitResult(event.getLevel(), event.getEntity(), ClipContext.Fluid.SOURCE_ONLY);
 		BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
-		if (event.getLevel().isClientSide && event.getItemStack().isEmpty() && event.getHand() == InteractionHand.MAIN_HAND) {
+		if (event.getLevel().isClientSide && ServerboundInteractWithWaterPacket.isValidStack(event.getItemStack()) && event.getHand() == InteractionHand.MAIN_HAND) {
 			//Source Block Of Water
 			Fluid fluid = event.getLevel().getFluidState(blockpos).getType();
 			if (DataMaps.Client.fluid.containsKey(RegistryHelper.fluids().getKey(fluid))) {
@@ -368,36 +366,28 @@ public class SurviveEvents {
 			}
 		}
 	}
-
-	@SuppressWarnings("resource")
+	
 	@SubscribeEvent
-	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickBlock event) {
+	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickItem event) {
+		System.out.println("Interact With Block Start");
 		HitResult raytraceresult = getPlayerPOVHitResult(event.getLevel(), event.getEntity(), ClipContext.Fluid.SOURCE_ONLY);
 		BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
 		BlockState state = event.getLevel().getBlockState(event.getPos());
 		Fluid fluid = event.getLevel().getFluidState(blockpos).getType();
 		BlockState stateUnder = event.getLevel().getBlockState(event.getPos().below());
-		if (event.getLevel().isClientSide && event.getItemStack().isEmpty()) {
+		if (event.getLevel().isClientSide && ServerboundInteractWithWaterPacket.isValidStack(event.getItemStack())) {
 			//Source Block Of Water
 			if (DataMaps.Client.fluid.containsKey(RegistryHelper.fluids().getKey(fluid))) {
 				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(RegistryHelper.fluids().getKey(fluid));
+				float thirstChance = fluidHolder.getThirstChance();
+				if (DataMaps.Client.biome.containsKey(event.getLevel().getBiome(blockpos).unwrapKey().get().location())) {
+					BiomeJsonHolder biomeData = DataMaps.Client.biome.get(event.getLevel().getBiome(blockpos).unwrapKey().get().location());
+					if (biomeData.getThirstChance() >= 0)
+						thirstChance = biomeData.getThirstChance();
+				}
 				event.setCanceled(true);
 				event.setCancellationResult(InteractionResult.SUCCESS);
-				new ServerboundInteractWithWaterPacket(blockpos, fluidHolder.getThirstChance(), fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
-			}
-			//Cauldron
-			if (state.getBlock() == Blocks.WATER_CAULDRON) {
-				int i = state.getValue(LayeredCauldronBlock.LEVEL);
-				if (i > 0) {
-					event.setCanceled(true);
-					event.setCancellationResult(InteractionResult.SUCCESS);
-					if (stateUnder.getBlock() == Blocks.CAMPFIRE && stateUnder.getValue(BlockStateProperties.LIT)) {
-						new ServerboundInteractWithWaterPacket(event.getPos(), 0.0f, 4.0D, event.getHand()).send();
-					}
-					else {
-						new ServerboundInteractWithWaterPacket(event.getPos(), 0.5f, 4.0D, event.getHand()).send();
-					}
-				}
+				new ServerboundInteractWithWaterPacket(blockpos, thirstChance, fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
 			}
 		}
 	}
