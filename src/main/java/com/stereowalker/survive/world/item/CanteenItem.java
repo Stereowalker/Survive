@@ -161,10 +161,12 @@ public class CanteenItem extends Item {
 	public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
 		pTooltipComponents.add(Component.translatable("tooltip.drinks_left").append(": "+pStack.get(SDataComponents.DRINKS_LEFT)).withStyle(ChatFormatting.AQUA));
 		PotionContents potioncontents = pStack.get(DataComponents.POTION_CONTENTS);
-		if (Survive.POTION_FLUID_MAP.containsKey(potioncontents.potion().get()))
-			pTooltipComponents.add(Component.translatable(Potion.getName(potioncontents.potion(), this.getDescriptionId()+".effect.")).withStyle(ChatFormatting.YELLOW));
-		else
-			pTooltipComponents.add(Component.translatable(Potion.getName(potioncontents.potion(), "item.minecraft.potion.effect.")).withStyle(ChatFormatting.GOLD));
+		if (potioncontents.potion().isPresent()) {
+			if (Survive.POTION_FLUID_MAP.containsKey(potioncontents.potion().get()))
+				pTooltipComponents.add(Component.translatable(Potion.getName(potioncontents.potion(), this.getDescriptionId()+".effect.")).withStyle(ChatFormatting.YELLOW));
+			else
+				pTooltipComponents.add(Component.translatable(Potion.getName(potioncontents.potion(), "item.minecraft.potion.effect.")).withStyle(ChatFormatting.GOLD));
+		}
         if (potioncontents != null) {
             potioncontents.addPotionTooltip(pTooltipComponents::add, 1.0F, pContext.tickRate());
         }
