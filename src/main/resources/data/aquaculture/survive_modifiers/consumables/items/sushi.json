@@ -1,0 +1,13 @@
+{
+	"energy": 2,
+	"thirst": -1,
+	"hydration": 0.0,
+	"thirst_chance": 0.1,
+	"nutrition": {
+		"carbohydrate_ratio": 2,
+		"protein_ratio": 8
+	},
+	"gives_chilled_effect": false,
+	"gives_heated_effect": false,
+	"gives_energizing_effect": false
+}
