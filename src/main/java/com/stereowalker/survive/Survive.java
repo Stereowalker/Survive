@@ -25,6 +25,7 @@ import com.stereowalker.survive.config.WellbeingConfig;
 import com.stereowalker.survive.core.cauldron.SCauldronInteraction;
 import com.stereowalker.survive.events.SleepEvents;
 import com.stereowalker.survive.events.SurviveEvents;
+import com.stereowalker.survive.events.ThirstEvents;
 import com.stereowalker.survive.json.ArmorJsonHolder;
 import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
@@ -316,6 +317,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		});
 		collector.addInsert(Inserts.PLAYER_CAN_SLEEP, SleepEvents::allowSleep);
 		collector.addInsert(Inserts.PLAYER_CONTINUE_SLEEP, SleepEvents::allowSleep);
+		collector.addInsert(Inserts.INTERACT_WITH_BLOCK, ThirstEvents::interactWithWaterSourceBlock);
 	}
 	
 	@Override
