@@ -446,12 +446,6 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			populator.addItems(SItems.STIFFENED_HONEY_CHESTPLATE);
 			populator.addItems(SItems.STIFFENED_HONEY_LEGGINGS);
 			populator.addItems(SItems.STIFFENED_HONEY_BOOTS);
-			populator.addItems(SItems.CANTEEN);
-			populator.getParams().holders().lookup(Registries.POTION).ifPresent(p_327138_ -> {
-//				if (potion != Potions.EMPTY) {
-//				}
-                generatePotionEffectTypes(populator.getOutput(), p_327138_, SItems.FILLED_CANTEEN, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-            });
 			populator.addItems(SItems.WATER_BOWL);
 			populator.addItems(SItems.PURIFIED_WATER_BOWL);
 			populator.addItems(SItems.ICE_CUBE);
@@ -467,15 +461,23 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			populator.addItems(SItems.USED_CHARCOAL_FILTER);
 			populator.addItems(SItems.PURIFIED_WATER_BUCKET);
 			populator.addItems(SItems.MAGMA_PASTE);
+			populator.addItems(SItems.CANTEEN);
+			populator.getParams().holders().lookup(Registries.POTION).ifPresent(p_327138_ -> {
+				generatePotionEffectTypes(populator.getOutput(), p_327138_, SItems.FILLED_CANTEEN, THIRST_CONFIG.canteen_fill_amount, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			});
+			populator.addItems(SItems.NETHERITE_CANTEEN);
+			populator.getParams().holders().lookup(Registries.POTION).ifPresent(p_327138_ -> {
+				generatePotionEffectTypes(populator.getOutput(), p_327138_, SItems.FILLED_NETHERITE_CANTEEN, THIRST_CONFIG.nether_canteen_fill_amount, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+			});
 		}
 		
 	}
 
     private static void generatePotionEffectTypes(
-        CreativeModeTab.Output pOutput, HolderLookup<Potion> pPotions, Item pItem, CreativeModeTab.TabVisibility pTabVisibility
+        CreativeModeTab.Output pOutput, HolderLookup<Potion> pPotions, Item pItem, int max, CreativeModeTab.TabVisibility pTabVisibility
     ) {
         pPotions.listElements()
-            .map(potion -> CanteenItem.addToCanteen(new ItemStack(pItem), THIRST_CONFIG.canteen_fill_amount, potion))
+            .map(potion -> CanteenItem.addToCanteen(new ItemStack(pItem), max, potion))
             .forEach(p_270000_ -> pOutput.accept(p_270000_, pTabVisibility));
     }
 

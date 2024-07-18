@@ -25,16 +25,18 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 public class EmptyCanteenItem extends Item {
+	boolean isNetherite;
 
-	public EmptyCanteenItem(Properties properties) {
+	public EmptyCanteenItem(boolean isNetherite, Properties properties) {
 		super(properties);
+		this.isNetherite = isNetherite;
 	}
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level levelIn, Player playerIn, InteractionHand handIn) {
 		ItemStack itemstack = playerIn.getItemInHand(handIn);
 		HitResult hitresult = getPlayerPOVHitResult(levelIn, playerIn, ClipContext.Fluid.SOURCE_ONLY);
-		int i = Survive.THIRST_CONFIG.canteen_fill_amount;
+		int i = Survive.THIRST_CONFIG.canteenFillAmount(isNetherite);
 		if (hitresult.getType() == HitResult.Type.MISS) {
 			return InteractionResultHolder.pass(itemstack);
 		} else {
