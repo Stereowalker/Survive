@@ -19,7 +19,7 @@ public class FoodUtils {
 	public enum State {Fresh, Good, Okay, Spoiling, Spoiled}
 
 	public static void giveLifespanToFood(NonNullList<ItemStack> items, long gametime) {
-		if (Survive.CONFIG.enable_food_spoiling) {
+		if (Survive.FOOD_CONFIG.enabled) {
 			items.forEach((stack) -> {
 				if (stack.has(DataComponents.FOOD) && !stack.has(SDataComponents.EXPIRE_TIME) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
 					long lifespan = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan();
@@ -39,7 +39,7 @@ public class FoodUtils {
 	}
 
 	public static void giveLifespanToFood(ItemStack stack, long gametime) {
-		if (Survive.CONFIG.enable_food_spoiling) {
+		if (Survive.FOOD_CONFIG.enabled) {
 			if (stack.has(DataComponents.FOOD) && !stack.has(SDataComponents.EXPIRE_TIME) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
 				long lifespan = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan();
 				if (lifespan > 0) {
@@ -55,7 +55,7 @@ public class FoodUtils {
 	}
 
 	public static void applyFoodStatusToTooltip(Player player, ItemStack stack, List<Component> tip) {
-		if (stack.has(DataComponents.FOOD) && Survive.CONFIG.enable_food_spoiling) {
+		if (stack.has(DataComponents.FOOD) && Survive.FOOD_CONFIG.enabled) {
 			if (foodStatus(stack, player.level()) == State.Fresh)
 				tip.add(Component.literal("Fresh").setStyle(Style.EMPTY.withColor(0x88ff88)));
 			else if (foodStatus(stack, player.level()) == State.Good)
@@ -70,7 +70,7 @@ public class FoodUtils {
 	}
 
 	public static State foodStatus(ItemStack stack, Level level) {
-		if (stack.has(SDataComponents.EXPIRE_TIME) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem())) && Survive.CONFIG.enable_food_spoiling) {
+		if (stack.has(SDataComponents.EXPIRE_TIME) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem())) && Survive.FOOD_CONFIG.enabled) {
 			FoodJsonHolder food = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem()));
 			long timeTill = stack.get(SDataComponents.EXPIRE_TIME) - level.getGameTime();
 			long timeSince = food.lifespan() - timeTill;

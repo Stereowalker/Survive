@@ -3,8 +3,8 @@ package com.stereowalker.survive.hooks;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import com.stereowalker.survive.FoodUtils;
+import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.component.SDataComponents;
 
@@ -72,58 +72,60 @@ public interface ColdStorage {
     }
 	
 	default void coldTick(Level pLevel) {
-		long gameTime = pLevel.getGameTime();
-		if (lastAccessed() == 0) setLastAccessed(gameTime);
-		long timeSinceLastOpened = gameTime - lastAccessed();
+		if (Survive.FOOD_CONFIG.enabled) {
+			long gameTime = pLevel.getGameTime();
+			if (lastAccessed() == 0) setLastAccessed(gameTime);
+			long timeSinceLastOpened = gameTime - lastAccessed();
 
-		int foodAmount = 0;
-		for (int i = 0; i < slotCount(); i++) {
-			ItemStack stack = get(i);
-			if (stack.has(DataComponents.FOOD)) {
-				FoodUtils.giveLifespanToFood(stack, gameTime);
-				foodAmount += stack.getCount();
-			}
-		}
-		
-		float coldnessValue = coldness();
-		if (foodAmount > 0) {
-			for (int i = 0; i < slotCount(); i++) {
-				if (coldnessValue >= maxColdness()) break;
-				float remainingColdness = maxColdness() - coldnessValue;
-				ItemStack stack = get(i);
-				if (COOLNESS.containsKey(stack.getItem())) {
-					int take = Math.min(Mth.floor(remainingColdness / COOLNESS.get(stack.getItem())), stack.getCount());
-					coldnessValue += COOLNESS.get(stack.getItem()) * take;
-					stack.shrink(take);
-				}
-				if (stack.getItem() == Items.PACKED_ICE) {
-					int take = Math.min(Mth.floor(remainingColdness / 3078f), stack.getCount());
-					coldnessValue += 3078f * take;
-					stack.shrink(take);
-				}
-				if (stack.getItem() == Items.BLUE_ICE) {
-					int take = Math.min(Mth.floor(remainingColdness / 27702f), stack.getCount());
-					coldnessValue += 27702f * take;
-					stack.shrink(take);
-				}
-			}
-			setColdness(coldnessValue);
-		}
-		
-		if (timeSinceLastOpened < 50) return;
-		System.out.println(lastAccessed()+" Time Diff is "+timeSinceLastOpened+" and this block is "+coldness()+" much cold ");
-		setLastAccessed(gameTime);
-		if (coldness() > 0) {
-			long efficiency = (long) (timeSinceLastOpened * preservatonEfficiency());
-			if (timeSinceLastOpened <= 2) efficiency = 1;
-			System.out.println("We Lost "+(timeSinceLastOpened - efficiency)+" efficiency of "+(preservatonEfficiency()*100)+"%");
+			int foodAmount = 0;
 			for (int i = 0; i < slotCount(); i++) {
 				ItemStack stack = get(i);
-				if (stack.has(SDataComponents.EXPIRE_TIME)) {
-					stack.set(SDataComponents.EXPIRE_TIME, stack.get(SDataComponents.EXPIRE_TIME) + efficiency);
+				if (stack.has(DataComponents.FOOD)) {
+					FoodUtils.giveLifespanToFood(stack, gameTime);
+					foodAmount += stack.getCount();
 				}
 			}
-			decrementColdness(timeSinceLastOpened * foodAmount);
+			
+			float coldnessValue = coldness();
+			if (foodAmount > 0) {
+				for (int i = 0; i < slotCount(); i++) {
+					if (coldnessValue >= maxColdness()) break;
+					float remainingColdness = maxColdness() - coldnessValue;
+					ItemStack stack = get(i);
+					if (COOLNESS.containsKey(stack.getItem())) {
+						int take = Math.min(Mth.floor(remainingColdness / COOLNESS.get(stack.getItem())), stack.getCount());
+						coldnessValue += COOLNESS.get(stack.getItem()) * take;
+						stack.shrink(take);
+					}
+					if (stack.getItem() == Items.PACKED_ICE) {
+						int take = Math.min(Mth.floor(remainingColdness / 3078f), stack.getCount());
+						coldnessValue += 3078f * take;
+						stack.shrink(take);
+					}
+					if (stack.getItem() == Items.BLUE_ICE) {
+						int take = Math.min(Mth.floor(remainingColdness / 27702f), stack.getCount());
+						coldnessValue += 27702f * take;
+						stack.shrink(take);
+					}
+				}
+				setColdness(coldnessValue);
+			}
+			
+			if (timeSinceLastOpened < 50) return;
+			System.out.println(lastAccessed()+" Time Diff is "+timeSinceLastOpened+" and this block is "+coldness()+" much cold ");
+			setLastAccessed(gameTime);
+			if (coldness() > 0) {
+				long efficiency = (long) (timeSinceLastOpened * preservatonEfficiency());
+				if (timeSinceLastOpened <= 2) efficiency = 1;
+				System.out.println("We Lost "+(timeSinceLastOpened - efficiency)+" efficiency of "+(preservatonEfficiency()*100)+"%");
+				for (int i = 0; i < slotCount(); i++) {
+					ItemStack stack = get(i);
+					if (stack.has(SDataComponents.EXPIRE_TIME)) {
+						stack.set(SDataComponents.EXPIRE_TIME, stack.get(SDataComponents.EXPIRE_TIME) + efficiency);
+					}
+				}
+				decrementColdness(timeSinceLastOpened * foodAmount);
+			}
 		}
 	}
 }
