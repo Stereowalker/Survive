@@ -67,9 +67,6 @@ public class Config implements ConfigObject {
 			"A lot of the mechanics in this mod become a lot more unreasonable without enchantments"})
 	public boolean disable_enchantments = false;
 	
-	@UnionConfig.Entry(group = "Micellaneous" , name = "Enable Food Spoiling", side = ConfigSide.Shared)
-	public boolean enable_food_spoiling = false;
-
 	//
 	//Other mods
 	@UnionConfig.Entry(group = "Other" , name = "Origins Heat Resistant Races", side = ConfigSide.Shared)

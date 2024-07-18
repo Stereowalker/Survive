@@ -15,6 +15,7 @@ import com.mojang.serialization.DataResult;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.compat.SItemProperties;
 import com.stereowalker.survive.config.Config;
+import com.stereowalker.survive.config.FoodConfig;
 import com.stereowalker.survive.config.HygieneConfig;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.config.StaminaConfig;
@@ -127,6 +128,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	public static final String MOD_ID = "survive";
 
 	public static final Config CONFIG = new Config();
+	public static final FoodConfig FOOD_CONFIG = new FoodConfig();
 	public static final StaminaConfig STAMINA_CONFIG = new StaminaConfig();
 	public static final HygieneConfig HYGIENE_CONFIG = new HygieneConfig();
 	public static final TemperatureConfig TEMPERATURE_CONFIG = new TemperatureConfig();
@@ -220,6 +222,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	@Override
 	public void setupConfigs(ConfigCollector collector) {
 		collector.registerConfig(ServerConfig.class);
+		collector.registerConfig(FOOD_CONFIG);
 		collector.registerConfig(CONFIG);
 		collector.registerConfig(HYGIENE_CONFIG); 
 		collector.registerConfig(TEMPERATURE_CONFIG);

@@ -50,7 +50,7 @@ public class SurviveClientSegment extends ClientSegment {
 
 	@Override
 	public Screen getConfigScreen(Minecraft mc, Screen previousScreen) {
-		return new MinecraftModConfigsScreen(previousScreen, Component.translatable("gui.survive.config.title"), Survive.HYGIENE_CONFIG, Survive.STAMINA_CONFIG, Survive.TEMPERATURE_CONFIG, Survive.THIRST_CONFIG, Survive.WELLBEING_CONFIG, Survive.CONFIG);
+		return new MinecraftModConfigsScreen(previousScreen, Component.translatable("gui.survive.config.title"), Survive.TEMPERATURE_CONFIG, Survive.HYGIENE_CONFIG, Survive.STAMINA_CONFIG, Survive.THIRST_CONFIG, Survive.WELLBEING_CONFIG, Survive.FOOD_CONFIG, Survive.CONFIG);
 	}
 	
 	@Override
