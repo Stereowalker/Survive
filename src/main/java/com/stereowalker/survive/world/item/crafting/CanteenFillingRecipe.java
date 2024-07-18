@@ -27,10 +27,15 @@ public class CanteenFillingRecipe extends CustomRecipe {
 		PotionContents savedPotion = null;
 		int bottles = 0;
 		int canteens = 0;
+		boolean nether = false;
 		for (int i = 0; i < inv.getContainerSize(); i++) {
 			ItemStack stack = inv.getItem(i);
 			if (stack.getItem() == SItems.CANTEEN) {
 				canteens++;
+			}
+			if (stack.getItem() == SItems.NETHERITE_CANTEEN) {
+				canteens++;
+				nether = true;
 			}
 			else if (stack.getItem() == Items.POTION) {
 				if (savedPotion == null) {
@@ -44,11 +49,11 @@ public class CanteenFillingRecipe extends CustomRecipe {
 			} else if (!stack.isEmpty()) {
 				return false;
 			}
-			if (bottles > Survive.THIRST_CONFIG.canteen_fill_amount) {
+			if (bottles > Survive.THIRST_CONFIG.canteenFillAmount(nether)) {
 				return false;
 			}
 		}
-		return savedPotion != null && bottles <= Survive.THIRST_CONFIG.canteen_fill_amount && canteens == 1;
+		return savedPotion != null && bottles <= Survive.THIRST_CONFIG.canteenFillAmount(nether) && canteens == 1;
 	}
 
 	@Override
