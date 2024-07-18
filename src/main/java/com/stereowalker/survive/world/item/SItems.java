@@ -34,9 +34,9 @@ public class SItems {
 	@RegistryObject("filled_canteen")
 	public static final Item FILLED_CANTEEN = new CanteenItem(new Item.Properties().craftRemainder(CANTEEN).stacksTo(1).component(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).component(SDataComponents.DRINKS_LEFT, 0), false);
 	@RegistryObject("netherite_canteen")
-	public static final Item NETHERITE_CANTEEN = new EmptyCanteenItem(true, new Item.Properties().stacksTo(1));
+	public static final Item NETHERITE_CANTEEN = new EmptyCanteenItem(true, new Item.Properties().stacksTo(1).fireResistant());
 	@RegistryObject("filled_netherite_canteen")
-	public static final Item FILLED_NETHERITE_CANTEEN = new CanteenItem(new Item.Properties().craftRemainder(CANTEEN).stacksTo(1).component(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).component(SDataComponents.DRINKS_LEFT, 0), true);
+	public static final Item FILLED_NETHERITE_CANTEEN = new CanteenItem(new Item.Properties().craftRemainder(CANTEEN).stacksTo(1).fireResistant().component(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).component(SDataComponents.DRINKS_LEFT, 0), true);
 	@RegistryObject("water_bowl")
 	public static final Item WATER_BOWL = new WaterBowlItem(new Item.Properties().stacksTo(1));
 	@RegistryObject("purified_water_bowl")
