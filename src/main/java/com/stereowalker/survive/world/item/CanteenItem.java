@@ -23,8 +23,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
@@ -36,7 +36,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class CanteenItem extends Item {
+public class CanteenItem extends PotionItem {
 	boolean isNetherite;
 
 	public CanteenItem(Properties properties, boolean isNetherite) {
@@ -54,7 +54,6 @@ public class CanteenItem extends Item {
 		return addToCanteen(stack, drinks, new PotionContents(potion));
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public ItemStack getDefaultInstance() {
 		return addToCanteen(super.getDefaultInstance(), Survive.THIRST_CONFIG.canteenFillAmount(isNetherite), Potions.WATER);
@@ -120,21 +119,13 @@ public class CanteenItem extends Item {
 		return pStack;
 	}
 
-	/**
-	 * How long it takes to use or consume an item
-	 */
-	@Override
-	public int getUseDuration(ItemStack stack) {
-		return 32;
-	}
-
-	/**
-	 * returns the action that specifies what animation to play when the items is being used
-	 */
-	@Override
-	public UseAnim getUseAnimation(ItemStack stack) {
-		return UseAnim.DRINK;
-	}
+    /**
+     * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have different names based on their damage or NBT.
+     */
+    @Override
+    public String getDescriptionId(ItemStack pStack) {
+        return this.getDescriptionId();
+    }
 
 	/**
 	 * Called to trigger the item's "innate" right click behavior. To handle when this item is used on a Block, see
