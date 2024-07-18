@@ -230,6 +230,9 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addMix(Potions.AWKWARD, SItems.MAGMA_PASTE, SPotions.HEAT_RESISTANCE);
 		collector.addMix(SPotions.HEAT_RESISTANCE, Items.REDSTONE, SPotions.LONG_HEAT_RESISTANCE);
 		collector.addMix(SPotions.HEAT_RESISTANCE, Items.GLOWSTONE_DUST, SPotions.STRONG_HEAT_RESISTANCE);
+		
+		collector.builder().addContainer(SItems.FILLED_CANTEEN);
+		collector.builder().addContainer(SItems.FILLED_NETHERITE_CANTEEN);
 	}
 	
 	@Override
