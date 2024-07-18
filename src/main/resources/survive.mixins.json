@@ -6,6 +6,9 @@
   "refmap": "Survive-refmap.json",
   "mixins": [
   	"AbstractVillagerMixin",
+	"ChestBlockEntityMixin",
+	"ChestBlockMixin",
+	"ChestMenuMixin",
   	"PlayerMixin",
   	"FoodDataMixin",
   	"BlockMixin",
@@ -19,7 +22,9 @@
 	"IceBlockMixin",
 	"MobEffectMixin",
 	"WrittenBookItemMixin",
-	"BottleItemMixin"
+	"BottleItemMixin",
+	"BarrelBlockEntityMixin",
+	"BarrelBlockMixin"
   ],
   "client": [
   	"client.GuiMixin",

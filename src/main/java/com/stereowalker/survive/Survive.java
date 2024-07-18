@@ -26,6 +26,7 @@ import com.stereowalker.survive.core.cauldron.SCauldronInteraction;
 import com.stereowalker.survive.events.SleepEvents;
 import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.events.ThirstEvents;
+import com.stereowalker.survive.hooks.ColdStorage;
 import com.stereowalker.survive.json.ArmorJsonHolder;
 import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
@@ -95,8 +96,10 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -106,6 +109,7 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.item.enchantment.ConditionalEffect;
 import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -318,6 +322,11 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addInsert(Inserts.PLAYER_CAN_SLEEP, SleepEvents::allowSleep);
 		collector.addInsert(Inserts.PLAYER_CONTINUE_SLEEP, SleepEvents::allowSleep);
 		collector.addInsert(Inserts.INTERACT_WITH_BLOCK, ThirstEvents::interactWithWaterSourceBlock);
+		collector.addInsert(Inserts.MENU_OPEN, (player, menu) -> {
+			if (menu instanceof ChestMenu chest && chest.getContainer() instanceof ChestBlockEntity block && player instanceof ServerPlayer pl) {
+				ColdStorage cold = (ColdStorage)block;
+			}
+		});
 	}
 	
 	@Override

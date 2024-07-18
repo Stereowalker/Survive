@@ -7,14 +7,17 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
+import com.stereowalker.survive.hooks.ColdMenu;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.IRoastedEntity;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
+import com.stereowalker.unionlib.api.collectors.InsertCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector.Order;
 import com.stereowalker.unionlib.api.gui.GuiRenderer;
 import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsScreen;
+import com.stereowalker.unionlib.insert.ClientInserts;
 import com.stereowalker.unionlib.mod.ClientSegment;
 import com.stereowalker.unionlib.util.ScreenHelper;
 import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
@@ -24,6 +27,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -37,6 +42,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class SurviveClientSegment extends ClientSegment {
 
 	public static final ResourceLocation GUI_ICONS = VersionHelper.toLoc(Survive.MOD_ID, "textures/gui/icons.png");
+	public static float maxContainerCoolness;
 	@Override
 	public ResourceLocation getModIcon() {
 		return VersionHelper.toLoc(Survive.MOD_ID, "textures/icon.png");
@@ -45,6 +51,27 @@ public class SurviveClientSegment extends ClientSegment {
 	@Override
 	public Screen getConfigScreen(Minecraft mc, Screen previousScreen) {
 		return new MinecraftModConfigsScreen(previousScreen, Component.translatable("gui.survive.config.title"), Survive.HYGIENE_CONFIG, Survive.STAMINA_CONFIG, Survive.TEMPERATURE_CONFIG, Survive.THIRST_CONFIG, Survive.WELLBEING_CONFIG, Survive.CONFIG);
+	}
+	
+	@Override
+	public void registerInserts(InsertCollector collector) {
+		collector.addInsert(ClientInserts.SCREEN_RENDER_FINISH, (screen, renderer, mouse) -> {
+			if (screen instanceof AbstractContainerScreen cont && cont.getMenu() instanceof ColdMenu cold) {
+				float progress = (float)cold.coldness() / (float)cold.maxColdness();
+				if (progress > 0) {
+					int i = ((cont.width - cont.imageWidth) / 2) + 9;
+					int j = ((cont.height - cont.imageHeight) / 2);
+					if (cont instanceof ContainerScreen c) j += c.containerRows * 18;
+					j += 96;
+					renderer.blit(VersionHelper.toLoc("survive:textures/gui/coldness.png"), i, j + 17, 0, 0, 158, 22);
+					
+					int i1 = 142;
+					int j1 = Mth.ceil(progress * 142.0F);
+					renderer.blit(VersionHelper.toLoc("survive:textures/gui/coldness.png"), i + 8, j + 17 + 4, 0, 30, j1, 10);
+				}
+				
+			}
+		});
 	}
 
 	@Override
