@@ -37,9 +37,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class CanteenItem extends Item {
+	boolean isNetherite;
 
-	public CanteenItem(Properties properties) {
+	public CanteenItem(Properties properties, boolean isNetherite) {
 		super(properties);
+		this.isNetherite = isNetherite;
 	}
 
 	public static ItemStack addToCanteen(ItemStack stack, int drinks, PotionContents potion) {
@@ -55,11 +57,11 @@ public class CanteenItem extends Item {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public ItemStack getDefaultInstance() {
-		return addToCanteen(super.getDefaultInstance(), Survive.THIRST_CONFIG.canteen_fill_amount, Potions.WATER);
+		return addToCanteen(super.getDefaultInstance(), Survive.THIRST_CONFIG.canteenFillAmount(isNetherite), Potions.WATER);
 	}
 
 	public void setDrinksLeft(ItemStack stack, int drinks) {
-		stack.set(SDataComponents.DRINKS_LEFT, Mth.clamp(drinks, 0, Survive.THIRST_CONFIG.canteen_fill_amount));
+		stack.set(SDataComponents.DRINKS_LEFT, Mth.clamp(drinks, 0, Survive.THIRST_CONFIG.canteenFillAmount(isNetherite)));
 	}
 
 	public void decrementDrinks(ItemStack stack) {
@@ -143,11 +145,11 @@ public class CanteenItem extends Item {
 		ItemStack stack = pPlayer.getItemInHand(pHand);
 		PotionContents potioncontents = stack.get(DataComponents.POTION_CONTENTS);
 		if (Survive.POTION_FLUID_MAP.containsKey(potioncontents.potion().get())) {
-			if (stack.get(SDataComponents.DRINKS_LEFT) < Survive.THIRST_CONFIG.canteen_fill_amount) {
+			if (stack.get(SDataComponents.DRINKS_LEFT) < Survive.THIRST_CONFIG.canteenFillAmount(isNetherite)) {
 				HitResult raytraceresult = getPlayerPOVHitResult(pLevel, pPlayer, ClipContext.Fluid.SOURCE_ONLY);
 				BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
 				if (pLevel.getFluidState(blockpos).is(FluidTags.WATER) && Survive.POTION_FLUID_MAP.get(potioncontents.potion().get()).contains(pLevel.getFluidState(blockpos).getType())) {
-					setDrinksLeft(stack, Survive.THIRST_CONFIG.canteen_fill_amount);
+					setDrinksLeft(stack, Survive.THIRST_CONFIG.canteenFillAmount(isNetherite));
 				}
 			}
 			pPlayer.startUsingItem(pHand);

@@ -34,11 +34,21 @@ public class ThirstConfig implements ConfigObject {
 	@UnionConfig.Range(min = 1, max = 10)
 	public int canteen_fill_amount = 3;
 
+	@UnionConfig.Entry(name = "Netherite Canteen Fill Amount", side = ConfigSide.Shared)
+	@UnionConfig.Comment(comment = {"The amount of times we can drink water from a netherite canteen before it's empty"})
+	@UnionConfig.Range(min = 1, max = 10)
+	public int nether_canteen_fill_amount = 4;
+
 	@UnionConfig.Entry(name = "Hydration Restoration Rate", side = ConfigSide.Server)
 	@UnionConfig.Comment(comment = {"How much hydration is restored from the total of certain foods and drinks",
 			"0 is 0% and 1 is 100%"
 	})
 	@UnionConfig.Range(min = 0, max = 1)
 	public float hydration_restoration = 0.1f;
+	
+	public int canteenFillAmount(boolean isNetherite) {
+		return isNetherite ? nether_canteen_fill_amount : 
+			canteen_fill_amount;
+	}
 
 }
