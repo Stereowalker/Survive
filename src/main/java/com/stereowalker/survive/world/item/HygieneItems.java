@@ -10,8 +10,10 @@ import net.minecraft.world.item.Items;
 
 @RegistryHolder(registry = Item.class)
 public class HygieneItems {
+	@RegistryObject("used_bath_sponge")
+	public static final Item USED_BATH_SPONGE = new BodyCleaningItem(10, new Item.Properties().durability(200));
 	@RegistryObject("bath_sponge")
-	public static final Item BATH_SPONGE = new BodyCleaningItem(10, new Item.Properties().durability(200));
+	public static final Item BATH_SPONGE = new ConvertOnUseItem(USED_BATH_SPONGE, new Item.Properties().stacksTo(16));
 	@RegistryObject("white_washcloth")
 	public static final Item WHITE_WASHCLOTH = new BodyCleaningItem(2, new Item.Properties().durability(50));
 	@RegistryObject("orange_washcloth")

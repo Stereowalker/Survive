@@ -22,6 +22,7 @@ public record ModuleEnabledCondition(String module) implements ICondition
 
     @Override
     public boolean test(IContext context) {
+    	System.out.println("We are testing the available cces "+module+" "+Survive.HYGIENE_CONFIG.enabled);
     	switch (module) {
 		case "hygiene":
 			return Survive.HYGIENE_CONFIG.enabled;
