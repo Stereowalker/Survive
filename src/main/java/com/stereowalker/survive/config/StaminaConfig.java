@@ -13,7 +13,7 @@ public class StaminaConfig implements ConfigObject {
 	
 	@UnionConfig.Entry(name = "Ideal Amount Of Sleep", side = ConfigSide.Server)
 	@UnionConfig.Comment(comment = {"The amount of time the player needs to sleep to recover all their energy"})
-	public long sleepTime = 6000L;
+	public int sleepTime = 6000; //TODO: Change this back to long next time and ensure the config doesn't freak out
 	
 	@UnionConfig.Entry(name = "Enable Armor Weights", side = ConfigSide.Shared)
 	@UnionConfig.Comment(comment = {"Disabling this will allow the weight of certain armor pieces to affect your stamina"})
