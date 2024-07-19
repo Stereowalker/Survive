@@ -137,6 +137,12 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	
 
 	
+	public static void sendPacket(WrittenBookContent tag) {
+		new ServerboundPlayerStatusBookPacket(tag, !Survive.TEMPERATURE_CONFIG.displayTempInFahrenheit, 
+				net.minecraft.client.resources.language.I18n.get("book.patient.sleep", "%1$s"),
+				net.minecraft.client.resources.language.I18n.get("book.patient.temperature", "%1$s")).send();
+	}
+	
 	public static final Codec<Long> NON_NEGATIVE_LONG = Codec.LONG
             .validate(
                     p_274889_ -> p_274889_.compareTo(0L) >= 0 && p_274889_.compareTo(Long.MAX_VALUE) <= 0
