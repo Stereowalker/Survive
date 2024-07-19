@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "survive:dehydrate",
+    "survive:hyperthermia",
+    "survive:hypothermia",
+    "survive:overeat",
+    "survive:overhydrate",
+    "survive:overwork",
+    "survive:roast"
+  ]
+}
