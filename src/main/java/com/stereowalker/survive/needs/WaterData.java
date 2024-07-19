@@ -129,12 +129,12 @@ public class WaterData extends SurviveData {
 					player.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH.holder(), duration, amplifier));
 		}
 		
-		if (this.waterExhaustionLevel > 4.0F) {
-			this.waterExhaustionLevel -= 4.0F;
+		if (this.waterExhaustionLevel > this.waterHydrationLevel) {
+			this.waterExhaustionLevel -= this.waterHydrationLevel;
 			if (this.waterHydrationLevel > 2.8F)
 				this.waterHydrationLevel = Math.max(this.waterHydrationLevel - 0.1F, 2.8F);
 			if (difficulty != Difficulty.PEACEFUL)
-				this.waterLevel = Math.max(this.waterLevel - (5 - Mth.ceil(this.waterHydrationLevel)), 0);
+				this.waterLevel = Math.max(this.waterLevel - 1, 0);
 		}
 
 		boolean flag = player.level().getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION);
