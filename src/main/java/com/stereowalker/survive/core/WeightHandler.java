@@ -9,11 +9,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public class WeightHandler {
-	@OnlyIn(Dist.CLIENT)
 	public static float getArmorWeightClient(ItemStack piece) {
 		float totalWeight = 0.0F;
 		if (!piece.isEmpty()) {

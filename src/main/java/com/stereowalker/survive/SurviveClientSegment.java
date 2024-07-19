@@ -36,8 +36,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public class SurviveClientSegment extends ClientSegment {
 
@@ -215,7 +213,6 @@ public class SurviveClientSegment extends ClientSegment {
 		Minecraft.getInstance().getProfiler().pop();
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public static void renderThirst(Gui gui, GuiRenderer graphics, int j1, int k1, boolean forgeOverlay) {
 		Player player = (Player)gui.minecraft.getCameraEntity();
 		IRealisticEntity realisticPlayer = (IRealisticEntity)player;
@@ -247,7 +244,6 @@ public class SurviveClientSegment extends ClientSegment {
 		gui.minecraft.getProfiler().pop();
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public static void renderEnergyBars(Gui gui, GuiRenderer graphics, MutableInt moveUp, int j1, int k1, boolean forgeOverlay) {
 		Random rand = new Random();
 		Player player = (Player)gui.minecraft.getCameraEntity();

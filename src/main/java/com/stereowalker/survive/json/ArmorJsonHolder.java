@@ -19,7 +19,6 @@ import com.stereowalker.unionlib.util.VersionHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class ArmorJsonHolder implements JsonHolder {
     private static final Marker ARMOR_DATA = MarkerManager.getMarker("ARMOR_DATA");

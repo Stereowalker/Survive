@@ -10,8 +10,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public class SoapItem extends Item {
 	public int soapEfficacy;
@@ -28,7 +26,6 @@ public class SoapItem extends Item {
 		return stack;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public ItemStack getDefaultInstance() {
 		return addPropertiesToSoap(new ItemStack(this), this.soapMaxAmount);
