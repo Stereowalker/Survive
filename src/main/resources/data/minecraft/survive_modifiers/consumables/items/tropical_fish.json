@@ -4,5 +4,9 @@
 	"hydration": 0.0,
 	"thirst_chance": 0.1,
 	"lifespan": 1857,
-	"ticks_fresh": 143
+	"ticks_fresh": 143,
+	"nutrition": {
+		"carbohydrate_ratio": 1,
+		"protein_ratio": 9
+	}
 }
