@@ -339,6 +339,9 @@ public class Survive extends MinecraftMod implements PacketHolder {
 				ColdStorage cold = (ColdStorage)block;
 			}
 		});
+		collector.addInsert(Inserts.LEVEL_WAKE_UP, (level, time)->{
+			SleepEvents.replenishEnergy(level);
+		});
 	}
 	
 	@Override
