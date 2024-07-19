@@ -21,7 +21,6 @@ import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.survive.json.FluidJsonHolder;
 import com.stereowalker.survive.needs.IRealisticEntity;
-import com.stereowalker.survive.needs.SleepData;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.TemperatureUtil;
 import com.stereowalker.survive.network.protocol.game.ClientboundDataTransferPacket;
@@ -34,7 +33,6 @@ import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
 import com.stereowalker.survive.world.temperature.TemperatureQuery;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
-import com.stereowalker.unionlib.api.insert.InsertResultCanceller;
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.VersionHelper;
@@ -51,7 +49,6 @@ import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -59,7 +56,6 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -71,20 +67,10 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
 
 @EventBusSubscriber
 public class SurviveEvents {
 	
-	@SubscribeEvent
-	public static void manageSleep(SleepFinishedTimeEvent event) {
-		for (Player player : event.getLevel().players()) {
-			SleepData stats = SurviveEntityStats.getSleepStats(player);
-			stats.setAwakeTimer(0);
-			stats.save(player);
-		}
-	}
-
 	public static void desyncClient(Player player) {
 		if (!player.level().isClientSide && DataMaps.Server.syncedClients.containsKey(player.getUUID()) ) {
 			Survive.getInstance().getLogger().info("Removing Client ("+player.getDisplayName().getString()+") From Survive Data Sync List");
