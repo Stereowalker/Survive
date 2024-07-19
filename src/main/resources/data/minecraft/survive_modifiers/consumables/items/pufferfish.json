@@ -5,6 +5,10 @@
 	"thirst_chance": 0.5,
 	"lifespan": 1857,
 	"ticks_fresh": 143,
+	"nutrition": {
+		"carbohydrate_ratio": 1,
+		"protein_ratio": 9
+	},
 	"gives_chilled_effect": false,
 	"gives_heated_effect": false,
 	"gives_energizing_effect": false
