@@ -30,7 +30,8 @@
   "client": [
   	"client.GuiMixin",
   	"client.AbstractClientPlayerMixin",
-  	"client.LocalPlayerMixin"
+  	"client.LocalPlayerMixin",
+  	"client.WrittenBookItemClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1
