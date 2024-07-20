@@ -1,7 +1,7 @@
 {
 	"energy": 2,
 	"thirst": -1,
-	"hydration": 0.0,
+	"hydration": 1.0,
 	"thirst_chance": 0.1,
 	"nutrition": {
 		"carbohydrate_ratio": 2,
