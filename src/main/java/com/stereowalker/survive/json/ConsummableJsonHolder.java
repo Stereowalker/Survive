@@ -64,8 +64,8 @@ public class ConsummableJsonHolder implements JsonHolder {
 
 				if(this.hasMemberAndIsPrimitive("hydration", object)) {
 					hydrationAmount = workOnFloat("hydration", object);
-					if (hydrationAmount > 4.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data $s from JSON: Hydration should not be greater than 4.0", itemID);
-					if (hydrationAmount < 1.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data $s from JSON: Hydration should not be less than 1.0", itemID);
+					if (hydrationAmount > 4.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data {} from JSON: Hydration should not be greater than 4.0", itemID);
+					if (hydrationAmount < 1.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data {} from JSON: Hydration should not be less than 1.0", itemID);
 					hydrationAmount = Mth.clamp(hydrationAmount, 1.0f, 4.0f);
 				}
 
@@ -126,13 +126,13 @@ public class ConsummableJsonHolder implements JsonHolder {
 							
 							if(this.hasMemberAndIsPrimitive(CARB_RATIO, object2)) {
 								setWorkingOn(CARB_RATIO);
-								carbohydrateRatio = object.get(CARB_RATIO).getAsInt();
+								carbohydrateRatio = object2.get(CARB_RATIO).getAsInt();
 								stopWorking();
 							}
 							
 							if(this.hasMemberAndIsPrimitive(PROTEIN_RATIO, object2)) {
 								setWorkingOn(PROTEIN_RATIO);
-								proteinRatio = object.get(PROTEIN_RATIO).getAsInt();
+								proteinRatio = object2.get(PROTEIN_RATIO).getAsInt();
 								stopWorking();
 							}
 							
