@@ -32,7 +32,7 @@ public abstract class ChestBlockMixin extends AbstractChestBlock<ChestBlockEntit
 	}
 
 	@Inject(method = "tick", at = @At("TAIL"))
-	private static void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom, CallbackInfo ci) {
+	private void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom, CallbackInfo ci) {
 		if (pLevel.getBlockEntity(pPos) instanceof ChestBlockEntity pBlockEntity) {
 			((ColdStorage)pBlockEntity).coldTick(pLevel);;
 		}

@@ -16,7 +16,7 @@ import net.minecraft.world.item.alchemy.PotionContents;
 @Mixin(PotionBrewing.class)
 public class PotionBrewingMixin {
 
-	@Redirect(method = "mix", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/item/alchemy/PotionContents;createItemStack(Lnet/minecraft/world/item/Item;Lnet/minecraft/core/Holder;)Lnet/minecraft/world/item/ItemStack;"))
+	@Redirect(method = "mixVanilla", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/item/alchemy/PotionContents;createItemStack(Lnet/minecraft/world/item/Item;Lnet/minecraft/core/Holder;)Lnet/minecraft/world/item/ItemStack;"))
 	private ItemStack preserveComponents(Item pItem, Holder<Potion> pPotion, ItemStack pPotion2, ItemStack pPotionItem) {
 		ItemStack stack = PotionContents.createItemStack(pPotionItem.getItem(), pPotion);
 		if (stack.has(SDataComponents.DRINKS_LEFT))

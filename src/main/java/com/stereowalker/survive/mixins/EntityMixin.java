@@ -14,6 +14,8 @@ import com.stereowalker.survive.needs.IRoastedEntity;
 
 import net.minecraft.commands.CommandSource;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.Nameable;
@@ -40,6 +42,7 @@ public abstract class EntityMixin extends net.minecraftforge.common.capabilities
 	@Shadow public boolean isFullyFrozen() {return false;}
 	@Shadow public DamageSources damageSources() {return null;}
 	@Shadow protected abstract void defineSynchedData(SynchedEntityData.Builder pBuilder);
+	private static final EntityDataAccessor<Integer> DATA_TICKS_ROASTED = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.INT);
 
 	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;defineSynchedData(Lnet/minecraft/network/syncher/SynchedEntityData$Builder;)V"))
 	public void init_inject(Entity e, SynchedEntityData.Builder synchedentitydata$builder) {

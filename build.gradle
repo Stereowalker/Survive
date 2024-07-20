@@ -93,11 +93,13 @@ dependencies {
     //runtimeOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE")
 	
 	implementation ("curse.maven:biomes-o-plenty-220318:"+bopID)
+    implementation ("com.github.glitchfiend:GlitchCore-forge:${_minecraft_version}-1.1.0.5")
     implementation ("com.github.glitchfiend:TerraBlender-forge:${_minecraft_version}-3.5.0.5")
 	implementation ("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
 	//implementation ("curse.maven:origins-474438:"+originsID)
 	//implementation ("curse.maven:create-328085:"+createID)
 	//implementation ("curse.maven:flywheel-486392:"+flywheelID)
+	implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

@@ -22,11 +22,9 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-@OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(modid = "survive", value = Dist.CLIENT)
 public class TooltipEvents {
 
-	@OnlyIn(Dist.CLIENT)
 	public static void accessoryTooltip(Player player, ItemStack stack, List<Component> tooltip, boolean displayWeight, boolean displayTemp) {
 		List<Component> tooltipsToAdd = new ArrayList<Component>();
 		if (DataMaps.Client.armor.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
@@ -53,7 +51,6 @@ public class TooltipEvents {
 		tooltip.addAll(1, tooltipsToAdd);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void tooltips(ItemTooltipEvent event) {
 		boolean showWeight = false;
