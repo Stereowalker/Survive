@@ -14,7 +14,7 @@ mixin {
     config "${_mod_id}.mixins.json"
 }
 
-version = _minecraft_version + "-" +modVersion
+version = _minecraft_version + "-" +modVersion+"-"+modLoader
 group = modGroup
 archivesBaseName = _mod_name
 
