@@ -9,7 +9,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
 public class ItemSTags {
-	public static final TagKey<Item> ANIMAL_FAT = create(VersionHelper.toLoc("animal_fat"));
+	public static final TagKey<Item> ANIMAL_FAT = create(VersionHelper.toLoc("c:animal_fat"));
 
 	public ItemSTags() {
 	}
