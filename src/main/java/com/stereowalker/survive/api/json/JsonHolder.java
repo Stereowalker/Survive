@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.stereowalker.survive.json.ArmorJsonHolder;
 import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.survive.json.FluidJsonHolder;
+import com.stereowalker.survive.json.FoodJsonHolder;
 
 import net.minecraft.nbt.CompoundTag;
 
@@ -74,6 +75,7 @@ public interface JsonHolder {
 			.put("Lcom/stereowalker/survive/json/ArmorJsonHolder;", ArmorJsonHolder.class)
 			.put("Lcom/stereowalker/survive/json/FluidJsonHolder;", FluidJsonHolder.class)
 			.put("Lcom/stereowalker/survive/json/BiomeJsonHolder;", BiomeJsonHolder.class)
+			.put("Lcom/stereowalker/survive/json/FoodJsonHolder;", FoodJsonHolder.class)
 			.build();
 	public static JsonHolder deserialize(CompoundTag input, Class<? extends JsonHolder> jsonClass) {
 		try {
