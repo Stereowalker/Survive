@@ -177,7 +177,7 @@ public class BiomeJsonHolder implements JsonHolder {
 
 	@Override
 	public JsonHolder deserialize(CompoundTag input) {
-		return null;
+		return new BiomeJsonHolder(input);
 	}
 
 	public float getThirstChance() {

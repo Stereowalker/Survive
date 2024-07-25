@@ -6,6 +6,7 @@ import org.apache.logging.log4j.MarkerManager;
 import com.google.gson.JsonObject;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.api.json.JsonHolder;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -40,6 +41,10 @@ public class ConsummableJsonHolder implements JsonHolder {
 	private boolean overwritesDefaultHunger = false;
 	private boolean overwritesDefaultSaturation = false;
 	private boolean overwritesDefaultHungerChance = false;
+	
+	public ConsummableJsonHolder(CompoundTag nbt) {
+		this.itemID = VersionHelper.toLoc(nbt.getString("id"));
+	}
 	
 	public ConsummableJsonHolder(ResourceLocation itemID, JsonObject object) {
 		String THIRST = "thirst";
@@ -248,8 +253,9 @@ public class ConsummableJsonHolder implements JsonHolder {
 
 	@Override
 	public CompoundTag serialize() {
-		// TODO Auto-generated method stub
-		return null;
+		CompoundTag nbt = new CompoundTag();
+		nbt.putString("id", this.itemID.toString());
+		return nbt;
 	}
 	
 	String wo = "NOTHING";

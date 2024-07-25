@@ -56,13 +56,14 @@ public class FoodUtils {
 
 	public static void applyFoodStatusToTooltip(Player player, ItemStack stack, List<Component> tip) {
 		if (stack.has(DataComponents.FOOD) && Survive.FOOD_CONFIG.enabled) {
-			if (foodStatus(stack, player.level()) == State.Fresh)
+			State state = foodStatus(stack, player.level());
+			if (state == State.Fresh)
 				tip.add(Component.literal("Fresh").setStyle(Style.EMPTY.withColor(0x88ff88)));
-			else if (foodStatus(stack, player.level()) == State.Good)
+			else if (state == State.Good)
 				tip.add(Component.literal("Good").setStyle(Style.EMPTY.withColor(0x00ff00)));
-			else if (foodStatus(stack, player.level()) == State.Spoiling)
+			else if (state == State.Spoiling)
 				tip.add(Component.literal("Spoiling").setStyle(Style.EMPTY.withColor(0xaaff00)));
-			else if (foodStatus(stack, player.level()) == State.Spoiled)
+			else if (state == State.Spoiled)
 				tip.add(Component.literal("Spoiled").setStyle(Style.EMPTY.withColor(0x88aa00)));
 			else
 				tip.add(Component.literal("Okay").setStyle(Style.EMPTY.withColor(0xffff00)));
@@ -70,8 +71,8 @@ public class FoodUtils {
 	}
 
 	public static State foodStatus(ItemStack stack, Level level) {
-		if (stack.has(SDataComponents.EXPIRE_TIME) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem())) && Survive.FOOD_CONFIG.enabled) {
-			FoodJsonHolder food = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem()));
+		if (stack.has(SDataComponents.EXPIRE_TIME) && (level.isClientSide ?  DataMaps.Client.consummableItem : DataMaps.Server.consummableItem).containsKey(RegistryHelper.items().getKey(stack.getItem())) && Survive.FOOD_CONFIG.enabled) {
+			FoodJsonHolder food = (level.isClientSide ?  DataMaps.Client.consummableItem : DataMaps.Server.consummableItem).get(RegistryHelper.items().getKey(stack.getItem()));
 			long timeTill = stack.get(SDataComponents.EXPIRE_TIME) - level.getGameTime();
 			long timeSince = food.lifespan() - timeTill;
 			if (timeTill < 0) {
