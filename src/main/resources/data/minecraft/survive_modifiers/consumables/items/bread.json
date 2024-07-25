@@ -1,6 +1,6 @@
 {
 	"energy": 5,
-	"thirst": -3,
+	"thirst": -2,
 	"hydration": 1.0,
 	"thirst_chance": 0.0,
 	"lifespan": 72000,
