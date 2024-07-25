@@ -89,23 +89,30 @@ public class SurviveEvents {
 				MutableInt a = new MutableInt(0);
 				DataMaps.Server.armor.forEach((key, value) -> {
 					new ClientboundDataTransferPacket(key, value, a.getValue() == 0).send(player);
-					a.increment();;
+					a.increment();
 				});
 				Survive.getInstance().getLogger().info("Done with Armors");
 				Survive.getInstance().getLogger().info("Syncing Fluid Data");
 				MutableInt f = new MutableInt(0);
 				DataMaps.Server.fluid.forEach((key, value) -> {
 					new ClientboundDataTransferPacket(key, value, f.getValue() == 0).send(player);
-					f.increment();;
+					f.increment();
 				});
 				Survive.getInstance().getLogger().info("Done with Fluids");
 				Survive.getInstance().getLogger().info("Syncing Biome Data");
 				MutableInt i = new MutableInt(0);
 				DataMaps.Server.biome.forEach((key, value) -> {
 					new ClientboundDataTransferPacket(key, value, i.getValue() == 0).send(player);
-					i.increment();;
+					i.increment();
 				});
-				Survive.getInstance().getLogger().info("Done syncing "+i+" biomes");
+				Survive.getInstance().getLogger().info("Done with Biomes");
+				Survive.getInstance().getLogger().info("Syncing Consummable Data");
+				MutableInt c = new MutableInt(0);
+				DataMaps.Server.consummableItem.forEach((key, value) -> {
+					new ClientboundDataTransferPacket(key, value, c.getValue() == 0).send(player);
+					c.increment();
+				});
+				Survive.getInstance().getLogger().info("Done with Consummables");
 				DataMaps.Server.syncedClients.put(player.getUUID(), true); 
 			}
 		}
