@@ -3,6 +3,7 @@ package com.stereowalker.survive.world.item.component;
 import java.util.UUID;
 import java.util.function.UnaryOperator;
 
+import com.stereowalker.survive.FoodUtils;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.unionlib.core.registries.RegistryHolder;
 import com.stereowalker.unionlib.core.registries.RegistryObject;
@@ -30,6 +31,10 @@ public class SDataComponents {
 	@RegistryObject("expire_time")
 	public static final DataComponentType<Long> EXPIRE_TIME = register(
 			type -> type.persistent(Survive.NON_NEGATIVE_LONG).networkSynchronized(ByteBufCodecs.VAR_LONG)
+			);
+	@RegistryObject("food_status")
+	public static final DataComponentType<FoodUtils.FoodStatus> FOOD_STATUS = register(
+			type -> type.persistent(FoodUtils.FoodStatus.CODEC).networkSynchronized(FoodUtils.FoodStatus.STREAM_CODEC)
 			);
 	@RegistryObject("biome_source")
 	public static final DataComponentType<ResourceLocation> BIOME_SOURCE = register(

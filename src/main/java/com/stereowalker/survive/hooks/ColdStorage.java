@@ -111,17 +111,16 @@ public interface ColdStorage {
 				setColdness(coldnessValue);
 			}
 			
-			if (timeSinceLastOpened < 50) return;
-			System.out.println(lastAccessed()+" Time Diff is "+timeSinceLastOpened+" and this block is "+coldness()+" much cold ");
+//			System.out.println(lastAccessed()+" Time Diff is "+timeSinceLastOpened+" and this block is "+coldness()+" much cold ");
 			setLastAccessed(gameTime);
 			if (coldness() > 0) {
-				long efficiency = (long) (timeSinceLastOpened * preservatonEfficiency());
+				float efficiency = timeSinceLastOpened * preservatonEfficiency();
 				if (timeSinceLastOpened <= 2) efficiency = 1;
-				System.out.println("We Lost "+(timeSinceLastOpened - efficiency)+" efficiency of "+(preservatonEfficiency()*100)+"%");
+//				System.out.println("We Lost "+(timeSinceLastOpened - efficiency)+" efficiency of "+(preservatonEfficiency()*100)+"%");
 				for (int i = 0; i < slotCount(); i++) {
 					ItemStack stack = get(i);
-					if (stack.has(SDataComponents.EXPIRE_TIME)) {
-						stack.set(SDataComponents.EXPIRE_TIME, stack.get(SDataComponents.EXPIRE_TIME) + efficiency);
+					if (stack.has(SDataComponents.FOOD_STATUS)) {
+						stack.set(SDataComponents.FOOD_STATUS, stack.get(SDataComponents.FOOD_STATUS).extendTime(efficiency));
 					}
 				}
 				decrementColdness(timeSinceLastOpened * foodAmount);
