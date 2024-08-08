@@ -29,10 +29,6 @@ public interface ColdStorage {
 	public ItemStack get(int i);
 	public void set(int i, ItemStack stack);
 	
-	Map<Item,Float> COOLNESS = new ImmutableMap.Builder<Item,Float>()
-			.put(SItems.ICE_CUBE, 38f)
-			.put(Items.ICE, 342f).build();
-	
 	default ContainerData data() {
 		return new ContainerData() {
 			@Override
@@ -73,6 +69,9 @@ public interface ColdStorage {
 	
 	default void coldTick(Level pLevel) {
 		if (Survive.FOOD_CONFIG.enabled) {
+			Map<Item,Float> COOLNESS = new ImmutableMap.Builder<Item,Float>()
+					.put(SItems.ICE_CUBE, 38f)
+					.put(Items.ICE, 342f).build();
 			long gameTime = pLevel.getGameTime();
 			if (lastAccessed() == 0) setLastAccessed(gameTime);
 			long timeSinceLastOpened = gameTime - lastAccessed();
