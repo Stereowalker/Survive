@@ -12,6 +12,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.stereowalker.survive.client.events.TooltipEvents;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.compat.SItemProperties;
 import com.stereowalker.survive.config.Config;
@@ -99,6 +100,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -297,10 +300,6 @@ public class Survive extends MinecraftMod implements PacketHolder {
 					});
 				}
 			});
-		});
-		collector.addInsert(Inserts.ITEM_TOOLTIP, (stack, player, tip, flag)->{
-			if (player != null)
-				FoodUtils.applyFoodStatusToTooltip(player, stack, tip);
 		});
 		collector.addInsert(Inserts.MENU_OPEN, (player, menu)->{
 			if (player != null)
