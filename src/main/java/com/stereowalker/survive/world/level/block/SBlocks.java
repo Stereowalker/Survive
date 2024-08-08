@@ -1,5 +1,6 @@
 package com.stereowalker.survive.world.level.block;
 
+import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.cauldron.SCauldronInteraction;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.unionlib.core.registries.RegistryHolder;
@@ -13,7 +14,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
-@RegistryHolder(registry = Block.class)
+@RegistryHolder(namespace = Survive.MOD_ID)
 public class SBlocks {
 	@RegistryObject("purified_water")
 	public static final Block PURIFIED_WATER = new LiquidBlock(SFluids.PURIFIED_WATER, BlockBehaviour.Properties.of().mapColor(MapColor.WATER).noCollission().strength(100.0F).noLootTable());

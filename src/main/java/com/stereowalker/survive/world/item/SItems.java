@@ -1,5 +1,6 @@
 package com.stereowalker.survive.world.item;
 
+import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.component.SDataComponents;
 import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.block.state.properties.TempRegulationPlateSize;
@@ -17,7 +18,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.block.Block;
 
-@RegistryHolder(registry = Item.class)
+@RegistryHolder(namespace = Survive.MOD_ID)
 public class SItems {
 	@RegistryObject("wool_hat")
 	public static final Item WOOL_HAT = new ArmorItem(SArmorMaterials.WOOL.holder(), ArmorItem.Type.HELMET, new Item.Properties());

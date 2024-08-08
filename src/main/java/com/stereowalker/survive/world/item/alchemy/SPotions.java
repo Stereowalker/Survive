@@ -1,5 +1,6 @@
 package com.stereowalker.survive.world.item.alchemy;
 
+import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.unionlib.core.registries.Housing;
 import com.stereowalker.unionlib.core.registries.RegistryHolder;
@@ -8,7 +9,7 @@ import com.stereowalker.unionlib.core.registries.RegistryObject;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.alchemy.Potion;
 
-@RegistryHolder(registry = Potion.class)
+@RegistryHolder(namespace = Survive.MOD_ID)
 public class SPotions {
 	@RegistryObject("purified_water")
 	public static final Housing<Potion> PURIFIED_WATER = Housing.create(() -> new Potion());
