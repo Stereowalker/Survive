@@ -8,7 +8,7 @@ import com.stereowalker.unionlib.core.registries.RegistryObject;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 
-@RegistryHolder(registry = Attribute.class)
+@RegistryHolder(namespace = Survive.MOD_ID)
 public class SAttributes {
 	@RegistryObject("generic.max_stamina")
 	public static final Housing<Attribute> MAX_STAMINA = Housing.create(() -> new RangedAttribute("attribute.name.survive.max_stamina", Survive.STAMINA_CONFIG.max_stamina, 1.0D, 1024.0D).setSyncable(true));

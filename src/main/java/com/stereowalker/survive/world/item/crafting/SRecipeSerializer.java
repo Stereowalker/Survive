@@ -1,12 +1,13 @@
 package com.stereowalker.survive.world.item.crafting;
 
+import com.stereowalker.survive.Survive;
 import com.stereowalker.unionlib.core.registries.RegistryHolder;
 import com.stereowalker.unionlib.core.registries.RegistryObject;
 
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 
-@RegistryHolder(registry = RecipeSerializer.class)
+@RegistryHolder(namespace = Survive.MOD_ID)
 public class SRecipeSerializer {
 	@RegistryObject("crafting_charcoal_filter")
 	public static final RecipeSerializer<CharcoalFilterRecipe> CRAFTING_SPECIAL_CHARCOAL_FILTERING = new SimpleCraftingRecipeSerializer<>(CharcoalFilterRecipe::new);

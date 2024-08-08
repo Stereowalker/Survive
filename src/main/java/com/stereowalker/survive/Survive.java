@@ -247,21 +247,21 @@ public class Survive extends MinecraftMod implements PacketHolder {
 
 	@Override
 	public void setupRegistries(RegistryCollector collector) {
-		collector.addRegistryHolder(SAttributes.class);
-		collector.addRegistryHolder(SBlocks.class);
-		collector.addRegistryHolder(SFluids.class);
-		collector.addRegistryHolder(SItems.class);
-		collector.addRegistryHolder(HygieneItems.class);
-		collector.addRegistryHolder(SMobEffects.class);
-		collector.addRegistryHolder(SRecipeSerializer.class);
-		collector.addRegistryHolder(SDataComponents.class);
-		collector.addRegistryHolder(SArmorMaterials.class);
-		collector.addRegistryHolder(SPotions.class);
+		collector.addRegistryHolder(Registries.ATTRIBUTE, SAttributes.class);
+		collector.addRegistryHolder(Registries.BLOCK, SBlocks.class);
+		collector.addRegistryHolder(Registries.FLUID, SFluids.class);
+		collector.addRegistryHolder(Registries.ITEM, SItems.class);
+		collector.addRegistryHolder(Registries.ITEM, HygieneItems.class);
+		collector.addRegistryHolder(Registries.MOB_EFFECT, SMobEffects.class);
+		collector.addRegistryHolder(Registries.RECIPE_SERIALIZER, SRecipeSerializer.class);
+		collector.addRegistryHolder(Registries.DATA_COMPONENT_TYPE, SDataComponents.class);
+		collector.addRegistryHolder(Registries.ARMOR_MATERIAL, SArmorMaterials.class);
+		collector.addRegistryHolder(Registries.POTION, SPotions.class);
 		if (Survive.STAMINA_CONFIG.enabled) {
-			collector.addRegistryHolder(StaminaEnchantments.class);
+			collector.addRegistryHolder(Registries.ENCHANTMENT, StaminaEnchantments.class);
 		}
 		if (Survive.TEMPERATURE_CONFIG.enabled) {
-			collector.addRegistryHolder(TemperatureEnchantments.class);
+			collector.addRegistryHolder(Registries.ENCHANTMENT, TemperatureEnchantments.class);
 		}
 	}
 	

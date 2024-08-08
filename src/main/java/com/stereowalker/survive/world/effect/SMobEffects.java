@@ -1,5 +1,6 @@
 package com.stereowalker.survive.world.effect;
 
+import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.SurviveUUIDS;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.core.registries.Housing;
@@ -11,7 +12,7 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-@RegistryHolder(registry = MobEffect.class)
+@RegistryHolder(namespace = Survive.MOD_ID)
 public class SMobEffects {
 	@RegistryObject("thirst")
 	public static final Housing<MobEffect> THIRST = Housing.create(() -> new ThirstMobEffect(MobEffectCategory.HARMFUL, 5797459));

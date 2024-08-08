@@ -1,5 +1,6 @@
 package com.stereowalker.survive.world.item;
 
+import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.component.SDataComponents;
 import com.stereowalker.unionlib.core.registries.RegistryHolder;
 import com.stereowalker.unionlib.core.registries.RegistryObject;
@@ -8,7 +9,7 @@ import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
-@RegistryHolder(registry = Item.class)
+@RegistryHolder(namespace = Survive.MOD_ID)
 public class HygieneItems {
 	@RegistryObject("used_bath_sponge")
 	public static final Item USED_BATH_SPONGE = new BodyCleaningItem(10, new Item.Properties().durability(200));
