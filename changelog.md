@@ -1,24 +1,8 @@
-- Used inserts for some sleep events
-- Fix crash when eating
-- Raised the amount of unlean stacks required to be considered unclean
-- Fix filled canteens not showing up in creative inventory
-- Fix status book crashing the game when hovered
-- Allowed Charcoal Filters to stack to 32 and added a new "Used Charcoal Filter" when one is used
-- Allowed Bath Sponges to stack to 32 and added a new "Used Bath Sponges" when one is used
-- Fix purified water not being colored properly
-- Fix bowls not filling up with water
-- Added support for Aquaculture 2 food
-- Fix Canteen tootip errors when no potion is present
-- Added the ability to cool and preserve food in chests & barrels
-- Created a separate config for food spoiling
-- Fix empty canteen texture being off center
-- Added Netherite Canteens
-- Canteens can now be used to brew potions
-- Fix Survive damage types causing knockback
-- Removed unnecessary forge imports
-- Fix not loading on servers due to mixin
-- Used an integer instead of a long for sleep time
-- Moved more events to inserts
-- Set the lifespan of all raw vanilla meats and made them high in protein
-- Made hydration work in conjunction with exhaustion to make it less punishing
-- Added lifespan and made bread high in carbs
+- Fix food status not syncing to clients on a server
+- Fixed ice cubes not dropping from ice blocks
+- Changed animal fat tag to the conventional namespace
+- Fixed animal fat not dropping from animals
+- All meats now deduct no more than 2 thirst
+- Improved the accuracy at which food lifespan is extended when cooled
+- Updated UnionLib to 12.0.4
+- Used an insert for tooltips instead of an event
