@@ -3,20 +3,20 @@ package com.stereowalker.survive.world.item;
 import java.util.EnumMap;
 import java.util.List;
 
+import com.stereowalker.survive.Survive;
 import com.stereowalker.unionlib.core.registries.Housing;
 import com.stereowalker.unionlib.core.registries.RegistryHolder;
 import com.stereowalker.unionlib.core.registries.RegistryObject;
 import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.Util;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
-@RegistryHolder(registry = ArmorMaterial.class)
+@RegistryHolder(namespace = Survive.MOD_ID)
 public class SArmorMaterials
 {
 	@RegistryObject("wool")

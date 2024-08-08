@@ -14,7 +14,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 
-@RegistryHolder(namespace = Survive.MOD_ID, registry = DataComponentType.class)
+@RegistryHolder(namespace = Survive.MOD_ID)
 public class SDataComponents {
 	@RegistryObject("status_owner")
 	public static final DataComponentType<UUID> STATUS_OWNER = register(

@@ -2,8 +2,6 @@ package com.stereowalker.survive.world.item.enchantment;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import com.stereowalker.survive.Survive;
-
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
@@ -20,7 +18,7 @@ public class SEnchantmentHelper extends EnchantmentHelper {
 
 		has(stack, null);
         for (Entry<Holder<Enchantment>> entry : itemenchantments.entrySet()) {
-        	if (entry.getKey().value().effects().has(Survive.COOLING.get()))
+        	if (entry.getKey().value().effects().has(SEnchantmentEffectComponents.COOLING))
         		mutablefloat.add(entry.getIntValue());
         }
         return mutablefloat.intValue();
@@ -32,7 +30,7 @@ public class SEnchantmentHelper extends EnchantmentHelper {
 
 		has(stack, null);
         for (Entry<Holder<Enchantment>> entry : itemenchantments.entrySet()) {
-        	if (entry.getKey().value().effects().has(Survive.WARMING.get()))
+        	if (entry.getKey().value().effects().has(SEnchantmentEffectComponents.WARMING))
         		mutablefloat.add(entry.getIntValue());
         }
         return mutablefloat.intValue();
@@ -44,21 +42,21 @@ public class SEnchantmentHelper extends EnchantmentHelper {
 
 		has(stack, null);
         for (Entry<Holder<Enchantment>> entry : itemenchantments.entrySet()) {
-        	if (entry.getKey().value().effects().has(Survive.FEATHERS.get()))
+        	if (entry.getKey().value().effects().has(SEnchantmentEffectComponents.FEATHERS))
         		mutablefloat.add(entry.getIntValue());
         }
         return mutablefloat.intValue();
 	}
 	
 	public static boolean hasAdjustedCooling(ItemStack stack) {
-		return has(stack, Survive.AUTO_COOLING.get());
+		return has(stack, SEnchantmentEffectComponents.AUTO_COOLING);
 	}
 
 	public static boolean hasAdjustedWarming(ItemStack stack) {
-		return has(stack, Survive.AUTO_WARMING.get());
+		return has(stack, SEnchantmentEffectComponents.AUTO_WARMING);
 	}
 
 	public static boolean hasWeightless(ItemStack stack) {
-		return has(stack, Survive.WEIGHTLESS.get());
+		return has(stack, SEnchantmentEffectComponents.WEIGHTLESS);
 	}
 }
