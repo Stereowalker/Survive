@@ -31,7 +31,8 @@
           "chance": 0.7
         },
         {
-          "condition": "survive:animal_fat_config"
+          "condition": "survive:animal_fat_config",
+          "value": 0
         }
       ]
     }
