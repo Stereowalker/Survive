@@ -35,8 +35,6 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -52,7 +50,6 @@ public class SurviveRegistryEvents
 	private static final int MAX_VARINT = Integer.MAX_VALUE - 1;
 	//Game Object Registries
 	@SubscribeEvent
-	@OnlyIn(Dist.CLIENT)
 	public static void registerItemColors(RegisterColorHandlersEvent.Block event) {
 		event.register((state, displayReader, blockPos, tintIndex) -> {
 			return Survive.PURIFIED_WATER_COLOR;
@@ -66,7 +63,6 @@ public class SurviveRegistryEvents
 	}
 	
 	@SubscribeEvent
-	@OnlyIn(Dist.CLIENT)
 	public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
 		event.register((stack, tintIndex) -> {
 			PotionContents contents = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
@@ -78,7 +74,6 @@ public class SurviveRegistryEvents
 	}
 
 	@SubscribeEvent
-	@OnlyIn(Dist.CLIENT)
 	public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
 		event.registerSpriteSet(SParticleTypes.STINK, HygieneParticle.StinkFactory::new);
 		event.registerSpriteSet(SParticleTypes.CLEAN, HygieneParticle.CleanFactory::new);

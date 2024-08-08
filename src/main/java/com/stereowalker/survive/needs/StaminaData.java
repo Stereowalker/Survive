@@ -27,8 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -73,7 +71,6 @@ public class StaminaData extends SurviveData {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void clientTick(AbstractClientPlayer player) {
 		if (player.isPassenger() && player.tickCount%400 == 399) {
 			if (player.getVehicle().getDeltaMovement().x == 0 && player.getVehicle().getDeltaMovement().z == 0)
@@ -229,7 +226,6 @@ public class StaminaData extends SurviveData {
 		this.energyLevel = energyLevelIn;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public void setEnergyReserveLevel(int energyReserveLevelIn) {
 		this.energyReserveLevel = energyReserveLevelIn;
 	}
