@@ -5,6 +5,7 @@ import java.util.Random;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.stereowalker.survive.client.events.TooltipEvents;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
 import com.stereowalker.survive.hooks.ColdMenu;
@@ -18,6 +19,7 @@ import com.stereowalker.unionlib.api.collectors.OverlayCollector.Order;
 import com.stereowalker.unionlib.api.gui.GuiRenderer;
 import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsScreen;
 import com.stereowalker.unionlib.insert.ClientInserts;
+import com.stereowalker.unionlib.insert.Inserts;
 import com.stereowalker.unionlib.mod.ClientSegment;
 import com.stereowalker.unionlib.util.ScreenHelper;
 import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
@@ -34,7 +36,9 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.player.Player;
 
 public class SurviveClientSegment extends ClientSegment {
@@ -68,6 +72,26 @@ public class SurviveClientSegment extends ClientSegment {
 					renderer.blit(VersionHelper.toLoc("survive:textures/gui/coldness.png"), i + 8, j + 17 + 4, 0, 30, j1, 10);
 				}
 				
+			}
+		});
+		collector.addInsert(Inserts.ITEM_TOOLTIP, (stack, player, tip, flag)->{
+			if (player != null) {
+				boolean showWeight = false;
+				boolean showTemp = false;
+				if ((Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights) || Survive.TEMPERATURE_CONFIG.enabled) {
+					for(EquipmentSlot type : EquipmentSlot.values()) {
+						if (stack.canEquip(type, player) && type.getType() == Type.HUMANOID_ARMOR) {
+							showWeight = Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights;
+							showTemp = Survive.TEMPERATURE_CONFIG.enabled;
+							break;
+						}
+					}
+				}
+
+				if (showWeight || showTemp) {
+					TooltipEvents.accessoryTooltip(player, stack, tip, showWeight, showTemp);
+				}
+				FoodUtils.applyFoodStatusToTooltip(player, stack, tip);
 			}
 		});
 	}
