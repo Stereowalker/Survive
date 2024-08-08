@@ -17,16 +17,13 @@ import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
-@OnlyIn(Dist.CLIENT)
 @EventBusSubscriber(modid = "survive", value = Dist.CLIENT)
 public class TooltipEvents {
 
-	@OnlyIn(Dist.CLIENT)
 	public static void accessoryTooltip(Player player, ItemStack stack, List<Component> tooltip, boolean displayWeight, boolean displayTemp) {
 		List<Component> tooltipsToAdd = new ArrayList<Component>();
 		if (DataMaps.Client.armor.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
@@ -53,7 +50,6 @@ public class TooltipEvents {
 		tooltip.addAll(1, tooltipsToAdd);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent
 	public static void tooltips(ItemTooltipEvent event) {
 		boolean showWeight = false;

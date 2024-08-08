@@ -27,8 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -73,7 +71,6 @@ public class StaminaData extends SurviveData {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void clientTick(AbstractClientPlayer player) {
 		if (player.isPassenger() && player.tickCount%400 == 399) {
 			if (player.getVehicle().getDeltaMovement().x == 0 && player.getVehicle().getDeltaMovement().z == 0)
@@ -229,7 +226,6 @@ public class StaminaData extends SurviveData {
 		this.energyLevel = energyLevelIn;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public void setEnergyReserveLevel(int energyReserveLevelIn) {
 		this.energyReserveLevel = energyReserveLevelIn;
 	}
