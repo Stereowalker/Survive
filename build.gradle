@@ -41,7 +41,7 @@ runs {
     server {
         systemProperty 'forge.enabledGameTestNamespaces', project._mod_id
         workingDirectory project.file('run/Neo-Server')
-        programArgument '--nogui'
+        //programArgument '--nogui'
     }
 }
 
