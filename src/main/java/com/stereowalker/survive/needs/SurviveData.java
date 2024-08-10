@@ -2,12 +2,9 @@ package com.stereowalker.survive.needs;
 
 import java.util.Random;
 
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public abstract class SurviveData {
 	Random rng;
@@ -34,15 +31,13 @@ public abstract class SurviveData {
 		}
 	}
 	
-	@OnlyIn(Dist.CLIENT)
-	public void baseClientTick(AbstractClientPlayer player) {
+	public void baseClientTick(Player player) {
 		if (shouldTick()) {
 			clientTick(player);
 		}
 	}
 	
-	@OnlyIn(Dist.CLIENT)
-	public void clientTick(AbstractClientPlayer player) {
+	public void clientTick(Player player) {
 		
 	}
 }

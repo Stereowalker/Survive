@@ -15,7 +15,6 @@ import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -71,7 +70,7 @@ public class StaminaData extends SurviveData {
 	}
 
 	@Override
-	public void clientTick(AbstractClientPlayer player) {
+	public void clientTick(Player player) {
 		if (player.isPassenger() && player.tickCount%400 == 399) {
 			if (player.getVehicle().getDeltaMovement().x == 0 && player.getVehicle().getDeltaMovement().z == 0)
 				new ServerboundRelaxPacket(1).send();
