@@ -6,12 +6,9 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.particles.SParticleTypes;
 
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class HygieneData extends SurviveData {
 	private int uncleanLevel = 5;
@@ -39,8 +36,7 @@ public class HygieneData extends SurviveData {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void clientTick(AbstractClientPlayer player) {
+	public void clientTick(Player player) {
 		if (!player.isCreative() && !player.isSpectator()) {
 			if (this.needsABath()) {
 				Random rand = new Random();
