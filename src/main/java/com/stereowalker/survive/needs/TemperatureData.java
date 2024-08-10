@@ -20,8 +20,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class TemperatureData extends SurviveData {
 	private double temperatureLevel = 0;
@@ -247,7 +245,6 @@ public class TemperatureData extends SurviveData {
 		return ((float)fTemp) / 100.0F;
 	}
 	
-	@OnlyIn(Dist.CLIENT)
 	public double getDisplayTemperature() {
 		return displayTemperature;
 	}
