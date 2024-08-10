@@ -77,7 +77,7 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 			status4+= "Carbohydrates = "+real.nutritionData().getCarbLevel()+"\n"+
 					"Proteins = "+real.nutritionData().getProteinLevel()+"\n";
 
-			Function<String, Filterable<Component>> ft = (s) -> Filterable.passThrough(Component.literal("{\"text\":\""+s.replaceAll("\n", "\\\\n")+"\"}"));
+			Function<String, Filterable<Component>> ft = (s) -> Filterable.passThrough(Component.literal(s));
 			contents.set(0, ft.apply(status0));
 			contents.set(1, ft.apply(status1));
 			contents.set(2, ft.apply(String.format(this.sleepPage, real.sleepData().getDaysAwake())));
