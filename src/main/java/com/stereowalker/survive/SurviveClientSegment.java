@@ -19,7 +19,6 @@ import com.stereowalker.unionlib.api.collectors.OverlayCollector.Order;
 import com.stereowalker.unionlib.api.gui.GuiRenderer;
 import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsScreen;
 import com.stereowalker.unionlib.insert.ClientInserts;
-import com.stereowalker.unionlib.insert.Inserts;
 import com.stereowalker.unionlib.mod.ClientSegment;
 import com.stereowalker.unionlib.util.ScreenHelper;
 import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
@@ -37,8 +36,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EquipmentSlot.Type;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 public class SurviveClientSegment extends ClientSegment {
@@ -74,7 +73,7 @@ public class SurviveClientSegment extends ClientSegment {
 				
 			}
 		});
-		collector.addInsert(Inserts.ITEM_TOOLTIP, (stack, player, tip, flag)->{
+		collector.addInsert(ClientInserts.ITEM_TOOLTIP, (stack, player, tip, flag)->{
 			if (player != null) {
 				boolean showWeight = false;
 				boolean showTemp = false;
