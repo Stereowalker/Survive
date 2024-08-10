@@ -1,7 +1,6 @@
 package com.stereowalker.survive.needs;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.world.effect.SMobEffects;
 
 import net.minecraft.nbt.CompoundTag;
@@ -28,30 +27,27 @@ public class SleepData extends SurviveData {
 
 	@Override
 	public void tick(Player player) {
-		if (!player.level().isClientSide) {
-			ServerPlayer serverplayer = (ServerPlayer)player;
-			Difficulty difficulty = player.level().getDifficulty();
-			if (difficulty == Difficulty.PEACEFUL)
-				this.addAwakeTime(serverplayer, -1);
-			else
-				if (player.isSleeping())
-					addAwakeTime(serverplayer, -player.getSleepTimer());
-				else if (serverplayer.level().dimensionType().bedWorks())
-					addAwakeTime(serverplayer, 1);
-				if (player.tickCount % 20 == 0)
-					addTiredEffect(serverplayer);
-		}
+		ServerPlayer serverplayer = (ServerPlayer)player;
+		Difficulty difficulty = player.level().getDifficulty();
+		if (difficulty == Difficulty.PEACEFUL)
+			this.addAwakeTime(serverplayer, -1);
+		else
+			if (player.isSleeping())
+				addAwakeTime(serverplayer, -player.getSleepTimer());
+			else if (serverplayer.level().dimensionType().bedWorks())
+				addAwakeTime(serverplayer, 1);
+		if (player.tickCount % 20 == 0)
+			addTiredEffect(serverplayer);
 	}
 
 	public void addTiredEffect(ServerPlayer player) {
-		if (tirednessAmplifier(player) >= 0 && !player.hasEffect(SMobEffects.ENERGIZED.holder())) {
-			player.addEffect(new MobEffectInstance(SMobEffects.TIREDNESS.holder(), 200, Math.min(tirednessAmplifier(player), Survive.CONFIG.tiredTimeStacks), false, false, true));
+		if (tirednessAmplifier() >= 0 && !player.hasEffect(SMobEffects.ENERGIZED.holder())) {
+			player.addEffect(new MobEffectInstance(SMobEffects.TIREDNESS.holder(), 200, Math.min(tirednessAmplifier(), Survive.CONFIG.tiredTimeStacks), false, false, true));
 		}
 	}
 
-	public int tirednessAmplifier(Player player) {
-		SleepData stats = SurviveEntityStats.getSleepStats(player);
-		float extraTime = stats.getAwakeTimer() - Survive.CONFIG.initialTiredTime;
+	public int tirednessAmplifier() {
+		float extraTime = getAwakeTimer() - Survive.CONFIG.initialTiredTime;
 		return Mth.floor(extraTime/Survive.CONFIG.tiredTimeStep);
 	}
 
@@ -69,7 +65,6 @@ public class SleepData extends SurviveData {
 
 	@Override
 	public void save(LivingEntity player) {
-		SurviveEntityStats.setSleepStats(player, this);
 	}
 
 	@Override
