@@ -80,8 +80,7 @@ dependencies {
 	annotationProcessor "org.spongepowered:mixin:${modMixinVersion}:processor"
 	implementation "org.spongepowered:mixin:${modMixinVersion}"
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
-	//implementation ("com.stereowalker.unionlib:UnionLib:${_minecraft_version}-"+unionLibVersion+"-"+modLoader+"")
-	implementation ("com.stereowalker.unionlib:UnionLib:1.21-"+unionLibVersion+"-"+modLoader+"")
+	implementation ("com.stereowalker.unionlib:UnionLib:${_minecraft_version}-"+unionLibVersion+"-"+modLoader+"")
 	
 	compileOnly ("mezz.jei:jei-1.21-common-api:"+jeiVersion)
 	compileOnly ("mezz.jei:jei-1.21-forge-api:"+jeiVersion)

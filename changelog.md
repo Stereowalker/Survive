@@ -1,10 +1,5 @@
-- Ported to 1.21.1
-- Fix food status not syncing to clients on a server
-- Fixed ice cubes not dropping from ice blocks
-- Fixed animal fat not dropping from animals
-- Changed animal fat tag to the conventional namespace
-- Fix regulator blocks not dropping when mined
-- All meats now deduct no more than 2 thirst
-- Improved the accuracy at which food lifespan is extended when cooled
-- Updated UnionLib to 12.0.4
-- Used an insert for tooltips instead of an event
+- Updated to UnionLib 12.0.5
+- Fix Wellbeing and Nutrition data not loading when you log in
+- Fixed crash on dedicated servers
+- Changed how sleep data is saved
+- Fix player status book not displaying text correctly
