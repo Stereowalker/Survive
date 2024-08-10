@@ -1,3 +1,10 @@
+[10.0.4]
+- Updated to UnionLib 12.0.5
+- Fix Wellbeing and Nutrition data not loading when you log in
+- Fixed crash on dedicated servers
+- Changed how sleep data is saved
+- Fix player status book not displaying text correctly
+
 [10.0.3]
 - Ported to 1.21.1
 - Fix food status not syncing to clients on a server
