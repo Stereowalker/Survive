@@ -7,13 +7,14 @@ import net.minecraft.world.level.Level;
 public interface IRealisticEntity {
 	public StaminaData getStaminaData();
 	public HygieneData getHygieneData();
-	public NutritionData getNutritionData();
+	public NutritionData nutritionData();
 	public void setNutritionData(NutritionData data);
 	public TemperatureData getTemperatureData();
 	public WaterData getWaterData();
-	public WellbeingData getWellbeingData();
+	public WellbeingData wellbeingData();
 	public void setWellbeingData(WellbeingData data);
-	public SleepData getSleepData();
+	public SleepData sleepData();
+	public void setSleepData(SleepData data);
 	public CustomFoodData getRealFoodData();
 	
 	private LivingEntity self() {

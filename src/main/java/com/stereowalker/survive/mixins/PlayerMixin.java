@@ -47,6 +47,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	@Shadow private int sleepCounter;
 	private WellbeingData wellbeingData = new WellbeingData();
 	private NutritionData nutritionData = new NutritionData();
+	private SleepData sleepData = new SleepData();
 
 	protected PlayerMixin(EntityType<? extends LivingEntity> type, Level worldIn) {
 		super(type, worldIn);
@@ -96,7 +97,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			getTemperatureData().baseTick((Player)(Object)this);
 			getWaterData().baseTick((Player)(Object)this);
 			this.wellbeingData.baseTick((Player)(Object)this);
-			getSleepData().baseTick((Player)(Object)this);
+			sleepData().baseTick((Player)(Object)this);
 		}
 	}
 	
@@ -159,6 +160,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			CompoundTag surviveData = pCompound.getCompound("surviveData");
 			if (surviveData.contains("wellbeing", 10)) this.wellbeingData.read(surviveData.getCompound("wellbeing"));
 			if (surviveData.contains("nutrition", 10)) this.nutritionData.read(surviveData.getCompound("nutrition"));
+			if (surviveData.contains("sleep", 10)) this.sleepData.read(surviveData.getCompound("sleep"));
 		}
 	}
 	
@@ -167,6 +169,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		CompoundTag surviveData = new CompoundTag();
 		surviveData.put("wellbeing", this.wellbeingData.write());
 		surviveData.put("nutrition", this.nutritionData.write());
+		surviveData.put("sleep", this.sleepData.write());
 		pCompound.put("surviveData", surviveData);
 	}
 
@@ -178,7 +181,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		return SurviveEntityStats.getHygieneStats((Player)(Object)this);
 	}
 
-	public NutritionData getNutritionData(){
+	public NutritionData nutritionData(){
 		return this.nutritionData;
 	}
 	
@@ -196,7 +199,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	}
 
 	@Override
-	public WellbeingData getWellbeingData(){
+	public WellbeingData wellbeingData(){
 		return this.wellbeingData;
 	}
 	
@@ -205,8 +208,14 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		this.wellbeingData = data;
 	}
 
-	public SleepData getSleepData(){
-		return SurviveEntityStats.getSleepStats((Player)(Object)this);
+	@Override
+	public SleepData sleepData(){
+		return this.sleepData;
+	}
+	
+	@Override
+	public void setSleepData(SleepData data) {
+		this.sleepData = data;
 	}
 
 	public CustomFoodData getRealFoodData(){

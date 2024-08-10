@@ -168,7 +168,7 @@ public class WaterData extends SurviveData {
 		if (Survive.WELLBEING_CONFIG.enabled) {
 			//Essentially causes the player to get ill when drinking bad water
 			if (uncleanConsumption >= 3) {
-				((IRealisticEntity)player).getWellbeingData().setTimer(2400, 6000, Mth.ceil((float)uncleanStacks/(float)uncleanConsumption), "drinking unpurified water");
+				((IRealisticEntity)player).wellbeingData().setTimer(2400, 6000, Mth.ceil((float)uncleanStacks/(float)uncleanConsumption), "drinking unpurified water");
 				uncleanConsumption = 0;
 			}
 		}

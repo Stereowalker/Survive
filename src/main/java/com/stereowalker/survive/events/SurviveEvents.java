@@ -396,13 +396,13 @@ public class SurviveEvents {
 		if (keepEverything) {
 			IRealisticEntity entity = ((IRealisticEntity)thisPlayer);
 			IRealisticEntity original = ((IRealisticEntity)thatPlayer);
-			entity.setNutritionData(original.getNutritionData());
-			entity.setWellbeingData(original.getWellbeingData());
+			entity.setNutritionData(original.nutritionData());
+			entity.setWellbeingData(original.wellbeingData());
 			SurviveEntityStats.setHygieneStats(thisPlayer, SurviveEntityStats.getHygieneStats(thatPlayer));
 			SurviveEntityStats.setWaterStats(thisPlayer, original.getWaterData());
 			SurviveEntityStats.setStaminaStats(thisPlayer, SurviveEntityStats.getEnergyStats(thatPlayer));
 			SurviveEntityStats.setTemperatureStats(thisPlayer, SurviveEntityStats.getTemperatureStats(thatPlayer));
-			SurviveEntityStats.setSleepStats(thisPlayer, SurviveEntityStats.getSleepStats(thatPlayer));
+			entity.setSleepData(original.sleepData());
 			SurviveEntityStats.setWetTime(thisPlayer, SurviveEntityStats.getWetTime(thatPlayer));
 		}
 	}
