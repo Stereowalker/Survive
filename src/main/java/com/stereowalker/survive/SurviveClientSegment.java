@@ -206,8 +206,8 @@ public class SurviveClientSegment extends ClientSegment {
 			}
 		}
 		if (Survive.CONFIG.nutrition_enabled && (playerentity.getMainHandItem().has(DataComponents.FOOD) || playerentity.getOffhandItem().has(DataComponents.FOOD))) {
-			renderer.drawString("Carbs = "+((IRealisticEntity)playerentity).getNutritionData().getCarbLevel(), 0, 0, ChatFormatting.GRAY.getColor(), false);
-			renderer.drawString("Protein = "+((IRealisticEntity)playerentity).getNutritionData().getProteinLevel(), 0, 10, ChatFormatting.GRAY.getColor(), false);
+			renderer.drawString("Carbs = "+((IRealisticEntity)playerentity).nutritionData().getCarbLevel(), 0, 0, ChatFormatting.GRAY.getColor(), false);
+			renderer.drawString("Protein = "+((IRealisticEntity)playerentity).nutritionData().getProteinLevel(), 0, 10, ChatFormatting.GRAY.getColor(), false);
 		}
 		Minecraft.getInstance().getProfiler().pop();
 		//		if (!forgeOverlay) {

@@ -64,23 +64,23 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 					"Energy Level = "+real.getStaminaData().getEnergyLevel();
 
 			String status1 = "§2§nWellness:§r\n";
-			if (real.getWellbeingData().isWell())
+			if (real.wellbeingData().isWell())
 				status1+= "No ilnesses dectected";
 			else
-				status1+= "Intensity = "+(real.getWellbeingData().getIntensity()+1)+"\n"+
-						"Reason = "+real.getWellbeingData().getReason()+"\n";
+				status1+= "Intensity = "+(real.wellbeingData().getIntensity()+1)+"\n"+
+						"Reason = "+real.wellbeingData().getReason()+"\n";
 
 			String status3 = "§2§nHygiene:§r\n";
 			status3+= "Cleanliness level = "+(100 - real.getHygieneData().getUncleanLevel())+"";
 
 			String status4 = "§2§nNutrition:§r\n";
-			status4+= "Carbohydrates = "+real.getNutritionData().getCarbLevel()+"\n"+
-					"Proteins = "+real.getNutritionData().getProteinLevel()+"\n";
+			status4+= "Carbohydrates = "+real.nutritionData().getCarbLevel()+"\n"+
+					"Proteins = "+real.nutritionData().getProteinLevel()+"\n";
 
 			Function<String, Filterable<Component>> ft = (s) -> Filterable.passThrough(Component.literal("{\"text\":\""+s.replaceAll("\n", "\\\\n")+"\"}"));
 			contents.set(0, ft.apply(status0));
 			contents.set(1, ft.apply(status1));
-			contents.set(2, ft.apply(String.format(this.sleepPage, real.getSleepData().getDaysAwake())));
+			contents.set(2, ft.apply(String.format(this.sleepPage, real.sleepData().getDaysAwake())));
 			contents.set(3, ft.apply(status3));
 			contents.set(4, ft.apply(status4));
 			contents.set(5, ft.apply(String.format(this.tempPage, (!celcius ? (real.getTemperatureData().getFahrenheit()+" °F") : (real.getTemperatureData().getCelcius()+" °C")))));

@@ -19,8 +19,7 @@ public class SurviveEntityStats {
 	public static String temperatureStatsID = "TemperatureStats";
 	public static String energyStatsID = "EnergyStats";
 	public static String hygieneStatsID = "HygieneStats";
-//	public static String nutritionStatsID = "NutritionStats";
-	public static String sleepStatsID = "SleepStats";
+//	public static String sleepStatsID = "SleepStats";
 	//Getters
 
 	public static WaterData getWaterStats(LivingEntity entity) {
@@ -67,27 +66,16 @@ public class SurviveEntityStats {
 		return stats;
 	}
 	
-//	public static NutritionData getNutritionStats(LivingEntity entity) {
-//		NutritionData stats = new NutritionData();
+//	public static SleepData getSleepStats(LivingEntity entity) {
+//		SleepData stats = new SleepData();
 //		if(entity != null) {
-//			if (getModNBT(entity) != null && getModNBT(entity).contains(nutritionStatsID, 10)) {
-//				stats.read(getModNBT(entity).getCompound(nutritionStatsID));
+//			if (getModNBT(entity) != null && getModNBT(entity).contains(sleepStatsID, 10)) {
+//				stats.read(getModNBT(entity).getCompound(sleepStatsID));
 //				return stats;
 //			}
 //		}
 //		return stats;
 //	}
-	
-	public static SleepData getSleepStats(LivingEntity entity) {
-		SleepData stats = new SleepData();
-		if(entity != null) {
-			if (getModNBT(entity) != null && getModNBT(entity).contains(sleepStatsID, 10)) {
-				stats.read(getModNBT(entity).getCompound(sleepStatsID));
-				return stats;
-			}
-		}
-		return stats;
-	}
 
 	public static int getWetTime(LivingEntity entity) {
 		if (getModNBT(entity) != null && getModNBT(entity).contains(append("WetTime"))) {
@@ -122,17 +110,11 @@ public class SurviveEntityStats {
 		getModNBT(entity).put(hygieneStatsID, compound2);
 	}
 	
-//	public static void setNutritionStats(LivingEntity entity, NutritionData nutritionStats) {
+//	public static void setSleepStats(LivingEntity entity, SleepData sleepStats) {
 //		CompoundTag compound2 = new CompoundTag();
-//		nutritionStats.write(compound2);
-//		getModNBT(entity).put(nutritionStatsID, compound2);
+//		sleepStats.write(compound2);
+//		getModNBT(entity).put(sleepStatsID, compound2);
 //	}
-	
-	public static void setSleepStats(LivingEntity entity, SleepData sleepStats) {
-		CompoundTag compound2 = new CompoundTag();
-		sleepStats.write(compound2);
-		getModNBT(entity).put(sleepStatsID, compound2);
-	}
 
 	public static void setWetTime(LivingEntity entity, int wetTime) {
 		getModNBT(entity).putInt(append("WetTime"), wetTime);
@@ -183,12 +165,9 @@ public class SurviveEntityStats {
 				if (!compound.contains(hygieneStatsID)) {
 					setHygieneStats(player, new HygieneData());
 				}
-//				if (!compound.contains(nutritionStatsID)) {
-//					setNutritionStats(player, new NutritionData());
+//				if (!compound.contains(sleepStatsID)) {
+//					setSleepStats(player, new SleepData());
 //				}
-				if (!compound.contains(sleepStatsID)) {
-					setSleepStats(player, new SleepData());
-				}
 				if (!compound.contains(append("WetTime"))) {
 					setWetTime(player, 0);
 					Survive.getInstance().debug("Set " + name + "'s wet time to " + getWetTime(player));

@@ -41,7 +41,7 @@ public abstract class BlockMixin extends BlockBehaviour implements ItemLike, net
 //			}
 		}
 		else if (Survive.CONFIG.nutrition_enabled) {
-			((IRealisticEntity)player).getNutritionData().removeCarbs(Mth.ceil(value*2.5f));
+			((IRealisticEntity)player).nutritionData().removeCarbs(Mth.ceil(value*2.5f));
 		}
 		else {
 			player.causeFoodExhaustion(value);
