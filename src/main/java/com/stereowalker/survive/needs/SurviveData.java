@@ -17,6 +17,12 @@ public abstract class SurviveData {
 	public abstract void save(LivingEntity player);
 	public abstract boolean shouldTick();
 	
+	public CompoundTag write() {
+		CompoundTag tag = new CompoundTag();
+		write(tag);
+		return tag;
+	}
+	
 	public SurviveData() {
 		this.rng = new Random();
 	}
