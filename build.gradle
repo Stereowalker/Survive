@@ -80,22 +80,23 @@ dependencies {
 	annotationProcessor "org.spongepowered:mixin:${modMixinVersion}:processor"
 	implementation "org.spongepowered:mixin:${modMixinVersion}"
 	implementation fileTree(include: ['*.jar'], dir: 'libs')
-	implementation ("com.stereowalker.unionlib:UnionLib:"+_minecraft_version+"-"+unionLibVersion+"-"+modLoader+"")
+	//implementation ("com.stereowalker.unionlib:UnionLib:${_minecraft_version}-"+unionLibVersion+"-"+modLoader+"")
+	implementation ("com.stereowalker.unionlib:UnionLib:1.21-"+unionLibVersion+"-"+modLoader+"")
 	
-	compileOnly ("mezz.jei:jei-${_minecraft_version}-common-api:"+jeiVersion)
-	compileOnly ("mezz.jei:jei-${_minecraft_version}-forge-api:"+jeiVersion)
+	compileOnly ("mezz.jei:jei-1.21-common-api:"+jeiVersion)
+	compileOnly ("mezz.jei:jei-1.21-forge-api:"+jeiVersion)
 	compileOnly ("com.stereowalker.combat:C.O.M.B.A.T:1.18.2"+/*_minecraft_version+*/"-"+combatVersion+":api")
     //compileOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
     //compileOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE:api")
 	
-	implementation ("mezz.jei:jei-${_minecraft_version}-forge:"+jeiVersion+"")
+	implementation ("mezz.jei:jei-1.21-forge:"+jeiVersion+"")
 	//runtimeOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
     //runtimeOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE")
 	
-    implementation ("com.github.glitchfiend:GlitchCore-forge:${_minecraft_version}-2.0.0.2")
-    implementation ("com.github.glitchfiend:TerraBlender-forge:${_minecraft_version}-4.0.0.1")
-    implementation ("com.github.glitchfiend:SereneSeasons-forge:${_minecraft_version}-${_serene_seasons_version}")
-    implementation ("com.github.glitchfiend:BiomesOPlenty-forge:${_minecraft_version}-${_bop_version}")
+    implementation ("com.github.glitchfiend:GlitchCore-forge:1.21-2.0.0.2")
+    implementation ("com.github.glitchfiend:TerraBlender-forge:1.21-4.0.0.1")
+    implementation ("com.github.glitchfiend:SereneSeasons-forge:1.21-${_serene_seasons_version}")
+    implementation ("com.github.glitchfiend:BiomesOPlenty-forge:1.21-${_bop_version}")
 	//implementation ("curse.maven:origins-474438:"+originsID)
 	//implementation ("curse.maven:create-328085:"+createID)
 	//implementation ("curse.maven:flywheel-486392:"+flywheelID)
