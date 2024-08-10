@@ -5,8 +5,6 @@ import javax.annotation.Nullable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public abstract class TemperatureChangeInstance {
 	
@@ -24,7 +22,6 @@ public abstract class TemperatureChangeInstance {
 		return temperature;
 	}
 	
-	@OnlyIn(Dist.CLIENT)
 	@Nullable
 	public Component getAdditionalContext() {
 		return null;

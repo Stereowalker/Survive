@@ -6,8 +6,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public class UnderwaterCondition extends TemperatureChangeCondition<UnderwaterCondition.Instance>{
 
@@ -103,7 +101,6 @@ public class UnderwaterCondition extends TemperatureChangeCondition<UnderwaterCo
 		}
 		
 		@Override
-		@OnlyIn(Dist.CLIENT)
 		public Component getAdditionalContext() {
 			return Component.translatable("temperature_context.underwater");
 		}

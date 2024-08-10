@@ -26,7 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityAccess;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin extends net.neoforged.neoforge.attachment.AttachmentHolder implements Nameable, EntityAccess, CommandSource, net.neoforged.neoforge.common.extensions.IEntityExtension, IRoastedEntity {
+public abstract class EntityMixin implements Nameable, EntityAccess, CommandSource, IRoastedEntity {
 
 	@Shadow @Final protected SynchedEntityData entityData;
 	@Shadow public boolean isInPowderSnow;

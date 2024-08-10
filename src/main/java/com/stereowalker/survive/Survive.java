@@ -174,7 +174,6 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		super("survive", () -> new SurviveClientSegment(), () -> new ServerSegment());
 		instance = this;
 		eventBus().addListener(this::clientRegistries);
-		//		MinecraftForge.EVENT_BUS.register(this);
 		NeoForge.EVENT_BUS.addListener((Consumer<PotionToFluidEvent>) event -> {
 			if (event.getPotion() == SPotions.PURIFIED_WATER.holder()) {
 				event.setFluid(SFluids.PURIFIED_WATER);

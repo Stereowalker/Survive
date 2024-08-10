@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 @Mixin(Block.class)
-public abstract class BlockMixin extends BlockBehaviour implements ItemLike, net.neoforged.neoforge.common.extensions.IBlockExtension {
+public abstract class BlockMixin extends BlockBehaviour implements ItemLike {
 	
 	public BlockMixin(Properties properties) {
 		super(properties);

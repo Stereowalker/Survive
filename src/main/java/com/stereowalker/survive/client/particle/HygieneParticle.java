@@ -7,10 +7,7 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class HygieneParticle extends TextureSheetParticle {
 	private final double stinkPosX;
 	private final double stinkPosY;
@@ -89,7 +86,6 @@ public class HygieneParticle extends TextureSheetParticle {
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public static class CleanFactory implements ParticleProvider<SimpleParticleType> {
 		private final SpriteSet spriteSet;
 
@@ -105,7 +101,6 @@ public class HygieneParticle extends TextureSheetParticle {
 		}
 	}
 	
-	@OnlyIn(Dist.CLIENT)
 	public static class StinkFactory implements ParticleProvider<SimpleParticleType> {
 		private final SpriteSet spriteSet;
 
