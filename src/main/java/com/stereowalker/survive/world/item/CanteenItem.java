@@ -8,11 +8,17 @@ import com.stereowalker.survive.world.item.component.SDataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -28,8 +34,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -78,13 +87,13 @@ public class CanteenItem extends PotionItem {
 
 		if (!pLevel.isClientSide) {
 			PotionContents potioncontents = pStack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
-            potioncontents.forEachEffect(mobeffectinstance -> {
-                if (mobeffectinstance.getEffect().value().isInstantenous()) {
-                    mobeffectinstance.getEffect().value().applyInstantenousEffect(player, player, pEntityLiving, mobeffectinstance.getAmplifier(), 1.0);
-                } else {
-                    pEntityLiving.addEffect(mobeffectinstance);
-                }
-            });
+			potioncontents.forEachEffect(mobeffectinstance -> {
+				if (mobeffectinstance.getEffect().value().isInstantenous()) {
+					mobeffectinstance.getEffect().value().applyInstantenousEffect(player, player, pEntityLiving, mobeffectinstance.getAmplifier(), 1.0);
+				} else {
+					pEntityLiving.addEffect(mobeffectinstance);
+				}
+			});
 		}
 
 		if (player != null) {
@@ -107,7 +116,7 @@ public class CanteenItem extends PotionItem {
 			}
 		}
 
-		if (pStack.get(SDataComponents.DRINKS_LEFT) > 1) {
+		else if (pStack.get(SDataComponents.DRINKS_LEFT) > 1) {
 			if (player == null || !player.getAbilities().instabuild) {
 				decrementDrinks(pStack);
 			}
@@ -117,13 +126,60 @@ public class CanteenItem extends PotionItem {
 		return pStack;
 	}
 
-    /**
-     * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have different names based on their damage or NBT.
-     */
-    @Override
-    public String getDescriptionId(ItemStack pStack) {
-        return this.getDescriptionId();
-    }
+	/**
+	 * Called when this item is used when targeting a Block
+	 */
+	@Override
+	public InteractionResult useOn(UseOnContext pContext) {
+		Level level = pContext.getLevel();
+		BlockPos blockpos = pContext.getClickedPos();
+		Player player = pContext.getPlayer();
+		ItemStack itemstack = pContext.getItemInHand();
+		PotionContents potioncontents = itemstack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+		BlockState blockstate = level.getBlockState(blockpos);
+		if (pContext.getClickedFace() != Direction.DOWN && blockstate.is(BlockTags.CONVERTABLE_TO_MUD) && potioncontents.is(Potions.WATER)) {
+			level.playSound(null, blockpos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 1.0F, 1.0F);
+			if (itemstack.get(SDataComponents.DRINKS_LEFT) <= 1) {
+				player.setItemInHand(pContext.getHand(), ItemUtils.createFilledResult(itemstack, player, new ItemStack(SItems.CANTEEN)));
+			}
+			else if (itemstack.get(SDataComponents.DRINKS_LEFT) > 1) {
+				decrementDrinks(itemstack);
+			}
+			player.awardStat(Stats.ITEM_USED.get(itemstack.getItem()));
+			if (!level.isClientSide) {
+				ServerLevel serverlevel = (ServerLevel)level;
+
+				for (int i = 0; i < 5; i++) {
+					serverlevel.sendParticles(
+							ParticleTypes.SPLASH,
+							(double)blockpos.getX() + level.random.nextDouble(),
+							(double)(blockpos.getY() + 1),
+							(double)blockpos.getZ() + level.random.nextDouble(),
+							1,
+							0.0,
+							0.0,
+							0.0,
+							1.0
+							);
+				}
+			}
+
+			level.playSound(null, blockpos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
+			level.gameEvent(null, GameEvent.FLUID_PLACE, blockpos);
+			level.setBlockAndUpdate(blockpos, Blocks.MUD.defaultBlockState());
+			return InteractionResult.sidedSuccess(level.isClientSide);
+		} else {
+			return InteractionResult.PASS;
+		}
+	}
+
+	/**
+	 * Returns the unlocalized name of this item. This version accepts an ItemStack so different stacks can have different names based on their damage or NBT.
+	 */
+	@Override
+	public String getDescriptionId(ItemStack pStack) {
+		return this.getDescriptionId();
+	}
 
 	/**
 	 * Called to trigger the item's "innate" right click behavior. To handle when this item is used on a Block, see
@@ -158,8 +214,8 @@ public class CanteenItem extends PotionItem {
 			else
 				pTooltipComponents.add(Component.translatable(Potion.getName(potioncontents.potion(), "item.minecraft.potion.effect.")).withStyle(ChatFormatting.GOLD));
 		}
-        if (potioncontents != null) {
-            potioncontents.addPotionTooltip(pTooltipComponents::add, 1.0F, pContext.tickRate());
-        }
+		if (potioncontents != null) {
+			potioncontents.addPotionTooltip(pTooltipComponents::add, 1.0F, pContext.tickRate());
+		}
 	}
 }
