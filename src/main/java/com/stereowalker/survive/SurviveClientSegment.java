@@ -13,6 +13,12 @@ import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.IRoastedEntity;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
+import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.survive.world.item.TemperatureRegulatorPlateItem;
+import com.stereowalker.survive.world.item.alchemy.SPotions;
+import com.stereowalker.survive.world.level.block.PlatedTemperatureRegulatorBlock;
+import com.stereowalker.survive.world.level.block.SBlocks;
+import com.stereowalker.unionlib.api.collectors.ColorOverrideCollector;
 import com.stereowalker.unionlib.api.collectors.InsertCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector.Order;
@@ -34,11 +40,14 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
 
 public class SurviveClientSegment extends ClientSegment {
 
@@ -52,6 +61,26 @@ public class SurviveClientSegment extends ClientSegment {
 	@Override
 	public Screen getConfigScreen(Minecraft mc, Screen previousScreen) {
 		return new MinecraftModConfigsScreen(previousScreen, Component.translatable("gui.survive.config.title"), Survive.TEMPERATURE_CONFIG, Survive.HYGIENE_CONFIG, Survive.STAMINA_CONFIG, Survive.THIRST_CONFIG, Survive.WELLBEING_CONFIG, Survive.FOOD_CONFIG, Survive.CONFIG);
+	}
+	
+	@Override
+	public void setupColorOverrides(ColorOverrideCollector collector) {
+		collector.overrideBlocks((state, displayReader, blockPos, tintIndex) -> {
+			return Survive.PURIFIED_WATER_COLOR;
+		}, SBlocks.PURIFIED_WATER, SBlocks.PURIFIED_WATER_CAULDRON);
+		collector.overrideBlocks((state, displayReader, blockPos, tintIndex) -> {
+			return 0x483c35;
+		}, SBlocks.POTASH_CAULDRON);
+		collector.overrideBlocks((state, displayReader, blockPos, tintIndex) -> {
+			return PlatedTemperatureRegulatorBlock.getColor(state);
+		}, SBlocks.PLATED_TEMPERATURE_REGULATOR);
+		collector.overrideItems((stack, tintIndex) -> {
+			PotionContents contents = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+			return tintIndex > 0 ? -1 : contents.is(SPotions.PURIFIED_WATER.holder()) ? Survive.PURIFIED_WATER_COLOR : FastColor.ARGB32.opaque(contents.getColor());
+	      }, Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION);
+		collector.overrideItems((stack, tintIndex) -> {
+			return TemperatureRegulatorPlateItem.getColor(stack);
+		}, SItems.LARGE_HEATING_PLATE, SItems.LARGE_COOLING_PLATE, SItems.MEDIUM_HEATING_PLATE, SItems.MEDIUM_COOLING_PLATE, SItems.SMALL_HEATING_PLATE, SItems.SMALL_COOLING_PLATE);
 	}
 	
 	@Override
