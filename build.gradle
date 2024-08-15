@@ -2,26 +2,23 @@ plugins {
 	id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
     id "com.matthewprenger.cursegradle" version "1.4.0"
 	id "com.modrinth.minotaur" version "2.+"
 }
+apply plugin: 'net.minecraftforge.gradle'
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
+apply plugin: 'org.spongepowered.mixin'
 
 mixin {
-    add sourceSets.main, "${_mod_name}-refmap.json"
+    add sourceSets.main, "${_mod_id}.refmap.json"
     config "${_mod_id}.mixins.json"
 }
-
-version = _minecraft_version + "-" +modVersion
-group = modGroup
-archivesBaseName = _mod_name
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-println('Mod Name: ' + _mod_name + ', Mod Version: ' + modVersion + ', Minecraft Version: ' + _minecraft_version + ', '+modLoader+' Version: ' + _loader_version)
 
 minecraft {
     mappings channel: mappingsChannel, version: mappingsVersion
@@ -30,18 +27,13 @@ minecraft {
     //makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
-    	configureEach {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-        }
         client {
-            workingDirectory project.file('run/client')
-            // Recommended logging level for the console
+            workingDirectory project.file("run/${project._loader}-Client")
+            property 'forge.logging.markers', 'REGISTRIES'
+			arg "-mixin.config=${_mod_id}.mixins.json"
+            property 'forge.logging.console.level', 'debug'
             property 'mixin.env.remapRefMap', 'true'
 			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-			args '--username', 'Stereowalker', '--uuid', "$System.env.MINECRAFTUUIDSTEREOWALKER"
-
             mods {
                 "${_mod_id}" {
                     source sourceSets.main
@@ -50,10 +42,11 @@ minecraft {
         }
 
         server {
-            workingDirectory project.file('run/server')
-            property 'mixin.env.remapRefMap', 'true'
-			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-			
+            workingDirectory project.file("run/${project._loader}-Server")
+            property 'forge.logging.markers', 'REGISTRIES'
+			arg "-mixin.config=${_mod_id}.mixins.json"
+            property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.disableRefMap', 'true'
             mods {
                 "${_mod_id}" {
                     source sourceSets.main
@@ -63,46 +56,6 @@ minecraft {
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-repositories {
-	//maven {url = "https://dvs1.progwml6.com/files/maven/"}// JEI
-	maven {url "https://modmaven.dev/" }// UnionLib
-	maven {url = "https://maven.theillusivec4.top/"}
-	maven {url 'https://maven.blamejared.com'}
-	maven {url "https://www.cursemaven.com"}
-    maven {url = "https://repo.spongepowered.org/maven"} // mixin
-    maven {url "https://maven.shedaniel.me/"} // cloth config
-}
-
-dependencies {
-	minecraft 'net.minecraftforge:forge:' + _minecraft_version + '-' + _loader_version
-	annotationProcessor "org.spongepowered:mixin:${modMixinVersion}:processor"
-	implementation "org.spongepowered:mixin:${modMixinVersion}"
-	implementation fileTree(include: ['*.jar'], dir: 'libs')
-	implementation ("com.stereowalker.unionlib:UnionLib:"+_minecraft_version+"-"+unionLibVersion+"-"+modLoader+"")
-	
-	compileOnly ("mezz.jei:jei-${_minecraft_version}-common-api:"+jeiVersion)
-	compileOnly ("mezz.jei:jei-${_minecraft_version}-forge-api:"+jeiVersion)
-	compileOnly ("com.stereowalker.combat:C.O.M.B.A.T:1.18.2"+/*_minecraft_version+*/"-"+combatVersion+":api")
-    //compileOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
-    //compileOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE:api")
-	
-	implementation ("mezz.jei:jei-${_minecraft_version}-forge:"+jeiVersion+"")
-	//runtimeOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
-    //runtimeOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE")
-	
-	implementation ("curse.maven:biomes-o-plenty-220318:"+bopID)
-    implementation ("com.github.glitchfiend:GlitchCore-forge:${_minecraft_version}-1.1.0.5")
-    implementation ("com.github.glitchfiend:TerraBlender-forge:${_minecraft_version}-3.5.0.5")
-	implementation ("curse.maven:serene-seasons-291874:"+sereneSeasonsID)
-	//implementation ("curse.maven:origins-474438:"+originsID)
-	//implementation ("curse.maven:create-328085:"+createID)
-	//implementation ("curse.maven:flywheel-486392:"+flywheelID)
-	implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
-}
-
-// Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
         attributes([
@@ -118,139 +71,130 @@ jar {
     }
 }
 
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    from (sourceSets.main.output) {
-        include 'LICENSE.txt'
-    }
-
-    archiveClassifier = 'sources'
+eclipse {
+    synchronizationTasks 'genEclipseRuns'
 }
 
-task deobfJar(type: Jar) {
-	from sourceSets.main.output
-	archiveClassifier = "deobf"
+sourceSets.each {
+    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.resourcesDir = dir
+    it.java.destinationDirectory = dir
 }
 
+// Should exist on all loaders and is loader specific
+repositories {
+	maven {url "https://modmaven.dev/" }// UnionLib
+	maven {url "https://www.cursemaven.com"} //CurseForge
+    maven {url = "https://repo.spongepowered.org/maven"} // mixin
+	maven {url "https://girafi.dk/maven/"}
+	maven {url = "https://maven.theillusivec4.top/"}
+	maven {url 'https://maven.blamejared.com'}
+    maven {url "https://maven.shedaniel.me/"} // cloth config
+}
 
-task apiJar(type: Jar) {
-    from(sourceSets.main.allJava) {
-        include 'com/stereowalker/survive/api/**'
+dependencies {
+	minecraft "net.minecraftforge:forge:${_minecraft_version}-" + _loader_version
+	annotationProcessor "org.spongepowered:mixin:"+modMixinVersion+":processor"
+	implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+	
+	implementation ("com.stereowalker.unionlib:UnionLib:${_minecraft_version}-${_unionlib_version}-${_loader}")
+	compileOnly ("mezz.jei:jei-1.21-common-api:"+jeiVersion)
+	compileOnly ("mezz.jei:jei-1.21-neoforge-api:"+jeiVersion)
+	compileOnly ("com.stereowalker.combat:C.O.M.B.A.T:1.18.2"+/*_minecraft_version+*/"-"+combatVersion+":api")
+    //compileOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
+    //compileOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE:api")
+	
+	implementation ("mezz.jei:jei-${_minecraft_version}-neoforge:"+jeiVersion+"")
+	//runtimeOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
+    //runtimeOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE")
+	
+    implementation ("com.github.glitchfiend:GlitchCore-forge:${_minecraft_version}-1.1.0.10")
+    implementation ("com.github.glitchfiend:TerraBlender-forge:${_minecraft_version}-3.5.0.5")
+    implementation ("com.github.glitchfiend:SereneSeasons-forge:${_minecraft_version}-${_serene_seasons_version}")
+    implementation ("com.github.glitchfiend:BiomesOPlenty-forge:${_minecraft_version}-${_bop_version}")
+	//implementation ("curse.maven:origins-474438:"+originsID)
+	//implementation ("curse.maven:create-328085:"+createID)
+	//implementation ("curse.maven:flywheel-486392:"+flywheelID)
+}
+
+// These aren't loader specific and should exist on all loaders
+println('Java: ' + System.getProperty('java.version'))
+println('JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+println('Mod Name: ' + _mod_name + ', Mod Version: ' + _mod_version + ', Minecraft Version: ' + _minecraft_version + ', '+"${_loader} Version: " + _loader_version)
+
+version = _minecraft_version + "-" +_mod_version +"-${_loader}"
+group = modGroup
+base {
+    archivesName = _mod_name
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
     }
-    from (sourceSets.main.output) {
-        include 'com/stereowalker/survive/api/**'
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
     }
-	archiveClassifier = 'api'
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [
+            minecraft_version: _minecraft_version,
+            minecraft_version_min: _minecraft_version_min, minecraft_version_max: _minecraft_version_max,
+            loader_version_min: _loader_version_min, loader_version_max: _loader_version_max,
+            mod_page: _mod_page, mod_version: _mod_version, mod_issue_tracker: _mod_issue_tracker,
+            mod_name: _mod_name, mod_license: _mod_license, mod_id: _mod_id,
+            mod_authors: _mod_authors, mod_description: _mod_description, loader_file: _loader_file,
+            unionlib_version_min: _unionlib_version_min, unionlib_version_max: _unionlib_version_max,
+    ]
+    inputs.properties replaceProperties
+    filesMatching([_loader_file, 'pack.mcmeta']) {
+        expand replaceProperties// + [project: project]
+    }
 }
 
 curseforge {
     project {
-    	id = modCurseId
+    	id = "${_curseforge_id}"
 		apiKey = "$System.env.CURSEFORGEKEY"
 		changelog = file('changelog.md')
 		changelogType = "markdown"
 		releaseType = 'release'
-		addGameVersion(_minecraft_version)
-        addGameVersion("Forge")
+		addGameVersion("${_minecraft_version}")
+        addGameVersion("${_loader}")
 		relations {
       		requiredDependency 'unionlib'
-		}	
+		}
 		mainArtifact(jar) {
 			displayName = _mod_name+"-$project.version"
 		}
-		addArtifact sourcesJar
-	}
-	options {
-    	debug = false // defaults to false
-  	}		
+	}		
 }
 
-
 modrinth {
+    projectId = "${_modrinth_id}"
     token = "$System.env.MODRINTH_TOKEN"
-    projectId = _mod_id
     versionNumber = "${project.version}"
     versionType = "release"
     uploadFile = jar
-    gameVersions = [_minecraft_version]
-    loaders = ["${project.modLoader}".toLowerCase()]
+    gameVersions = ["${_minecraft_version}"]
+    loaders = ["${_loader}".toLowerCase()]
 	changelog = file('changelog.md').text
     dependencies {
         required.project "unionlib"
     }
 }
+
 task uploadToAllSites {
-    uploadToAllSites.dependsOn curseforge
-    uploadToAllSites.dependsOn modrinth
-    uploadToAllSites.dependsOn publish
-}
-
-tasks.named('processResources', ProcessResources).configure {
-    var replaceProperties = [
-            minecraft_version: _minecraft_version, //minecraft_version_range: minecraft_version_range,
-            //forge_version: _loader_version, forge_version_range: forge_version_range,
-            loader_version_range: "[${_loader_version_min},"+_loader_version_max+")",
-            mod_id: _mod_id, mod_name: _mod_name, mod_license: _mod_license, mod_version: modVersion,
-            mod_authors: _mod_authors, mod_description: _mod_description,
-    ]
-    inputs.properties replaceProperties
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
-        expand replaceProperties/* + [project: project]*/
-    }
-}
-
-// Example configuration to allow publishing using the maven-publish task
-// we define a custom artifact that is sourced from the reobfJar output task
-// and then declare that to be published
-// Note you'll need to add a repository here
-//def reobfFile = file("$buildDir/reobfJar/output.jar")
-//def reobfArtifact = artifacts.add('default', reobfFile) {
-//    type 'jar'
-//    builtBy 'reobfJar'
-//}
-//jar.finalizedBy('reobfJar')
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-        	afterEvaluate {
-                artifact project.jar
-                artifact project.apiJar
-                artifact project.sourcesJar
-            }
-        
-        	groupId = project.group
-			artifactId = project.archivesBaseName
-			version = project.version
-        }
-    }
-    repositories {
-        maven {
-            name = "modmaven"
-			credentials {
-				username "$System.env.ARTIFACTORYUSER"
-				password "$System.env.ARTIFACTORYPASS"
-			}
-			url = "https://modmaven.dev/artifactory/local-releases/"
-        }
-    }
+    dependsOn "curseforge"
+    dependsOn "modrinth"
+    group = "publishing"
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
-}
-
-artifacts {
-	archives sourcesJar
-	archives deobfJar
-	archives apiJar
-}
-
-eclipse {
-    synchronizationTasks 'genEclipseRuns'
-}
-//Remove later
-sourceSets.each {
-    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
-    it.output.resourcesDir = dir
-    it.java.destinationDirectory = dir
+    options.encoding = 'UTF-8'
 }
