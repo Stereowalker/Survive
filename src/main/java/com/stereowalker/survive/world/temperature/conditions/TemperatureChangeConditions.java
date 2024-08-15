@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.stereowalker.survive.Survive;
+import com.stereowalker.unionlib.api.registries.RegistryCollector;
 
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.RegisterEvent.RegisterHelper;
 
 public class TemperatureChangeConditions {
 	public static final Map<ResourceLocation, TemperatureChangeCondition<?>> CONDITION_LIST = new HashMap<ResourceLocation, TemperatureChangeCondition<?>>();
@@ -23,7 +23,7 @@ public class TemperatureChangeConditions {
 		return condition;
 	}
 	
-	public static void registerAll(RegisterHelper<TemperatureChangeCondition<?>> registry) {
+	public static void registerAll(RegistryCollector.Custom<TemperatureChangeCondition<?>> registry) {
 		for(Entry<ResourceLocation, TemperatureChangeCondition<?>> condition : CONDITION_LIST.entrySet()) {
 			registry.register(condition.getKey(), condition.getValue());
 			Survive.getInstance().debug("Condition: \""+condition.getKey().toString()+"\" registered");
