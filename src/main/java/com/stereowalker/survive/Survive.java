@@ -23,6 +23,7 @@ import com.stereowalker.survive.config.TemperatureConfig;
 import com.stereowalker.survive.config.ThirstConfig;
 import com.stereowalker.survive.config.WellbeingConfig;
 import com.stereowalker.survive.core.cauldron.SCauldronInteraction;
+import com.stereowalker.survive.core.registries.SurviveRegistries;
 import com.stereowalker.survive.events.SleepEvents;
 import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.events.ThirstEvents;
@@ -262,6 +263,8 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		if (Survive.TEMPERATURE_CONFIG.enabled) {
 			collector.addRegistryHolder(Registries.ENCHANTMENT, TemperatureEnchantments.class);
 		}
+		collector.addRegistry(SurviveRegistries.CONDITION, SurviveRegistries.Keys.CONDITION, true);
+		collector.addRegistry(SurviveRegistries.SEASON, SurviveRegistries.Keys.SEASON, true);
 	}
 	
 	@Override

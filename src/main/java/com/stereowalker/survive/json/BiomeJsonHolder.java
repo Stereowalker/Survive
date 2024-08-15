@@ -69,7 +69,7 @@ public class BiomeJsonHolder implements JsonHolder {
 					for (Entry<String, JsonElement> elem : object.get(SEASON_MODIFIER).getAsJsonObject().entrySet()) {
 						Season season = null;
 						setWorkingOn(elem.getKey());
-						season = SurviveRegistries.ForgeRegistry.SEASON.getValue(VersionHelper.toLoc(elem.getKey()));
+						season = SurviveRegistries.SEASON.get(VersionHelper.toLoc(elem.getKey()));
 						if (season != null) {
 							if(elem.getValue().isJsonPrimitive()) {
 								seasonModifiersIn.put(season, elem.getValue().getAsFloat());
@@ -113,7 +113,7 @@ public class BiomeJsonHolder implements JsonHolder {
 			}
 		}
 
-		for (Season season : SurviveRegistries.ForgeRegistry.SEASON) {
+		for (Season season : SurviveRegistries.SEASON) {
 			if (!seasonModifiersIn.containsKey(season)) {
 				seasonModifiersIn.put(season, season.getModifier());
 			}

@@ -31,14 +31,11 @@ import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
-import net.minecraftforge.registries.RegistryBuilder;
 
 @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class SurviveRegistryEvents
 {
-	private static final int MAX_VARINT = Integer.MAX_VALUE - 1;
 	//Game Object Registries
 	@SubscribeEvent
 	public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
@@ -64,11 +61,5 @@ public class SurviveRegistryEvents
 				new ImmutableMap.Builder<Holder<Potion>, List<Fluid>>()
 				.put(Potions.WATER, Lists.newArrayList(Fluids.FLOWING_WATER, Fluids.WATER))
 				.put(SPotions.PURIFIED_WATER.holder(), Lists.newArrayList(SFluids.FLOWING_PURIFIED_WATER, SFluids.PURIFIED_WATER)).build();
-	}
-	
-	@SubscribeEvent
-	public static void registerSurviveRegistries(final NewRegistryEvent event) {
-		event.create(new RegistryBuilder<TemperatureChangeCondition<?>>().setName(SurviveRegistries.CONDITION.location()).setMaxID(MAX_VARINT));
-		event.create(new RegistryBuilder<Season>().setName(Survive.getInstance().location("season")).setMaxID(MAX_VARINT));
 	}
 }
