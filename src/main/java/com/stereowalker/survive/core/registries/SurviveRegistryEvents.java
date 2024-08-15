@@ -13,10 +13,6 @@ import com.stereowalker.survive.world.item.crafting.conditions.ModuleEnabledCond
 import com.stereowalker.survive.world.level.material.PurifiedWaterFluid;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.level.storage.loot.predicates.SLootItemConditions;
-import com.stereowalker.survive.world.seasons.Season;
-import com.stereowalker.survive.world.seasons.Seasons;
-import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeCondition;
-import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeConditions;
 import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.VersionHelper;
 
@@ -46,8 +42,6 @@ public class SurviveRegistryEvents
 	@SubscribeEvent
 	public static void registerParticlesz(final RegisterEvent event) {
 		event.register(RegistryHelper.particleTypeKey(), (helper) -> SParticleTypes.registerAll(helper));
-		event.register(SurviveRegistries.CONDITION, (helper) -> TemperatureChangeConditions.registerAll(helper));
-		event.register(SurviveRegistries.SEASON, (helper) -> Seasons.registerAll(helper));
 		event.register(ForgeRegistries.Keys.FLUID_TYPES, (helper) -> helper.register(VersionHelper.toLoc("survive:purified_water"), PurifiedWaterFluid.TYPE));
 //		if (event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS))
 //        {			

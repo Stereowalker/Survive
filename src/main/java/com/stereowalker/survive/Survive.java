@@ -70,7 +70,9 @@ import com.stereowalker.survive.world.level.CGameRules;
 import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.PurifiedWaterFluid;
 import com.stereowalker.survive.world.level.material.SFluids;
+import com.stereowalker.survive.world.seasons.Seasons;
 import com.stereowalker.survive.world.spellcraft.SSpells;
+import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeConditions;
 import com.stereowalker.unionlib.api.collectors.BrewingRecipeCollector;
 import com.stereowalker.unionlib.api.collectors.CommandCollector;
 import com.stereowalker.unionlib.api.collectors.ConfigCollector;
@@ -259,6 +261,8 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addRegistryHolder(Registries.POTION, SPotions.class);
 		collector.addRegistry(SurviveRegistries.CONDITION, SurviveRegistries.Keys.CONDITION, true);
 		collector.addRegistry(SurviveRegistries.SEASON, SurviveRegistries.Keys.SEASON, true);
+		collector.addCustom(SurviveRegistries.Keys.CONDITION, TemperatureChangeConditions::registerAll);
+		collector.addCustom(SurviveRegistries.Keys.SEASON, Seasons::registerAll);
 	}
 	
 	@Override
