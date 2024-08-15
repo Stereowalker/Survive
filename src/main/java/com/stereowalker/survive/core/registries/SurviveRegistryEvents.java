@@ -29,13 +29,11 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 @EventBusSubscriber(bus=EventBusSubscriber.Bus.MOD)
 public class SurviveRegistryEvents
 {
-	private static final int MAX_VARINT = Integer.MAX_VALUE - 1;
 	//Game Object Registries
 	@SubscribeEvent
 	public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
@@ -61,11 +59,5 @@ public class SurviveRegistryEvents
 				new ImmutableMap.Builder<Holder<Potion>, List<Fluid>>()
 				.put(Potions.WATER, Lists.newArrayList(Fluids.FLOWING_WATER, Fluids.WATER))
 				.put(SPotions.PURIFIED_WATER.holder(), Lists.newArrayList(SFluids.FLOWING_PURIFIED_WATER, SFluids.PURIFIED_WATER)).build();
-	}
-	
-	@SubscribeEvent
-	public static void registerSurviveRegistries(final NewRegistryEvent event) {
-		event.register(SurviveRegistries.ForgeRegistry.CONDITION);
-		event.register(SurviveRegistries.ForgeRegistry.SEASON);
 	}
 }
