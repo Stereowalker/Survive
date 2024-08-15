@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.stereowalker.survive.Survive;
+import com.stereowalker.unionlib.api.registries.RegistryCollector;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.RegisterEvent.RegisterHelper;
 
 public class Seasons {
 	public static final Map<ResourceLocation, Season> SEASON_LIST = new HashMap<ResourceLocation, Season>();
@@ -37,7 +37,7 @@ public class Seasons {
 		return season;
 	}
 	
-	public static void registerAll(RegisterHelper<Season> registry) {
+	public static void registerAll(RegistryCollector.Custom<Season> registry) {
 		for(Entry<ResourceLocation, Season> season : SEASON_LIST.entrySet()) {
 			registry.register(season.getKey(), season.getValue());
 			Survive.getInstance().debug("Season: \""+season.getKey().toString()+"\" registered");
