@@ -4,18 +4,15 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.unionlib.network.protocol.game.ClientboundUnionPacket;
 import com.stereowalker.unionlib.util.VersionHelper;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ClientboundDrinkSoundPacket extends ClientboundUnionPacket {
 	private BlockPos pos;
@@ -36,10 +33,9 @@ public class ClientboundDrinkSoundPacket extends ClientboundUnionPacket {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public boolean handleOnClient(LocalPlayer sender) {
-		Minecraft.getInstance().player.level().playLocalSound(this.pos.getX(), this.pos.getY(), this.pos.getZ(), new ItemStack(Items.POTION).getDrinkingSound(), SoundSource.PLAYERS, 0.5F, Minecraft.getInstance().player.level().random.nextFloat() * 0.1F + 0.9F, false);
-		Minecraft.getInstance().player.swing(InteractionHand.MAIN_HAND);
+	public boolean runOnClient(Player sender) {
+		sender.level().playLocalSound(this.pos.getX(), this.pos.getY(), this.pos.getZ(), new ItemStack(Items.POTION).getDrinkingSound(), SoundSource.PLAYERS, 0.5F, sender.level().random.nextFloat() * 0.1F + 0.9F, false);
+		sender.swing(InteractionHand.MAIN_HAND);
 		return true;
 	}
 
