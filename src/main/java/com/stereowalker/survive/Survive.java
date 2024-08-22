@@ -23,6 +23,7 @@ import com.stereowalker.survive.config.TemperatureConfig;
 import com.stereowalker.survive.config.ThirstConfig;
 import com.stereowalker.survive.config.WellbeingConfig;
 import com.stereowalker.survive.core.cauldron.SCauldronInteraction;
+import com.stereowalker.survive.core.particles.SParticleTypes;
 import com.stereowalker.survive.core.registries.SurviveRegistries;
 import com.stereowalker.survive.events.SleepEvents;
 import com.stereowalker.survive.events.SurviveEvents;
@@ -261,6 +262,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addRegistryHolder(Registries.DATA_COMPONENT_TYPE, SDataComponents.class);
 		collector.addRegistryHolder(Registries.ARMOR_MATERIAL, SArmorMaterials.class);
 		collector.addRegistryHolder(Registries.POTION, SPotions.class);
+		collector.addRegistryHolder(Registries.PARTICLE_TYPE, SParticleTypes.class);
 		if (Survive.STAMINA_CONFIG.enabled) {
 			collector.addRegistryHolder(Registries.ENCHANTMENT, StaminaEnchantments.class);
 		}

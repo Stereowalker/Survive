@@ -6,8 +6,10 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.stereowalker.survive.client.events.TooltipEvents;
+import com.stereowalker.survive.client.particle.HygieneParticle;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
+import com.stereowalker.survive.core.particles.SParticleTypes;
 import com.stereowalker.survive.hooks.ColdMenu;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.IRoastedEntity;
@@ -21,6 +23,7 @@ import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.unionlib.api.collectors.ColorOverrideCollector;
 import com.stereowalker.unionlib.api.collectors.InsertCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector;
+import com.stereowalker.unionlib.api.collectors.ParticleCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector.Order;
 import com.stereowalker.unionlib.api.gui.GuiRenderer;
 import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsScreen;
@@ -61,6 +64,12 @@ public class SurviveClientSegment extends ClientSegment {
 	@Override
 	public Screen getConfigScreen(Minecraft mc, Screen previousScreen) {
 		return new MinecraftModConfigsScreen(previousScreen, Component.translatable("gui.survive.config.title"), Survive.TEMPERATURE_CONFIG, Survive.HYGIENE_CONFIG, Survive.STAMINA_CONFIG, Survive.THIRST_CONFIG, Survive.WELLBEING_CONFIG, Survive.FOOD_CONFIG, Survive.CONFIG);
+	}
+	
+	@Override
+	public void setupParticles(ParticleCollector collector) {
+		collector.addFactory(SParticleTypes.STINK, HygieneParticle.StinkFactory::new);
+		collector.addFactory(SParticleTypes.CLEAN, HygieneParticle.CleanFactory::new);
 	}
 	
 	@Override
