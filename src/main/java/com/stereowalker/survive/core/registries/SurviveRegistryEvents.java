@@ -12,7 +12,6 @@ import com.stereowalker.survive.world.item.crafting.conditions.ModuleEnabledCond
 import com.stereowalker.survive.world.level.material.PurifiedWaterFluid;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.level.storage.loot.predicates.SLootItemConditions;
-import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.core.Holder;
@@ -29,16 +28,9 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 @EventBusSubscriber(bus=EventBusSubscriber.Bus.MOD)
 public class SurviveRegistryEvents
 {
-	//Game Object Registries
-	@SubscribeEvent
-	public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
-		event.registerSpriteSet(SParticleTypes.STINK, HygieneParticle.StinkFactory::new);
-		event.registerSpriteSet(SParticleTypes.CLEAN, HygieneParticle.CleanFactory::new);
-	}
 	
 	@SubscribeEvent
 	public static void registerParticlesz(final RegisterEvent event) {
-		event.register(RegistryHelper.particleTypeKey(), (helper) -> SParticleTypes.registerAll(helper));
 		event.register(NeoForgeRegistries.Keys.FLUID_TYPES, (helper) -> helper.register(VersionHelper.toLoc("survive:purified_water"), PurifiedWaterFluid.TYPE));
 		event.register(NeoForgeRegistries.Keys.CONDITION_CODECS, (reg) -> {
 			reg.register(VersionHelper.toLoc("survive", "module_enabled"), ModuleEnabledCondition.CODEC);
