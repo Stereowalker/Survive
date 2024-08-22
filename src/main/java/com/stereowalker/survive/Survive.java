@@ -85,12 +85,14 @@ import com.stereowalker.unionlib.api.collectors.ReloadListeners;
 import com.stereowalker.unionlib.api.creativetabs.CreativeTabBuilder;
 import com.stereowalker.unionlib.api.creativetabs.CreativeTabPopulator;
 import com.stereowalker.unionlib.api.registries.RegistryCollector;
+import com.stereowalker.unionlib.client.gui.components.ModList;
 import com.stereowalker.unionlib.event.potionfluid.FluidToPotionEvent;
 import com.stereowalker.unionlib.event.potionfluid.PotionToFluidEvent;
 import com.stereowalker.unionlib.insert.Inserts;
 import com.stereowalker.unionlib.mod.MinecraftMod;
 import com.stereowalker.unionlib.mod.PacketHolder;
 import com.stereowalker.unionlib.mod.ServerSegment;
+import com.stereowalker.unionlib.util.LoaderHelper;
 import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -121,7 +123,6 @@ import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -167,10 +168,10 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	private static Survive instance;
 
 	public static boolean isCombatLoaded() {
-		return ModList.get().isLoaded("combat");
+		return LoaderHelper.isModLoaded("combat");
 	}
 	public static boolean isOriginsLoaded() {
-		return ModList.get().isLoaded("origins");
+		return LoaderHelper.isModLoaded("origins");
 	}
 
 	public Survive() 
@@ -189,7 +190,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 				event.setPotion(SPotions.PURIFIED_WATER.holder());
 			}
 		});
-		isPrimalWinterLoaded = ModList.get().isLoaded("primalwinter");
+		isPrimalWinterLoaded = LoaderHelper.isModLoaded("primalwinter");
 	}
 	
 	@Override

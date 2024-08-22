@@ -3,6 +3,7 @@ package com.stereowalker.survive.world.item.crafting;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.unionlib.util.LoaderHelper;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -78,8 +79,8 @@ public class CanteenFillingRecipe extends CustomRecipe {
 		NonNullList<ItemStack> nonnulllist = NonNullList.withSize(pContainer.getContainerSize(), ItemStack.EMPTY);
 	      for(int i = 0; i < nonnulllist.size(); ++i) {
 	         ItemStack item = pContainer.getItem(i);
-	         if (item.hasCraftingRemainingItem()) {
-	            nonnulllist.set(i, item.getCraftingRemainingItem());
+	         if (LoaderHelper.hasCraftRemainder(item)) {
+	            nonnulllist.set(i, LoaderHelper.craftRemainder(item));
 	         }
 	         if (item.getItem() == Items.POTION) {
 	        	 nonnulllist.set(i, new ItemStack(Items.GLASS_BOTTLE));

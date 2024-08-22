@@ -23,12 +23,13 @@ import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.unionlib.api.collectors.ColorOverrideCollector;
 import com.stereowalker.unionlib.api.collectors.InsertCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector;
-import com.stereowalker.unionlib.api.collectors.ParticleCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector.Order;
+import com.stereowalker.unionlib.api.collectors.ParticleCollector;
 import com.stereowalker.unionlib.api.gui.GuiRenderer;
 import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsScreen;
 import com.stereowalker.unionlib.insert.ClientInserts;
 import com.stereowalker.unionlib.mod.ClientSegment;
+import com.stereowalker.unionlib.util.LoaderHelper;
 import com.stereowalker.unionlib.util.ScreenHelper;
 import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 import com.stereowalker.unionlib.util.VersionHelper;
@@ -117,7 +118,7 @@ public class SurviveClientSegment extends ClientSegment {
 				boolean showTemp = false;
 				if ((Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights) || Survive.TEMPERATURE_CONFIG.enabled) {
 					for(EquipmentSlot type : EquipmentSlot.values()) {
-						if (stack.canEquip(type, player) && type.getType() == Type.ARMOR) {
+						if (LoaderHelper.canEquip(player, stack, type) && type.getType() == Type.ARMOR) {
 							showWeight = Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights;
 							showTemp = Survive.TEMPERATURE_CONFIG.enabled;
 							break;
