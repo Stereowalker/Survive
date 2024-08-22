@@ -7,7 +7,6 @@ import com.google.common.collect.Lists;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.client.particle.HygieneParticle;
 import com.stereowalker.survive.core.particles.SParticleTypes;
-import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
 import com.stereowalker.survive.world.item.crafting.conditions.ModuleEnabledCondition;
 import com.stereowalker.survive.world.level.material.PurifiedWaterFluid;
@@ -17,8 +16,6 @@ import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.core.Holder;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.material.Fluid;
@@ -47,7 +44,6 @@ public class SurviveRegistryEvents
 			reg.register(VersionHelper.toLoc("survive", "module_enabled"), ModuleEnabledCondition.CODEC);
 		});
 		new SLootItemConditions();
-		MobEffects.FIRE_RESISTANCE.value().addAttributeModifier(SAttributes.HEAT_RESISTANCE.holder(), VersionHelper.toLoc("fire_heat_res"), 5.0D, AttributeModifier.Operation.ADD_VALUE);
 		Survive.POTION_FLUID_MAP = 
 				new ImmutableMap.Builder<Holder<Potion>, List<Fluid>>()
 				.put(Potions.WATER, Lists.newArrayList(Fluids.FLOWING_WATER, Fluids.WATER))
