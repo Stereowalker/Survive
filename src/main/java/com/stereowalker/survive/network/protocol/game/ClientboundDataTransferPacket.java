@@ -18,8 +18,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.entity.player.Player;
 
 public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 	private ResourceLocation stat;
@@ -50,8 +49,7 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public boolean handleOnClient(LocalPlayer sender) {
+	public boolean runOnClient(Player sender) {
 		if (settings instanceof ArmorJsonHolder armor) {
 			if (this.clear) {
 				Survive.getInstance().getLogger().info("Clearing Client Side Armor Data");

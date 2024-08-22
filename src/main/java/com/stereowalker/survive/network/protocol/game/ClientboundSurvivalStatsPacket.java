@@ -5,15 +5,12 @@ import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.unionlib.network.protocol.game.ClientboundUnionPacket;
 import com.stereowalker.unionlib.util.VersionHelper;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.entity.player.Player;
 
 public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 	private CompoundTag stats;
@@ -38,9 +35,8 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public boolean handleOnClient(LocalPlayer sender) {
-		SurviveEntityStats.setModNBT(this.stats, Minecraft.getInstance().player);
+	public boolean runOnClient(Player sender) {
+		SurviveEntityStats.setModNBT(this.stats, sender);
 		return true;
 	}
 
