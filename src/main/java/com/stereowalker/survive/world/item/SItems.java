@@ -53,12 +53,6 @@ public class SItems {
 			super.registerBlocks(map, self);
 			map.put(SBlocks.PLATED_TEMPERATURE_REGULATOR, self);
 		}
-
-		@Override
-		public void removeFromBlockToItemMap(java.util.Map<Block, Item> map, Item self) {
-			super.removeFromBlockToItemMap(map, self);
-			map.remove(SBlocks.PLATED_TEMPERATURE_REGULATOR);
-		}
 	};
 	@RegistryObject("large_heating_plate")
 	public static final Item LARGE_HEATING_PLATE = new TemperatureRegulatorPlateItem(TempRegulationPlateType.HEATER, TempRegulationPlateSize.LARGE, new Item.Properties().stacksTo(64));
