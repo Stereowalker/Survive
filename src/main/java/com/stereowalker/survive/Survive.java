@@ -254,6 +254,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	@Override
 	public void setupRegistries(RegistryCollector collector) {
 		collector.addRegistryHolder(Registries.ATTRIBUTE, SAttributes.class);
+		collector.addRegistryHolder(Registries.ARMOR_MATERIAL, SArmorMaterials.class);
 		collector.addRegistryHolder(Registries.BLOCK, SBlocks.class);
 		collector.addRegistryHolder(Registries.FLUID, SFluids.class);
 		collector.addRegistryHolder(Registries.ITEM, SItems.class);
