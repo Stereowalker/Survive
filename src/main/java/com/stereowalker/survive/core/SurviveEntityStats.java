@@ -1,8 +1,6 @@
 package com.stereowalker.survive.core;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.needs.HygieneData;
-import com.stereowalker.survive.needs.SleepData;
 import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.WaterData;
@@ -18,8 +16,7 @@ public class SurviveEntityStats {
 	public static String waterStatsID = "WaterStats";
 	public static String temperatureStatsID = "TemperatureStats";
 	public static String energyStatsID = "EnergyStats";
-	public static String hygieneStatsID = "HygieneStats";
-//	public static String sleepStatsID = "SleepStats";
+//	public static String hygieneStatsID = "HygieneStats";
 	//Getters
 
 	public static WaterData getWaterStats(LivingEntity entity) {
@@ -55,28 +52,17 @@ public class SurviveEntityStats {
 		return stats;
 	}
 	
-	public static HygieneData getHygieneStats(LivingEntity entity) {
-		HygieneData stats = new HygieneData();
-		if(entity != null) {
-			if (getModNBT(entity) != null && getModNBT(entity).contains(hygieneStatsID, 10)) {
-				stats.read(getModNBT(entity).getCompound(hygieneStatsID));
-				return stats;
-			}
-		}
-		return stats;
-	}
-	
-//	public static SleepData getSleepStats(LivingEntity entity) {
-//		SleepData stats = new SleepData();
+//	public static HygieneData getHygieneStats(LivingEntity entity) {
+//		HygieneData stats = new HygieneData();
 //		if(entity != null) {
-//			if (getModNBT(entity) != null && getModNBT(entity).contains(sleepStatsID, 10)) {
-//				stats.read(getModNBT(entity).getCompound(sleepStatsID));
+//			if (getModNBT(entity) != null && getModNBT(entity).contains(hygieneStatsID, 10)) {
+//				stats.read(getModNBT(entity).getCompound(hygieneStatsID));
 //				return stats;
 //			}
 //		}
 //		return stats;
 //	}
-
+	
 	public static int getWetTime(LivingEntity entity) {
 		if (getModNBT(entity) != null && getModNBT(entity).contains(append("WetTime"))) {
 			return getModNBT(entity).getInt(append("WetTime"));
@@ -104,18 +90,12 @@ public class SurviveEntityStats {
 		getModNBT(entity).put(temperatureStatsID, compound2);
 	}
 	
-	public static void setHygieneStats(LivingEntity entity, HygieneData hygieneStats) {
-		CompoundTag compound2 = new CompoundTag();
-		hygieneStats.write(compound2);
-		getModNBT(entity).put(hygieneStatsID, compound2);
-	}
-	
-//	public static void setSleepStats(LivingEntity entity, SleepData sleepStats) {
+//	public static void setHygieneStats(LivingEntity entity, HygieneData hygieneStats) {
 //		CompoundTag compound2 = new CompoundTag();
-//		sleepStats.write(compound2);
-//		getModNBT(entity).put(sleepStatsID, compound2);
+//		hygieneStats.write(compound2);
+//		getModNBT(entity).put(hygieneStatsID, compound2);
 //	}
-
+	
 	public static void setWetTime(LivingEntity entity, int wetTime) {
 		getModNBT(entity).putInt(append("WetTime"), wetTime);
 	}
@@ -162,11 +142,8 @@ public class SurviveEntityStats {
 				if (!compound.contains(temperatureStatsID)) {
 					setTemperatureStats(player, new TemperatureData());
 				}
-				if (!compound.contains(hygieneStatsID)) {
-					setHygieneStats(player, new HygieneData());
-				}
-//				if (!compound.contains(sleepStatsID)) {
-//					setSleepStats(player, new SleepData());
+//				if (!compound.contains(hygieneStatsID)) {
+//					setHygieneStats(player, new HygieneData());
 //				}
 				if (!compound.contains(append("WetTime"))) {
 					setWetTime(player, 0);

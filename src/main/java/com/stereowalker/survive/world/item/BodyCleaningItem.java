@@ -1,7 +1,7 @@
 package com.stereowalker.survive.world.item;
 
-import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.needs.HygieneData;
+import com.stereowalker.survive.needs.IRealisticEntity;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -23,7 +23,7 @@ public class BodyCleaningItem extends Item {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
 		
-		HygieneData stats = SurviveEntityStats.getHygieneStats(playerIn);
+		HygieneData stats = ((IRealisticEntity)playerIn).hygieneData();
 		if (playerIn.isInWaterOrRain()) {
 			int cleaning = 0;
 			if (playerIn.getItemInHand(handIn == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND).getItem() instanceof SoapItem) {
@@ -38,7 +38,6 @@ public class BodyCleaningItem extends Item {
 			}
 			stats.clean(cleaning, false);
 			playerIn.getItemInHand(handIn).hurtAndBreak(1, playerIn, EquipmentSlot.MAINHAND);
-			stats.save(playerIn);
 		} else {
 			playerIn.getItemInHand(handIn).hurtAndBreak(2, playerIn, EquipmentSlot.MAINHAND);
 		}

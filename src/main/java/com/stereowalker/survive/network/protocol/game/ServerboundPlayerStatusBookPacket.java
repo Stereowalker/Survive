@@ -71,7 +71,7 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 						"Reason = "+real.wellbeingData().getReason()+"\n";
 
 			String status3 = "§2§nHygiene:§r\n";
-			status3+= "Cleanliness level = "+(100 - real.getHygieneData().getUncleanLevel())+"";
+			status3+= "Cleanliness level = "+(100 - real.hygieneData().getUncleanLevel())+"";
 
 			String status4 = "§2§nNutrition:§r\n";
 			status4+= "Carbohydrates = "+real.nutritionData().getCarbLevel()+"\n"+

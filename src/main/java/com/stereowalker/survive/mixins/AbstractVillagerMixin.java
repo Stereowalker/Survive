@@ -3,7 +3,7 @@ package com.stereowalker.survive.mixins;
 import org.spongepowered.asm.mixin.Mixin;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
+import com.stereowalker.survive.needs.IRealisticEntity;
 
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntitySelector;
@@ -23,8 +23,8 @@ public abstract class AbstractVillagerMixin extends AgeableMob implements Npc, M
 	}
 	
 	protected void registerGoals() {
-	      this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Player.class, (p_200828_0_) -> {
-	          return SurviveEntityStats.getHygieneStats(p_200828_0_).needsABath() && Survive.HYGIENE_CONFIG.enabled;
+	      this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Player.class, (entity) -> {
+	          return ((IRealisticEntity)entity).hygieneData().needsABath() && Survive.HYGIENE_CONFIG.enabled;
 	      }, 6.0F, 1.0D, 1.2D, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test));
 	   }
 
