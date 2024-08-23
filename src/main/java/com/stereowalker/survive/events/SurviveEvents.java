@@ -372,7 +372,7 @@ public class SurviveEvents {
 			IRealisticEntity original = ((IRealisticEntity)thatPlayer);
 			entity.setNutritionData(original.nutritionData());
 			entity.setWellbeingData(original.wellbeingData());
-			SurviveEntityStats.setHygieneStats(thisPlayer, SurviveEntityStats.getHygieneStats(thatPlayer));
+			entity.setHygieneData(original.hygieneData());
 			SurviveEntityStats.setWaterStats(thisPlayer, original.getWaterData());
 			SurviveEntityStats.setStaminaStats(thisPlayer, SurviveEntityStats.getEnergyStats(thatPlayer));
 			SurviveEntityStats.setTemperatureStats(thisPlayer, SurviveEntityStats.getTemperatureStats(thatPlayer));

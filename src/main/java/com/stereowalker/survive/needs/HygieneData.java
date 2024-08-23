@@ -3,7 +3,6 @@ package com.stereowalker.survive.needs;
 import java.util.Random;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.particles.SParticleTypes;
 
 import net.minecraft.nbt.CompoundTag;
@@ -129,7 +128,6 @@ public class HygieneData extends SurviveData {
 
 	@Override
 	public void save(LivingEntity player) {
-		SurviveEntityStats.setHygieneStats(player, this);
 	}
 
 	@Override

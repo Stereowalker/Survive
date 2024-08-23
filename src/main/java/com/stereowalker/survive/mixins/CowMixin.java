@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
+import com.stereowalker.survive.needs.IRealisticEntity;
 
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
@@ -25,8 +25,8 @@ public abstract class CowMixin extends Animal {
 	
 	@Inject(method = "registerGoals", at = @At("HEAD"))
 	public void reGOal(CallbackInfo ci) {
-		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Player.class, (p_200828_0_) -> {
-			return SurviveEntityStats.getHygieneStats(p_200828_0_).shouldBeAvoidedByPigs() && Survive.HYGIENE_CONFIG.enabled;
+		this.goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Player.class, (entity) -> {
+			return ((IRealisticEntity)entity).hygieneData().shouldBeAvoidedByPigs() && Survive.HYGIENE_CONFIG.enabled;
 		}, 6.0F, 1.0D, 1.2D, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test));
 	}
 }
