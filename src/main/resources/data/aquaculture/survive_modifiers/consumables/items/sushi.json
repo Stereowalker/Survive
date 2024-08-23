@@ -3,6 +3,8 @@
 	"thirst": -1,
 	"hydration": 1.0,
 	"thirst_chance": 0.1,
+	"lifespan": 6000,
+	"ticks_fresh": 600,
 	"nutrition": {
 		"carbohydrate_ratio": 2,
 		"protein_ratio": 8
