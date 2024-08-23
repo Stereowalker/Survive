@@ -36,6 +36,7 @@ import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.survive.json.FoodJsonHolder;
 import com.stereowalker.survive.json.PotionJsonHolder;
 import com.stereowalker.survive.json.property.BlockPropertyHandlerImpl;
+import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.network.protocol.game.ClientboundDataTransferPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundDrinkSoundPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundSurvivalStatsPacket;
@@ -313,6 +314,8 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addInsert(Inserts.PLAYER_CAN_SLEEP, SleepEvents::allowSleep);
 		collector.addInsert(Inserts.PLAYER_CONTINUE_SLEEP, SleepEvents::allowSleep);
 		collector.addInsert(Inserts.INTERACT_WITH_BLOCK, ThirstEvents::interactWithWaterSourceBlock);
+		collector.addInsert(Inserts.INTERACT_WITH_ITEM, ThirstEvents::interactWithWaterSourceBlock);
+		collector.addInsert(Inserts.INTERACT_WITH_ITEM, StaminaData::clickItem);
 		collector.addInsert(Inserts.MENU_OPEN, (player, menu) -> {
 			if (menu instanceof ChestMenu chest && chest.getContainer() instanceof ChestBlockEntity block && player instanceof ServerPlayer pl) {
 				ColdStorage cold = (ColdStorage)block;

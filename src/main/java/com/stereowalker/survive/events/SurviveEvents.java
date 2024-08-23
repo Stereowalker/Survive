@@ -42,7 +42,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
@@ -356,31 +355,6 @@ public class SurviveEvents {
 			//Air Block
 			if (event.getLevel().isRainingAt(blockpos)) {
 				new ServerboundInteractWithWaterPacket(event.getPos(), 0.0f, 1.0D, 0.5D, event.getHand()).send();
-			}
-		}
-	}
-	
-	@SubscribeEvent
-	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickItem event) {
-		System.out.println("Interact With Block Start");
-		HitResult raytraceresult = getPlayerPOVHitResult(event.getLevel(), event.getEntity(), ClipContext.Fluid.SOURCE_ONLY);
-		BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
-		BlockState state = event.getLevel().getBlockState(event.getPos());
-		Fluid fluid = event.getLevel().getFluidState(blockpos).getType();
-		BlockState stateUnder = event.getLevel().getBlockState(event.getPos().below());
-		if (event.getLevel().isClientSide && ServerboundInteractWithWaterPacket.isValidStack(event.getItemStack())) {
-			//Source Block Of Water
-			if (DataMaps.Client.fluid.containsKey(RegistryHelper.fluids().getKey(fluid))) {
-				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(RegistryHelper.fluids().getKey(fluid));
-				float thirstChance = fluidHolder.getThirstChance();
-				if (DataMaps.Client.biome.containsKey(event.getLevel().getBiome(blockpos).unwrapKey().get().location())) {
-					BiomeJsonHolder biomeData = DataMaps.Client.biome.get(event.getLevel().getBiome(blockpos).unwrapKey().get().location());
-					if (biomeData.getThirstChance() >= 0)
-						thirstChance = biomeData.getThirstChance();
-				}
-				event.setCanceled(true);
-				event.setCancellationResult(InteractionResult.SUCCESS);
-				new ServerboundInteractWithWaterPacket(blockpos, thirstChance, fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), event.getHand()).send();
 			}
 		}
 	}
