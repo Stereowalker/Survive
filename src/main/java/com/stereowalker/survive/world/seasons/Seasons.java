@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import com.stereowalker.survive.Survive;
 import com.stereowalker.unionlib.api.registries.RegistryCollector;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -33,15 +34,15 @@ public class Seasons {
 	public static final Season AUTUMN_CLOSE = register("autumn_close", new Season(-0.3f));
 	
 	public static Season register(String name, Season season) {
-		SEASON_LIST.put(Survive.getInstance().location(name), season);
+		SEASON_LIST.put(VersionHelper.toLoc(Survive.MOD_ID, name), season);
 		return season;
 	}
 	
 	public static void registerAll(RegistryCollector.Custom<Season> registry) {
 		for(Entry<ResourceLocation, Season> season : SEASON_LIST.entrySet()) {
 			registry.register(season.getKey(), season.getValue());
-			Survive.getInstance().debug("Season: \""+season.getKey().toString()+"\" registered");
+//			Survive.getInstance().debug("Season: \""+season.getKey().toString()+"\" registered");
 		}
-		Survive.getInstance().debug("All Seasons Registered");
+//		Survive.getInstance().debug("All Seasons Registered");
 	}
 }

@@ -10,6 +10,7 @@ import com.stereowalker.unionlib.util.RegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -58,6 +59,28 @@ public class ThirstEvents {
 						new ServerboundInteractWithWaterPacket(pos, 0.5f, 4.0D, hand).send();
 					}
 				}
+			}
+		}
+	}
+
+	public static void interactWithWaterSourceBlock(Player player, Level level, InteractionHand hand, InsertResultCanceller<InteractionResultHolder<ItemStack>> cancel) {
+		ItemStack stack = player.getItemInHand(hand);
+		HitResult raytraceresult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
+		BlockPos sourcepos = ((BlockHitResult)raytraceresult).getBlockPos();
+		Fluid fluid = level.getFluidState(sourcepos).getType();
+		BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
+		if (level.isClientSide && ServerboundInteractWithWaterPacket.isValidStack(stack)) {
+			//Source Block Of Water
+			if (DataMaps.Client.fluid.containsKey(RegistryHelper.fluids().getKey(fluid))) {
+				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(RegistryHelper.fluids().getKey(fluid));
+				float thirstChance = fluidHolder.getThirstChance();
+				if (DataMaps.Client.biome.containsKey(level.getBiome(blockpos).unwrapKey().get().location())) {
+					BiomeJsonHolder biomeData = DataMaps.Client.biome.get(level.getBiome(blockpos).unwrapKey().get().location());
+					if (biomeData.getThirstChance() >= 0)
+						thirstChance = biomeData.getThirstChance();
+				}
+				cancel.cancel(InteractionResultHolder.success(stack));
+				new ServerboundInteractWithWaterPacket(blockpos, thirstChance, fluidHolder.getThirstAmount(), fluidHolder.getHydrationAmount(), hand).send();
 			}
 		}
 	}

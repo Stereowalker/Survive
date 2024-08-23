@@ -13,6 +13,7 @@ import com.stereowalker.survive.network.protocol.game.ServerboundStaminaExhausti
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
+import com.stereowalker.unionlib.api.insert.InsertResultCanceller;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.client.player.LocalPlayer;
@@ -21,11 +22,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -241,9 +245,8 @@ public class StaminaData extends SurviveData {
 
 	/////-----------EVENTS-----------/////
 
-	@SubscribeEvent
-	public static void clickItem(PlayerInteractEvent.RightClickItem clickItem) {
-		if(!clickItem.isCanceled() && clickItem.getEntity() instanceof Player && clickItem.getCancellationResult().consumesAction()) {
+	public static void clickItem(Player player, Level level, InteractionHand hand, InsertResultCanceller<InteractionResultHolder<ItemStack>> cancel) {
+		if(!cancel.wasCancelled() && player instanceof Player && cancel.cancelResult().getResult().consumesAction()) {
 
 		}
 	}
