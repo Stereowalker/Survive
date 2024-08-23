@@ -98,13 +98,13 @@ dependencies {
 	implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 	
 	implementation ("com.stereowalker.unionlib:UnionLib:${_minecraft_version}-${_unionlib_version}-${_loader}")
-	compileOnly ("mezz.jei:jei-1.21-common-api:"+jeiVersion)
-	compileOnly ("mezz.jei:jei-1.21-neoforge-api:"+jeiVersion)
+	compileOnly ("mezz.jei:jei-${_minecraft_version}-common-api:${_jei_version}")
+	compileOnly ("mezz.jei:jei-${_minecraft_version}-neoforge-api:${_jei_version}")
 	compileOnly ("com.stereowalker.combat:C.O.M.B.A.T:1.18.2"+/*_minecraft_version+*/"-"+combatVersion+":api")
     //compileOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
     //compileOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE:api")
 	
-	implementation ("mezz.jei:jei-${_minecraft_version}-neoforge:"+jeiVersion+"")
+	implementation ("mezz.jei:jei-${_minecraft_version}-neoforge:${_jei_version}")
 	//runtimeOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
     //runtimeOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE")
 	
