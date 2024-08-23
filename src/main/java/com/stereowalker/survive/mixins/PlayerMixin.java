@@ -47,6 +47,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	@Shadow private int sleepCounter;
 	private WellbeingData wellbeingData = new WellbeingData();
 	private NutritionData nutritionData = new NutritionData();
+	private HygieneData hygieneData = new HygieneData();
 	private SleepData sleepData = new SleepData();
 
 	protected PlayerMixin(EntityType<? extends LivingEntity> type, Level worldIn) {
@@ -92,7 +93,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		//
 		if (!this.level().isClientSide) {
 			getStaminaData().baseTick((Player)(Object)this);
-			getHygieneData().baseTick((Player)(Object)this);
+			hygieneData().baseTick((Player)(Object)this);
 			this.nutritionData.baseTick((Player)(Object)this);
 			getTemperatureData().baseTick((Player)(Object)this);
 			getWaterData().baseTick((Player)(Object)this);
@@ -160,6 +161,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			CompoundTag surviveData = pCompound.getCompound("surviveData");
 			if (surviveData.contains("wellbeing", 10)) this.wellbeingData.read(surviveData.getCompound("wellbeing"));
 			if (surviveData.contains("nutrition", 10)) this.nutritionData.read(surviveData.getCompound("nutrition"));
+			if (surviveData.contains("hygiene", 10)) this.hygieneData.read(surviveData.getCompound("hygiene"));
 			if (surviveData.contains("sleep", 10)) this.sleepData.read(surviveData.getCompound("sleep"));
 		}
 	}
@@ -169,6 +171,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		CompoundTag surviveData = new CompoundTag();
 		surviveData.put("wellbeing", this.wellbeingData.write());
 		surviveData.put("nutrition", this.nutritionData.write());
+		surviveData.put("hygiene", this.hygieneData.write());
 		surviveData.put("sleep", this.sleepData.write());
 		pCompound.put("surviveData", surviveData);
 	}
@@ -177,8 +180,13 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		return SurviveEntityStats.getEnergyStats((Player)(Object)this);
 	}
 
-	public HygieneData getHygieneData(){
-		return SurviveEntityStats.getHygieneStats((Player)(Object)this);
+	public HygieneData hygieneData(){
+		return this.hygieneData;
+	}
+	
+	@Override
+	public void setHygieneData(HygieneData data) {
+		this.hygieneData = data;
 	}
 
 	public NutritionData nutritionData(){

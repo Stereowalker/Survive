@@ -6,7 +6,8 @@ import net.minecraft.world.level.Level;
 
 public interface IRealisticEntity {
 	public StaminaData getStaminaData();
-	public HygieneData getHygieneData();
+	public HygieneData hygieneData();
+	public void setHygieneData(HygieneData data);
 	public NutritionData nutritionData();
 	public void setNutritionData(NutritionData data);
 	public TemperatureData getTemperatureData();
