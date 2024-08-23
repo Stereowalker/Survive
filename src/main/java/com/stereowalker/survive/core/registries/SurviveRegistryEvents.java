@@ -36,9 +36,5 @@ public class SurviveRegistryEvents
 			reg.register(VersionHelper.toLoc("survive", "module_enabled"), ModuleEnabledCondition.CODEC);
 		});
 		new SLootItemConditions();
-		Survive.POTION_FLUID_MAP = 
-				new ImmutableMap.Builder<Holder<Potion>, List<Fluid>>()
-				.put(Potions.WATER, Lists.newArrayList(Fluids.FLOWING_WATER, Fluids.WATER))
-				.put(SPotions.PURIFIED_WATER.holder(), Lists.newArrayList(SFluids.FLOWING_PURIFIED_WATER, SFluids.PURIFIED_WATER)).build();
 	}
 }

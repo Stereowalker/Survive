@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -117,6 +118,7 @@ import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
@@ -273,6 +275,12 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addCustom(SurviveRegistries.Keys.SEASON, Seasons::registerAll);
 		collector.addCustom(Registries.MOB_EFFECT, (override) -> {
 			MobEffects.FIRE_RESISTANCE.value().addAttributeModifier(SAttributes.HEAT_RESISTANCE.holder(), VersionHelper.toLoc("fire_heat_res"), 5.0D, AttributeModifier.Operation.ADD_VALUE);
+		});
+		collector.addCustom(Registries.POTION, (override) -> {
+			Survive.POTION_FLUID_MAP = 
+					new ImmutableMap.Builder<Holder<Potion>, List<Fluid>>()
+					.put(Potions.WATER, Lists.newArrayList(Fluids.FLOWING_WATER, Fluids.WATER))
+					.put(SPotions.PURIFIED_WATER.holder(), Lists.newArrayList(SFluids.FLOWING_PURIFIED_WATER, SFluids.PURIFIED_WATER)).build();
 		});
 	}
 	
