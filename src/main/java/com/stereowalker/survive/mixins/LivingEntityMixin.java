@@ -34,6 +34,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	@Shadow public abstract ItemStack getItemBySlot(EquipmentSlot pSlot);
 	@Shadow public boolean hurt(DamageSource pSource, float pAmount) {return false;}
+	@Shadow public ItemStack getUseItem() {return null;}
 
 	@Redirect(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
 	public boolean aiStep_hurt_redirect(LivingEntity living, DamageSource pSource, float pAmount) {
@@ -104,10 +105,10 @@ public abstract class LivingEntityMixin extends EntityMixin {
 		}
 	}
 
-	@Inject(method = "completeUsingItem", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/item/ItemStack;copy()Lnet/minecraft/world/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void completeUsingItem_inject(CallbackInfo ci, InteractionHand interactionhand, ItemStack copy) {
-		if (!copy.has(DataComponents.FOOD) && this instanceof IRealisticEntity) {
-			((IRealisticEntity)this).drink(this.level(), copy);
+	@Inject(method = "completeUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;triggerItemUseEffects(Lnet/minecraft/world/item/ItemStack;I)V"))
+	public void completeUsingItem_inject(CallbackInfo ci) {
+		if (!getUseItem().has(DataComponents.FOOD) && this instanceof IRealisticEntity) {
+			((IRealisticEntity)this).drink(this.level(), getUseItem());
 		}
 	}
 
