@@ -253,6 +253,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	@Override
 	public void setupRegistries(RegistryCollector collector) {
 		collector.addRegistryHolder(Registries.ATTRIBUTE, SAttributes.class);
+		collector.addRegistryHolder(Registries.ARMOR_MATERIAL, SArmorMaterials.class);
 		collector.addRegistryHolder(Registries.BLOCK, SBlocks.class);
 		collector.addRegistryHolder(Registries.FLUID, SFluids.class);
 		collector.addRegistryHolder(Registries.ITEM, SItems.class);
@@ -261,7 +262,6 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addRegistryHolder(Registries.RECIPE_SERIALIZER, SRecipeSerializer.class);
 		collector.addRegistryHolder(Registries.DATA_COMPONENT_TYPE, SDataComponents.class);
 		collector.addRegistryHolder(Registries.ENCHANTMENT_EFFECT_COMPONENT_TYPE, SEnchantmentEffectComponents.class);
-		collector.addRegistryHolder(Registries.ARMOR_MATERIAL, SArmorMaterials.class);
 		collector.addRegistryHolder(Registries.POTION, SPotions.class);
 		collector.addRegistryHolder(Registries.PARTICLE_TYPE, SParticleTypes.class);
 		collector.addRegistry(SurviveRegistries.CONDITION, SurviveRegistries.Keys.CONDITION, true);
