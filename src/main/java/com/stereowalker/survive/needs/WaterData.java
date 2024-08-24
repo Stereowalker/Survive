@@ -63,6 +63,14 @@ public class WaterData extends SurviveData {
 			uncleanConsumption++;
 		}
 	}
+	
+	public void drink(float thirstConsumption, int uncleanStack, boolean isUnclean) {
+		this.waterExhaustionLevel += thirstConsumption;
+		if (isUnclean) {
+			uncleanStacks += uncleanStack;
+			uncleanConsumption++;
+		}
+	}
 
 	public void drink(Item pItem, ItemStack pStack, LivingEntity entity) {
 		if (entity != null && entity instanceof ServerPlayer) {
@@ -80,14 +88,20 @@ public class WaterData extends SurviveData {
 			}
 			if (potion != null && DataMaps.Server.potionDrink.containsKey(RegistryHelper.potions().getKey(potion.potion().get().value()))) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.potionDrink.get(RegistryHelper.potions().getKey(potion.potion().get().value()));
-				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), stacks, applyThirst(entity, biomef != -1 ? biomef : drinkData.getThirstChance()));
+				if (drinkData.getThirstConsumption() > 0)
+					drink(drinkData.getThirstConsumption(), stacks, applyThirst(entity, biomef != -1 ? biomef : drinkData.getThirstChance()));
+				else
+					drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), stacks, applyThirst(entity, biomef != -1 ? biomef : drinkData.getThirstChance()));
 				if (drinkData.isHeated())entity.addEffect(new MobEffectInstance(SMobEffects.HEATED.holder(), 30*20));
 				if (drinkData.isChilled())entity.addEffect(new MobEffectInstance(SMobEffects.CHILLED.holder(), 30*20));
 				if (drinkData.isEnergizing())entity.addEffect(new MobEffectInstance(SMobEffects.ENERGIZED.holder(), 60*20*5));
 			}
 			else if (DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(pItem))) {
 				ConsummableJsonHolder drinkData = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(pItem));
-				drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), stacks, applyThirst(entity, biomef != -1 ? biomef : drinkData.getThirstChance()));
+				if (drinkData.getThirstConsumption() > 0)
+					drink(drinkData.getThirstConsumption(), stacks, applyThirst(entity, biomef != -1 ? biomef : drinkData.getThirstChance()));
+				else
+					drink(drinkData.getThirstAmount(), drinkData.getHydrationAmount(), stacks, applyThirst(entity, biomef != -1 ? biomef : drinkData.getThirstChance()));
 				if (drinkData.isHeated())entity.addEffect(new MobEffectInstance(SMobEffects.HEATED.holder(), 30*20));
 				if (drinkData.isChilled())entity.addEffect(new MobEffectInstance(SMobEffects.CHILLED.holder(), 30*20));
 				if (drinkData.isEnergizing())entity.addEffect(new MobEffectInstance(SMobEffects.ENERGIZED.holder(), 60*20*5));
