@@ -24,6 +24,7 @@ public class ConsummableJsonHolder implements JsonHolder {
 	private int thirstAmount = 0;
 	private float hydrationAmount = 0;
 	private float thirstChance = 0;
+	private float thirstConsumption = -1;
 	//Hunger
 	private int hungerAmount = 0;
 	private float saturationAmount = 0;
@@ -47,7 +48,6 @@ public class ConsummableJsonHolder implements JsonHolder {
 	}
 	
 	public ConsummableJsonHolder(ResourceLocation itemID, JsonObject object) {
-		String THIRST = "thirst";
 		String HUNGER = "hunger";
 		String ENERGY = "energy";
 		String SATURATION = "saturation";
@@ -61,19 +61,17 @@ public class ConsummableJsonHolder implements JsonHolder {
 		if(object.entrySet().size() != 0) {
 			stopWorking();
 			try {
-				if(this.hasMemberAndIsPrimitive(THIRST, object)) {
-					setWorkingOn(THIRST);
-					thirstAmount = object.get(THIRST).getAsInt();
-					stopWorking();
-				}
-
-				if(this.hasMemberAndIsPrimitive("hydration", object)) {
-					hydrationAmount = workOnFloat("hydration", object);
-					if (hydrationAmount > 4.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data {} from JSON: Hydration should not be greater than 4.0", itemID);
-					if (hydrationAmount < 1.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data {} from JSON: Hydration should not be less than 1.0", itemID);
+				if (this.hasMemberAndIsPrimitive("thirst_consumption", object)) {
+					thirstConsumption = this.workOnFloat("thirst_chance", object);
+					if (thirstConsumption <= 0.01f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data {} from JSON: \"thirst_consumption\" should not be less than 0.01", itemID);
+					thirstConsumption = Math.max(thirstConsumption, 0.01f);
+				} else {
+					thirstAmount = this.workOnIntIfAvailable("thirst", object, 0);
+					hydrationAmount = this.workOnFloatIfAvailable("hydration", object, 1f);
+					if (hydrationAmount > 4.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data {} from JSON: \"hydration\" should not be greater than 4.0", itemID);
+					if (hydrationAmount < 1.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data {} from JSON: \"hydration\" should not be less than 1.0", itemID);
 					hydrationAmount = Mth.clamp(hydrationAmount, 1.0f, 4.0f);
 				}
-
 				thirstChance = this.workOnFloat("thirst_chance", object);
 				
 				if(this.hasMemberAndIsPrimitive(HUNGER, object)) {
@@ -164,6 +162,10 @@ public class ConsummableJsonHolder implements JsonHolder {
 
 	public int getThirstAmount() {
 		return thirstAmount;
+	}
+	
+	public float getThirstConsumption() {
+		return thirstConsumption;
 	}
 
 	public float getHydrationAmount() {
