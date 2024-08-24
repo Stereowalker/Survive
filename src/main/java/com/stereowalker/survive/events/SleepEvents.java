@@ -1,7 +1,6 @@
 package com.stereowalker.survive.events;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.SleepData;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
@@ -19,7 +18,7 @@ public class SleepEvents {
 			if (Survive.CONFIG.enable_sleep && ((IRealisticEntity)splayer).sleepData().getAwakeTimer() > time(0) - 5000 && Survive.CONFIG.canSleepDuringDay) {
 				problem.set(null);
 			}
-			else if (SurviveEntityStats.getEnergyStats(splayer).getEnergyLevel() < splayer.getAttributeValue(SAttributes.MAX_STAMINA.holder())/2) {
+			else if (((IRealisticEntity)splayer).staminaData().getEnergyLevel() < splayer.getAttributeValue(SAttributes.MAX_STAMINA.holder())/2) {
 				problem.set(null);
 			}
 		}
@@ -30,7 +29,7 @@ public class SleepEvents {
 			if (Survive.CONFIG.enable_sleep && ((IRealisticEntity)splayer).sleepData().getAwakeTimer() > time(0) - 5000 && Survive.CONFIG.canSleepDuringDay) {
 				mayContinueSleeping.set(true);
 			}
-			else if (SurviveEntityStats.getEnergyStats(splayer).getEnergyLevel() < splayer.getAttributeValue(SAttributes.MAX_STAMINA.holder())/2) {
+			else if (((IRealisticEntity)splayer).staminaData().getEnergyLevel() < splayer.getAttributeValue(SAttributes.MAX_STAMINA.holder())/2) {
 				mayContinueSleeping.set(true);
 			}
 		}

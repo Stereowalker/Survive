@@ -1,8 +1,7 @@
 package com.stereowalker.survive.network.protocol.game;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
-import com.stereowalker.survive.needs.StaminaData;
+import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
 import com.stereowalker.unionlib.util.VersionHelper;
 
@@ -32,9 +31,7 @@ public class ServerboundStaminaExhaustionPacket extends ServerboundUnionPacket {
 	@Override
 	public boolean handleOnServer(ServerPlayer sender) {
 		if (Survive.STAMINA_CONFIG.enabled) {
-			StaminaData stats = SurviveEntityStats.getEnergyStats(sender);
-			stats.addExhaustion(sender, exhaustion, "Energy from client");
-			SurviveEntityStats.setStaminaStats(sender, stats);
+			((IRealisticEntity)sender).addStaminaExhaustion(exhaustion, "Energy from client");
 		}
 		return true;
 	}
