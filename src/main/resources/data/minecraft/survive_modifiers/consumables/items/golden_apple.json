@@ -1,7 +1,6 @@
 {
 	"energy": 2,
-	"thirst": 0,
-	"hydration": 2.6,
+	"thirst_consumption": 0.1,
 	"thirst_chance": 0.0,
 	"lifespan": 1337140,
 	"ticks_fresh": 102860,
