@@ -23,6 +23,7 @@ import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.WaterData;
 import com.stereowalker.survive.needs.WellbeingData;
 import com.stereowalker.survive.world.DataMaps;
+import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.core.component.DataComponents;
@@ -48,6 +49,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	private WellbeingData wellbeingData = new WellbeingData();
 	private NutritionData nutritionData = new NutritionData();
 	private HygieneData hygieneData = new HygieneData();
+	private StaminaData staminaData = new StaminaData(getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 	private SleepData sleepData = new SleepData();
 
 	protected PlayerMixin(EntityType<? extends LivingEntity> type, Level worldIn) {
@@ -70,7 +72,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 				}
 			}
 		}
-		this.getStaminaData().eat(pFood.getItem(), pFood, this);
+		this.staminaData().eat(pFood.getItem(), pFood, this);
 		this.getWaterData().drink(pFood.getItem(), pFood, this);
 		this.getRealFoodData().markAsSpoiled(pFood, this);
 	}
@@ -92,7 +94,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		}
 		//
 		if (!this.level().isClientSide) {
-			getStaminaData().baseTick((Player)(Object)this);
+			staminaData().baseTick((Player)(Object)this);
 			hygieneData().baseTick((Player)(Object)this);
 			this.nutritionData.baseTick((Player)(Object)this);
 			getTemperatureData().baseTick((Player)(Object)this);
@@ -114,7 +116,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = {"jumpFromGround", "actuallyHurt", "checkMovementStatistics"})
 	public void morphExhaustion(Player player, float value) {
 		if (Survive.STAMINA_CONFIG.enabled) {
-			getStaminaData().addExhaustion(player, value*2.5f, "Jumped, Got hurt or moved");
+			addStaminaExhaustion(value*2.5f, "Jumped, Got hurt or moved");
 		}
 		else if (Survive.CONFIG.nutrition_enabled) {
 			this.nutritionData.removeCarbs(Mth.ceil(value*2.5f));
@@ -127,7 +129,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = "attack")
 	public void morphStaminaDuringAttack(Player player, float value) {
 		if (Survive.STAMINA_CONFIG.enabled) {
-			getStaminaData().addExhaustion(player, 1.25f, "Player Attacked");
+			addStaminaExhaustion(1.25f, "Player Attacked");
 		}
 		else if (Survive.CONFIG.nutrition_enabled) {
 			this.nutritionData.removeCarbs(Mth.ceil(value*2.5f));
@@ -162,6 +164,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			if (surviveData.contains("wellbeing", 10)) this.wellbeingData.read(surviveData.getCompound("wellbeing"));
 			if (surviveData.contains("nutrition", 10)) this.nutritionData.read(surviveData.getCompound("nutrition"));
 			if (surviveData.contains("hygiene", 10)) this.hygieneData.read(surviveData.getCompound("hygiene"));
+			if (surviveData.contains("stamina", 10)) this.staminaData.read(surviveData.getCompound("stamina"));
 			if (surviveData.contains("sleep", 10)) this.sleepData.read(surviveData.getCompound("sleep"));
 		}
 	}
@@ -172,12 +175,18 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		surviveData.put("wellbeing", this.wellbeingData.write());
 		surviveData.put("nutrition", this.nutritionData.write());
 		surviveData.put("hygiene", this.hygieneData.write());
+		surviveData.put("stamina", this.staminaData.write());
 		surviveData.put("sleep", this.sleepData.write());
 		pCompound.put("surviveData", surviveData);
 	}
 
-	public StaminaData getStaminaData() {
-		return SurviveEntityStats.getEnergyStats((Player)(Object)this);
+	public StaminaData staminaData() {
+		return this.staminaData;
+	}
+	
+	@Override
+	public void setStaminaData(StaminaData data) {
+		this.staminaData = data;
 	}
 
 	public HygieneData hygieneData(){

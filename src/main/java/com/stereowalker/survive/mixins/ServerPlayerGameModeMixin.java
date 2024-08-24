@@ -6,8 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
-import com.stereowalker.survive.needs.StaminaData;
+import com.stereowalker.survive.needs.IRealisticEntity;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
@@ -25,9 +24,7 @@ public abstract class ServerPlayerGameModeMixin {
 	@Inject(at = @At(value = "RETURN"), method = "useItemOn")
 	public void mixinBlockInteraction(ServerPlayer playerIn, Level worldIn, ItemStack stackIn, InteractionHand handIn, BlockHitResult blockRaytraceResultIn, CallbackInfoReturnable<InteractionResult> cir) {
 		if (cir.getReturnValue().consumesAction()) {
-			StaminaData energyStats = SurviveEntityStats.getEnergyStats(playerIn);
-			energyStats.addExhaustion(playerIn, Survive.STAMINA_CONFIG.stamina_drain_from_using_blocks, "used an item on something");
-			SurviveEntityStats.setStaminaStats(playerIn, energyStats);
+			((IRealisticEntity)playerIn).addStaminaExhaustion(Survive.STAMINA_CONFIG.stamina_drain_from_using_blocks, "used an item on something");
 		}
 	}
 	
@@ -36,8 +33,6 @@ public abstract class ServerPlayerGameModeMixin {
 	 */
 	@Inject(at = @At(value = "RETURN"), method = "useItem")
 	public void mixinItemInteraction(ServerPlayer player, Level worldIn, ItemStack stack, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
-		StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
-		energyStats.addExhaustion(player, Survive.STAMINA_CONFIG.stamina_drain_from_items, "Used item in air");
-		SurviveEntityStats.setStaminaStats(player, energyStats);
+		((IRealisticEntity)player).addStaminaExhaustion(Survive.STAMINA_CONFIG.stamina_drain_from_items, "Used item in air");
 	}
 }

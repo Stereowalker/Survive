@@ -3,7 +3,6 @@ package com.stereowalker.survive.needs;
 import java.util.Random;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.WeightHandler;
 import com.stereowalker.survive.damagesource.SDamageSources;
 import com.stereowalker.survive.damagesource.SDamageTypes;
@@ -200,22 +199,8 @@ public class StaminaData extends SurviveData {
 	/**
 	 * adds input to waterExhaustionLevel to a max of 40
 	 */
-	private void addExhaustion(float exhaustion) {
+	public void addExhaustion(float exhaustion) {
 		this.energyExhaustionLevel = Math.min(this.energyExhaustionLevel + exhaustion, 40.0F);
-	}
-
-	/**
-	 * increases exhaustion level by supplied amount
-	 */
-	public void addExhaustion(Player player, float exhaustion, String reason) {
-		if (!player.getAbilities().invulnerable) {
-			if (!player.level().isClientSide) {
-				//				System.out.println("Exhause for "+reason);
-				this.addExhaustion(exhaustion);
-				this.save(player);
-			}
-
-		}
 	}
 
 	/**
@@ -235,7 +220,6 @@ public class StaminaData extends SurviveData {
 
 	@Override
 	public void save(LivingEntity player) {
-		SurviveEntityStats.setStaminaStats(player, this);
 	}
 
 	@Override
@@ -268,10 +252,9 @@ public class StaminaData extends SurviveData {
 	@SubscribeEvent
 	public static void replenishEnergyOnSleep(SleepFinishedTimeEvent event) {
 		for (Player player : event.getLevel().players()) {
-			StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
+			StaminaData energyStats = ((IRealisticEntity)player).staminaData();
 			int staminaToRecover = Mth.ceil(((float)(event.getNewTime()-event.getLevel().dayTime())/Survive.STAMINA_CONFIG.sleepTime)*(energyStats.maxStamina+6));
 			energyStats.relax(staminaToRecover, player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
-			SurviveEntityStats.setStaminaStats(player, energyStats);
 		}
 	}
 }

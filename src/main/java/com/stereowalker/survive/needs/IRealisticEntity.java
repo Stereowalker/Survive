@@ -1,11 +1,13 @@
 package com.stereowalker.survive.needs;
 
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public interface IRealisticEntity {
-	public StaminaData getStaminaData();
+	public StaminaData staminaData();
+	public void setStaminaData(StaminaData data);
 	public HygieneData hygieneData();
 	public void setHygieneData(HygieneData data);
 	public NutritionData nutritionData();
@@ -20,6 +22,19 @@ public interface IRealisticEntity {
 	
 	private LivingEntity self() {
 		return (LivingEntity)this;
+	}
+
+	/**
+	 * increases exhaustion level by supplied amount
+	 */
+	public default void addStaminaExhaustion(float exhaustion, String reason) {
+		if ((self() instanceof Player player && !player.getAbilities().invulnerable) || !(self() instanceof Player)) {
+			if (!self().level().isClientSide) {
+				//				System.out.println("Exhause for "+reason);
+				staminaData().addExhaustion(exhaustion);
+			}
+
+		}
 	}
 	
 	public default ItemStack drink(Level pLevel, ItemStack pFood) {

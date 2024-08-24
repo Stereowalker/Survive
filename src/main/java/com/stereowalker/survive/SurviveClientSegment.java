@@ -310,8 +310,8 @@ public class SurviveClientSegment extends ClientSegment {
 		Random rand = new Random();
 		Player player = (Player)gui.minecraft.getCameraEntity();
 		float maxStamina = (float) player.getAttributeValue(SAttributes.MAX_STAMINA.holder());
-		int l = (int) SurviveEntityStats.getEnergyStats(player).getEnergyLevel();
-		if (SurviveEntityStats.getEnergyStats(player).isExhausted()) l = (int) SurviveEntityStats.getEnergyStats(player).getReserveLevel();
+		int l = (int) ((IRealisticEntity)player).staminaData().getEnergyLevel();
+		if (((IRealisticEntity)player).staminaData().isExhausted()) l = (int) ((IRealisticEntity)player).staminaData().getReserveLevel();
 		Minecraft.getInstance().getProfiler().push("energy");
 		if (!forgeOverlay) {
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -322,7 +322,7 @@ public class SurviveClientSegment extends ClientSegment {
 				int i7 = k1;
 				int k7 = 16;
 				int i8 = 0;
-				if (SurviveEntityStats.getEnergyStats(player).isExhausted()) {
+				if (((IRealisticEntity)player).staminaData().isExhausted()) {
 					k7 += 36;
 					i8 = 13;
 				}
