@@ -1,10 +1,8 @@
 package com.stereowalker.survive.core;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.WaterData;
-import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -15,8 +13,7 @@ import net.minecraft.world.entity.player.Player;
 public class SurviveEntityStats {
 	public static String waterStatsID = "WaterStats";
 	public static String temperatureStatsID = "TemperatureStats";
-	public static String energyStatsID = "EnergyStats";
-//	public static String hygieneStatsID = "HygieneStats";
+//	public static String energyStatsID = "EnergyStats";
 	//Getters
 
 	public static WaterData getWaterStats(LivingEntity entity) {
@@ -30,16 +27,16 @@ public class SurviveEntityStats {
 		return stats;
 	}
 	
-	public static StaminaData getEnergyStats(LivingEntity entity) {
-		StaminaData stats = new StaminaData(entity.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
-		if(entity != null) {
-			if (getModNBT(entity) != null && getModNBT(entity).contains(energyStatsID, 10)) {
-				stats.read(getModNBT(entity).getCompound(energyStatsID));
-				return stats;
-			}
-		}
-		return stats;
-	}
+//	public static StaminaData getEnergyStats(LivingEntity entity) {
+//		StaminaData stats = new StaminaData(entity.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
+//		if(entity != null) {
+//			if (getModNBT(entity) != null && getModNBT(entity).contains(energyStatsID, 10)) {
+//				stats.read(getModNBT(entity).getCompound(energyStatsID));
+//				return stats;
+//			}
+//		}
+//		return stats;
+//	}
 	
 	public static TemperatureData getTemperatureStats(LivingEntity entity) {
 		TemperatureData stats = new TemperatureData();
@@ -51,17 +48,6 @@ public class SurviveEntityStats {
 		}
 		return stats;
 	}
-	
-//	public static HygieneData getHygieneStats(LivingEntity entity) {
-//		HygieneData stats = new HygieneData();
-//		if(entity != null) {
-//			if (getModNBT(entity) != null && getModNBT(entity).contains(hygieneStatsID, 10)) {
-//				stats.read(getModNBT(entity).getCompound(hygieneStatsID));
-//				return stats;
-//			}
-//		}
-//		return stats;
-//	}
 	
 	public static int getWetTime(LivingEntity entity) {
 		if (getModNBT(entity) != null && getModNBT(entity).contains(append("WetTime"))) {
@@ -78,23 +64,17 @@ public class SurviveEntityStats {
 		getModNBT(entity).put(waterStatsID, compound2);
 	}
 	
-	public static void setStaminaStats(LivingEntity entity, StaminaData energyStats) {
-		CompoundTag compound2 = new CompoundTag();
-		energyStats.write(compound2);
-		getModNBT(entity).put(energyStatsID, compound2);
-	}
+//	public static void setStaminaStats(LivingEntity entity, StaminaData energyStats) {
+//		CompoundTag compound2 = new CompoundTag();
+//		energyStats.write(compound2);
+//		getModNBT(entity).put(energyStatsID, compound2);
+//	}
 	
 	public static void setTemperatureStats(Entity entity, TemperatureData temperatureStats) {
 		CompoundTag compound2 = new CompoundTag();
 		temperatureStats.write(compound2);
 		getModNBT(entity).put(temperatureStatsID, compound2);
 	}
-	
-//	public static void setHygieneStats(LivingEntity entity, HygieneData hygieneStats) {
-//		CompoundTag compound2 = new CompoundTag();
-//		hygieneStats.write(compound2);
-//		getModNBT(entity).put(hygieneStatsID, compound2);
-//	}
 	
 	public static void setWetTime(LivingEntity entity, int wetTime) {
 		getModNBT(entity).putInt(append("WetTime"), wetTime);
@@ -136,15 +116,12 @@ public class SurviveEntityStats {
 				if (!compound.contains(waterStatsID)) {
 					setWaterStats(player, new WaterData());
 				}
-				if (!compound.contains(energyStatsID)) {
-					setStaminaStats(player, new StaminaData(player.getAttributeValue(SAttributes.MAX_STAMINA.holder())));
-				}
+//				if (!compound.contains(energyStatsID)) {
+//					setStaminaStats(player, new StaminaData(player.getAttributeValue(SAttributes.MAX_STAMINA.holder())));
+//				}
 				if (!compound.contains(temperatureStatsID)) {
 					setTemperatureStats(player, new TemperatureData());
 				}
-//				if (!compound.contains(hygieneStatsID)) {
-//					setHygieneStats(player, new HygieneData());
-//				}
 				if (!compound.contains(append("WetTime"))) {
 					setWetTime(player, 0);
 					Survive.getInstance().debug("Set " + name + "'s wet time to " + getWetTime(player));

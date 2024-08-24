@@ -5,9 +5,7 @@ import java.util.Collection;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.needs.IRealisticEntity;
-import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.needs.WaterData;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
@@ -101,10 +99,9 @@ public class NeedsCommand {
 		for(ServerPlayer player : pTargets) {
 			IRealisticEntity realisticPlayer = (IRealisticEntity)player;
 			WaterData waterData = realisticPlayer.getWaterData();
-			StaminaData staminaData = SurviveEntityStats.getEnergyStats(player);
 			switch (type)  {
 			case STAMINA:
-				staminaData.relax(Mth.floor(amount), player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
+				realisticPlayer.staminaData().relax(Mth.floor(amount), player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 				break;
 			case HUNGER:
 				player.getFoodData().setFoodLevel(Mth.floor(amount));
@@ -126,7 +123,6 @@ public class NeedsCommand {
 				break;
 			}
 			waterData.save(player);
-			staminaData.save(player);
 		}
 
 		if (pTargets.size() == 1) {
@@ -141,10 +137,9 @@ public class NeedsCommand {
 		for(ServerPlayer player : pTargets) {
 			IRealisticEntity realisticPlayer = (IRealisticEntity)player;
 			WaterData waterData = realisticPlayer.getWaterData();
-			StaminaData staminaData = SurviveEntityStats.getEnergyStats(player);
 			switch (type)  {
 			case STAMINA:
-				staminaData.setEnergyLevel(staminaData.getEnergyLevel()-Mth.floor(amount));
+				realisticPlayer.staminaData().setEnergyLevel(realisticPlayer.staminaData().getEnergyLevel()-Mth.floor(amount));
 				break;
 			case HUNGER:
 				player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel()-Mth.floor(amount));
@@ -166,7 +161,6 @@ public class NeedsCommand {
 				break;
 			}
 			waterData.save(player);
-			staminaData.save(player);
 		}
 
 		if (pTargets.size() == 1) {
@@ -180,10 +174,9 @@ public class NeedsCommand {
 	private static int query(CommandSourceStack source, NeedType type, ServerPlayer pTarget) throws CommandSyntaxException {
 		IRealisticEntity realisticPlayer = (IRealisticEntity)pTarget;
 		float result = 0;
-		StaminaData staminaData = SurviveEntityStats.getEnergyStats(pTarget);
 		switch (type)  {
 		case STAMINA:
-			result = staminaData.getEnergyLevel();
+			result = realisticPlayer.staminaData().getEnergyLevel();
 			break;
 		case HUNGER:
 			result = pTarget.getFoodData().getFoodLevel();

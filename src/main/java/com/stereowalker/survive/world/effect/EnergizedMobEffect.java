@@ -1,8 +1,6 @@
 package com.stereowalker.survive.world.effect;
 
-import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.needs.IRealisticEntity;
-import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
 import net.minecraft.world.effect.MobEffect;
@@ -20,9 +18,7 @@ public class EnergizedMobEffect extends MobEffect {
     public boolean applyEffectTick(LivingEntity living, int amplifier) {
         if (living instanceof Player player) {
         	IRealisticEntity realisticEntity = (IRealisticEntity)player;
-        	StaminaData energyStats = SurviveEntityStats.getEnergyStats(player);
-			energyStats.relax(1, player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
-			energyStats.save(player);
+        	realisticEntity.staminaData().relax(1, player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 			if (player.hasEffect(SMobEffects.TIREDNESS.holder())) {
 				player.removeEffect(SMobEffects.TIREDNESS.holder());
 			}

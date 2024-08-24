@@ -79,7 +79,8 @@ public class SurviveEvents {
 
 	public static void sendToClient(LivingEntity living) {
 		if (living != null && !living.level().isClientSide && living instanceof ServerPlayer player) {
-			new ClientboundSurvivalStatsPacket(player).send(player);
+			new ClientboundSurvivalStatsPacket(player, true).send(player);
+			new ClientboundSurvivalStatsPacket(player, false).send(player);
 			if (!DataMaps.Server.syncedClients.containsKey(player.getUUID()))
 				DataMaps.Server.syncedClients.put(player.getUUID(), false); 
 			if (!DataMaps.Server.syncedClients.get(player.getUUID())) {
@@ -374,7 +375,7 @@ public class SurviveEvents {
 			entity.setWellbeingData(original.wellbeingData());
 			entity.setHygieneData(original.hygieneData());
 			SurviveEntityStats.setWaterStats(thisPlayer, original.getWaterData());
-			SurviveEntityStats.setStaminaStats(thisPlayer, SurviveEntityStats.getEnergyStats(thatPlayer));
+			entity.setStaminaData(original.staminaData());
 			SurviveEntityStats.setTemperatureStats(thisPlayer, SurviveEntityStats.getTemperatureStats(thatPlayer));
 			entity.setSleepData(original.sleepData());
 			SurviveEntityStats.setWetTime(thisPlayer, SurviveEntityStats.getWetTime(thatPlayer));
