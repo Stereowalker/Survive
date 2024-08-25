@@ -17,7 +17,7 @@ public class TirednessMobEffect extends MobEffect {
     public boolean applyEffectTick(LivingEntity living, int amplifier) {
         if (living instanceof Player player) {
         	IRealisticEntity realisticEntity = (IRealisticEntity)player;
-			realisticEntity.addStaminaExhaustion((0.0125F * (float)(amplifier + 1)), "Tiredness effect");
+			realisticEntity.addStaminaExhaustion((0.0125F * (float)(amplifier + 1)), "Tiredness effect", false);
         }
 
         return true;

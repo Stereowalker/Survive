@@ -32,7 +32,7 @@ public class ServerboundArmorStaminaPacket extends ServerboundUnionPacket {
 
 			if (WeightHandler.getTotalArmorWeight(sender)/Survive.STAMINA_CONFIG.max_weight > 1.0F) moveMul += (WeightHandler.getTotalArmorWeight(sender)/Survive.STAMINA_CONFIG.max_weight) - 1.0F;
 
-			if (moveMul > 0) ((IRealisticEntity)sender).addStaminaExhaustion(moveMul*2.0f, "Armor weight");
+			if (moveMul > 0) ((IRealisticEntity)sender).addStaminaExhaustion(moveMul*2.0f, "Armor weight", false);
 		}
 		return true;
 	}

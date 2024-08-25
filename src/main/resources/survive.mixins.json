@@ -25,7 +25,8 @@
 	"MobEffectMixin",
 	"WrittenBookItemMixin",
 	"BottleItemMixin",
-	"PotionBrewingMixin"
+	"PotionBrewingMixin",
+	"ServerPlayerMixin"
   ],
   "client": [
   	"client.GuiMixin",
