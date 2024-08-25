@@ -61,7 +61,7 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 					"Hydration = "+real.getWaterData().getHydrationLevel()+"\n"+
 					"Food Level = "+sender.getFoodData().getFoodLevel()+"\n"+
 					"Saturation Level = "+sender.getFoodData().getSaturationLevel()+"\n"+
-					"Energy Level = "+real.staminaData().getEnergyLevel();
+					"Energy Level = "+real.staminaData().getLTS();
 
 			String status1 = "§2§nWellness:§r\n";
 			if (real.wellbeingData().isWell())
