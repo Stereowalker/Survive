@@ -139,7 +139,7 @@ public class NeedsCommand {
 			WaterData waterData = realisticPlayer.getWaterData();
 			switch (type)  {
 			case STAMINA:
-				realisticPlayer.staminaData().setEnergyLevel(realisticPlayer.staminaData().getEnergyLevel()-Mth.floor(amount));
+				realisticPlayer.staminaData().setEnergyLevel(realisticPlayer.staminaData().getLTS()-Mth.floor(amount));
 				break;
 			case HUNGER:
 				player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel()-Mth.floor(amount));
@@ -176,7 +176,7 @@ public class NeedsCommand {
 		float result = 0;
 		switch (type)  {
 		case STAMINA:
-			result = realisticPlayer.staminaData().getEnergyLevel();
+			result = realisticPlayer.staminaData().getLTS();
 			break;
 		case HUNGER:
 			result = pTarget.getFoodData().getFoodLevel();

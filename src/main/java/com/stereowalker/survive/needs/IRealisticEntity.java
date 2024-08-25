@@ -1,5 +1,7 @@
 package com.stereowalker.survive.needs;
 
+import com.stereowalker.survive.Survive;
+
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -27,13 +29,26 @@ public interface IRealisticEntity {
 	/**
 	 * increases exhaustion level by supplied amount
 	 */
-	public default void addStaminaExhaustion(float exhaustion, String reason) {
+	public default void addStaminaExhaustion(float exhaustion, String reason, boolean causeStrain) {
 		if ((self() instanceof Player player && !player.getAbilities().invulnerable) || !(self() instanceof Player)) {
 			if (!self().level().isClientSide) {
-				//				System.out.println("Exhause for "+reason);
-				staminaData().addExhaustion(exhaustion);
+				staminaData().addExhaustion(exhaustion, causeStrain);
 			}
 
+		}
+	}
+	
+	public default void bypassFoodExhaustion(float food, float stamina, int nutrition, String reason, boolean causeStrain) {
+		if (self() instanceof Player player){
+			if (Survive.STAMINA_CONFIG.enabled) {
+				addStaminaExhaustion(stamina, reason, causeStrain);
+			}
+			else if (Survive.CONFIG.nutrition_enabled) {
+				this.nutritionData().removeCarbs(nutrition);
+			}
+			else {
+				player.causeFoodExhaustion(food);
+			}
 		}
 	}
 	

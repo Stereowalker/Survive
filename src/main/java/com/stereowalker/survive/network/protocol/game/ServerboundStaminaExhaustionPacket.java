@@ -31,7 +31,7 @@ public class ServerboundStaminaExhaustionPacket extends ServerboundUnionPacket {
 	@Override
 	public boolean handleOnServer(ServerPlayer sender) {
 		if (Survive.STAMINA_CONFIG.enabled) {
-			((IRealisticEntity)sender).addStaminaExhaustion(exhaustion, "Energy from client");
+			((IRealisticEntity)sender).addStaminaExhaustion(exhaustion, "Energy from client", false);
 		}
 		return true;
 	}

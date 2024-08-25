@@ -164,7 +164,7 @@ public class SurviveClientSegment extends ClientSegment {
 			}
 		});
 		collector.register("tired", Order.END, (gui,renderer,width,height)->{
-			if (!Survive.CONFIG.tired_overlay && gui.minecraft.player.hasEffect(SMobEffects.TIREDNESS.holder())) {
+			if (Survive.CONFIG.tired_overlay && gui.minecraft.player.hasEffect(SMobEffects.TIREDNESS.holder())) {
 //				gui.setupOverlayRenderState(true, false);
 				RenderSystem.enableBlend();
 				RenderSystem.defaultBlendFunc();
@@ -309,20 +309,22 @@ public class SurviveClientSegment extends ClientSegment {
 	public static void renderEnergyBars(Gui gui, GuiRenderer graphics, MutableInt moveUp, int j1, int k1, boolean forgeOverlay) {
 		Random rand = new Random();
 		Player player = (Player)gui.minecraft.getCameraEntity();
+		IRealisticEntity real = (IRealisticEntity)player;
 		float maxStamina = (float) player.getAttributeValue(SAttributes.MAX_STAMINA.holder());
-		int l = (int) ((IRealisticEntity)player).staminaData().getEnergyLevel();
-		if (((IRealisticEntity)player).staminaData().isExhausted()) l = (int) ((IRealisticEntity)player).staminaData().getReserveLevel();
+		int l = (int) real.staminaData().getLTS();
+		if (real.staminaData().isDeadTired()) l = (int) real.staminaData().getReserveLevel();
 		Minecraft.getInstance().getProfiler().push("energy");
 		if (!forgeOverlay) {
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0, GUI_ICONS);
 		}
+
 		for (int i = 0; i < Mth.ceil((float)maxStamina/20.0F); i++) {
 			for(int k6 = 0; k6 < 10; ++k6) {
 				int i7 = k1;
 				int k7 = 16;
 				int i8 = 0;
-				if (((IRealisticEntity)player).staminaData().isExhausted()) {
+				if (real.staminaData().isDeadTired()) {
 					k7 += 36;
 					i8 = 13;
 				}
@@ -344,6 +346,33 @@ public class SurviveClientSegment extends ClientSegment {
 				}
 			}
 			moveUp.add(10);
+		}
+		if (real.staminaData().isExerting() || real.staminaData().isShortOfBreath()) {
+			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.5F);
+			l = real.staminaData().isShortOfBreath() ? real.staminaData().getSTSRecovery() : real.staminaData().getBurstStamina();
+			for (int i = 0; i < Mth.ceil((float)maxStamina/20.0F); i++) {
+				for(int k6 = 0; k6 < 10; ++k6) {
+					int i7 = k1;
+					int k7 = 16;
+					if (real.staminaData().isShortOfBreath()) {
+						k7 += 36;
+					}
+					
+					if (player.getFoodData().getSaturationLevel() <= 0.0F && gui.getGuiTicks() % (l * 3 + 1) == 0) {
+						i7 = k1 + (rand.nextInt(3) - 1);
+					}
+					
+					int k8 = j1 - k6 * 8 - 9;
+					if ((k6 * 2 + 1) + (20*i) < l) {
+						graphics.blit(GUI_ICONS, k8, i7, k7 + 36, 27, 9, 9);
+					}
+					
+					if ((k6 * 2 + 1) + (20*i)  == l) {
+						graphics.blit(GUI_ICONS, k8, i7, k7 + 45, 27, 9, 9);
+					}
+				}
+			}
+			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 		Minecraft.getInstance().getProfiler().pop();
 	}

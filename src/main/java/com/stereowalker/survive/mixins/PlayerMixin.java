@@ -112,31 +112,20 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			return foodData.needsFood();
 		}
 	}
+	
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = {"jumpFromGround"})
+	public void morphExhaustionDuringJump(Player player, float value) {
+		bypassFoodExhaustion(value, value*2.5f, Mth.ceil(value*2.5f), "Jumped", this.isSprinting());
+	}
 
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = {"jumpFromGround", "actuallyHurt", "checkMovementStatistics"})
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = {"actuallyHurt"})
 	public void morphExhaustion(Player player, float value) {
-		if (Survive.STAMINA_CONFIG.enabled) {
-			addStaminaExhaustion(value*2.5f, "Jumped, Got hurt or moved");
-		}
-		else if (Survive.CONFIG.nutrition_enabled) {
-			this.nutritionData.removeCarbs(Mth.ceil(value*2.5f));
-		}
-		else {
-			player.causeFoodExhaustion(value);
-		}
+		bypassFoodExhaustion(value, value*2.5f, Mth.ceil(value*2.5f), "Got hurt", false);
 	}
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = "attack")
 	public void morphStaminaDuringAttack(Player player, float value) {
-		if (Survive.STAMINA_CONFIG.enabled) {
-			addStaminaExhaustion(1.25f, "Player Attacked");
-		}
-		else if (Survive.CONFIG.nutrition_enabled) {
-			this.nutritionData.removeCarbs(Mth.ceil(value*2.5f));
-		}
-		else {
-			player.causeFoodExhaustion(value);
-		}
+		bypassFoodExhaustion(value, 1.25f, Mth.ceil(value*2.5f), "Player Attacked", true);
 	}
 
 	@Inject(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;eat(Lnet/minecraft/world/food/FoodProperties;)V"))

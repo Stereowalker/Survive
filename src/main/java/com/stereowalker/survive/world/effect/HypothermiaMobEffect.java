@@ -19,8 +19,8 @@ public class HypothermiaMobEffect extends UnwellMobEffect {
     	if (living instanceof Player) {
     		if (living.getHealth() > living.getMaxHealth()/3.5F)
     			living.hurt(SDamageSources.source(living.level().registryAccess(), SDamageTypes.HYPOTHERMIA), 0.8F);
-    		if ((float)((IRealisticEntity)living).staminaData().getEnergyLevel() > ((float)((IRealisticEntity)living).staminaData().getEnergyLevel())*0.3)
-    			((IRealisticEntity)living).addStaminaExhaustion((1.0F * (float)(amplifier + 1)), "Hypothermia effect");
+    		if ((float)((IRealisticEntity)living).staminaData().getLTS() > ((float)((IRealisticEntity)living).staminaData().getLTS())*0.3)
+    			((IRealisticEntity)living).addStaminaExhaustion((1.0F * (float)(amplifier + 1)), "Hypothermia effect", false);
     	}
     	return true;
     }
