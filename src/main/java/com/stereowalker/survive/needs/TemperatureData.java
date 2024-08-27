@@ -211,7 +211,7 @@ public class TemperatureData extends SurviveData {
 	/**
 	 * Writes the water data for the player.
 	 */
-	public void write(CompoundTag compound) {
+	public void write(CompoundTag compound, boolean reducedData) {
 		compound.putDouble("temperatureLevel", this.temperatureLevel);
 		compound.putDouble("targetTemperature", this.targetTemperature);
 		compound.putInt("temperatureTickTimer", this.temperatureTimer);

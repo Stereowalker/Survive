@@ -164,7 +164,7 @@ public class WellbeingData extends SurviveData {
 	}
 
 	@Override
-	public void write(CompoundTag compound) {
+	public void write(CompoundTag compound, boolean reducedData) {
 		compound.putBoolean("isWell", this.isWell);
 		compound.putInt("timeUntilWell", this.timeUntilWell);
 		compound.putInt("timeUntilUnwell", this.timeUntilUnwell);

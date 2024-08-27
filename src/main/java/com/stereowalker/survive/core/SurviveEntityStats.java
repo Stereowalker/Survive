@@ -60,7 +60,7 @@ public class SurviveEntityStats {
 
 	public static void setWaterStats(LivingEntity entity, WaterData waterStats) {
 		CompoundTag compound2 = new CompoundTag();
-		waterStats.write(compound2);
+		waterStats.write(compound2, false);
 		getModNBT(entity).put(waterStatsID, compound2);
 	}
 	
@@ -72,7 +72,7 @@ public class SurviveEntityStats {
 	
 	public static void setTemperatureStats(Entity entity, TemperatureData temperatureStats) {
 		CompoundTag compound2 = new CompoundTag();
-		temperatureStats.write(compound2);
+		temperatureStats.write(compound2, false);
 		getModNBT(entity).put(temperatureStatsID, compound2);
 	}
 	
