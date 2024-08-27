@@ -218,7 +218,7 @@ public class WaterData extends SurviveData {
 	/**
 	 * Writes the water data for the player.
 	 */
-	public void write(CompoundTag compound) {
+	public void write(CompoundTag compound, boolean reducedData) {
 		compound.putInt("tempDropTicks", this.tempDropTicks);
 		compound.putInt("waterLevel", this.waterLevel);
 		compound.putInt("waterTickTimer", this.waterTimer);

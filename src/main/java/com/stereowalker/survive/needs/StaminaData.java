@@ -224,18 +224,20 @@ public class StaminaData extends SurviveData implements Stamina {
 	/**
 	 * Writes the water data for the player.
 	 */
-	public void write(CompoundTag compound) {
+	public void write(CompoundTag compound, boolean reducedData) {
 		compound.putInt("maxBurstStamina", this.maxBurstStamina);
 		compound.putInt("maxLongStamina", this.maxLongStamina);
 		compound.putInt("longStamina", this.longStamina);
-		compound.putFloat("longExhaustion", this.longExhaustion);
 		compound.putInt("shortStamina", this.shortStamina);
-		compound.putFloat("shortExhaustion", this.shortExhaustion);
-		compound.putInt("shortTermTimer", this.shortTermTimer);
-		compound.putInt("shortRecoveryTimer", this.shortRecoveryTimer);
 		compound.putBoolean("isStraining", this.isStraining);
-		compound.putInt("energyTickTimer", this.energyTimer);
 		compound.putInt("energyReserveLevel", this.energyReserveLevel);
+		if (!reducedData) {
+			compound.putFloat("shortExhaustion", this.shortExhaustion);
+			compound.putFloat("longExhaustion", this.longExhaustion);
+			compound.putInt("energyTickTimer", this.energyTimer);
+			compound.putInt("shortTermTimer", this.shortTermTimer);
+			compound.putInt("shortRecoveryTimer", this.shortRecoveryTimer);
+		}
 	}
 
 	/**

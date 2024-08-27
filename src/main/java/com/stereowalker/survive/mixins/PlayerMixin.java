@@ -163,11 +163,11 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	@Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
 	public void addAdditionalSaveData_inject(CompoundTag pCompound, CallbackInfo ci) {
 		CompoundTag surviveData = new CompoundTag();
-		surviveData.put("wellbeing", this.wellbeingData.write());
-		surviveData.put("nutrition", this.nutritionData.write());
-		surviveData.put("hygiene", this.hygieneData.write());
-		surviveData.put("stamina", this.staminaData.write());
-		surviveData.put("sleep", this.sleepData.write());
+		surviveData.put("wellbeing", this.wellbeingData.write(false));
+		surviveData.put("nutrition", this.nutritionData.write(false));
+		surviveData.put("hygiene", this.hygieneData.write(false));
+		surviveData.put("stamina", this.staminaData.write(false));
+		surviveData.put("sleep", this.sleepData.write(false));
 		pCompound.put("surviveData", surviveData);
 	}
 

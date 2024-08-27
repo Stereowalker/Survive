@@ -29,11 +29,11 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 	
 	public static CompoundTag tag(IRealisticEntity player) {
 		CompoundTag surviveData = new CompoundTag();
-//		surviveData.put("wellbeing", player.wellbeingData().write());
-		surviveData.put("nutrition", player.nutritionData().write());
-		surviveData.put("hygiene", player.hygieneData().write());
-		surviveData.put("stamina", player.staminaData().write());
-		surviveData.put("sleep", player.sleepData().write());
+		surviveData.put("wellbeing", player.wellbeingData().write(true));
+		surviveData.put("nutrition", player.nutritionData().write(true));
+		surviveData.put("hygiene", player.hygieneData().write(true));
+		surviveData.put("stamina", player.staminaData().write(true));
+		surviveData.put("sleep", player.sleepData().write(true));
 		return surviveData;
 	}
 
@@ -55,7 +55,7 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 			SurviveEntityStats.setModNBT(this.stats, sender);
 		} else {
 			IRealisticEntity player = (IRealisticEntity)sender;
-//			if (this.stats.contains("wellbeing", 10)) player.wellbeingData().read(this.stats.getCompound("wellbeing"));
+			if (this.stats.contains("wellbeing", 10)) player.wellbeingData().read(this.stats.getCompound("wellbeing"));
 			if (this.stats.contains("nutrition", 10)) player.nutritionData().read(this.stats.getCompound("nutrition"));
 			if (this.stats.contains("hygiene", 10)) player.hygieneData().read(this.stats.getCompound("hygiene"));
 			if (this.stats.contains("stamina", 10)) player.staminaData().read(this.stats.getCompound("stamina"));
