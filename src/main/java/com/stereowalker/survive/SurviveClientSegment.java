@@ -7,7 +7,6 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.stereowalker.survive.client.events.TooltipEvents;
 import com.stereowalker.survive.client.particle.HygieneParticle;
-import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
 import com.stereowalker.survive.core.particles.SParticleTypes;
 import com.stereowalker.survive.hooks.ColdMenu;
@@ -210,9 +209,9 @@ public class SurviveClientSegment extends ClientSegment {
 		//			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		//			RenderSystem.setShaderTexture(0, GUI_ICONS);
 		//		}
-		double displayTemp = SurviveEntityStats.getTemperatureStats(playerentity).getDisplayTemperature();
+		double displayTemp = ((IRealisticEntity)playerentity).temperatureData().getDisplayTemperature();
 		//For Numbers
-		String s = SurviveEntityStats.getTemperatureStats(playerentity).getCelcius()+" °C";
+		String s = ((IRealisticEntity)playerentity).temperatureData().getCelcius()+" °C";
 		if (Minecraft.getInstance().gameMode.hasExperience()) {
 			if (Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HORIZONTAL_BAR)) {
 				if (Survive.TEMPERATURE_CONFIG.tempEffects && displayTemp >= 1) {//Hyperthermia override
@@ -238,7 +237,7 @@ public class SurviveClientSegment extends ClientSegment {
 			}
 			else if (Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.NUMBERS)) {
 				if (Survive.TEMPERATURE_CONFIG.displayTempInFahrenheit) {
-					s = SurviveEntityStats.getTemperatureStats(playerentity).getFahrenheit()+" °F";
+					s = ((IRealisticEntity)playerentity).temperatureData().getFahrenheit()+" °F";
 				}
 				if (displayTemp >= 1) {
 					renderer.drawString(s, x, y, ChatFormatting.GOLD.getColor(), false);
