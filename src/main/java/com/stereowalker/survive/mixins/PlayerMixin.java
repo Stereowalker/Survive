@@ -133,15 +133,18 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		if (Survive.CONFIG.nutrition_enabled) {
 			float protein = 1;
 			float carbs = 1;
+			float fats = 1;
 			if (DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(p_213357_2_.getItem()))) {
 				ConsummableJsonHolder data = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(p_213357_2_.getItem()));
 				protein = data.getProteinRatio();
 				carbs = data.getCarbohydrateRatio();
+				fats = data.getFatRatio();
 			}
 			FoodProperties food = p_213357_2_.get(DataComponents.FOOD);
-			float total = protein+carbs;
-			this.nutritionData.addCarbs(food.nutrition()*Mth.ceil((carbs/total)*10));
-			this.nutritionData.addProtein(food.nutrition()*Mth.ceil((protein/total)*10));
+			float total = protein+carbs+fats;
+			this.nutritionData.addCarbs(food.nutrition()*Mth.ceil((carbs/total)*100));
+			this.nutritionData.protein().add(food.nutrition()*Mth.ceil((protein/total)*100));
+			this.nutritionData.fat().add(food.nutrition()*Mth.ceil((fats/total)*100));
 		}
 	}
 	

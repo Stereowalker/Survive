@@ -193,6 +193,11 @@ public class SurviveClientSegment extends ClientSegment {
 				RenderSystem.setShader(GameRenderer::getPositionTexShader);
 				renderTemperature(gui, ScreenOffset.TOP, gui.getCameraPlayer(), renderer, true);
 			}
+			if (Survive.CONFIG.nutrition_enabled && (gui.getCameraPlayer().getMainHandItem().has(DataComponents.FOOD) || gui.getCameraPlayer().getOffhandItem().has(DataComponents.FOOD))) {
+				renderer.drawString("Carbs = "+((IRealisticEntity)gui.getCameraPlayer()).nutritionData().getCarbLevel(), 0, 0, ChatFormatting.GRAY.getColor(), false);
+				renderer.drawString("Protein = "+((IRealisticEntity)gui.getCameraPlayer()).nutritionData().protein().level(), 0, 10, ChatFormatting.GRAY.getColor(), false);
+				renderer.drawString("Fats = "+((IRealisticEntity)gui.getCameraPlayer()).nutritionData().fat().level(), 0, 20, ChatFormatting.GRAY.getColor(), false);
+			}
 		});
 	}
 
@@ -243,10 +248,6 @@ public class SurviveClientSegment extends ClientSegment {
 					renderer.drawString(s, x, y, ChatFormatting.GRAY.getColor(), false);
 				}
 			}
-		}
-		if (Survive.CONFIG.nutrition_enabled && (playerentity.getMainHandItem().has(DataComponents.FOOD) || playerentity.getOffhandItem().has(DataComponents.FOOD))) {
-			renderer.drawString("Carbs = "+((IRealisticEntity)playerentity).nutritionData().getCarbLevel(), 0, 0, ChatFormatting.GRAY.getColor(), false);
-			renderer.drawString("Protein = "+((IRealisticEntity)playerentity).nutritionData().getProteinLevel(), 0, 10, ChatFormatting.GRAY.getColor(), false);
 		}
 		Minecraft.getInstance().getProfiler().pop();
 		//		if (!forgeOverlay) {
@@ -318,6 +319,10 @@ public class SurviveClientSegment extends ClientSegment {
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0, GUI_ICONS);
 		}
+		
+		int[] i9 = new int[30];
+		for (int i = 0; i < 30; i++) i9[i] = k1 + (rand.nextInt(3) - 1);
+		
 
 		for (int i = 0; i < Mth.ceil((float)maxStamina/20.0F); i++) {
 			for(int k6 = 0; k6 < 10; ++k6) {
@@ -329,8 +334,8 @@ public class SurviveClientSegment extends ClientSegment {
 					i8 = 13;
 				}
 				
-				if (player.getFoodData().getSaturationLevel() <= 0.0F && gui.getGuiTicks() % (l * 3 + 1) == 0) {
-					i7 = k1 + (rand.nextInt(3) - 1);
+				if (real.staminaData().getLTS() <= 10.0F && gui.getGuiTicks() % (l * 3 + 1) == 0) {
+					i7 = i9[i];
 				}
 				
 				int k8 = j1 - k6 * 8 - 9;
@@ -358,8 +363,8 @@ public class SurviveClientSegment extends ClientSegment {
 						k7 += 36;
 					}
 					
-					if (player.getFoodData().getSaturationLevel() <= 0.0F && gui.getGuiTicks() % (l * 3 + 1) == 0) {
-						i7 = k1 + (rand.nextInt(3) - 1);
+					if (real.staminaData().getLTS() <= 10.0F && gui.getGuiTicks() % (l * 3 + 1) == 0) {
+						i7 = i9[i];
 					}
 					
 					int k8 = j1 - k6 * 8 - 9;

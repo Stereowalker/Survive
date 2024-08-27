@@ -75,7 +75,8 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 
 			String status4 = "§2§nNutrition:§r\n";
 			status4+= "Carbohydrates = "+real.nutritionData().getCarbLevel()+"\n"+
-					"Proteins = "+real.nutritionData().getProteinLevel()+"\n";
+						"Proteins = "+real.nutritionData().protein().level()+"\n"+
+						"Fats = "+real.nutritionData().fat().level()+"\n";
 
 			Function<String, Filterable<Component>> ft = (s) -> Filterable.passThrough(Component.literal(s));
 			contents.set(0, ft.apply(status0));
