@@ -106,12 +106,23 @@ base {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact jar
+        	afterEvaluate {
+                artifact project.jar
+            }
+        
+        	groupId = project.group
+			artifactId = project.archivesBaseName
+			version = project.version
         }
     }
     repositories {
         maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
+            name = "modmaven"
+			credentials {
+				username "$System.env.ARTIFACTORYUSER"
+				password "$System.env.ARTIFACTORYPASS"
+			}
+			url = "https://modmaven.dev/artifactory/local-releases/"
         }
     }
 }
