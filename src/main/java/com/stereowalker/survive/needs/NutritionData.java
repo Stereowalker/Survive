@@ -127,18 +127,24 @@ public class NutritionData extends SurviveData {
 	/**
 	 * Writes the water data for the player.
 	 */
-	public void write(CompoundTag compound) {
+	public void write(CompoundTag compound, boolean reducedData) {
 		compound.putInt("carbLevel", this.carbLevel.getValue());
-		compound.putInt("carbTimer", this.carbTimer.getValue());
-		compound.putFloat("carbStack", this.carbStack.getValue());
+		if (!reducedData) {
+			compound.putInt("carbTimer", this.carbTimer.getValue());
+			compound.putFloat("carbStack", this.carbStack.getValue());
+		}
 		
 		compound.putInt("proteinLevel", this.protein.level());
-		compound.putInt("proteinTimer", this.protein.timer.getValue());
-		compound.putFloat("proteinStack", this.protein.stack.getValue());
+		if (!reducedData) {
+			compound.putInt("proteinTimer", this.protein.timer.getValue());
+			compound.putFloat("proteinStack", this.protein.stack.getValue());
+		}
 		
 		compound.putInt("fatLevel", this.fat.level());
-		compound.putInt("fatTimer", this.fat.timer.getValue());
-		compound.putFloat("fatStack", this.fat.stack.getValue());
+		if (!reducedData) {
+			compound.putInt("fatTimer", this.fat.timer.getValue());
+			compound.putFloat("fatStack", this.fat.stack.getValue());
+		}
 	}
 
 	/**

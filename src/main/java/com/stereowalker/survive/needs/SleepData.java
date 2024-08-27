@@ -59,7 +59,7 @@ public class SleepData extends SurviveData {
 	}
 
 	@Override
-	public void write(CompoundTag compound) {
+	public void write(CompoundTag compound, boolean reducedData) {
 		compound.putInt("awakeTimer", this.awakeTimer);
 	}
 

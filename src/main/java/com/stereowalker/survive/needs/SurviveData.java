@@ -10,13 +10,13 @@ public abstract class SurviveData {
 	Random rng;
 	public abstract void tick(Player player);
 	public abstract void read(CompoundTag compound);
-	public abstract void write(CompoundTag compound);
+	public abstract void write(CompoundTag compound, boolean reducedData);
 	public abstract void save(LivingEntity player);
 	public abstract boolean shouldTick();
 	
-	public CompoundTag write() {
+	public CompoundTag write(boolean reducedData) {
 		CompoundTag tag = new CompoundTag();
-		write(tag);
+		write(tag, reducedData);
 		return tag;
 	}
 	

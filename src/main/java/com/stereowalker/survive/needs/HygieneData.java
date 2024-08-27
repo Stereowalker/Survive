@@ -86,7 +86,7 @@ public class HygieneData extends SurviveData {
 	/**
 	 * Writes the hygiene data for the player.
 	 */
-	public void write(CompoundTag compound) {
+	public void write(CompoundTag compound, boolean reducedData) {
 		compound.putFloat("uncleanLevel", this.uncleanLevel);
 		compound.putInt("hygieneTimer", this.hygieneTimer);
 	}
