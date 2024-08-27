@@ -34,6 +34,7 @@ public class ConsummableJsonHolder implements JsonHolder {
 	//Nutrition
 	private int carbohydrateRatio = 1;
 	private int proteinRatio = 1;
+	private int fatRatio = 1;
 	//
 	private boolean isChilled = false;
 	private boolean isHeated = false;
@@ -122,22 +123,11 @@ public class ConsummableJsonHolder implements JsonHolder {
 				if(this.hasMemberAndIsObject(NUTRITION, object)) {
 					setWorkingOn(NUTRITION);
 					JsonObject object2 = object.get(NUTRITION).getAsJsonObject();
-					String CARB_RATIO = "carbohydrate_ratio";
-					String PROTEIN_RATIO = "protein_ratio";
 					if(object2.entrySet().size() != 0) {
 						try {
-							
-							if(this.hasMemberAndIsPrimitive(CARB_RATIO, object2)) {
-								setWorkingOn(CARB_RATIO);
-								carbohydrateRatio = object2.get(CARB_RATIO).getAsInt();
-								stopWorking();
-							}
-							
-							if(this.hasMemberAndIsPrimitive(PROTEIN_RATIO, object2)) {
-								setWorkingOn(PROTEIN_RATIO);
-								proteinRatio = object2.get(PROTEIN_RATIO).getAsInt();
-								stopWorking();
-							}
+							carbohydrateRatio = this.workOnIntIfAvailable("carbohydrate_ratio", object2, 0);
+							proteinRatio = this.workOnIntIfAvailable("protein_ratio", object2, 0);
+							fatRatio = this.workOnIntIfAvailable("fat_ratio", object2, 0);
 							
 						} catch (ClassCastException e) {
 							Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was wrong type!", e, itemID, getworkingOn());
@@ -251,6 +241,10 @@ public class ConsummableJsonHolder implements JsonHolder {
 
 	public int getProteinRatio() {
 		return proteinRatio;
+	}
+
+	public int getFatRatio() {
+		return fatRatio;
 	}
 
 	@Override
