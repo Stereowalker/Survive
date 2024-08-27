@@ -125,6 +125,18 @@ public class StaminaData extends SurviveData implements Stamina {
 		//Handles short term stamina
 		if (!isStraining && shortTermTimer > 0) { //
 			isStraining = true;
+			maxBurstStamina = 10;
+			if (Survive.CONFIG.nutrition_enabled) {
+				int carb = realPlayer.nutritionData().getCarbLevel();
+				if (carb > 2000)
+					maxBurstStamina = Mth.lerpInt(((carb - 2000) / 1000f), 12, 20);
+				else if (carb > 1000)
+					maxBurstStamina = Mth.lerpInt(((carb - 1000) / 1000f), 7, 12);
+				else if (carb > 0)
+					maxBurstStamina = Mth.lerpInt((carb / 2000f), 3, 7);
+				else
+					maxBurstStamina = Mth.lerpInt(((1000 + carb) / 1000f), 1, 3);
+			}
 			shortExhaustion = 0;
 			this.shortStamina = maxBurstStamina;
 		} else if (isStraining && shortTermTimer > 0) {
@@ -142,16 +154,17 @@ public class StaminaData extends SurviveData implements Stamina {
 			isStraining = false;
 			this.shortRecoveryTimer = maxBurstStamina - shortStamina;
 			addExhaustion(this.shortRecoveryTimer * 7.8f, false);
+			realPlayer.nutritionData().removeCarbs(this.shortRecoveryTimer*10);
 			this.shortRecoveryTimer *= 13;
 			player.addEffect(new MobEffectInstance(SMobEffects.FATIGUE.holder(), this.shortRecoveryTimer, 1, false, true));
 		}
 		//End of short term stamina
 
-		if (this.isTired() && Survive.CONFIG.nutrition_enabled && ((IRealisticEntity)player).nutritionData().getCarbLevel() >= 2) {
+		if (this.isTired() && Survive.CONFIG.nutrition_enabled && ((IRealisticEntity)player).nutritionData().fat().level() >= 20) {
 			++this.energyTimer;
 			if (Survive.STAMINA_CONFIG.stamina_recovery_ticks == 0 || this.energyTimer >= Survive.STAMINA_CONFIG.stamina_recovery_ticks) {
-				((IRealisticEntity)player).nutritionData().removeCarbs(2);
 				this.relax(energyToRegen, this.maxLongStamina);
+				realPlayer.nutritionData().fat().remove(20);
 				this.energyTimer = 0;
 			}
 		}

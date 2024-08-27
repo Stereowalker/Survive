@@ -461,26 +461,40 @@ public class SurviveEvents {
 			return 0.0D;
 		});
 		TemperatureQuery.registerQuery("survive:adjusted_cooling_enchantment", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
-			boolean shouldCool = false;
 			if (temp > Survive.DEFAULT_TEMP) {
 				for (EquipmentSlot types : EquipmentSlot.values()) {
 					if (SEnchantmentHelper.hasAdjustedCooling(player.getItemBySlot(types))) {
-						shouldCool = true;
+						return 2.0D;
 					}
 				}
 			}
-			return shouldCool?-2.0D:0.0D;
+			return 0.0D;
 		});
 		TemperatureQuery.registerQuery("survive:adjusted_warming_enchantment", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
-			boolean shouldWarm = false;
 			if (temp < Survive.DEFAULT_TEMP) {
 				for (EquipmentSlot types : EquipmentSlot.values()) {
 					if (SEnchantmentHelper.hasAdjustedWarming(player.getItemBySlot(types))) {
-						shouldWarm = true;
+						return 2.0D;
 					}
 				}
 			}
-			return shouldWarm?2.0D:0.0D;
+			return 0.0D;
+		});
+		TemperatureQuery.registerQuery("survive:fats", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
+			IRealisticEntity real = (IRealisticEntity)player;
+			if (Survive.CONFIG.nutrition_enabled && temp < (Survive.DEFAULT_TEMP + TemperatureUtil.firstCold(player)) / 2f) {
+				if (real.nutritionData().fat().level() > 2500) {
+					real.nutritionData().fat().remove(3);
+					return 6D;
+				} else if (real.nutritionData().fat().level() > 1500) {
+					real.nutritionData().fat().remove(2);
+					return 3D;
+				} else if (real.nutritionData().fat().level() > 500) {
+					real.nutritionData().fat().remove(1);
+					return 1D;
+				}
+			}
+			return 0.0D;
 		});
 		TemperatureQuery.registerQuery("survive:armor", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
 			double armorMod = 0.0D;
