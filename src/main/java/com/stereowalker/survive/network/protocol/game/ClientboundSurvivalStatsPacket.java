@@ -29,6 +29,7 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 	
 	public static CompoundTag tag(IRealisticEntity player) {
 		CompoundTag surviveData = new CompoundTag();
+		surviveData.put("temperature", player.temperatureData().write(true));
 		surviveData.put("wellbeing", player.wellbeingData().write(true));
 		surviveData.put("nutrition", player.nutritionData().write(true));
 		surviveData.put("hygiene", player.hygieneData().write(true));
@@ -55,6 +56,7 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 			SurviveEntityStats.setModNBT(this.stats, sender);
 		} else {
 			IRealisticEntity player = (IRealisticEntity)sender;
+			if (this.stats.contains("temperature", 10)) player.temperatureData().read(this.stats.getCompound("temperature"));
 			if (this.stats.contains("wellbeing", 10)) player.wellbeingData().read(this.stats.getCompound("wellbeing"));
 			if (this.stats.contains("nutrition", 10)) player.nutritionData().read(this.stats.getCompound("nutrition"));
 			if (this.stats.contains("hygiene", 10)) player.hygieneData().read(this.stats.getCompound("hygiene"));

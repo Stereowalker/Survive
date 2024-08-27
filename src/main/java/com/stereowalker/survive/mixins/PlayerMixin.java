@@ -46,6 +46,7 @@ import net.minecraft.world.level.Level;
 public abstract class PlayerMixin extends LivingEntity implements IRealisticEntity {
 	@Shadow protected FoodData foodData;
 	@Shadow private int sleepCounter;
+	private TemperatureData temperatureData = new TemperatureData();
 	private WellbeingData wellbeingData = new WellbeingData();
 	private NutritionData nutritionData = new NutritionData();
 	private HygieneData hygieneData = new HygieneData();
@@ -97,7 +98,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			staminaData().baseTick((Player)(Object)this);
 			hygieneData().baseTick((Player)(Object)this);
 			this.nutritionData.baseTick((Player)(Object)this);
-			getTemperatureData().baseTick((Player)(Object)this);
+			temperatureData().baseTick((Player)(Object)this);
 			getWaterData().baseTick((Player)(Object)this);
 			this.wellbeingData.baseTick((Player)(Object)this);
 			sleepData().baseTick((Player)(Object)this);
@@ -153,6 +154,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	public void readAdditionalSaveData_inject(CompoundTag pCompound, CallbackInfo ci) {
 		if (pCompound.contains("surviveData", 10)) {
 			CompoundTag surviveData = pCompound.getCompound("surviveData");
+			if (surviveData.contains("temperature", 10)) this.temperatureData.read(surviveData.getCompound("temperature"));
 			if (surviveData.contains("wellbeing", 10)) this.wellbeingData.read(surviveData.getCompound("wellbeing"));
 			if (surviveData.contains("nutrition", 10)) this.nutritionData.read(surviveData.getCompound("nutrition"));
 			if (surviveData.contains("hygiene", 10)) this.hygieneData.read(surviveData.getCompound("hygiene"));
@@ -164,6 +166,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	@Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
 	public void addAdditionalSaveData_inject(CompoundTag pCompound, CallbackInfo ci) {
 		CompoundTag surviveData = new CompoundTag();
+		surviveData.put("temperature", this.temperatureData.write(false));
 		surviveData.put("wellbeing", this.wellbeingData.write(false));
 		surviveData.put("nutrition", this.nutritionData.write(false));
 		surviveData.put("hygiene", this.hygieneData.write(false));
@@ -199,8 +202,13 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		this.nutritionData = data;
 	}
 
-	public TemperatureData getTemperatureData(){
-		return SurviveEntityStats.getTemperatureStats((Player)(Object)this);
+	public TemperatureData temperatureData(){
+		return temperatureData;
+	}
+	
+	@Override
+	public void setTemperatureData(TemperatureData data) {
+		this.temperatureData = data;
 	}
 
 	public WaterData getWaterData(){

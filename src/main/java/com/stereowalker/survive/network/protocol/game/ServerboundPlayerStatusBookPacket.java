@@ -84,7 +84,7 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 			contents.set(2, ft.apply(String.format(this.sleepPage, real.sleepData().getDaysAwake())));
 			contents.set(3, ft.apply(status3));
 			contents.set(4, ft.apply(status4));
-			contents.set(5, ft.apply(String.format(this.tempPage, (!celcius ? (real.getTemperatureData().getFahrenheit()+" °F") : (real.getTemperatureData().getCelcius()+" °C")))));
+			contents.set(5, ft.apply(String.format(this.tempPage, (!celcius ? (real.temperatureData().getFahrenheit()+" °F") : (real.temperatureData().getCelcius()+" °C")))));
 			
 			sender.getItemInHand(InteractionHand.MAIN_HAND).set(DataComponents.WRITTEN_BOOK_CONTENT, book.withReplacedPages(contents));
 		}

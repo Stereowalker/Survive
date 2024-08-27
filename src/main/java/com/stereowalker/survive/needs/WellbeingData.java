@@ -1,7 +1,6 @@
 package com.stereowalker.survive.needs;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
@@ -108,7 +107,7 @@ public class WellbeingData extends SurviveData {
 
 		//This should be logic for hypothermia
 		if (!Survive.TEMPERATURE_CONFIG.useLegacyTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
-			TemperatureData data = SurviveEntityStats.getTemperatureStats(player);
+			TemperatureData data = ((IRealisticEntity)player).temperatureData();
 
 			double tempLocation = data.getTemperatureLevel() - Survive.DEFAULT_TEMP;
 			double f = 0;
