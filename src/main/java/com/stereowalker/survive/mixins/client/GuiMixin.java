@@ -13,13 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.client.gui.SurviveHeartType;
-import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempDisplayMode;
+import com.stereowalker.survive.needs.IRealisticEntity;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -37,7 +36,7 @@ public abstract class GuiMixin {
 	public void hotbarColor(GuiGraphics guiGraphics, DeltaTracker pDeltaTracker, CallbackInfo ci) {
 		Player playerentity = this.getCameraPlayer();
 		if (Survive.TEMPERATURE_CONFIG.enabled && Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
-			double displayTemp = SurviveEntityStats.getTemperatureStats(playerentity).getDisplayTemperature();
+			double displayTemp = ((IRealisticEntity)playerentity).temperatureData().getDisplayTemperature();
 
 			float heatTemp = (float) (1.0F - displayTemp);
 			float coldTemp = (float) (1.0F + displayTemp);

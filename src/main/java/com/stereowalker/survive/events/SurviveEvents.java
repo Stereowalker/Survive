@@ -145,7 +145,7 @@ public class SurviveEvents {
 		if (living != null && living instanceof ServerPlayer player) {
 			if (player.isAlive()) {
 				for (ResourceLocation queryId : TemperatureQuery.queries.keySet()) {
-					double queryValue = TemperatureQuery.queries.get(queryId).getA().run(player, SurviveEntityStats.getTemperatureStats(player).getTemperatureLevel(), player.level(), player.blockPosition(), true);
+					double queryValue = TemperatureQuery.queries.get(queryId).getA().run(player, ((IRealisticEntity)player).temperatureData().getTemperatureLevel(), player.level(), player.blockPosition(), true);
 					TemperatureData.setTemperatureModifier(player, queryId, queryValue, TemperatureQuery.queries.get(queryId).getB());
 				}
 			}
@@ -376,7 +376,7 @@ public class SurviveEvents {
 			entity.setHygieneData(original.hygieneData());
 			SurviveEntityStats.setWaterStats(thisPlayer, original.getWaterData());
 			entity.setStaminaData(original.staminaData());
-			SurviveEntityStats.setTemperatureStats(thisPlayer, SurviveEntityStats.getTemperatureStats(thatPlayer));
+			entity.setTemperatureData(original.temperatureData());
 			entity.setSleepData(original.sleepData());
 			SurviveEntityStats.setWetTime(thisPlayer, SurviveEntityStats.getWetTime(thatPlayer));
 		}

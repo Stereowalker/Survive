@@ -127,10 +127,9 @@ public class TemperatureData extends SurviveData {
 	}
 
 	public static void setTemperatureModifier(LivingEntity entity, ResourceLocation id, double value, ContributingFactor factor) {
-		TemperatureData temp = SurviveEntityStats.getTemperatureStats(entity);
+		TemperatureData temp = ((IRealisticEntity)entity).temperatureData();
 		TemperatureModifier mod = SurviveHooks.getTemperatureModifer(entity, new TemperatureModifier(id, value, factor));
 		temp.getOrCreateModifier(id).setMod(mod.getMod()).setFactor(mod.getFactor());
-		temp.save(entity);;
 	}
 
 	/**
@@ -259,7 +258,6 @@ public class TemperatureData extends SurviveData {
 
 	@Override
 	public void save(LivingEntity player) {
-		SurviveEntityStats.setTemperatureStats(player, this);
 	}
 
 	@Override
