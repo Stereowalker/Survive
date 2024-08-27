@@ -1,0 +1,15 @@
+{
+	"energy": 3,
+	"thirst_consumption": 1,
+	"thirst_chance": 0,
+	"lifespan": 72000,
+	"ticks_fresh": 7200,
+	"nutrition": {
+		"carbohydrate_ratio": 853,
+		"protein_ratio": 200,
+		"fat_ratio": 2845
+	},
+	"gives_chilled_effect": false,
+	"gives_heated_effect": false,
+	"gives_energizing_effect": false
+}
