@@ -1,5 +1,7 @@
 package com.stereowalker.survive.world.effect;
 
+import java.util.UUID;
+
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.SurviveUUIDS;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
@@ -33,8 +35,8 @@ public class SMobEffects {
 	public static final Housing<MobEffect> ENERGIZED = Housing.create(() -> new EnergizedMobEffect(MobEffectCategory.BENEFICIAL, 16750592));
 	@RegistryObject("fatigue")
 	public static final Housing<MobEffect> FATIGUE = Housing.create(() -> new EnergizedMobEffect(MobEffectCategory.HARMFUL, 16750592)
-			.addAttributeModifier(Attributes.ATTACK_SPEED, VersionHelper.toLoc("survive:fatigue_atk"), -0.1F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-			.addAttributeModifier(Attributes.BLOCK_BREAK_SPEED, VersionHelper.toLoc("survive:fatigue_blk"), -0.2F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+			.addAttributeModifier(Attributes.ATTACK_SPEED, UUID.nameUUIDFromBytes("survive:fatigue_atk".getBytes()).toString(), -0.1F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+			.addAttributeModifier(Attributes.BLOCK_BREAK_SPEED, UUID.nameUUIDFromBytes("survive:fatigue_blk".getBytes()).toString(), -0.2F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 	@RegistryObject("slowness_illness")
 	public static final Housing<MobEffect> SLOWNESS_ILLNESS = Housing.create(() -> (new UnwellMobEffect(MobEffectCategory.HARMFUL, 5926017)).addAttributeModifier(Attributes.MOVEMENT_SPEED, SurviveUUIDS.UNWELL_SLOWNESS, (double)-0.15F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 	@RegistryObject("weakness_illness")

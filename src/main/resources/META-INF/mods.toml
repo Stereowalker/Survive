@@ -15,7 +15,7 @@ description='''${mod_description}'''
 [[dependencies.${mod_id}]] #optional
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[51,)" #mandatory
+    versionRange="[50,)" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.${mod_id}]]
