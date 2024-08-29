@@ -35,7 +35,7 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer implements I
 
 	@Inject(method = "hasEnoughFoodToStartSprinting", at = @At(value = "HEAD"), cancellable = true)
 	public void tickInject(CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(this.isPassenger() || !staminaData().isShortOfBreath() || this.mayFly());
+		cir.setReturnValue(this.isPassenger() || !staminaData().isShortOfBreath() || /*this.mayFly()*/this.getAbilities().mayfly);
 	}
 
 }
