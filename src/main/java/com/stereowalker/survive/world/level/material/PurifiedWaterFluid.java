@@ -36,8 +36,6 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidType;
@@ -58,7 +56,6 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
 		return SItems.PURIFIED_WATER_BUCKET;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void animateTick(Level worldIn, BlockPos pos, FluidState state, RandomSource pRandom) {
 		if (!state.isSource() && !state.getValue(FALLING)) {
@@ -72,7 +69,6 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
 	}
 
 	@Nullable
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public ParticleOptions getDripParticle() {
 		return ParticleTypes.DRIPPING_WATER;

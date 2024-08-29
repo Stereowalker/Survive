@@ -26,11 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityAccess;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin extends net.minecraftforge.common.capabilities.CapabilityProvider<Entity> implements Nameable, EntityAccess, CommandSource, net.minecraftforge.common.extensions.IForgeEntity, IRoastedEntity {
-
-	public EntityMixin(EntityType<?> pEntityType, Level pLevel) {
-		super(Entity.class);
-	}
+public abstract class EntityMixin implements Nameable, EntityAccess, CommandSource, IRoastedEntity {
 
 	@Shadow @Final protected SynchedEntityData entityData;
 	@Shadow public boolean isInPowderSnow;

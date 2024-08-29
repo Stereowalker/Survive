@@ -5,8 +5,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class OnFireCondition extends TemperatureChangeCondition<OnFireCondition.Instance>{
 
@@ -83,7 +81,6 @@ public class OnFireCondition extends TemperatureChangeCondition<OnFireCondition.
 		}
 		
 		@Override
-		@OnlyIn(Dist.CLIENT)
 		public Component getAdditionalContext() {
 			if (this.fireTimer > 0) {
 				return Component.translatable("temperature_context.on_fire", this.operation.equals("") ? "<" : this.operation, this.fireTimer);
