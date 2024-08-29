@@ -7,10 +7,7 @@ import com.stereowalker.unionlib.util.VersionHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public enum SurviveHeartType {
 	CONTAINER(
 			VersionHelper.toLoc("hud/heart/container"),

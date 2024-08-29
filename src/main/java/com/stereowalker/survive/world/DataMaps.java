@@ -15,8 +15,6 @@ import com.stereowalker.survive.json.PotionJsonHolder;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class DataMaps {
 	public static class Server {
@@ -30,7 +28,6 @@ public class DataMaps {
 		public static final Map<ResourceLocation, EntityTemperatureJsonHolder> entityTemperature = Maps.newHashMap();
 		public static final Map<ResourceLocation, BiomeJsonHolder> biome = Maps.newHashMap();
 	}
-	@OnlyIn(Dist.CLIENT)
 	public static class Client {
 		public static ImmutableMap<ResourceLocation, FoodProperties> defaultFood = ImmutableMap.of();
 		public static ImmutableMap<ResourceLocation, FoodJsonHolder> consummableItem = ImmutableMap.of();
