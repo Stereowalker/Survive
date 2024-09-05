@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
+import com.stereowalker.survive.api.needs.Temperature;
 import com.stereowalker.survive.hooks.SurviveHooks;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.temperature.TemperatureModifier;
@@ -21,7 +21,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
-public class TemperatureData extends SurviveData {
+public class TemperatureData extends SurviveData implements Temperature {
 	private double temperatureLevel = 0;
 	private double displayTemperature = 0;
 	private int temperatureTimer;
@@ -244,6 +244,7 @@ public class TemperatureData extends SurviveData {
 		return ((float)fTemp) / 100.0F;
 	}
 	
+	@Override
 	public double getDisplayTemperature() {
 		return displayTemperature;
 	}

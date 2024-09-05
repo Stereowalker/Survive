@@ -13,6 +13,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.stereowalker.survive.api.needs.PlayerNeeds;
+import com.stereowalker.survive.api.needs.Stamina;
+import com.stereowalker.survive.api.needs.Temperature;
+import com.stereowalker.survive.api.needs.Water;
 import com.stereowalker.survive.compat.OriginsCompat;
 import com.stereowalker.survive.compat.SItemProperties;
 import com.stereowalker.survive.config.Config;
@@ -37,6 +41,7 @@ import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.survive.json.FoodJsonHolder;
 import com.stereowalker.survive.json.PotionJsonHolder;
 import com.stereowalker.survive.json.property.BlockPropertyHandlerImpl;
+import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.network.protocol.game.ClientboundDataTransferPacket;
 import com.stereowalker.survive.network.protocol.game.ClientboundDrinkSoundPacket;
@@ -107,6 +112,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.CreativeModeTab;
@@ -193,6 +199,24 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			}
 		});
 		isPrimalWinterLoaded = LoaderHelper.isModLoaded("primalwinter");
+		
+		PlayerNeeds.needsApi = new PlayerNeeds() {
+			@Override
+			public Temperature getTemperature(LivingEntity entity) {
+				return ((IRealisticEntity)entity).temperatureData();
+			}
+			
+			@Override
+			public Stamina getStamina(LivingEntity entity) {
+				return ((IRealisticEntity)entity).staminaData();
+			}
+
+			@Override
+			public Water getWater(LivingEntity entity) {
+				return ((IRealisticEntity)entity).getWaterData();
+			}
+		};
+		
 	}
 	
 	@Override
