@@ -133,6 +133,7 @@ publishing {
         mavenJava(MavenPublication) {
         	afterEvaluate {
                 artifact project.jar
+                artifact project.apiJar
             }
         
         	groupId = project.group
@@ -208,4 +209,18 @@ task uploadToAllSites {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+task apiJar(type: Jar) {
+    from(sourceSets.main.allJava) {
+        include 'com/stereowalker/survive/api/**'
+    }
+    from (sourceSets.main.output) {
+        include 'com/stereowalker/survive/api/**'
+    }
+	archiveClassifier = 'api'
+}
+
+artifacts {
+	archives apiJar
 }

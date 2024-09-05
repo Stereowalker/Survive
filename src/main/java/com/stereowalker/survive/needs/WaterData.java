@@ -3,6 +3,7 @@ package com.stereowalker.survive.needs;
 import java.util.Random;
 
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.api.needs.Water;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.damagesource.SDamageSources;
@@ -29,7 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.GameRules;
 
-public class WaterData extends SurviveData {
+public class WaterData extends SurviveData implements Water {
 	private int tempDropTicks = 0;
 	private int waterLevel = 20;
 	private float waterHydrationLevel;
@@ -228,9 +229,7 @@ public class WaterData extends SurviveData {
 		compound.putInt("uncleanStacks", this.uncleanStacks);
 	}
 
-	/**
-	 * Get the player's water level.
-	 */
+	@Override
 	public int getWaterLevel() {
 		return this.waterLevel;
 	}
