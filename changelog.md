@@ -1,1 +1,2 @@
-- Player thirst and temperature can now be accessed from the api
+- Changed how the needs api is accessed
+- Fix armor textures not rendering
