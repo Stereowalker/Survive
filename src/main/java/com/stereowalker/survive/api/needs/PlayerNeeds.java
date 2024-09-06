@@ -7,5 +7,16 @@ public abstract class PlayerNeeds {
 	public abstract Stamina getStamina(LivingEntity entity);
 	public abstract Water getWater(LivingEntity entity);
 	
-	public static PlayerNeeds needsApi;
+	private static boolean hasSetApi = false;
+	private static PlayerNeeds needsApi;
+	
+	public static PlayerNeeds api() {
+		return needsApi;
+	}
+	
+	public static void setImpl(PlayerNeeds api) throws UnsupportedOperationException {
+		if (hasSetApi) throw new UnsupportedOperationException("An implementation for the needs api has already been set");
+		needsApi = api;
+		hasSetApi = true;
+	}
 }
