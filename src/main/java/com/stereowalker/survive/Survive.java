@@ -200,22 +200,26 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		});
 		isPrimalWinterLoaded = LoaderHelper.isModLoaded("primalwinter");
 		
-		PlayerNeeds.needsApi = new PlayerNeeds() {
-			@Override
-			public Temperature getTemperature(LivingEntity entity) {
-				return ((IRealisticEntity)entity).temperatureData();
-			}
-			
-			@Override
-			public Stamina getStamina(LivingEntity entity) {
-				return ((IRealisticEntity)entity).staminaData();
-			}
+		try {
+			PlayerNeeds.setImpl(new PlayerNeeds() {
+				@Override
+				public Temperature getTemperature(LivingEntity entity) {
+					return ((IRealisticEntity)entity).temperatureData();
+				}
+				
+				@Override
+				public Stamina getStamina(LivingEntity entity) {
+					return ((IRealisticEntity)entity).staminaData();
+				}
 
-			@Override
-			public Water getWater(LivingEntity entity) {
-				return ((IRealisticEntity)entity).getWaterData();
-			}
-		};
+				@Override
+				public Water getWater(LivingEntity entity) {
+					return ((IRealisticEntity)entity).getWaterData();
+				}
+			});
+		} catch (UnsupportedOperationException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	
