@@ -1,2 +1,1 @@
-- Changed how the needs api is accessed
-- Fix armor textures not rendering
+- Fix damage types from this mod being affected by armor and effects
