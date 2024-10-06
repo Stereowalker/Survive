@@ -1,0 +1,105 @@
+apply from: "${_loader}.gradle".toLowerCase()
+
+println('Java: ' + System.getProperty('java.version'))
+println('JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+println('Mod Name: ' + _mod_name + ', Mod Version: ' + _mod_version + ', Minecraft Version: ' + _minecraft_version + ', '+"${_loader} Version: " + _loader_version)
+
+version = _minecraft_version + "-" +_mod_version +"-${_loader}"
+group = modGroup
+base {
+    archivesName = _mod_name
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [
+            minecraft_version: _minecraft_version,
+            minecraft_version_min: _minecraft_version_min, minecraft_version_max: _minecraft_version_max,
+            loader_version_min: _loader_version_min, loader_version_max: _loader_version_max,
+            mod_page: _mod_page, mod_version: _mod_version, mod_issue_tracker: _mod_issue_tracker,
+            mod_name: _mod_name, mod_license: _mod_license, mod_id: _mod_id,
+            mod_authors: _mod_authors, mod_description: _mod_description, loader_file: _loader_file,
+            unionlib_version_min: _unionlib_version_min, unionlib_version_max: _unionlib_version_max,
+    ]
+    inputs.properties replaceProperties
+    filesMatching([_loader_file, 'pack.mcmeta']) {
+        expand replaceProperties// + [project: project]
+    }
+}
+
+publishing {
+	publications {
+        mavenJava(MavenPublication) {
+			afterEvaluate {
+                artifact project._mod_jar
+            }
+        
+        	groupId = project.group
+			artifactId = project.archivesBaseName
+			version = project.version
+        }
+    }
+    repositories {
+        maven {
+            name = "modmaven"
+			credentials {
+				username "$System.env.ARTIFACTORYUSER"
+				password "$System.env.ARTIFACTORYPASS"
+			}
+			url = "https://modmaven.dev/artifactory/local-releases/"
+        }
+    }
+}
+
+publishMods {
+    curseforge {
+        projectId = "${_curseforge_id}"
+        accessToken = "$System.env.CURSEFORGEKEY"
+        changelog = file('changelog.md').text
+        changelogType = "markdown"
+        if ("${_mod_release}" == "release") type = STABLE
+        if ("${_mod_release}" == "beta") type = BETA
+        if ("${_mod_release}" == "alpha") type = ALPHA
+        minecraftVersions.add("${_minecraft_version}")
+		minecraftVersions.add("1.21")
+        modLoaders.add("${_loader}")
+        requires('unionlib')
+        file = project._mod_jar.archiveFile
+        displayName = _mod_name+"-$project.version"
+		/*mainArtifact(project._mod_jar) {
+			displayName = _mod_name+"-$project.version"
+		}*/
+ 
+        if ("${_mod_environment}".contains('client')) clientRequired = true
+        if ("${_mod_environment}".contains('server')) serverRequired = true
+    }
+}
+
+modrinth {
+    projectId = "${_modrinth_id}"
+    token = "$System.env.MODRINTH_TOKEN"
+    versionNumber = "${project.version}"
+    versionType = "${_mod_release}"
+    uploadFile = project._mod_jar
+    gameVersions = ["${_minecraft_version}", "1.21"]
+    loaders = ["${_loader}".toLowerCase()]
+	changelog = file('changelog.md').text
+    dependencies {
+        required.project "unionlib"
+    }
+}
+
+task uploadToAllSites {
+    dependsOn "publishCurseforge"
+    dependsOn "modrinth"
+    group = "publishing"
+}
+
+task uploadToAllSitesAndMaven {
+    dependsOn "publish"
+    dependsOn "uploadToAllSites"
+    group = "publishing"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
