@@ -6,7 +6,7 @@ buildscript {
     }
 	
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '[6.0.24,6.2)', changing: true
 		classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
@@ -113,6 +113,7 @@ dependencies {
 	implementation fg.deobf("curse.maven:flywheel-486392:"+flywheelID)
 	
 	implementation fg.deobf("curse.maven:combatapi-320729:"+combatAPIID)
+	implementation fg.deobf("curse.maven:falling-tree-349559:4501650")
 	
 }
 /* Process resources on build
@@ -153,12 +154,12 @@ task sourcesJar(type: Jar) {
         include 'LICENSE.txt'
     }
 
-    classifier = 'sources'
+    archiveClassifier = 'sources'
 }
 
 task deobfJar(type: Jar) {
 	from sourceSets.main.output
-	classifier = "deobf"
+	archiveClassifier = "deobf"
 }
 
 //task apiJar(type: Jar) {
@@ -170,7 +171,7 @@ task deobfJar(type: Jar) {
 //        include 'com/stereowalker/survive/api/**'
 //		include 'com/stereowalker/upgradeableattributes/api/**'
 //    }
-//	classifier = 'api'
+//	archiveClassifier = 'api'
 //}
 
 // Example configuration to allow publishing using the maven-publish task
