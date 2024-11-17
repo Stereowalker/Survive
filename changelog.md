@@ -1,2 +1,2 @@
-- Fix damage types from this mod being affected by armor and effects
-- Fix enchantment tags
+- Changed refmap file path
+- Added integration with Parcool
