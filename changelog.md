@@ -1,1 +1,1 @@
-- Fix damage types from this mod being affected by armor and effects
+- Changed refmap file path
