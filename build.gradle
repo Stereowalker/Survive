@@ -43,6 +43,8 @@ dependencies {
 	//implementation ("curse.maven:origins-474438:"+originsID)
 	//implementation ("curse.maven:create-328085:"+createID)
 	//implementation ("curse.maven:flywheel-486392:"+flywheelID)
+	
+	implementation "curse.maven:parcool-482378:5862895"
 }
 
 task apiJar(type: Jar) {

@@ -236,8 +236,8 @@ public class StaminaData extends SurviveData implements Stamina {
 			compound.putFloat("longExhaustion", this.longExhaustion);
 			compound.putInt("energyTickTimer", this.energyTimer);
 			compound.putInt("shortTermTimer", this.shortTermTimer);
-			compound.putInt("shortRecoveryTimer", this.shortRecoveryTimer);
 		}
+		compound.putInt("shortRecoveryTimer", this.shortRecoveryTimer); //Dev note, this is only out here because parcool only does stuff on the client
 	}
 
 	/**

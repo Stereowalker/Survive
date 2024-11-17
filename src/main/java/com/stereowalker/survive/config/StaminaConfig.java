@@ -64,5 +64,11 @@ public class StaminaConfig implements ConfigObject {
 			"This only actually does anything if the player disables the nutrition module"})
 	@UnionConfig.Range(min = 0.0D, max = 20.0D)
 	public int min_food = 15;
+	
+	@UnionConfig.Entry(name = "Use Burst Stamina for Parcool", side = ConfigSide.Shared)
+	@UnionConfig.Comment(comment = {"This will only work in Parcool if you have it's stamina set to consume hunger",
+			"If you do so, this mod will force Parcool to use up burst stamina instead of hunger",
+			"Also, you might want to hide Parcools stamina overlay. While it will show your burst stamina instead of your hunger, it'll cover the stamina bar from this mod"})
+	public boolean parcool = true;
 
 }

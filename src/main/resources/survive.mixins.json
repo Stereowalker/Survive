@@ -4,6 +4,7 @@
   "package": "com.stereowalker.survive.mixins",
   "compatibilityLevel": "JAVA_18",
   "refmap": "survive.refmap.json",
+  "plugin": "com.stereowalker.survive.mixin.SurviveMixinPlugin",
   "mixins": [
   	"AbstractVillagerMixin",
 	"BarrelBlockEntityMixin",
@@ -26,7 +27,8 @@
 	"WrittenBookItemMixin",
 	"BottleItemMixin",
 	"PotionBrewingMixin",
-	"ServerPlayerMixin"
+	"ServerPlayerMixin",
+	"parcool.HungerStaminaHandlerMixin"
   ],
   "client": [
   	"client.GuiMixin",
