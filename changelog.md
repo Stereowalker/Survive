@@ -1,1 +1,1 @@
-- Updated UnionLib to 10.2.2
+- Fixed bowls not collecting water
