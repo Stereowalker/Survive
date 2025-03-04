@@ -21,6 +21,7 @@ repositories {
 	maven {url "https://modmaven.dev/" }// UnionLib
 	maven {url "https://girafi.dk/maven/"}
 	maven {url "https://www.cursemaven.com"} //CurseForge
+    maven {url = "https://maven.minecraftforge.net/"} // glitch
     maven {url = "https://repo.spongepowered.org/maven"} // mixin
     
     maven {url = "https://maven.theillusivec4.top/"}
