@@ -1,3 +1,6 @@
+[10.1.5]
+- Temperature now takes obstacles into account
+
 [10.1.4]
 - Changed refmap file path
 

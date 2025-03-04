@@ -1,1 +1,1 @@
-- Changed refmap file path
+- Temperature now takes obstacles into account
