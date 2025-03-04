@@ -1,11 +1,15 @@
 package com.stereowalker.survive.events;
 
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Triple;
 
+import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.FoodUtils;
 import com.stereowalker.survive.Survive;
@@ -41,6 +45,7 @@ import com.stereowalker.unionlib.util.math.UnionMathHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -164,6 +169,45 @@ public class SurviveEvents {
 		default:return 0F;
 		}
 	}
+	
+	private static record PathNode(BlockPos pos, double cost) {
+	}
+	
+	private static List<BlockPos> getNeighbors(BlockPos pos){
+		return Lists.newArrayList(pos.above(), pos.below(), pos.north(), pos.south(), pos.west(), pos.east());
+	}
+	
+	private static double getBlockTransmissionCost(Level level, BlockPos pos) {
+		BlockState state = level.getBlockState(pos);
+		if (!state.getFluidState().isEmpty() && !state.getFluidState().getTags().toList().contains(FluidTags.LAVA))
+			return 1.2f;
+		else if (state.isSolid())
+			return 5.0f;
+		return 1.0f;
+	}
+	
+	public static double getEffectiveDistance(Level level, BlockPos startPos, BlockPos target, double maxCost) {
+		if (startPos.equals(target)) return 0;
+		PriorityQueue<PathNode> queue = new PriorityQueue<>(Comparator.comparingDouble(node -> node.cost));
+		Map<BlockPos, Double> bestCosts = new HashMap<>();
+		bestCosts.put(startPos, 0.0);
+		queue.add(new PathNode(startPos, 0));
+		while (!queue.isEmpty()) {
+			PathNode current = queue.poll();
+			if (current.pos.equals(target)) return current.cost;
+			if (current.cost > maxCost) continue;
+			
+			for (BlockPos neighbor : getNeighbors(current.pos)) {
+				double costToEnter = getBlockTransmissionCost(level, neighbor);
+				double newCost = current.cost + costToEnter;
+				if (newCost < bestCosts.getOrDefault(neighbor, Double.POSITIVE_INFINITY)) {
+					bestCosts.put(neighbor, newCost);
+					queue.add(new PathNode(neighbor, newCost));
+				}
+			}
+		}
+		return Double.POSITIVE_INFINITY;
+	}
 
 	@SuppressWarnings("deprecation")
 	public static double getExactTemperature(Level world, BlockPos pos, TempType type) {
@@ -255,7 +299,16 @@ public class SurviveEvents {
 									}
 								}
 							}
-							totalBlockTemp+=blockTemp;
+							
+							//Complex calculation for distance
+							boolean doDistanceCalculation = true;
+							if (doDistanceCalculation) {
+								double effectiveDistance = getEffectiveDistance(world, heatSource, pos, rangeInBlocks);
+								if (effectiveDistance <= rangeInBlocks) {								
+									totalBlockTemp+=blockTemp * (1 - effectiveDistance / rangeInBlocks);
+								}
+							}
+							else totalBlockTemp+=blockTemp;
 						}
 					}
 				}
