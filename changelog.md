@@ -1,2 +1,1 @@
-- Changed refmap file path
-- Added integration with Parcool
+- Temperature now takes obstacles into account
