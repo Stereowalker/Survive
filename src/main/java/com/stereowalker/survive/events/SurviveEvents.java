@@ -424,13 +424,13 @@ public class SurviveEvents {
 		if (keepEverything) {
 			IRealisticEntity entity = ((IRealisticEntity)thisPlayer);
 			IRealisticEntity original = ((IRealisticEntity)thatPlayer);
+			entity.setTemperatureData(original.temperatureData());
 			entity.setNutritionData(original.nutritionData());
 			entity.setWellbeingData(original.wellbeingData());
 			entity.setHygieneData(original.hygieneData());
-			SurviveEntityStats.setWaterStats(thisPlayer, original.getWaterData());
 			entity.setStaminaData(original.staminaData());
-			entity.setTemperatureData(original.temperatureData());
 			entity.setSleepData(original.sleepData());
+			entity.setWaterData(original.waterData());
 			SurviveEntityStats.setWetTime(thisPlayer, SurviveEntityStats.getWetTime(thatPlayer));
 		}
 	}
@@ -507,8 +507,8 @@ public class SurviveEvents {
 			return warmingMod;
 		});
 		TemperatureQuery.registerQuery("survive:thirst_cooldown", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
-			if (((IRealisticEntity)player).getWaterData().shouldTempDrop()) {
-				if (applyTemp) ((IRealisticEntity)player).getWaterData().applyTempDrop(player);
+			if (((IRealisticEntity)player).waterData().shouldTempDrop()) {
+				if (applyTemp) ((IRealisticEntity)player).waterData().applyTempDrop(player);
 				return 1.0D;
 			}
 			return 0.0D;

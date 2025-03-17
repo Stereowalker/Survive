@@ -17,8 +17,7 @@ public class ThirstMobEffect extends MobEffect {
     public boolean applyEffectTick(LivingEntity living, int amplifier) {
         if (living instanceof Player player) {
         	IRealisticEntity realisticEntity = (IRealisticEntity)player;
-        	realisticEntity.getWaterData().addExhaustion(player, (0.005F * (float)(amplifier + 1)));
-			realisticEntity.getWaterData().save(player);
+        	realisticEntity.waterData().addExhaustion(player, (0.005F * (float)(amplifier + 1)));
         }
 
         return true;

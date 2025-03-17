@@ -278,7 +278,7 @@ public class SurviveClientSegment extends ClientSegment {
 	public static void renderThirst(Gui gui, GuiRenderer graphics, int j1, int k1, boolean forgeOverlay) {
 		Player player = (Player)gui.minecraft.getCameraEntity();
 		IRealisticEntity realisticPlayer = (IRealisticEntity)player;
-		int waterL = (int) realisticPlayer.getWaterData().getWaterLevel();
+		int waterL = (int) realisticPlayer.waterData().getWaterLevel();
 		gui.minecraft.getProfiler().push("thirst");
 		for(int k6 = 0; k6 < 10; ++k6) {
 			int i7 = k1;
@@ -289,7 +289,7 @@ public class SurviveClientSegment extends ClientSegment {
 				i8 = 13;
 			}
 
-			if (realisticPlayer.getWaterData().getHydrationLevel() <= 0.0F && gui.tickCount % (waterL * 3 + 1) == 0) {
+			if (realisticPlayer.waterData().getHydrationLevel() <= 0.0F && gui.tickCount % (waterL * 3 + 1) == 0) {
 				i7 = k1 + (gui.random.nextInt(3) - 1);
 			}
 

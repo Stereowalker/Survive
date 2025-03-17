@@ -9,26 +9,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
 public class SurviveEntityStats {
-	public static String waterStatsID = "WaterStats";
-//	public static String temperatureStatsID = "TemperatureStats";
+//	public static String waterStatsID = "WaterStats";
 	//Getters
 
-	public static WaterData getWaterStats(LivingEntity entity) {
-		WaterData stats = new WaterData();
-		if(entity != null) {
-			if (getModNBT(entity) != null && getModNBT(entity).contains(waterStatsID, 10)) {
-				stats.read(getModNBT(entity).getCompound(waterStatsID));
-				return stats;
-			}
-		}
-		return stats;
-	}
-	
-//	public static TemperatureData getTemperatureStats(LivingEntity entity) {
-//		TemperatureData stats = new TemperatureData();
+//	public static WaterData getWaterStats(LivingEntity entity) {
+//		WaterData stats = new WaterData();
 //		if(entity != null) {
-//			if (getModNBT(entity) != null && getModNBT(entity).contains(temperatureStatsID, 10)) {
-//				stats.read(getModNBT(entity).getCompound(temperatureStatsID));
+//			if (getModNBT(entity) != null && getModNBT(entity).contains(waterStatsID, 10)) {
+//				stats.read(getModNBT(entity).getCompound(waterStatsID));
 //				return stats;
 //			}
 //		}
@@ -44,16 +32,10 @@ public class SurviveEntityStats {
 
 	//Setters
 
-	public static void setWaterStats(LivingEntity entity, WaterData waterStats) {
-		CompoundTag compound2 = new CompoundTag();
-		waterStats.write(compound2, false);
-		getModNBT(entity).put(waterStatsID, compound2);
-	}
-	
-//	public static void setTemperatureStats(Entity entity, TemperatureData temperatureStats) {
+//	public static void setWaterStats(LivingEntity entity, WaterData waterStats) {
 //		CompoundTag compound2 = new CompoundTag();
-//		temperatureStats.write(compound2, false);
-//		getModNBT(entity).put(temperatureStatsID, compound2);
+//		waterStats.write(compound2, false);
+//		getModNBT(entity).put(waterStatsID, compound2);
 //	}
 	
 	public static void setWetTime(LivingEntity entity, int wetTime) {
@@ -93,11 +75,8 @@ public class SurviveEntityStats {
 			compound = getOrCreateModNBT(player);
 			String name = player.getScoreboardName();
 			if(player.isAlive()) {
-				if (!compound.contains(waterStatsID)) {
-					setWaterStats(player, new WaterData());
-				}
-//				if (!compound.contains(temperatureStatsID)) {
-//					setTemperatureStats(player, new TemperatureData());
+//				if (!compound.contains(waterStatsID)) {
+//					setWaterStats(player, new WaterData());
 //				}
 				if (!compound.contains(append("WetTime"))) {
 					setWetTime(player, 0);
