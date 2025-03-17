@@ -16,7 +16,8 @@ public interface IRealisticEntity {
 	public void setNutritionData(NutritionData data);
 	public TemperatureData temperatureData();
 	public void setTemperatureData(TemperatureData data);
-	public WaterData getWaterData();
+	public WaterData waterData();
+	public void setWaterData(WaterData data);
 	public WellbeingData wellbeingData();
 	public void setWellbeingData(WellbeingData data);
 	public SleepData sleepData();
@@ -54,7 +55,7 @@ public interface IRealisticEntity {
 	}
 	
 	public default ItemStack drink(Level pLevel, ItemStack pFood) {
-	      this.getWaterData().drink(pFood.getItem(), pFood, self());
+	      this.waterData().drink(pFood.getItem(), pFood, self());
 	      return pFood;
 //	      this.awardStat(Stats.ITEM_USED.get(pFood.getItem()));
 //	      pLevel.playSound((Player)null, this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_BURP, SoundSource.PLAYERS, 0.5F, pLevel.random.nextFloat() * 0.1F + 0.9F);

@@ -52,7 +52,7 @@ public class ServerboundThirstMovementPacket extends ServerboundUnionPacket {
 				moveMul+=0.5F;
 			if (jump)
 				moveMul+=1.5F;
-			((IRealisticEntity)sender).getWaterData().addExhaustion(sender, 0.1F*moveMul);
+			((IRealisticEntity)sender).waterData().addExhaustion(sender, 0.1F*moveMul);
 		}
 		return true;
 	}

@@ -57,8 +57,8 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 			int pages = 6;
 			if (contents.size() < pages) while (contents.size() < pages) contents.add(contents.size(), Filterable.passThrough(Component.literal("")));
 			String status0 = "§2§nGeneral:§r\n"+
-					"Water Level = "+real.getWaterData().getWaterLevel()+"\n"+
-					"Hydration = "+real.getWaterData().getHydrationLevel()+"\n"+
+					"Water Level = "+real.waterData().getWaterLevel()+"\n"+
+					"Hydration = "+real.waterData().getHydrationLevel()+"\n"+
 					"Food Level = "+sender.getFoodData().getFoodLevel()+"\n"+
 					"Saturation Level = "+sender.getFoodData().getSaturationLevel()+"\n"+
 					"Energy Level = "+real.staminaData().getLTS();

@@ -107,8 +107,6 @@ public class WaterData extends SurviveData implements Water {
 				if (drinkData.isChilled())entity.addEffect(new MobEffectInstance(SMobEffects.CHILLED.holder(), 30*20));
 				if (drinkData.isEnergizing())entity.addEffect(new MobEffectInstance(SMobEffects.ENERGIZED.holder(), 60*20*5));
 			}
-
-			save(player);
 		}
 
 	}
@@ -192,7 +190,6 @@ public class WaterData extends SurviveData implements Water {
 	
 	public void applyTempDrop(Player player) {
 		this.tempDropTicks--;
-		save(player);
 	}
 	
 
@@ -264,7 +261,6 @@ public class WaterData extends SurviveData implements Water {
 		if (!player.getAbilities().invulnerable) {
 			if (!player.level().isClientSide) {
 				this.addExhaustion(exhaustion);
-				save(player);
 			}
 
 		}
@@ -287,7 +283,6 @@ public class WaterData extends SurviveData implements Water {
 
 	@Override
 	public void save(LivingEntity player) {
-		SurviveEntityStats.setWaterStats(player, this);
 	}
 
 	@Override

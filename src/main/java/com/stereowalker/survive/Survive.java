@@ -214,7 +214,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 
 				@Override
 				public Water getWater(LivingEntity entity) {
-					return ((IRealisticEntity)entity).getWaterData();
+					return ((IRealisticEntity)entity).waterData();
 				}
 			});
 		} catch (UnsupportedOperationException e) {

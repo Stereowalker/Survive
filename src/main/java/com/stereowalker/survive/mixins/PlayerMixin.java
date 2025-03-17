@@ -52,6 +52,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	private HygieneData hygieneData = new HygieneData();
 	private StaminaData staminaData = new StaminaData(getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 	private SleepData sleepData = new SleepData();
+	private WaterData waterData = new WaterData();
 
 	protected PlayerMixin(EntityType<? extends LivingEntity> type, Level worldIn) {
 		super(type, worldIn);
@@ -74,7 +75,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			}
 		}
 		this.staminaData().eat(pFood.getItem(), pFood, this);
-		this.getWaterData().drink(pFood.getItem(), pFood, this);
+		this.waterData().drink(pFood.getItem(), pFood, this);
 		this.getRealFoodData().markAsSpoiled(pFood, this);
 	}
 
@@ -86,11 +87,10 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			ServerPlayer player = (ServerPlayer)(Object)this;
 			if (Survive.THIRST_CONFIG.enabled) {
 				if (player.level().getDifficulty() == Difficulty.PEACEFUL && player.level().getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION)) {
-					if (getWaterData().needWater() && player.tickCount % 10 == 0) {
-						getWaterData().setWaterLevel(getWaterData().getWaterLevel() + 1);
+					if (waterData().needWater() && player.tickCount % 10 == 0) {
+						waterData().setWaterLevel(waterData().getWaterLevel() + 1);
 					}
 				}
-				getWaterData().save(player);
 			}
 		}
 		//
@@ -99,7 +99,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			hygieneData().baseTick((Player)(Object)this);
 			this.nutritionData.baseTick((Player)(Object)this);
 			temperatureData().baseTick((Player)(Object)this);
-			getWaterData().baseTick((Player)(Object)this);
+			waterData().baseTick((Player)(Object)this);
 			this.wellbeingData.baseTick((Player)(Object)this);
 			sleepData().baseTick((Player)(Object)this);
 		}
@@ -159,6 +159,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			if (surviveData.contains("hygiene", 10)) this.hygieneData.read(surviveData.getCompound("hygiene"));
 			if (surviveData.contains("stamina", 10)) this.staminaData.read(surviveData.getCompound("stamina"));
 			if (surviveData.contains("sleep", 10)) this.sleepData.read(surviveData.getCompound("sleep"));
+			if (surviveData.contains("water", 10)) this.waterData.read(surviveData.getCompound("water"));
 		}
 	}
 	
@@ -171,6 +172,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		surviveData.put("hygiene", this.hygieneData.write(false));
 		surviveData.put("stamina", this.staminaData.write(false));
 		surviveData.put("sleep", this.sleepData.write(false));
+		surviveData.put("water", this.waterData.write(false));
 		pCompound.put("surviveData", surviveData);
 	}
 
@@ -210,8 +212,14 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		this.temperatureData = data;
 	}
 
-	public WaterData getWaterData(){
-		return SurviveEntityStats.getWaterStats((Player)(Object)this);
+	@Override
+	public WaterData waterData(){
+		return waterData;
+	}
+	
+	@Override
+	public void setWaterData(WaterData data) {
+		this.waterData = data;
 	}
 
 	@Override

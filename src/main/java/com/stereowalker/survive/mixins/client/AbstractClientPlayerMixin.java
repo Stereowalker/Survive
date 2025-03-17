@@ -25,7 +25,7 @@ public abstract class AbstractClientPlayerMixin extends Player implements IReali
 		hygieneData().baseClientTick(player);
 		nutritionData().baseClientTick(player);
 		temperatureData().baseClientTick(player);
-		getWaterData().baseClientTick(player);
+		waterData().baseClientTick(player);
 		wellbeingData().baseClientTick(player);
 		sleepData().baseClientTick(player);
 	}
