@@ -98,7 +98,7 @@ public class NeedsCommand {
 	private static int restore(CommandSourceStack source, float amount, NeedType type, Collection<ServerPlayer> pTargets) throws CommandSyntaxException {
 		for(ServerPlayer player : pTargets) {
 			IRealisticEntity realisticPlayer = (IRealisticEntity)player;
-			WaterData waterData = realisticPlayer.getWaterData();
+			WaterData waterData = realisticPlayer.waterData();
 			switch (type)  {
 			case STAMINA:
 				realisticPlayer.staminaData().relax(Mth.floor(amount), player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
@@ -122,7 +122,6 @@ public class NeedsCommand {
 				waterData.drink(0, waterData.getHydrationLevel()+amount, 0, false);
 				break;
 			}
-			waterData.save(player);
 		}
 
 		if (pTargets.size() == 1) {
@@ -136,7 +135,7 @@ public class NeedsCommand {
 	private static int deplete(CommandSourceStack source, float amount, NeedType type, Collection<ServerPlayer> pTargets) throws CommandSyntaxException {
 		for(ServerPlayer player : pTargets) {
 			IRealisticEntity realisticPlayer = (IRealisticEntity)player;
-			WaterData waterData = realisticPlayer.getWaterData();
+			WaterData waterData = realisticPlayer.waterData();
 			switch (type)  {
 			case STAMINA:
 				realisticPlayer.staminaData().setEnergyLevel(realisticPlayer.staminaData().getLTS()-Mth.floor(amount));
@@ -160,7 +159,6 @@ public class NeedsCommand {
 				waterData.setWaterHydrationLevel(waterData.getHydrationLevel()-amount);
 				break;
 			}
-			waterData.save(player);
 		}
 
 		if (pTargets.size() == 1) {
@@ -191,10 +189,10 @@ public class NeedsCommand {
 			result = realisticPlayer.sleepData().getAwakeTimer();
 			break;
 		case THIRST:
-			result = realisticPlayer.getWaterData().getWaterLevel();
+			result = realisticPlayer.waterData().getWaterLevel();
 			break;
 		case HYDRATION:
-			result = realisticPlayer.getWaterData().getHydrationLevel();
+			result = realisticPlayer.waterData().getHydrationLevel();
 			break;
 		}
 		final float r = result;

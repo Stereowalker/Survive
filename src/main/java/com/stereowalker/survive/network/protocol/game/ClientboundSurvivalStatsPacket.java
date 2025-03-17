@@ -35,6 +35,7 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 		surviveData.put("hygiene", player.hygieneData().write(true));
 		surviveData.put("stamina", player.staminaData().write(true));
 		surviveData.put("sleep", player.sleepData().write(true));
+		surviveData.put("water", player.waterData().write(true));
 		return surviveData;
 	}
 
@@ -62,6 +63,7 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 			if (this.stats.contains("hygiene", 10)) player.hygieneData().read(this.stats.getCompound("hygiene"));
 			if (this.stats.contains("stamina", 10)) player.staminaData().read(this.stats.getCompound("stamina"));
 			if (this.stats.contains("sleep", 10)) player.sleepData().read(this.stats.getCompound("sleep"));
+			if (this.stats.contains("water", 10)) player.waterData().read(this.stats.getCompound("water"));
 		}
 		return true;
 	}

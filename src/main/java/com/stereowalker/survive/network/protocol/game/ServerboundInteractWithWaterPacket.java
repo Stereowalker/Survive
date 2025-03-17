@@ -82,7 +82,7 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 			FluidState fluid = sender.level().getFluidState(pos);
 			if (heldItem.isEmpty()) {
 				if (sender.isCrouching()) {
-					WaterData waterStats = ((IRealisticEntity)sender).getWaterData();
+					WaterData waterStats = ((IRealisticEntity)sender).waterData();
 					if (waterStats.needWater()) {
 						boolean flag = false;
 						if (block.getBlock() == Blocks.WATER_CAULDRON) {
@@ -108,7 +108,6 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 						sender.swing(InteractionHand.MAIN_HAND);
 						new ClientboundDrinkSoundPacket(pos).send(sender);
 					}
-					waterStats.save(sender);
 				}
 			} else if (heldItem.getItem() == Items.BOWL) {
 				if (isValidContainerSource(waterAmount)) {
