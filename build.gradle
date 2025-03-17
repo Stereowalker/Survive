@@ -18,6 +18,7 @@ apply plugin: 'org.spongepowered.mixin'
 
 // Should exist on all loaders and is loader specific
 repositories {
+	mavenLocal()
 	maven {url "https://modmaven.dev/" }// UnionLib
 	maven {url "https://girafi.dk/maven/"}
 	maven {url "https://www.cursemaven.com"} //CurseForge
