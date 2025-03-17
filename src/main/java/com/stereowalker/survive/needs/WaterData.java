@@ -158,7 +158,7 @@ public class WaterData extends SurviveData implements Water {
 
 				this.waterTimer = 0;
 			}
-		} else if (flag && this.waterLevel >= 16 && ((IRealisticEntity)player).temperatureData().getTemperatureLevel() > Survive.DEFAULT_TEMP) {
+		} else if (flag && this.waterLevel >= 16 && this.tempDropTicks < 10 && ((IRealisticEntity)player).temperatureData().getTemperatureLevel() > (Survive.DEFAULT_TEMP + TemperatureUtil.firstHeat(player)) / 2f) {
 			++this.waterTimer;
 			if (this.waterTimer >= 80) {
 				this.tempDropTicks++;
