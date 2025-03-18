@@ -1,1 +1,2 @@
-- Temperature now takes obstacles into account
+- Changed how water data is saved
+- Temperature is now only reduced by thirst when it's over more than half
