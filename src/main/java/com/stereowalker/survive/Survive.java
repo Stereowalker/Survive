@@ -86,6 +86,7 @@ import com.stereowalker.unionlib.api.collectors.BrewingRecipeCollector;
 import com.stereowalker.unionlib.api.collectors.CommandCollector;
 import com.stereowalker.unionlib.api.collectors.ConfigCollector;
 import com.stereowalker.unionlib.api.collectors.DefaultAttributeModifier;
+import com.stereowalker.unionlib.api.collectors.FluidPropertyCollector;
 import com.stereowalker.unionlib.api.collectors.InsertCollector;
 import com.stereowalker.unionlib.api.collectors.PacketCollector;
 import com.stereowalker.unionlib.api.collectors.ReloadListeners;
@@ -101,7 +102,9 @@ import com.stereowalker.unionlib.mod.PacketHolder;
 import com.stereowalker.unionlib.mod.ServerSegment;
 import com.stereowalker.unionlib.util.LoaderHelper;
 import com.stereowalker.unionlib.util.VersionHelper;
+import com.stereowalker.unionlib.world.level.material.FluidProperties;
 
+import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Holder;
@@ -247,6 +250,22 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.builder().addContainer(SItems.FILLED_NETHERITE_CANTEEN);
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void setupFluids(FluidPropertyCollector collector) {
+		collector.forFluid(FluidProperties.create(location("purified_water"))
+				.flowingTexture(location("block/purified_water_flow"))
+				.stillTexture(location("block/purified_water_still"))
+				.overlayTexture(location("block/purified_water_overlay"))
+				.tint((fl, getter, pos) -> BiomeColors.getAverageWaterColor(getter, pos) | 0xFF000000+Survive.PURIFIED_WATER_COLOR)
+				.tint(0xFF3F76E4+Survive.PURIFIED_WATER_COLOR)
+				.fallDistanceModifier(0F)
+				.canExtinguish(true)
+				.supportsBoats(true)
+				.toProperties(), 
+				() -> SFluids.FLOWING_PURIFIED_WATER, () -> SFluids.PURIFIED_WATER);
+	}
+	
 	@Override
 	public void onModStartup() {
 		SCauldronInteraction.bootStrap();
@@ -260,9 +279,6 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	
 	@Override
 	public void onModStartupInClient() {
-		RenderType frendertype = RenderType.translucent();
-		ItemBlockRenderTypes.setRenderLayer(SFluids.PURIFIED_WATER, frendertype);
-		ItemBlockRenderTypes.setRenderLayer(SFluids.FLOWING_PURIFIED_WATER, frendertype);
 	}
 	
 	@Override

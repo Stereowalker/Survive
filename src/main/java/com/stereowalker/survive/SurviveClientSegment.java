@@ -19,11 +19,13 @@ import com.stereowalker.survive.world.item.TemperatureRegulatorPlateItem;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
 import com.stereowalker.survive.world.level.block.PlatedTemperatureRegulatorBlock;
 import com.stereowalker.survive.world.level.block.SBlocks;
+import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.unionlib.api.collectors.ColorOverrideCollector;
 import com.stereowalker.unionlib.api.collectors.InsertCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector.Order;
 import com.stereowalker.unionlib.api.collectors.ParticleCollector;
+import com.stereowalker.unionlib.api.collectors.RenderLayerCollector;
 import com.stereowalker.unionlib.api.gui.GuiRenderer;
 import com.stereowalker.unionlib.client.gui.screens.config.MinecraftModConfigsScreen;
 import com.stereowalker.unionlib.insert.ClientInserts;
@@ -40,6 +42,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -70,6 +74,12 @@ public class SurviveClientSegment extends ClientSegment {
 	public void setupParticles(ParticleCollector collector) {
 		collector.addFactory(SParticleTypes.STINK, HygieneParticle.StinkFactory::new);
 		collector.addFactory(SParticleTypes.CLEAN, HygieneParticle.CleanFactory::new);
+	}
+	
+	@Override
+	public void setupRenderLayers(RenderLayerCollector collector) {
+		RenderType frendertype = RenderType.translucent();
+		collector.setFluidRenderLayer(frendertype, SFluids.PURIFIED_WATER, SFluids.FLOWING_PURIFIED_WATER);
 	}
 	
 	@Override
