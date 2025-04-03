@@ -11,13 +11,19 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 
 @RegistryHolder(namespace = Survive.MOD_ID)
 public class SBlocks {
 	@RegistryObject("purified_water")
-	public static final Block PURIFIED_WATER = new LiquidBlock(() -> SFluids.PURIFIED_WATER, BlockBehaviour.Properties.of().mapColor(MapColor.WATER).noCollission().strength(100.0F).noLootTable());
+	public static final Block PURIFIED_WATER = new LiquidBlock(() -> SFluids.PURIFIED_WATER, BlockBehaviour.Properties.of().mapColor(MapColor.WATER).noCollission().strength(100.0F).noLootTable()
+            .replaceable()
+            .pushReaction(PushReaction.DESTROY)
+            .liquid()
+            .sound(SoundType.EMPTY));
 	@RegistryObject("purified_water_cauldron")
 	public static final Block PURIFIED_WATER_CAULDRON = new LayeredCauldronBlock(Precipitation.NONE, SCauldronInteraction.PURIFIED_WATER, BlockBehaviour.Properties.ofLegacyCopy(Blocks.CAULDRON));
 	@RegistryObject("potash_cauldron")
