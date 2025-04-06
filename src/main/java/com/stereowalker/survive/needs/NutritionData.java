@@ -54,6 +54,8 @@ public class NutritionData extends SurviveData {
 	private MutableFloat carbStack = new MutableFloat(0);
 	private Nutrient protein = new Nutrient(0);
 	private Nutrient fat = new Nutrient(0);
+	
+	private int maintenanceTicks;
 
 	public NutritionData() {
 		this.carbLevel = new MutableInt(2000);
@@ -103,6 +105,16 @@ public class NutritionData extends SurviveData {
 		hand(player, this.carbTimer, this.carbLevel, this.carbStack);
 		protein.tick(player);
 		fat.tick(player);
+		
+		float proteinMod = 1;
+		if (protein.level() > 2000) proteinMod = Survive.CONFIG.idle_protein_tick_rate_high;
+		else if (protein.level() < 1000) proteinMod = Survive.CONFIG.idle_protein_tick_rate_low;
+		
+		maintenanceTicks++;
+		if (maintenanceTicks > Survive.CONFIG.idle_protein_tick_rate * proteinMod) {
+			protein.remove(1);
+			maintenanceTicks = 0;
+		}
 	}
 
 	/**
@@ -121,6 +133,8 @@ public class NutritionData extends SurviveData {
 			this.fat.level = new MutableInt(compound.getInt("fatLevel"));
 			this.fat.timer = new MutableInt(compound.getInt("fatTimer"));
 			this.fat.stack = new MutableFloat(compound.getFloat("fatStack"));
+			
+			this.maintenanceTicks = compound.getInt("maintenanceTicks");
 		}
 	}
 
@@ -144,6 +158,10 @@ public class NutritionData extends SurviveData {
 		if (!reducedData) {
 			compound.putInt("fatTimer", this.fat.timer.getValue());
 			compound.putFloat("fatStack", this.fat.stack.getValue());
+		}
+		
+		if (!reducedData) {
+			compound.putInt("maintenanceTicks", this.maintenanceTicks);
 		}
 	}
 
