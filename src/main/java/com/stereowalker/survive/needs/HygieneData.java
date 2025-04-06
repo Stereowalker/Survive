@@ -39,7 +39,7 @@ public class HygieneData extends SurviveData {
 		if (!player.isCreative() && !player.isSpectator()) {
 			if (this.needsABath()) {
 				Random rand = new Random();
-				for(int i = 0; i < ((this.uncleanLevel-25)/10)+2; ++i) {
+				for(int i = 0; i < ((this.uncleanLevel-25)/20)+2; ++i) {
 					player.level().addParticle(SParticleTypes.STINK, player.getRandomX(0.5D), player.getRandomY() - 0.25D, player.getRandomZ(0.5D), (rand.nextDouble() - 0.5D) * 0.5D, -rand.nextDouble() * 0.5D, (rand.nextDouble() - 0.5D) * 0.5D);
 				}
 			}

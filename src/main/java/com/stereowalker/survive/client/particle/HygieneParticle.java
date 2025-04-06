@@ -31,7 +31,7 @@ public class HygieneParticle extends TextureSheetParticle {
 			this.gCol = f * 0.3F;
 			this.bCol = f;
 		}
-		this.lifetime = (int)(Math.random() * 10.0D) + 40;
+		this.lifetime = (int)(Math.random() * 5.0D) + 20;
 	}
 
 	public ParticleRenderType getRenderType() {
