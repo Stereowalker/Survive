@@ -127,7 +127,7 @@ public class StaminaData extends SurviveData implements Stamina {
 			isStraining = true;
 			maxBurstStamina = 10;
 			if (Survive.CONFIG.nutrition_enabled) {
-				int carb = realPlayer.nutritionData().getCarbLevel();
+				int carb = realPlayer.nutritionData().carbs().level();
 				if (carb > 2000)
 					maxBurstStamina = Mth.lerpInt(((carb - 2000) / 1000f), 12, 20);
 				else if (carb > 1000)
@@ -154,7 +154,7 @@ public class StaminaData extends SurviveData implements Stamina {
 			isStraining = false;
 			this.shortRecoveryTimer = maxBurstStamina - shortStamina;
 			addExhaustion(this.shortRecoveryTimer * 7.8f, false);
-			realPlayer.nutritionData().removeCarbs(this.shortRecoveryTimer*10);
+			realPlayer.nutritionData().carbs().remove(this.shortRecoveryTimer*10);
 			this.shortRecoveryTimer *= 13;
 			player.addEffect(new MobEffectInstance(SMobEffects.FATIGUE.holder(), this.shortRecoveryTimer, 1, false, true));
 		}

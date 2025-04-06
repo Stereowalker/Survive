@@ -18,8 +18,9 @@ public class NutritionData extends SurviveData {
 		private MutableInt timer = new MutableInt(0);
 		private MutableFloat stack = new MutableFloat(0);
 		
-		public Nutrient(int initialLevel) {
+		public Nutrient(int initialLevel, float initialStacks) {
 			level = new MutableInt(initialLevel);
+			stack = new MutableFloat(initialStacks);
 		}
 		
 		public void add(float nut) {
@@ -49,18 +50,20 @@ public class NutritionData extends SurviveData {
 		}
 	}
 	
-	private MutableInt carbLevel = new MutableInt(0);
-	private MutableInt carbTimer = new MutableInt(0);
-	private MutableFloat carbStack = new MutableFloat(0);
-	private Nutrient protein = new Nutrient(0);
-	private Nutrient fat = new Nutrient(0);
+	private Nutrient carb = new Nutrient(0, 0);
+	private Nutrient protein = new Nutrient(0, 0);
+	private Nutrient fat = new Nutrient(0, 0);
 	
 	private int maintenanceTicks;
 
 	public NutritionData() {
-		this.carbLevel = new MutableInt(2000);
-		this.protein = new Nutrient(2000);
-		this.fat = new Nutrient(2000);
+		this.carb = new Nutrient(1000, 1000);
+		this.protein = new Nutrient(1000, 1000);
+		this.fat = new Nutrient(1000, 1000);
+	}
+	
+	public Nutrient carbs() {
+		return carb;
 	}
 	
 	public Nutrient protein() {
@@ -72,37 +75,11 @@ public class NutritionData extends SurviveData {
 	}
 
 	/**
-	 * Add carbs.
-	 */
-	public void addCarbs(float carb) {
-		this.carbStack.add(Mth.clamp(carb, -1000, 3000));
-	}
-
-	public void removeCarbs(int carbs) {
-		this.carbLevel.subtract(carbs);
-	}
-	
-	public void hand(Player player, MutableInt timer, MutableInt level, MutableFloat stack) {
-		if (stack.getValue() >= 300 && level.getValue() < 3000) {
-			timer.increment();
-			if (timer.getValue() > 200 && player.getFoodData().getFoodLevel() > 3) {
-				stack.subtract(300);
-				level.add(300);
-				player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel()-1);
-				timer.setValue(0);
-			}
-		} else {
-			timer.setValue(0);
-		}
-	}
-
-	/**
 	 * Handles the temperature game logic.
 	 */
 	@Override
 	public void tick(Player player) {
-		//Carbs
-		hand(player, this.carbTimer, this.carbLevel, this.carbStack);
+		carb.tick(player);
 		protein.tick(player);
 		fat.tick(player);
 		
@@ -122,9 +99,9 @@ public class NutritionData extends SurviveData {
 	 */
 	public void read(CompoundTag compound) {
 		if (compound.contains("carbLevel", 99)) {
-			this.carbLevel = new MutableInt(compound.getInt("carbLevel"));
-			this.carbTimer = new MutableInt(compound.getInt("carbTimer"));
-			this.carbStack = new MutableFloat(compound.getFloat("carbStack"));
+			this.carb.level = new MutableInt(compound.getInt("carbLevel"));
+			this.carb.timer = new MutableInt(compound.getInt("carbTimer"));
+			this.carb.stack = new MutableFloat(compound.getFloat("carbStack"));
 			
 			this.protein.level = new MutableInt(compound.getInt("proteinLevel"));
 			this.protein.timer = new MutableInt(compound.getInt("proteinTimer"));
@@ -142,10 +119,10 @@ public class NutritionData extends SurviveData {
 	 * Writes the water data for the player.
 	 */
 	public void write(CompoundTag compound, boolean reducedData) {
-		compound.putInt("carbLevel", this.carbLevel.getValue());
+		compound.putInt("carbLevel", this.carb.level.getValue());
 		if (!reducedData) {
-			compound.putInt("carbTimer", this.carbTimer.getValue());
-			compound.putFloat("carbStack", this.carbStack.getValue());
+			compound.putInt("carbTimer", this.carb.timer.getValue());
+			compound.putFloat("carbStack", this.carb.stack.getValue());
 		}
 		
 		compound.putInt("proteinLevel", this.protein.level());
@@ -163,13 +140,6 @@ public class NutritionData extends SurviveData {
 		if (!reducedData) {
 			compound.putInt("maintenanceTicks", this.maintenanceTicks);
 		}
-	}
-
-	/**
-	 * Get the player's water level.
-	 */
-	public int getCarbLevel() {
-		return this.carbLevel.intValue();
 	}
 
 	@Override

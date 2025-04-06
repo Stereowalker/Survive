@@ -144,7 +144,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			}
 			FoodProperties food = p_213357_2_.get(DataComponents.FOOD);
 			float total = protein+carbs+fats;
-			this.nutritionData.addCarbs(food.nutrition()*Mth.ceil((carbs/total)*100));
+			this.nutritionData.carbs().add(food.nutrition()*Mth.ceil((carbs/total)*100));
 			this.nutritionData.protein().add(food.nutrition()*Mth.ceil((protein/total)*100));
 			this.nutritionData.fat().add(food.nutrition()*Mth.ceil((fats/total)*100));
 		}
