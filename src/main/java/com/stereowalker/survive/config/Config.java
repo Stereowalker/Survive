@@ -1,8 +1,10 @@
 package com.stereowalker.survive.config;
 
+import com.stereowalker.survive.core.TempMode;
 import com.stereowalker.unionlib.config.ConfigObject;
 import com.stereowalker.unionlib.config.ConfigSide;
 import com.stereowalker.unionlib.config.UnionConfig;
+import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 
 @UnionConfig(name = "survive", autoReload = true)
 public class Config implements ConfigObject {	
@@ -59,15 +61,35 @@ public class Config implements ConfigObject {
 	@UnionConfig.Range(min = 0, max = 10000)
 	public int idle_protein_tick_rate = 200;
 	
-	@UnionConfig.Entry(group = "Nutrition" , name = "High Protein Maintenance Modifier", side = ConfigSide.Shared)
+	@UnionConfig.Entry(group = "Nutrition", name = "High Protein Maintenance Modifier", side = ConfigSide.Shared)
 	@UnionConfig.Comment(comment = {"This is a modifier on [Cell Maintenance Rate]. If protein levels go above 2000, the rate is multiplied by this value"})
 	@UnionConfig.Range(min = 0.1, max = 1)
 	public float idle_protein_tick_rate_high = 0.8f;
 	
-	@UnionConfig.Entry(group = "Nutrition" , name = "Low Protein Maintenance Modifier", side = ConfigSide.Shared)
+	@UnionConfig.Entry(group = "Nutrition", name = "Low Protein Maintenance Modifier", side = ConfigSide.Shared)
 	@UnionConfig.Comment(comment = {"This is a modifier on [Cell Maintenance Rate]. If protein levels go below 1000, the rate is multiplied by this value"})
 	@UnionConfig.Range(min = 0.1, max = 1)
 	public float idle_protein_tick_rate_low = 1.5f;
+	
+	@UnionConfig.Entry(group = "Nutrition", name = "Always Show Nutrition", side = ConfigSide.Client)
+	@UnionConfig.Comment(comment = {"Enabling will make the nutrition indicator display even if you're not holding a food item"})
+	public boolean always_render_nut = false;
+	
+	@UnionConfig.Entry(group = "Nutrition", name = "Show Raw Values", side = ConfigSide.Client)
+	@UnionConfig.Comment(comment = {"Enabling this shows your actual nutrition values instead of the icons"})
+	public boolean show_raw_nut_vals = false;
+	
+	@UnionConfig.Entry(group = "Nutrition", name = "X Position", side = ConfigSide.Client)
+	@UnionConfig.Comment(comment = {"The x offset from the center of the screen where nutrition should render"})
+	public int nut_xLoc = 1;
+	
+	@UnionConfig.Entry(group = "Nutrition", name = "Y Position", side = ConfigSide.Client)
+	@UnionConfig.Comment(comment = {"The y offset from the center of the screen where nutrition should render"})
+	public int nut_yLoc = 1;
+	
+	@UnionConfig.Entry(group = "Nutrition", name = "Anchor Position", side = ConfigSide.Client)
+	@UnionConfig.Comment(comment = {"Where on the screen should the nutrition indicator be anchored"})
+	public ScreenOffset nut_offset = ScreenOffset.TOP_LEFT;
 	
 	
 	//
