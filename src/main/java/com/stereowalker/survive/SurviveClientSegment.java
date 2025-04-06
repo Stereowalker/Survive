@@ -202,10 +202,31 @@ public class SurviveClientSegment extends ClientSegment {
 				RenderSystem.setShader(GameRenderer::getPositionTexShader);
 				renderTemperature(gui, ScreenOffset.TOP, gui.getCameraPlayer(), renderer, true);
 			}
-			if (Survive.CONFIG.nutrition_enabled && (gui.getCameraPlayer().getMainHandItem().has(DataComponents.FOOD) || gui.getCameraPlayer().getOffhandItem().has(DataComponents.FOOD))) {
-				renderer.drawString("Carbs = "+((IRealisticEntity)gui.getCameraPlayer()).nutritionData().getCarbLevel(), 0, 0, ChatFormatting.GRAY.getColor(), false);
-				renderer.drawString("Protein = "+((IRealisticEntity)gui.getCameraPlayer()).nutritionData().protein().level(), 0, 10, ChatFormatting.GRAY.getColor(), false);
-				renderer.drawString("Fats = "+((IRealisticEntity)gui.getCameraPlayer()).nutritionData().fat().level(), 0, 20, ChatFormatting.GRAY.getColor(), false);
+		});
+		collector.register("nutrition", Order.END, (gui,renderer,width,height)->{
+			if (gui.getCameraPlayer() instanceof IRealisticEntity real && Survive.CONFIG.nutrition_enabled && (gui.getCameraPlayer().getMainHandItem().has(DataComponents.FOOD) || gui.getCameraPlayer().getOffhandItem().has(DataComponents.FOOD) || Survive.CONFIG.always_render_nut)) {
+				ScreenOffset position = Survive.CONFIG.nut_offset;
+				int x = ScreenHelper.getXOffset(position, gui.minecraft) + Survive.CONFIG.nut_xLoc;
+				int y = ScreenHelper.getYOffset(position, gui.minecraft) + Survive.CONFIG.nut_yLoc;
+				if (Survive.CONFIG.show_raw_nut_vals) {
+					renderer.drawString("Carbs = "+real.nutritionData().getCarbLevel(), x, y, ChatFormatting.GRAY.getColor(), false);
+					renderer.drawString("Protein = "+real.nutritionData().protein().level(), x, y + 10, ChatFormatting.GRAY.getColor(), false);
+					renderer.drawString("Fats = "+real.nutritionData().fat().level(), x, y + 20, ChatFormatting.GRAY.getColor(), false);
+				}
+				else {
+					//Carbs
+					renderer.blit(GUI_ICONS, x + 7, y + 02, 194, 22, 62, 5);
+					renderer.blit(GUI_ICONS, x + 8, y + 03, 195, 28, Mth.floor(real.nutritionData().getCarbLevel() / 50f), 3);
+					renderer.blit(GUI_ICONS, x + 0, y + 00, 246, 11, 9, 9);
+					//Protein
+					renderer.blit(GUI_ICONS, x + 7, y + 12, 194, 32, 62, 5);
+					renderer.blit(GUI_ICONS, x + 8, y + 13, 195, 38, Mth.floor(real.nutritionData().protein().level() / 50f), 3);
+					renderer.blit(GUI_ICONS, x + 0, y + 10, 226, 1, 9, 9);
+					//Fats
+					renderer.blit(GUI_ICONS, x + 7, y + 22, 194, 42, 62, 5);
+					renderer.blit(GUI_ICONS, x + 8, y + 23, 195, 48, Mth.floor(real.nutritionData().fat().level() / 50f), 3);
+					renderer.blit(GUI_ICONS, x + 0, y + 20, 236, 11, 9, 9);
+				}
 			}
 		});
 	}
