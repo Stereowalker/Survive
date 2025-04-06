@@ -209,14 +209,14 @@ public class SurviveClientSegment extends ClientSegment {
 				int x = ScreenHelper.getXOffset(position, gui.minecraft) + Survive.CONFIG.nut_xLoc;
 				int y = ScreenHelper.getYOffset(position, gui.minecraft) + Survive.CONFIG.nut_yLoc;
 				if (Survive.CONFIG.show_raw_nut_vals) {
-					renderer.drawString("Carbs = "+real.nutritionData().getCarbLevel(), x, y, ChatFormatting.GRAY.getColor(), false);
+					renderer.drawString("Carbs = "+real.nutritionData().carbs().level(), x, y, ChatFormatting.GRAY.getColor(), false);
 					renderer.drawString("Protein = "+real.nutritionData().protein().level(), x, y + 10, ChatFormatting.GRAY.getColor(), false);
 					renderer.drawString("Fats = "+real.nutritionData().fat().level(), x, y + 20, ChatFormatting.GRAY.getColor(), false);
 				}
 				else {
 					//Carbs
 					renderer.blit(GUI_ICONS, x + 7, y + 02, 194, 22, 62, 5);
-					renderer.blit(GUI_ICONS, x + 8, y + 03, 195, 28, Mth.floor(real.nutritionData().getCarbLevel() / 50f), 3);
+					renderer.blit(GUI_ICONS, x + 8, y + 03, 195, 28, Mth.floor(real.nutritionData().carbs().level() / 50f), 3);
 					renderer.blit(GUI_ICONS, x + 0, y + 00, 246, 11, 9, 9);
 					//Protein
 					renderer.blit(GUI_ICONS, x + 7, y + 12, 194, 32, 62, 5);

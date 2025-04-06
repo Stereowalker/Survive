@@ -46,7 +46,7 @@ public interface IRealisticEntity {
 				addStaminaExhaustion(stamina, reason, causeStrain);
 			}
 			else if (Survive.CONFIG.nutrition_enabled) {
-				this.nutritionData().removeCarbs(nutrition*10);
+				this.nutritionData().carbs().remove(nutrition*10);
 			}
 			else {
 				player.causeFoodExhaustion(food);
