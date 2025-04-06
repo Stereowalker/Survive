@@ -53,6 +53,22 @@ public class Config implements ConfigObject {
 	@UnionConfig.Comment(comment = {"Disabling this will disable this mods nutrition system","The nutrition system might be pretty buggy, so proceed with caution"})
 	public boolean nutrition_enabled = false;
 	
+	@UnionConfig.Entry(group = "Nutrition" , name = "Cell Maintenance Rate", side = ConfigSide.Shared)
+	@UnionConfig.Comment(comment = {"How often in ticks the body will attempt to 'maintain' itself. It's actually just how often protein is consumed",
+			"You can set this to 0 to disable this feature, but your protein levels will still reduce automatically once you go past 3000 to ensure you're still able to heal"})
+	@UnionConfig.Range(min = 0, max = 10000)
+	public int idle_protein_tick_rate = 200;
+	
+	@UnionConfig.Entry(group = "Nutrition" , name = "High Protein Maintenance Modifier", side = ConfigSide.Shared)
+	@UnionConfig.Comment(comment = {"This is a modifier on [Cell Maintenance Rate]. If protein levels go above 2000, the rate is multiplied by this value"})
+	@UnionConfig.Range(min = 0.1, max = 1)
+	public float idle_protein_tick_rate_high = 0.8f;
+	
+	@UnionConfig.Entry(group = "Nutrition" , name = "Low Protein Maintenance Modifier", side = ConfigSide.Shared)
+	@UnionConfig.Comment(comment = {"This is a modifier on [Cell Maintenance Rate]. If protein levels go below 1000, the rate is multiplied by this value"})
+	@UnionConfig.Range(min = 0.1, max = 1)
+	public float idle_protein_tick_rate_low = 1.5f;
+	
 	
 	//
 	//Misc
