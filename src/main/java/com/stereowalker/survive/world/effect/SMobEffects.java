@@ -37,9 +37,9 @@ public class SMobEffects {
 			.addAttributeModifier(Attributes.ATTACK_SPEED, VersionHelper.toLoc("survive:fatigue_atk"), -0.1F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
 			.addAttributeModifier(Attributes.BLOCK_BREAK_SPEED, VersionHelper.toLoc("survive:fatigue_blk"), -0.2F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 	@RegistryObject("slowness_illness")
-	public static final Housing<MobEffect> SLOWNESS_ILLNESS = Housing.create(() -> (new UnwellMobEffect(MobEffectCategory.HARMFUL, 5926017)).addAttributeModifier(Attributes.MOVEMENT_SPEED, SurviveUUIDS.UNWELL_SLOWNESS, (double)-0.15F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+	public static final Housing<MobEffect> SLOWNESS_ILLNESS = Housing.create(() -> (new UnwellMobEffect(MobEffectCategory.HARMFUL, 5926017)).addAttributeModifier(Attributes.MOVEMENT_SPEED, SurviveUUIDS.UNWELL_SLOWNESS, (double)-0.1125F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 	@RegistryObject("weakness_illness")
-	public static final Housing<MobEffect> WEAKNESS_ILLNESS = Housing.create(() -> (new UnwellMobEffect(MobEffectCategory.HARMFUL, 4738376)).addAttributeModifier(Attributes.ATTACK_DAMAGE, SurviveUUIDS.UNWELL_WEAKNESS, -4.0D, AttributeModifier.Operation.ADD_VALUE));
+	public static final Housing<MobEffect> WEAKNESS_ILLNESS = Housing.create(() -> (new UnwellMobEffect(MobEffectCategory.HARMFUL, 4738376)).addAttributeModifier(Attributes.ATTACK_DAMAGE, SurviveUUIDS.UNWELL_WEAKNESS, -3.0D, AttributeModifier.Operation.ADD_VALUE));
 	@RegistryObject("hypothermia")
 	public static final Housing<MobEffect> HYPOTHERMIA = Housing.create(() -> new HypothermiaMobEffect(MobEffectCategory.HARMFUL, 5750248));
 	@RegistryObject("hyperthermia")
