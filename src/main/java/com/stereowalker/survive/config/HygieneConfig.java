@@ -14,6 +14,6 @@ public class HygieneConfig implements ConfigObject {
 	@UnionConfig.Entry(name = "Dirty Tick Rate", side = ConfigSide.Shared)
 	@UnionConfig.Comment(comment = {"How many ticks should pass before the players grime counter increases by one","Setting this to -1 prevents the player from getting dirty this way"})
 	@UnionConfig.Range(min = -1, max = 5000, useSlider = true)
-	public int dirtyTickRate = 500;
+	public int dirtyTickRate = 600;
 
 }
