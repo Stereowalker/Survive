@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.mojang.authlib.GameProfile;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.network.protocol.game.ServerboundThirstMovementPacket;
+import com.stereowalker.unionlib.util.EntityHelper;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -35,7 +36,7 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer implements I
 
 	@Inject(method = "hasEnoughFoodToStartSprinting", at = @At(value = "HEAD"), cancellable = true)
 	public void tickInject(CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(this.isPassenger() || !staminaData().isShortOfBreath() || /*this.mayFly()*/this.getAbilities().mayfly);
+		cir.setReturnValue(this.isPassenger() || !staminaData().isShortOfBreath() || EntityHelper.mayFly(this));
 	}
 
 }
