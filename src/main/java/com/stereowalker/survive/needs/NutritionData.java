@@ -25,6 +25,7 @@ public class NutritionData extends SurviveData {
 		
 		public void add(float nut) {
 			this.stack.add(Mth.clamp(nut, -1000, 3000));
+			if (stack.floatValue() > 3000) stack.setValue(3000);
 		}
 
 		public void remove(int nut) {
