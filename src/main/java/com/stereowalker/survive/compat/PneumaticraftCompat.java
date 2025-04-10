@@ -1,6 +1,7 @@
 package com.stereowalker.survive.compat;
 
 
+import com.stereowalker.survive.Survive;
 import me.desht.pneumaticcraft.api.item.IItemRegistry;
 import me.desht.pneumaticcraft.common.pneumatic_armor.CommonUpgradeHandlers;
 import me.desht.pneumaticcraft.common.upgrades.ModUpgrades;
@@ -9,6 +10,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import me.desht.pneumaticcraft.common.pneumatic_armor.CommonArmorHandler;
+
+import static java.lang.Math.abs;
 
 public class PneumaticraftCompat {
 
@@ -27,25 +30,19 @@ public class PneumaticraftCompat {
             return 0.0f;
         }
 
-//        int targetTemp = initialTemperature.getRawValue();
-//        int playerTemp = TemperatureHelper.getTemperatureData(player).getTemperature().getRawValue();
-//        int deltaTemp = (TemperatureScale.getScaleMidpoint() - playerTemp);
-//        if (Math.abs(deltaTemp) < 2)
-//            deltaTemp = 0;
-//        else if (Math.abs(deltaTemp) == 2)
-//            deltaTemp /= 2;
-//
-//        deltaTemp *= upgrades;
-//        targetTemp += deltaTemp;
-//        if (deltaTemp != lastDelta.getOrDefault(player.getUniqueID(), 0)) {
-//            NetworkHandler.sendToPlayer(new PacketPlayerTemperatureDelta(deltaTemp), (ServerPlayerEntity) player);
-//            lastDelta.put(player.getUniqueID(), deltaTemp);
-//        }
-//
-//        int airUsage = (int) (deltaTemp * ConfigHandler.integration.tanAirConAirUsageMultiplier);
-        int airUsage = (int) (1.0 * upgrades);
-        mod = -1.0f * upgrades;
-        handler.addAir(EquipmentSlot.CHEST, -Math.abs(airUsage));
+        float targetTemp = 36.5f;
+        double deltaTemp = (targetTemp - temp);
+        if (abs(deltaTemp) < 0.1)
+            deltaTemp = 0;
+
+        deltaTemp *= (upgrades);
+      //  Survive.getInstance().getLogger().warn("The temp is {}", temp);
+
+        //int airUsage = (int) (deltaTemp * ConfigHandler.integration.tanAirConAirUsageMultiplier);
+        int airUsage = (int) (-1 * abs(deltaTemp * Survive.TEMPERATURE_CONFIG.airConAirUsageModifier));
+        mod = (float) (deltaTemp * Survive.TEMPERATURE_CONFIG.airConTempModifier);
+        handler.addAir(EquipmentSlot.CHEST, -abs(airUsage));
+        Survive.getInstance().debug(String.format("The temp is %.2f and the modifier is %.2f and the air usage is %d", temp, mod, airUsage));
 
 
 
