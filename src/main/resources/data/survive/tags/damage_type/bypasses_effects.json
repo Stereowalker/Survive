@@ -1,9 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "survive:dehydrate",
-    "survive:overhydrate",
-    "survive:overeat",
-    "survive:overwork"
-  ]
-}
