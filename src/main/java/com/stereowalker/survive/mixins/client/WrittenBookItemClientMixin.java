@@ -25,11 +25,11 @@ public abstract class WrittenBookItemClientMixin {
 	
 	@Inject(method = "appendHoverText", at = @At("TAIL"))
 	public void appendHoverText_inject(ItemStack pStack, TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag, CallbackInfo ci) {
-		if (pStack.has(SDataComponents.STATUS_OWNER) && !pStack.get(SDataComponents.STATUS_OWNER).equals(new UUID(0L, 0L))) {
+		if (SDataComponents.STATUS_OWNER_D.hasData(pStack) && !SDataComponents.STATUS_OWNER_D.getData(pStack).equals(new UUID(0L, 0L))) {
 			String s = "";
 			Level pLevel = Minecraft.getInstance().level;
 			if (pLevel != null) {
-				s = pLevel.getPlayerByUUID(pStack.get(SDataComponents.STATUS_OWNER)).getName().getString();
+				s = pLevel.getPlayerByUUID(SDataComponents.STATUS_OWNER_D.getData(pStack)).getName().getString();
 			}
 			if (!StringUtil.isNullOrEmpty(s)) 
 				pTooltipComponents.add(Component.translatable("book.forPatient", s).withStyle(ChatFormatting.GREEN));

@@ -66,7 +66,7 @@ public class EmptyCanteenItem extends Item {
 	protected ItemStack turnCanteenIntoItem(ItemStack canteenStack, BlockPos fillPos, Player pPlayer, ItemStack pFilledBottleStack) {
 		pPlayer.awardStat(Stats.ITEM_USED.get(this));
 		if (pFilledBottleStack.has(DataComponents.POTION_CONTENTS) && pFilledBottleStack.get(DataComponents.POTION_CONTENTS).potion().get() == Potions.WATER)
-			pFilledBottleStack.set(SDataComponents.BIOME_SOURCE, pPlayer.level().getBiome(fillPos).unwrapKey().get().location());
+			SDataComponents.BIOME_SOURCE_D.setData(pFilledBottleStack, pPlayer.level().getBiome(fillPos).unwrapKey().get().location());
 		return ItemUtils.createFilledResult(canteenStack, pPlayer, pFilledBottleStack);
 	}
 

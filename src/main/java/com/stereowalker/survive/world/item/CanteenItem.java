@@ -52,7 +52,7 @@ public class CanteenItem extends PotionItem {
 	}
 
 	public static ItemStack addToCanteen(ItemStack stack, int drinks, PotionContents potion) {
-		stack.set(SDataComponents.DRINKS_LEFT, drinks);
+		SDataComponents.DRINKS_LEFT_D.setData(stack, drinks);
 		stack.set(DataComponents.POTION_CONTENTS, potion);
 		return stack;
 	}
@@ -67,11 +67,11 @@ public class CanteenItem extends PotionItem {
 	}
 
 	public void setDrinksLeft(ItemStack stack, int drinks) {
-		stack.set(SDataComponents.DRINKS_LEFT, Mth.clamp(drinks, 0, Survive.THIRST_CONFIG.canteenFillAmount(isNetherite)));
+		SDataComponents.DRINKS_LEFT_D.setData(stack, Mth.clamp(drinks, 0, Survive.THIRST_CONFIG.canteenFillAmount(isNetherite)));
 	}
 
 	public void decrementDrinks(ItemStack stack) {
-		setDrinksLeft(stack, stack.get(SDataComponents.DRINKS_LEFT) - 1);
+		setDrinksLeft(stack, SDataComponents.DRINKS_LEFT_D.getData(stack) - 1);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class CanteenItem extends PotionItem {
 			player.awardStat(Stats.ITEM_USED.get(this));
 		}
 
-		if (pStack.get(SDataComponents.DRINKS_LEFT) <= 1) {
+		if (SDataComponents.DRINKS_LEFT_D.getData(pStack)  <= 1) {
 			if (player == null || !player.getAbilities().instabuild) {
 				pStack.shrink(1);
 			}
@@ -116,7 +116,7 @@ public class CanteenItem extends PotionItem {
 			}
 		}
 
-		else if (pStack.get(SDataComponents.DRINKS_LEFT) > 1) {
+		else if (SDataComponents.DRINKS_LEFT_D.getData(pStack) > 1) {
 			if (player == null || !player.getAbilities().instabuild) {
 				decrementDrinks(pStack);
 			}
@@ -139,10 +139,10 @@ public class CanteenItem extends PotionItem {
 		BlockState blockstate = level.getBlockState(blockpos);
 		if (pContext.getClickedFace() != Direction.DOWN && blockstate.is(BlockTags.CONVERTABLE_TO_MUD) && potioncontents.is(Potions.WATER)) {
 			level.playSound(null, blockpos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 1.0F, 1.0F);
-			if (itemstack.get(SDataComponents.DRINKS_LEFT) <= 1) {
+			if (SDataComponents.DRINKS_LEFT_D.getData(itemstack) <= 1) {
 				player.setItemInHand(pContext.getHand(), ItemUtils.createFilledResult(itemstack, player, new ItemStack(SItems.CANTEEN)));
 			}
-			else if (itemstack.get(SDataComponents.DRINKS_LEFT) > 1) {
+			else if (SDataComponents.DRINKS_LEFT_D.getData(itemstack) > 1) {
 				decrementDrinks(itemstack);
 			}
 			player.awardStat(Stats.ITEM_USED.get(itemstack.getItem()));
@@ -190,7 +190,7 @@ public class CanteenItem extends PotionItem {
 		ItemStack stack = pPlayer.getItemInHand(pHand);
 		PotionContents potioncontents = stack.get(DataComponents.POTION_CONTENTS);
 		if (Survive.POTION_FLUID_MAP.containsKey(potioncontents.potion().get())) {
-			if (stack.get(SDataComponents.DRINKS_LEFT) < Survive.THIRST_CONFIG.canteenFillAmount(isNetherite)) {
+			if (SDataComponents.DRINKS_LEFT_D.getData(stack) < Survive.THIRST_CONFIG.canteenFillAmount(isNetherite)) {
 				HitResult raytraceresult = getPlayerPOVHitResult(pLevel, pPlayer, ClipContext.Fluid.SOURCE_ONLY);
 				BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
 				if (pLevel.getFluidState(blockpos).is(FluidTags.WATER) && Survive.POTION_FLUID_MAP.get(potioncontents.potion().get()).contains(pLevel.getFluidState(blockpos).getType())) {
@@ -206,7 +206,7 @@ public class CanteenItem extends PotionItem {
 
 	@Override
 	public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
-		pTooltipComponents.add(Component.translatable("tooltip.drinks_left").append(": "+pStack.get(SDataComponents.DRINKS_LEFT)).withStyle(ChatFormatting.AQUA));
+		pTooltipComponents.add(Component.translatable("tooltip.drinks_left").append(": "+SDataComponents.DRINKS_LEFT_D.getData(pStack)).withStyle(ChatFormatting.AQUA));
 		PotionContents potioncontents = pStack.get(DataComponents.POTION_CONTENTS);
 		if (potioncontents.potion().isPresent()) {
 			if (Survive.POTION_FLUID_MAP.containsKey(potioncontents.potion().get()))

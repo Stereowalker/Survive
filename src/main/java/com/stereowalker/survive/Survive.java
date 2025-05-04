@@ -438,7 +438,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	public static ItemStack convertToPlayerStatusBook(ItemStack stack) {
 		ItemStack result = new ItemStack(Items.WRITTEN_BOOK);
 		result.applyComponents(stack.getComponents());
-		result.set(SDataComponents.STATUS_OWNER, UUID.fromString("00000000-0000-0000-0000-000000000000"));
+		SDataComponents.STATUS_OWNER_D.setData(result, UUID.fromString("00000000-0000-0000-0000-000000000000"));
 		WrittenBookContent book = result.get(DataComponents.WRITTEN_BOOK_CONTENT);
 		if (book != null) {
 			WrittenBookContent b = new WrittenBookContent(book.title(), book.author(), 0, book.pages(), book.resolved());

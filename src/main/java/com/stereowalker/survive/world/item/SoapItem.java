@@ -22,7 +22,7 @@ public class SoapItem extends Item {
 	}
 
 	public static ItemStack addPropertiesToSoap(ItemStack stack, int drinks) {
-		stack.set(SDataComponents.SOAP_LEFT, drinks);
+		SDataComponents.SOAP_LEFT_D.setData(stack, drinks);
 		return stack;
 	}
 
@@ -36,21 +36,21 @@ public class SoapItem extends Item {
 	}
 
 	public static int getSoapLeft(ItemStack stack) {
-		return stack.get(SDataComponents.SOAP_LEFT);
+		return SDataComponents.SOAP_LEFT_D.getData(stack);
 	}
 
 	public static void setSoapLeft(ItemStack stack, int drinks) {
 		if (stack.getItem() instanceof SoapItem)
-			stack.set(SDataComponents.SOAP_LEFT, Mth.clamp(drinks, 0, ((SoapItem)stack.getItem()).soapMaxAmount));
+			SDataComponents.SOAP_LEFT_D.setData(stack, Mth.clamp(drinks, 0, ((SoapItem)stack.getItem()).soapMaxAmount));
 	}
 
 	public static void decrementSoap(ItemStack stack) {
-		setSoapLeft(stack, stack.get(SDataComponents.SOAP_LEFT) - 1);
+		setSoapLeft(stack, SDataComponents.SOAP_LEFT_D.getData(stack) - 1);
 	}
 
 	@Override
 	public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
-		pTooltipComponents.add(Component.translatable("tooltip.soap_left", pStack.get(SDataComponents.SOAP_LEFT)).withStyle(ChatFormatting.AQUA));
+		pTooltipComponents.add(Component.translatable("tooltip.soap_left", SDataComponents.SOAP_LEFT_D.getData(pStack)).withStyle(ChatFormatting.AQUA));
 	}
 
 }
