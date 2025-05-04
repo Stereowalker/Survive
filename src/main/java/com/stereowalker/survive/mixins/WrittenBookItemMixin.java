@@ -30,11 +30,11 @@ public abstract class WrittenBookItemMixin extends Item{
 	public void inventoryTick(ItemStack pStack, Level pLevel, Entity pEntity, int pSlotId, boolean pIsSelected) {
 		if (pIsSelected) {
 			WrittenBookContent writtenbookcontent = pStack.get(DataComponents.WRITTEN_BOOK_CONTENT);
-			if (writtenbookcontent.generation() == 0 && pStack.has(SDataComponents.STATUS_OWNER) && pEntity instanceof Player player && player instanceof IRealisticEntity real) {
-				if (pStack.get(SDataComponents.STATUS_OWNER).equals(new UUID(0L, 0L))) {
-					pStack.set(SDataComponents.STATUS_OWNER, player.getUUID());
+			if (writtenbookcontent.generation() == 0 && SDataComponents.STATUS_OWNER_D.hasData(pStack) && pEntity instanceof Player player && player instanceof IRealisticEntity real) {
+				if (SDataComponents.STATUS_OWNER_D.getData(pStack).equals(new UUID(0L, 0L))) {
+					SDataComponents.STATUS_OWNER_D.setData(pStack, player.getUUID());
 				}
-				if (pStack.get(SDataComponents.STATUS_OWNER).equals(player.getUUID()) && pLevel.isClientSide) {
+				if (SDataComponents.STATUS_OWNER_D.getData(pStack).equals(player.getUUID()) && pLevel.isClientSide) {
 					Survive.sendPacket(writtenbookcontent);
 				}
 			}

@@ -79,8 +79,8 @@ public class WaterData extends SurviveData implements Water {
 			PotionContents potion = pStack.get(DataComponents.POTION_CONTENTS);
 			float biomef = -1;
 			int stacks = 0;
-			if (pStack.has(SDataComponents.BIOME_SOURCE)) {
-				ResourceLocation biomeSource = pStack.get(SDataComponents.BIOME_SOURCE);
+			if (SDataComponents.BIOME_SOURCE_D.hasData(pStack)) {
+				ResourceLocation biomeSource = SDataComponents.BIOME_SOURCE_D.getData(pStack);
 				if (DataMaps.Server.biome.containsKey(biomeSource)) {
 					BiomeJsonHolder biomeData = DataMaps.Server.biome.get(biomeSource);
 					biomef = biomeData.getThirstChance();
