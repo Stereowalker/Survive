@@ -29,7 +29,7 @@ public class PlayerStatusBookRecipe extends CustomRecipe {
 			ItemStack stack = inv.getItem(i);
 			if (stack.getItem() == SItems.THERMOMETER) {
 				thermometer++;
-			} else if (stack.getItem() == Items.WRITTEN_BOOK && !stack.has(SDataComponents.STATUS_OWNER)) {
+			} else if (stack.getItem() == Items.WRITTEN_BOOK && !SDataComponents.STATUS_OWNER_D.hasData(stack)) {
 				book++;
 			}
 			if (thermometer > 1 || book > 1) {

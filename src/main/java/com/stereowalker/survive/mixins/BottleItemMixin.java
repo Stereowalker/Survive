@@ -32,6 +32,6 @@ public class BottleItemMixin {
 	@Inject(method = "turnBottleIntoItem", at = @At("HEAD"))
 	public void turnBottleIntoItem(ItemStack pBottleStack, Player pPlayer, ItemStack pFilledBottleStack, CallbackInfoReturnable<ItemStack> cir) {
 		if (pFilledBottleStack.has(DataComponents.POTION_CONTENTS) && pFilledBottleStack.get(DataComponents.POTION_CONTENTS).is(Potions.WATER))
-			pFilledBottleStack.set(SDataComponents.BIOME_SOURCE, pPlayer.level().getBiome(fillPos).unwrapKey().get().location());
+			SDataComponents.BIOME_SOURCE_D.setData(pFilledBottleStack, pPlayer.level().getBiome(fillPos).unwrapKey().get().location());
 	}
 }

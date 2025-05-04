@@ -118,8 +118,9 @@ public interface ColdStorage {
 //				System.out.println("We Lost "+(timeSinceLastOpened - efficiency)+" efficiency of "+(preservatonEfficiency()*100)+"%");
 				for (int i = 0; i < slotCount(); i++) {
 					ItemStack stack = get(i);
-					if (stack.has(SDataComponents.FOOD_STATUS)) {
-						stack.set(SDataComponents.FOOD_STATUS, stack.get(SDataComponents.FOOD_STATUS).extendTime(efficiency));
+					if (SDataComponents.FOOD_STATUS_D.hasData(stack)) {
+						final float eff = efficiency;
+						SDataComponents.FOOD_STATUS_D.editData(stack, food_status -> food_status.extendTime(eff));
 					}
 				}
 				decrementColdness(timeSinceLastOpened * foodAmount);

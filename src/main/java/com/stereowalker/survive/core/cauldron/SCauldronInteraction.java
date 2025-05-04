@@ -148,7 +148,7 @@ public interface SCauldronInteraction extends CauldronInteraction {
 			} else {
 				if (!level.isClientSide) {
 					CanteenItem item = (CanteenItem) p_175737_.getItem();
-					int drinksLeft = p_175737_.get(SDataComponents.DRINKS_LEFT);
+					int drinksLeft = SDataComponents.DRINKS_LEFT_D.getData(p_175737_);
 					if (drinksLeft > 3) {
 						player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175737_, player, CanteenItem.addToCanteen(p_175737_.copy(), drinksLeft - 3, potioncontents)));
 					} else {

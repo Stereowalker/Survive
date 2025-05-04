@@ -49,18 +49,18 @@ public class FoodUtils {
 	public static void giveLifespanToFood(NonNullList<ItemStack> items, long gametime) {
 		if (Survive.FOOD_CONFIG.enabled) {
 			items.forEach((stack) -> {
-				if (stack.has(DataComponents.FOOD) && !stack.has(SDataComponents.FOOD_STATUS) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
+				if (stack.has(DataComponents.FOOD) && !SDataComponents.FOOD_STATUS_D.hasData(stack) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
 					long lifespan = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan();
 					if (lifespan > 0) {
 						long shaveAMinuteOff = gametime - (gametime % (20 * 60));
-						stack.set(SDataComponents.FOOD_STATUS, new FoodStatus(shaveAMinuteOff, lifespan));
+						SDataComponents.FOOD_STATUS_D.setData(stack, new FoodStatus(shaveAMinuteOff, lifespan));
 					}
 				}
 			});
 		} else {
 			items.forEach((stack) -> {
-				if (stack.has(SDataComponents.FOOD_STATUS)) {
-					stack.remove(SDataComponents.FOOD_STATUS);
+				if (SDataComponents.FOOD_STATUS_D.hasData(stack)) {
+					SDataComponents.FOOD_STATUS_D.removeData(stack);
 				}
 			});
 		}
@@ -68,16 +68,16 @@ public class FoodUtils {
 
 	public static void giveLifespanToFood(ItemStack stack, long gametime) {
 		if (Survive.FOOD_CONFIG.enabled) {
-			if (stack.has(DataComponents.FOOD) && !stack.has(SDataComponents.FOOD_STATUS) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
+			if (stack.has(DataComponents.FOOD) && !SDataComponents.FOOD_STATUS_D.hasData(stack) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
 				long lifespan = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan();
 				if (lifespan > 0) {
 					long shaveAMinuteOff = gametime - (gametime % (20 * 60));
-					stack.set(SDataComponents.FOOD_STATUS, new FoodStatus(shaveAMinuteOff, lifespan));
+					SDataComponents.FOOD_STATUS_D.setData(stack, new FoodStatus(shaveAMinuteOff, lifespan));
 				}
 			}
 		} else {
-			if (stack.has(SDataComponents.FOOD_STATUS)) {
-				stack.remove(SDataComponents.FOOD_STATUS);
+			if (SDataComponents.FOOD_STATUS_D.hasData(stack)) {
+				SDataComponents.FOOD_STATUS_D.removeData(stack);
 			}
 		}
 	}
@@ -99,9 +99,9 @@ public class FoodUtils {
 	}
 
 	public static State foodStatus(ItemStack stack, Level level) {
-		if (stack.has(SDataComponents.FOOD_STATUS) && (level.isClientSide ?  DataMaps.Client.consummableItem : DataMaps.Server.consummableItem).containsKey(RegistryHelper.items().getKey(stack.getItem())) && Survive.FOOD_CONFIG.enabled) {
+		if (SDataComponents.FOOD_STATUS_D.hasData(stack) && (level.isClientSide ?  DataMaps.Client.consummableItem : DataMaps.Server.consummableItem).containsKey(RegistryHelper.items().getKey(stack.getItem())) && Survive.FOOD_CONFIG.enabled) {
 			FoodJsonHolder food = (level.isClientSide ?  DataMaps.Client.consummableItem : DataMaps.Server.consummableItem).get(RegistryHelper.items().getKey(stack.getItem()));
-			long timeTill = stack.get(SDataComponents.FOOD_STATUS).expireTime() - level.getGameTime();
+			long timeTill = SDataComponents.FOOD_STATUS_D.getData(stack).expireTime() - level.getGameTime();
 			long timeSince = food.lifespan() - timeTill;
 			if (timeTill < 0) {
 				return State.Spoiled;
