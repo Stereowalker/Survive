@@ -353,7 +353,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 				if(id.equals(pair.getKey())) {
 					pair.getValue().forEach((file) -> {
 						Survive.getInstance().debug("Injecting \""+file+"\" in "+pair.getKey());
-						lootTable.get().addPool(LootPool.lootPool()
+						LoaderHelper.addPoolToLootTable(lootTable.get(), LootPool.lootPool()
 								.add(getInjectEntry.apply(file, 1))
 								.setBonusRolls(UniformGenerator.between(0.0F, 1.0F))
 								.name("survive_inject").build());
