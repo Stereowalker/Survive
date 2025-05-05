@@ -4,7 +4,7 @@
   "package": "com.stereowalker.survive.mixins",
   "compatibilityLevel": "JAVA_18",
   "refmap": "survive.refmap.json",
-  "plugin": "com.stereowalker.survive.mixin.SurviveMixinPlugin",
+  "plugin": "com.stereowalker.survive.mixins.SurviveMixinPlugin",
   "mixins": [
   	"AbstractVillagerMixin",
 	"BarrelBlockEntityMixin",
