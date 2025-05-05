@@ -1,8 +1,4 @@
-- Used UnionLib to handle fluids
-- Protein levels now automatically drop every 10 seconds
-- Made proper icons for nutrition elements
-- Slightly reduced the strength of the illness debuffs
-- Raised the default Dirty Tick Rate
-- Doubled the amount of grime stacks required to fall ill and made it configurable
-- Reduced the amount of stink particles and halved their lifespan
-- Reduced the weight of enchantments
+- The player now starts with a few stacks of nutrients
+- Prevent nutrients from stacking up beyond 3000
+- Used a data object to ensure version consistency
+- Use loader helper to add pool to loot tables
