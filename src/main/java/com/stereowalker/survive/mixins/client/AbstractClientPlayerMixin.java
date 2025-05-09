@@ -21,12 +21,12 @@ public abstract class AbstractClientPlayerMixin extends Player implements IReali
 	public void tick() {
 		super.tick();
 		AbstractClientPlayer player = (AbstractClientPlayer)(Object)this;
-		getStaminaData().baseClientTick(player);
-		getHygieneData().baseClientTick(player);
-		getNutritionData().baseClientTick(player);
-		getTemperatureData().baseClientTick(player);
-		getWaterData().baseClientTick(player);
-		getWellbeingData().baseClientTick(player);
-		getSleepData().baseClientTick(player);
+		staminaData().baseClientTick(player);
+		hygieneData().baseClientTick(player);
+		nutritionData().baseClientTick(player);
+		temperatureData().baseClientTick(player);
+		waterData().baseClientTick(player);
+		wellbeingData().baseClientTick(player);
+		sleepData().baseClientTick(player);
 	}
 }

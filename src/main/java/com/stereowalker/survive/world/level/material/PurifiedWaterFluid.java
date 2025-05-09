@@ -35,12 +35,10 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.common.SoundActions;
-import net.minecraftforge.fluids.FluidType;
+//import net.minecraft.world.level.pathfinder.PathType;
+//import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+//import net.minecraftforge.common.SoundActions;
+//import net.minecraftforge.fluids.FluidType;
 
 public abstract class PurifiedWaterFluid extends FlowingFluid {
 	@Override
@@ -58,7 +56,6 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
 		return SItems.PURIFIED_WATER_BUCKET;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void animateTick(Level worldIn, BlockPos pos, FluidState state, RandomSource pRandom) {
 		if (!state.isSource() && !state.getValue(FALLING)) {
@@ -72,7 +69,6 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
 	}
 
 	@Nullable
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public ParticleOptions getDripParticle() {
 		return ParticleTypes.DRIPPING_WATER;
@@ -94,79 +90,39 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
 		return 4;
 	}
 	
-	public static final FluidType TYPE = new FluidType(FluidType.Properties.create()
-            .descriptionId("block.survive.purified_water")
-            .fallDistanceModifier(0F)
-            .canExtinguish(true)
-            .canConvertToSource(true)
-            .supportsBoating(true)
-            .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
-            .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
-            .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.FIRE_EXTINGUISH)
-            .canHydrate(true)
-			.density(10)
-			//.luminosity(1)
-			//.color(0xff000000+Survive.PURIFIED_WATER_COLOR)
-			.viscosity(10))
-    {
-        @Override
-        public @Nullable BlockPathTypes getBlockPathType(FluidState state, BlockGetter level, BlockPos pos, @Nullable Mob mob, boolean canFluidLog)
-        {
-            return canFluidLog ? super.getBlockPathType(state, level, pos, mob, true) : null;
-        }
-
-        @Override
-        public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
-        {
-            consumer.accept(new IClientFluidTypeExtensions()
-            {
-                private static final ResourceLocation UNDERWATER_LOCATION = new ResourceLocation("textures/misc/underwater.png");
-
-                @Override
-                public ResourceLocation getStillTexture()
-                {
-                    return Survive.getInstance().location("block/purified_water_still");
-                }
-
-                @Override
-                public ResourceLocation getFlowingTexture()
-                {
-                    return Survive.getInstance().location("block/purified_water_flow");
-                }
-
-                @Nullable
-                @Override
-                public ResourceLocation getOverlayTexture()
-                {
-                    return Survive.getInstance().location("block/purified_water_overlay");
-                }
-
-                @Override
-                public ResourceLocation getRenderOverlayTexture(Minecraft mc)
-                {
-                    return UNDERWATER_LOCATION;
-                }
-
-                @Override
-                public int getTintColor()
-                {
-                    return 0xFF3F76E4+Survive.PURIFIED_WATER_COLOR;
-                }
-
-                @Override
-                public int getTintColor(FluidState state, BlockAndTintGetter getter, BlockPos pos)
-                {
-                    return BiomeColors.getAverageWaterColor(getter, pos) | 0xFF000000+Survive.PURIFIED_WATER_COLOR;
-                }
-            });
-        }
-    };
+//	public static final FluidType TYPE = new FluidType(FluidType.Properties.create()
+//            .descriptionId("block.survive.purified_water")
+//            .canConvertToSource(true)
+//            .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
+//            .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
+//            .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.FIRE_EXTINGUISH)
+//            .canHydrate(true)
+//			.density(10)
+//			//.luminosity(1)
+//			//.color(0xff000000+Survive.PURIFIED_WATER_COLOR)
+//			.viscosity(10))
+//    {
+//        @Override
+//        public @Nullable PathType getBlockPathType(FluidState state, BlockGetter level, BlockPos pos, @Nullable Mob mob, boolean canFluidLog) {
+//            return canFluidLog ? super.getBlockPathType(state, level, pos, mob, true) : null;
+//        }
+//
+//        @Override
+//        public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
+//        {
+//            consumer.accept(new IClientFluidTypeExtensions()
+//            {
+//                private static final ResourceLocation UNDERWATER_LOCATION = new ResourceLocation("textures/misc/underwater.png");
+//
+//                @Override
+//                public ResourceLocation getRenderOverlayTexture(Minecraft mc)
+//                {
+//                    return UNDERWATER_LOCATION;
+//                }
+//            });
+//        }
+//    };
 	
-	@Override
-	public FluidType getFluidType() {
-		return TYPE;
-	}
-
 	@Override
 	public BlockState createLegacyBlock(FluidState state) {
 		return SBlocks.PURIFIED_WATER.defaultBlockState().setValue(LiquidBlock.LEVEL, Integer.valueOf(getLegacyLevel(state)));

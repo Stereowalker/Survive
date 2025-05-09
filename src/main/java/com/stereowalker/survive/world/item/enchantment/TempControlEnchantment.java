@@ -11,6 +11,17 @@ public class TempControlEnchantment extends Enchantment {
 	}
 	
 	@Override
+	protected boolean checkCompatibility(Enchantment ench) 
+	{
+		if (this == TemperatureEnchantments.COOLING) {
+			return super.checkCompatibility(ench) && !(ench instanceof AutoTempControlEnchantment) && ench != TemperatureEnchantments.WARMING;
+		} else {
+			return super.checkCompatibility(ench) && !(ench instanceof AutoTempControlEnchantment) && ench != TemperatureEnchantments.COOLING;
+		}
+	}
+	
+	//1.20.1
+	@Override
 	public int getMinCost(int enchantmentLevel) 
 	{
 		return 6 * enchantmentLevel + 5;
@@ -26,15 +37,5 @@ public class TempControlEnchantment extends Enchantment {
 	public int getMaxLevel()
 	{
 		return 7;
-	}
-	
-	@Override
-	protected boolean checkCompatibility(Enchantment ench) 
-	{
-		if (this == TemperatureEnchantments.COOLING) {
-			return super.checkCompatibility(ench) && !(ench instanceof AutoTempControlEnchantment) && ench != TemperatureEnchantments.WARMING;
-		} else {
-			return super.checkCompatibility(ench) && !(ench instanceof AutoTempControlEnchantment) && ench != TemperatureEnchantments.COOLING;
-		}
 	}
 }

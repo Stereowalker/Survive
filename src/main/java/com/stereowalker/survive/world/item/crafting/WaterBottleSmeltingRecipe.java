@@ -17,7 +17,11 @@ import net.minecraft.world.level.Level;
 public class WaterBottleSmeltingRecipe extends SmeltingRecipe {
 
 	public WaterBottleSmeltingRecipe(ResourceLocation pId, String pGroup, CookingBookCategory pCategory, Ingredient pIngredient, ItemStack pResult, float pExperience, int pCookingTime) {
-		super(pId, pGroup, pCategory, Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER)), PotionUtils.setPotion(new ItemStack(Items.POTION), SPotions.PURIFIED_WATER), pExperience, pCookingTime);
+		super(pId, pGroup, pCategory, Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER)), PotionUtils.setPotion(new ItemStack(Items.POTION), SPotions.PURIFIED_WATER.holder().value()), pExperience, pCookingTime);
+	}
+	
+	public WaterBottleSmeltingRecipe(ResourceLocation pId, String pGroup, CookingBookCategory pCategory, float pExperience, int pCookingTime) {
+		this(pId, pGroup, pCategory, null, null, pExperience, pCookingTime);
 	}
 
 	@Override

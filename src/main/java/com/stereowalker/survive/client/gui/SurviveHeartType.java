@@ -18,8 +18,8 @@ public enum SurviveHeartType {
 	WITHERED(6, true, true),
 	ABSORBING(8, false, true),
 	FROZEN(9, false, true),
-	HYPO(0, false, false),
-	HYPER(2, false, false),
+//	HYPO(0, false, false),
+//	HYPER(2, false, false),
 	ROASTED(4, false, false);
 
 	private final int index;
@@ -59,10 +59,10 @@ public enum SurviveHeartType {
 			gui$hearttype = FROZEN;
 		} else if (((IRoastedEntity)p_168733_).isFullyRoasted()) {
 			gui$hearttype = ROASTED;
-		} else if (p_168733_.hasEffect(SMobEffects.DEPRECIATED_HYPERTHERMIA) && Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR) && Survive.TEMPERATURE_CONFIG.tempEffects) {
-			gui$hearttype = HYPER;
-		} else if (p_168733_.hasEffect(SMobEffects.DEPRECIATED_HYPOTHERMIA) && Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR) && Survive.TEMPERATURE_CONFIG.tempEffects) {
-			gui$hearttype = HYPO;
+//		} else if (p_168733_.hasEffect(SMobEffects.DEPRECIATED_HYPERTHERMIA) && Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR) && Survive.TEMPERATURE_CONFIG.tempEffects) {
+//			gui$hearttype = HYPER;
+//		} else if (p_168733_.hasEffect(SMobEffects.DEPRECIATED_HYPOTHERMIA) && Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR) && Survive.TEMPERATURE_CONFIG.tempEffects) {
+//			gui$hearttype = HYPO;
 		} else {
 			gui$hearttype = NORMAL;
 		}

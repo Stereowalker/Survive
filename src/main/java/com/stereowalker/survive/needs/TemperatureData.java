@@ -5,12 +5,12 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
+import com.stereowalker.survive.api.needs.Temperature;
 import com.stereowalker.survive.hooks.SurviveHooks;
-import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.temperature.TemperatureModifier;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
+import com.stereowalker.unionlib.util.VersionHelper;
 import com.stereowalker.unionlib.util.NBTHelper.NbtType;
 
 import net.minecraft.nbt.CompoundTag;
@@ -18,13 +18,10 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class TemperatureData extends SurviveData {
+public class TemperatureData extends SurviveData implements Temperature {
 	private double temperatureLevel = 0;
 	private double displayTemperature = 0;
 	private int temperatureTimer;
@@ -118,7 +115,7 @@ public class TemperatureData extends SurviveData {
 	}
 
 //	public static void setTemperatureModifier(LivingEntity entity, String id, double value) {
-//		setTemperatureModifier(entity, new ResourceLocation(id), value);
+//		setTemperatureModifier(entity, VersionHelper.toLoc(id), value);
 //	}
 //
 //	public static void setTemperatureModifier(LivingEntity entity, ResourceLocation id, double value) {
@@ -126,14 +123,13 @@ public class TemperatureData extends SurviveData {
 //	}
 
 	public static void setTemperatureModifier(LivingEntity entity, String id, double value, ContributingFactor factor) {
-		setTemperatureModifier(entity, new ResourceLocation(id), value, factor);
+		setTemperatureModifier(entity, VersionHelper.toLoc(id), value, factor);
 	}
 
 	public static void setTemperatureModifier(LivingEntity entity, ResourceLocation id, double value, ContributingFactor factor) {
-		TemperatureData temp = SurviveEntityStats.getTemperatureStats(entity);
+		TemperatureData temp = ((IRealisticEntity)entity).temperatureData();
 		TemperatureModifier mod = SurviveHooks.getTemperatureModifer(entity, new TemperatureModifier(id, value, factor));
 		temp.getOrCreateModifier(id).setMod(mod.getMod()).setFactor(mod.getFactor());
-		temp.save(entity);;
 	}
 
 	/**
@@ -154,16 +150,16 @@ public class TemperatureData extends SurviveData {
 		double tempLocation = this.temperatureLevel - Survive.DEFAULT_TEMP;
 		if (tempLocation > 0) {
 			double maxTemp = 0.0D;
-			if (player.getAttribute(SAttributes.HEAT_RESISTANCE) != null) {
-				maxTemp = player.getAttributeValue(SAttributes.HEAT_RESISTANCE);
+			if (player.getAttribute(SAttributes.HEAT_RESISTANCE.holder().value()) != null) {
+				maxTemp = player.getAttributeValue(SAttributes.HEAT_RESISTANCE.holder());
 			}
 			double div = tempLocation / maxTemp;
 			this.displayTemperature = Mth.clamp(div, 0, 1.0D+(28.0D/63.0D));
 		}
 		if (tempLocation < 0) {
 			double maxTemp = 0.0D;
-			if (player.getAttribute(SAttributes.COLD_RESISTANCE) != null) {
-				maxTemp = player.getAttributeValue(SAttributes.COLD_RESISTANCE);
+			if (player.getAttribute(SAttributes.COLD_RESISTANCE.holder().value()) != null) {
+				maxTemp = player.getAttributeValue(SAttributes.COLD_RESISTANCE.holder());
 			}
 			double div = tempLocation / maxTemp;
 			this.displayTemperature = Mth.clamp(div, -1.0D-(28.0D/63.0D), 0);
@@ -181,27 +177,6 @@ public class TemperatureData extends SurviveData {
 				if (this.hypTimer > 0) {
 					this.hypTimer--;
 				} else if (this.hypTimer == 0) {
-					if (!player.hasEffect(SMobEffects.DEPRECIATED_HYPERTHERMIA) && !player.hasEffect(SMobEffects.DEPRECIATED_HYPOTHERMIA)) {
-						if (this.temperatureLevel > maxHeat1 && this.temperatureLevel <= maxHeat2) {
-							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPERTHERMIA, 100, 0));
-						}
-						else if (this.temperatureLevel > maxHeat2 && this.temperatureLevel <= maxHeat3) {
-							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPERTHERMIA, 100, 1));
-						}
-						else if (this.temperatureLevel > maxHeat3) {
-							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPERTHERMIA, 100, 2));
-						}
-
-						if (this.temperatureLevel < maxCold1 && this.temperatureLevel >= maxCold2) {
-							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPOTHERMIA, 100, 0));
-						}
-						else if (this.temperatureLevel < maxCold2 && this.temperatureLevel >= maxCold3) {
-							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPOTHERMIA, 100, 1));
-						}
-						else if (this.temperatureLevel < maxCold3) {
-							player.addEffect(new MobEffectInstance(SMobEffects.DEPRECIATED_HYPOTHERMIA, 100, 2));
-						}
-					}
 				}
 			} else if (this.hypTimer < Survive.TEMPERATURE_CONFIG.tempGrace){
 				this.hypTimer++;
@@ -235,7 +210,7 @@ public class TemperatureData extends SurviveData {
 	/**
 	 * Writes the water data for the player.
 	 */
-	public void write(CompoundTag compound) {
+	public void write(CompoundTag compound, boolean reducedData) {
 		compound.putDouble("temperatureLevel", this.temperatureLevel);
 		compound.putDouble("targetTemperature", this.targetTemperature);
 		compound.putInt("temperatureTickTimer", this.temperatureTimer);
@@ -269,7 +244,7 @@ public class TemperatureData extends SurviveData {
 		return ((float)fTemp) / 100.0F;
 	}
 	
-	@OnlyIn(Dist.CLIENT)
+	@Override
 	public double getDisplayTemperature() {
 		return displayTemperature;
 	}
@@ -284,7 +259,6 @@ public class TemperatureData extends SurviveData {
 
 	@Override
 	public void save(LivingEntity player) {
-		SurviveEntityStats.setTemperatureStats(player, this);
 	}
 
 	@Override

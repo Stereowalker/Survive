@@ -9,7 +9,23 @@ public class AutoTempControlEnchantment extends Enchantment {
 	public AutoTempControlEnchantment(Rarity rarityIn, EquipmentSlot[] slots) {
 		super(rarityIn, EnchantmentCategory.ARMOR, slots);
 	}
+
+	@Override
+	public boolean isTreasureOnly() {
+		return true;
+	}
 	
+	@Override
+	protected boolean checkCompatibility(Enchantment ench) 
+	{
+		if (this == TemperatureEnchantments.ADJUSTED_COOLING) {
+			return super.checkCompatibility(ench) && ench != TemperatureEnchantments.WARMING && ench != TemperatureEnchantments.ADJUSTED_WARMING && ench != TemperatureEnchantments.COOLING;
+		} else {
+			return super.checkCompatibility(ench) && ench != TemperatureEnchantments.WARMING && ench != TemperatureEnchantments.ADJUSTED_COOLING && ench != TemperatureEnchantments.COOLING;
+		}
+	}
+	
+	//1.20.1
 	/**
 	 * Returns the minimal value of enchantability needed on the enchantment level passed.
 	 */
@@ -23,26 +39,11 @@ public class AutoTempControlEnchantment extends Enchantment {
 		return this.getMinCost(enchantmentLevel) + 50;
 	}
 
-	@Override
-	public boolean isTreasureOnly() {
-		return true;
-	}
-
 	/**
 	 * Returns the maximum level that the enchantment can have.
 	 */
 	@Override
 	public int getMaxLevel() {
 		return 1;
-	}
-	
-	@Override
-	protected boolean checkCompatibility(Enchantment ench) 
-	{
-		if (this == TemperatureEnchantments.ADJUSTED_COOLING) {
-			return super.checkCompatibility(ench) && ench != TemperatureEnchantments.WARMING && ench != TemperatureEnchantments.ADJUSTED_WARMING && ench != TemperatureEnchantments.COOLING;
-		} else {
-			return super.checkCompatibility(ench) && ench != TemperatureEnchantments.WARMING && ench != TemperatureEnchantments.ADJUSTED_COOLING && ench != TemperatureEnchantments.COOLING;
-		}
 	}
 }

@@ -1,1 +1,1 @@
-- Fixed bowls not collecting water
+- Backported 1.20.6 changes to 1.20.1

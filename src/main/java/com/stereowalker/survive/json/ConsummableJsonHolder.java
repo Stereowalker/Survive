@@ -6,6 +6,7 @@ import org.apache.logging.log4j.MarkerManager;
 import com.google.gson.JsonObject;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.api.json.JsonHolder;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +24,7 @@ public class ConsummableJsonHolder implements JsonHolder {
 	private int thirstAmount = 0;
 	private float hydrationAmount = 0;
 	private float thirstChance = 0;
+	private float thirstConsumption = -1;
 	//Hunger
 	private int hungerAmount = 0;
 	private float saturationAmount = 0;
@@ -32,6 +34,7 @@ public class ConsummableJsonHolder implements JsonHolder {
 	//Nutrition
 	private int carbohydrateRatio = 1;
 	private int proteinRatio = 1;
+	private int fatRatio = 1;
 	//
 	private boolean isChilled = false;
 	private boolean isHeated = false;
@@ -41,8 +44,11 @@ public class ConsummableJsonHolder implements JsonHolder {
 	private boolean overwritesDefaultSaturation = false;
 	private boolean overwritesDefaultHungerChance = false;
 	
+	public ConsummableJsonHolder(CompoundTag nbt) {
+		this.itemID = VersionHelper.toLoc(nbt.getString("id"));
+	}
+	
 	public ConsummableJsonHolder(ResourceLocation itemID, JsonObject object) {
-		String THIRST = "thirst";
 		String HUNGER = "hunger";
 		String ENERGY = "energy";
 		String SATURATION = "saturation";
@@ -56,19 +62,17 @@ public class ConsummableJsonHolder implements JsonHolder {
 		if(object.entrySet().size() != 0) {
 			stopWorking();
 			try {
-				if(this.hasMemberAndIsPrimitive(THIRST, object)) {
-					setWorkingOn(THIRST);
-					thirstAmount = object.get(THIRST).getAsInt();
-					stopWorking();
-				}
-
-				if(this.hasMemberAndIsPrimitive("hydration", object)) {
-					hydrationAmount = workOnFloat("hydration", object);
-					if (hydrationAmount > 4.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data $s from JSON: Hydration should not be greater than 4.0", itemID);
-					if (hydrationAmount < 1.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data $s from JSON: Hydration should not be less than 1.0", itemID);
+				if (this.hasMemberAndIsPrimitive("thirst_consumption", object)) {
+					thirstConsumption = this.workOnFloat("thirst_chance", object);
+					if (thirstConsumption <= 0.01f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data {} from JSON: \"thirst_consumption\" should not be less than 0.01", itemID);
+					thirstConsumption = Math.max(thirstConsumption, 0.01f);
+				} else {
+					thirstAmount = this.workOnIntIfAvailable("thirst", object, 0);
+					hydrationAmount = this.workOnFloatIfAvailable("hydration", object, 1f);
+					if (hydrationAmount > 4.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data {} from JSON: \"hydration\" should not be greater than 4.0", itemID);
+					if (hydrationAmount < 1.0f)Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading consummable data {} from JSON: \"hydration\" should not be less than 1.0", itemID);
 					hydrationAmount = Mth.clamp(hydrationAmount, 1.0f, 4.0f);
 				}
-
 				thirstChance = this.workOnFloat("thirst_chance", object);
 				
 				if(this.hasMemberAndIsPrimitive(HUNGER, object)) {
@@ -119,22 +123,11 @@ public class ConsummableJsonHolder implements JsonHolder {
 				if(this.hasMemberAndIsObject(NUTRITION, object)) {
 					setWorkingOn(NUTRITION);
 					JsonObject object2 = object.get(NUTRITION).getAsJsonObject();
-					String CARB_RATIO = "carbohydrate_ratio";
-					String PROTEIN_RATIO = "protein_ratio";
 					if(object2.entrySet().size() != 0) {
 						try {
-							
-							if(this.hasMemberAndIsPrimitive(CARB_RATIO, object2)) {
-								setWorkingOn(CARB_RATIO);
-								carbohydrateRatio = object.get(CARB_RATIO).getAsInt();
-								stopWorking();
-							}
-							
-							if(this.hasMemberAndIsPrimitive(PROTEIN_RATIO, object2)) {
-								setWorkingOn(PROTEIN_RATIO);
-								proteinRatio = object.get(PROTEIN_RATIO).getAsInt();
-								stopWorking();
-							}
+							carbohydrateRatio = this.workOnIntIfAvailable("carbohydrate_ratio", object2, 0);
+							proteinRatio = this.workOnIntIfAvailable("protein_ratio", object2, 0);
+							fatRatio = this.workOnIntIfAvailable("fat_ratio", object2, 0);
 							
 						} catch (ClassCastException e) {
 							Survive.getInstance().getLogger().warn(DRINK_DATA, "Loading drink data $s from JSON: Parsing element %s: element was wrong type!", e, itemID, getworkingOn());
@@ -159,6 +152,10 @@ public class ConsummableJsonHolder implements JsonHolder {
 
 	public int getThirstAmount() {
 		return thirstAmount;
+	}
+	
+	public float getThirstConsumption() {
+		return thirstConsumption;
 	}
 
 	public float getHydrationAmount() {
@@ -246,10 +243,15 @@ public class ConsummableJsonHolder implements JsonHolder {
 		return proteinRatio;
 	}
 
+	public int getFatRatio() {
+		return fatRatio;
+	}
+
 	@Override
 	public CompoundTag serialize() {
-		// TODO Auto-generated method stub
-		return null;
+		CompoundTag nbt = new CompoundTag();
+		nbt.putString("id", this.itemID.toString());
+		return nbt;
 	}
 	
 	String wo = "NOTHING";

@@ -5,11 +5,7 @@ import java.util.Collection;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.stereowalker.survive.core.SurviveEntityStats;
-import com.stereowalker.survive.needs.HygieneData;
 import com.stereowalker.survive.needs.IRealisticEntity;
-import com.stereowalker.survive.needs.SleepData;
-import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.needs.WaterData;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
@@ -102,13 +98,10 @@ public class NeedsCommand {
 	private static int restore(CommandSourceStack source, float amount, NeedType type, Collection<ServerPlayer> pTargets) throws CommandSyntaxException {
 		for(ServerPlayer player : pTargets) {
 			IRealisticEntity realisticPlayer = (IRealisticEntity)player;
-			SleepData sleepData = SurviveEntityStats.getSleepStats(player);
-			WaterData waterData = realisticPlayer.getWaterData();
-			StaminaData staminaData = SurviveEntityStats.getEnergyStats(player);
-			HygieneData hygieneData = SurviveEntityStats.getHygieneStats(player);
+			WaterData waterData = realisticPlayer.waterData();
 			switch (type)  {
 			case STAMINA:
-				staminaData.relax(Mth.floor(amount), player.getAttributeValue(SAttributes.MAX_STAMINA));
+				realisticPlayer.staminaData().relax(Mth.floor(amount), player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 				break;
 			case HUNGER:
 				player.getFoodData().setFoodLevel(Mth.floor(amount));
@@ -117,10 +110,10 @@ public class NeedsCommand {
 				player.getFoodData().setSaturation(amount);
 				break;
 			case CLEANSING:
-				hygieneData.clean(Mth.floor(amount), true);
+				realisticPlayer.hygieneData().clean(Mth.floor(amount), true);
 				break;
 			case SLEEP:
-				sleepData.addAwakeTime(player, -Mth.floor(amount));
+				realisticPlayer.sleepData().addAwakeTime(player, -Mth.floor(amount));
 				break;
 			case THIRST:
 				waterData.drink(Mth.floor(amount), waterData.getHydrationLevel(), 0, false);
@@ -129,10 +122,6 @@ public class NeedsCommand {
 				waterData.drink(0, waterData.getHydrationLevel()+amount, 0, false);
 				break;
 			}
-			sleepData.save(player);
-			waterData.save(player);
-			hygieneData.save(player);
-			staminaData.save(player);
 		}
 
 		if (pTargets.size() == 1) {
@@ -146,13 +135,10 @@ public class NeedsCommand {
 	private static int deplete(CommandSourceStack source, float amount, NeedType type, Collection<ServerPlayer> pTargets) throws CommandSyntaxException {
 		for(ServerPlayer player : pTargets) {
 			IRealisticEntity realisticPlayer = (IRealisticEntity)player;
-			SleepData sleepData = SurviveEntityStats.getSleepStats(player);
-			WaterData waterData = realisticPlayer.getWaterData();
-			StaminaData staminaData = SurviveEntityStats.getEnergyStats(player);
-			HygieneData hygieneData = SurviveEntityStats.getHygieneStats(player);
+			WaterData waterData = realisticPlayer.waterData();
 			switch (type)  {
 			case STAMINA:
-				staminaData.setEnergyLevel(staminaData.getEnergyLevel()-Mth.floor(amount));
+				realisticPlayer.staminaData().setEnergyLevel(realisticPlayer.staminaData().getLTS()-Mth.floor(amount));
 				break;
 			case HUNGER:
 				player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel()-Mth.floor(amount));
@@ -161,10 +147,10 @@ public class NeedsCommand {
 				player.getFoodData().setSaturation(player.getFoodData().getSaturationLevel()-amount);
 				break;
 			case CLEANSING:
-				hygieneData.dirty(Mth.floor(amount));
+				realisticPlayer.hygieneData().dirty(Mth.floor(amount));
 				break;
 			case SLEEP:
-				sleepData.addAwakeTime(player, Mth.floor(amount));
+				realisticPlayer.sleepData().addAwakeTime(player, Mth.floor(amount));
 				break;
 			case THIRST:
 				waterData.setWaterLevel(waterData.getWaterLevel()-Mth.floor(amount));
@@ -173,10 +159,6 @@ public class NeedsCommand {
 				waterData.setWaterHydrationLevel(waterData.getHydrationLevel()-amount);
 				break;
 			}
-			sleepData.save(player);
-			waterData.save(player);
-			hygieneData.save(player);
-			staminaData.save(player);
 		}
 
 		if (pTargets.size() == 1) {
@@ -190,12 +172,9 @@ public class NeedsCommand {
 	private static int query(CommandSourceStack source, NeedType type, ServerPlayer pTarget) throws CommandSyntaxException {
 		IRealisticEntity realisticPlayer = (IRealisticEntity)pTarget;
 		float result = 0;
-		SleepData sleepData = SurviveEntityStats.getSleepStats(pTarget);
-		StaminaData staminaData = SurviveEntityStats.getEnergyStats(pTarget);
-		HygieneData hygieneData = SurviveEntityStats.getHygieneStats(pTarget);
 		switch (type)  {
 		case STAMINA:
-			result = staminaData.getEnergyLevel();
+			result = realisticPlayer.staminaData().getLTS();
 			break;
 		case HUNGER:
 			result = pTarget.getFoodData().getFoodLevel();
@@ -204,16 +183,16 @@ public class NeedsCommand {
 			result = pTarget.getFoodData().getSaturationLevel();
 			break;
 		case CLEANSING:
-			result = hygieneData.getUncleanLevel();
+			result = realisticPlayer.hygieneData().getUncleanLevel();
 			break;
 		case SLEEP:
-			result = sleepData.getAwakeTimer();
+			result = realisticPlayer.sleepData().getAwakeTimer();
 			break;
 		case THIRST:
-			result = realisticPlayer.getWaterData().getWaterLevel();
+			result = realisticPlayer.waterData().getWaterLevel();
 			break;
 		case HYDRATION:
-			result = realisticPlayer.getWaterData().getHydrationLevel();
+			result = realisticPlayer.waterData().getHydrationLevel();
 			break;
 		}
 		final float r = result;

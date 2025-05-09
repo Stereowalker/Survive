@@ -14,6 +14,7 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.json.ArmorJsonHolder;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -32,7 +33,7 @@ public class ArmorDataManager implements IResourceReloadListener<Map<ResourceLoc
 			Map<ResourceLocation, ArmorJsonHolder> drinkMap = new HashMap<>();
 
 			for (Entry<ResourceLocation, Resource> resource : manager.listResources("survive_modifiers/armors", (s) -> s.toString().endsWith(".json")).entrySet()) {
-				ResourceLocation drinkId = new ResourceLocation(
+				ResourceLocation drinkId = VersionHelper.toLoc(
 						resource.getKey().getNamespace(),
 						resource.getKey().getPath().replace("survive_modifiers/armors/", "").replace(".json", "")
 						);
@@ -72,6 +73,6 @@ public class ArmorDataManager implements IResourceReloadListener<Map<ResourceLoc
 
 	@Override
 	public ResourceLocation id() {
-		return new ResourceLocation("survive:armor_data");
+		return VersionHelper.toLoc("survive:armor_data");
 	}
 }

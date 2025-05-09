@@ -1,6 +1,5 @@
 package com.stereowalker.survive.needs;
 
-import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.FoodUtils;
 import com.stereowalker.survive.FoodUtils.State;
 import com.stereowalker.survive.Survive;
@@ -16,8 +15,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class CustomFoodData extends FoodData {
@@ -41,12 +38,12 @@ public class CustomFoodData extends FoodData {
 		int foodLevel = this.foodLevel;
 		float satMod = 1.0f;
 		
-		if (isSpoiled == State.Spoiled) pFoodLevelModifier = pFoodLevelModifier/2;
+		if (IsSpoiled() == State.Spoiled) pFoodLevelModifier = pFoodLevelModifier/2;
 		
-		if (isSpoiled == State.Fresh) satMod = 1.5f;
-		else if (isSpoiled == State.Good) satMod = 1.1f;
-		else if (isSpoiled == State.Spoiling) satMod = 0.9f;
-		else if (isSpoiled == State.Spoiled) satMod = 0.5f;
+		if (IsSpoiled() == State.Fresh) satMod = 1.5f;
+		else if (IsSpoiled() == State.Good) satMod = 1.1f;
+		else if (IsSpoiled() == State.Spoiling) satMod = 0.9f;
+		else if (IsSpoiled() == State.Spoiled) satMod = 0.5f;
 		super.eat(pFoodLevelModifier, pSaturationLevelModifier * satMod);
 		int capacity = 20;
 		if (ServerConfig.stomachCapacity == StomachCapacity.DOUBLED) capacity = 40;
@@ -61,24 +58,28 @@ public class CustomFoodData extends FoodData {
 			else this.causeAche = false;
 		}
 	}
-
-	@Override
-	public void eat(Item pItem, ItemStack pStack, LivingEntity entity) {
-		super.eat(pItem, pStack, entity);
-		if (pItem.isEdible()) {
-			FoodProperties foodproperties = pStack.getFoodProperties(entity);
-			for (Pair<MobEffectInstance, Float> effect : foodproperties.getEffects()) {
-				if (effect.getFirst().getEffect() == MobEffects.HUNGER || isSpoiled == State.Spoiled) {
-					uncleanConsumption++;
-					break;
-				}
-			}
-		}
+	
+	public void consumeUnclean() {
+		uncleanConsumption++;
 	}
+
+//	@Override
+//	public void eat(Item pItem, ItemStack pStack, LivingEntity entity) {
+//		super.eat(pItem, pStack, entity);
+//		if (pItem.isEdible()) {
+//			FoodProperties foodproperties = pStack.getFoodProperties(entity);
+//			for (Pair<MobEffectInstance, Float> effect : foodproperties.getEffects()) {
+//				if (effect.getFirst().getEffect() == MobEffects.HUNGER || IsSpoiled() == State.Spoiled) {
+//					uncleanConsumption++;
+//					break;
+//				}
+//			}
+//		}
+//	}
 	
 	public void markAsSpoiled(ItemStack stack, LivingEntity living) {
 		isSpoiled = FoodUtils.foodStatus(stack, living.level());
-		if (isSpoiled == State.Spoiled) {
+		if (IsSpoiled() == State.Spoiled) {
 			living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 1200));
 			living.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200));
 		}
@@ -90,7 +91,7 @@ public class CustomFoodData extends FoodData {
 		//Well fed
 		if (this.wellFed) {
 			if (this.foodLevel == 20) {
-				pPlayer.addEffect(new MobEffectInstance(SMobEffects.WELL_FED, 300, 0));
+				pPlayer.addEffect(new MobEffectInstance(SMobEffects.WELL_FED.holder().value(), 300, 0));
 			} else this.wellFed = false;
 		}
 		
@@ -102,16 +103,16 @@ public class CustomFoodData extends FoodData {
 			else if (this.foodLevel > 28) amplifier = 2;
 			else if (this.foodLevel > 24) amplifier = 1;
 			else if (this.foodLevel > 20) amplifier = 0;
-			MobEffectInstance upsetStomach = pPlayer.getEffect(SMobEffects.UPSET_STOMACH);
+			MobEffectInstance upsetStomach = pPlayer.getEffect(SMobEffects.UPSET_STOMACH.holder().value());
 			if (!pPlayer.isSpectator() && !pPlayer.isCreative())
 				if (amplifier > 0 && (upsetStomach == null || upsetStomach.getDuration() <= 210 || upsetStomach.getAmplifier() < amplifier))
-					pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH, duration, amplifier));
+					pPlayer.addEffect(new MobEffectInstance(SMobEffects.UPSET_STOMACH.holder().value(), duration, amplifier));
 		}
 		
 		if (Survive.WELLBEING_CONFIG.enabled) {
 			//Essentially causes the player to get ill when drinking bad water
 			if (uncleanConsumption >= 3) {
-				((IRealisticEntity)pPlayer).getWellbeingData().setTimer(2400, 6000, "eating bad food");
+				((IRealisticEntity)pPlayer).wellbeingData().setTimer(2400, 6000, "eating bad food");
 				uncleanConsumption = 0;
 			}
 		}
@@ -168,5 +169,9 @@ public class CustomFoodData extends FoodData {
 		pCompoundTag.putBoolean("foodWellFed", this.wellFed);
 	}
 	
+	public FoodUtils.State IsSpoiled() {
+		return isSpoiled;
+	}
+
 	public enum StomachCapacity {DOUBLED, LIMITED, VANILLA}
 }

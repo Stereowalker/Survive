@@ -3,6 +3,7 @@ package com.stereowalker.survive.world.item;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.tags.FluidSTags;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
+import com.stereowalker.survive.world.item.component.SDataComponents;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
@@ -24,16 +25,18 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 public class EmptyCanteenItem extends Item {
+	boolean isNetherite;
 
-	public EmptyCanteenItem(Properties properties) {
+	public EmptyCanteenItem(boolean isNetherite, Properties properties) {
 		super(properties);
+		this.isNetherite = isNetherite;
 	}
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level levelIn, Player playerIn, InteractionHand handIn) {
 		ItemStack itemstack = playerIn.getItemInHand(handIn);
 		HitResult hitresult = getPlayerPOVHitResult(levelIn, playerIn, ClipContext.Fluid.SOURCE_ONLY);
-		int i = Survive.THIRST_CONFIG.canteen_fill_amount;
+		int i = Survive.THIRST_CONFIG.canteenFillAmount(isNetherite);
 		if (hitresult.getType() == HitResult.Type.MISS) {
 			return InteractionResultHolder.pass(itemstack);
 		} else {
@@ -47,7 +50,7 @@ public class EmptyCanteenItem extends Item {
 					//TODO: Replace with canteen fill sounds
 					levelIn.playSound(playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
 					levelIn.gameEvent(playerIn, GameEvent.FLUID_PICKUP, blockpos);
-					return InteractionResultHolder.sidedSuccess(this.turnCanteenIntoItem(itemstack, blockpos, playerIn, CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), i, SPotions.PURIFIED_WATER)), levelIn.isClientSide());
+					return InteractionResultHolder.sidedSuccess(this.turnCanteenIntoItem(itemstack, blockpos, playerIn, CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), i, SPotions.PURIFIED_WATER.holder().value())), levelIn.isClientSide());
 				}
 				if (levelIn.getFluidState(blockpos).is(FluidTags.WATER)) {
 					levelIn.playSound(playerIn, playerIn.getX(), playerIn.getY(), playerIn.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
@@ -63,7 +66,7 @@ public class EmptyCanteenItem extends Item {
 	protected ItemStack turnCanteenIntoItem(ItemStack canteenStack, BlockPos fillPos, Player pPlayer, ItemStack pFilledBottleStack) {
 		pPlayer.awardStat(Stats.ITEM_USED.get(this));
 		if (PotionUtils.getPotion(pFilledBottleStack) == Potions.WATER)
-			pFilledBottleStack.getTag().putString("biome_source", pPlayer.level().getBiome(fillPos).unwrapKey().get().location().toString());
+			SDataComponents.BIOME_SOURCE_D.setData(pFilledBottleStack, pPlayer.level().getBiome(fillPos).unwrapKey().get().location());
 		return ItemUtils.createFilledResult(canteenStack, pPlayer, pFilledBottleStack);
 	}
 

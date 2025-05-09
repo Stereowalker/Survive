@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -13,6 +14,8 @@ import com.stereowalker.survive.needs.IRoastedEntity;
 
 import net.minecraft.commands.CommandSource;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.Nameable;
@@ -23,11 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityAccess;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin extends net.minecraftforge.common.capabilities.CapabilityProvider<Entity> implements Nameable, EntityAccess, CommandSource, net.minecraftforge.common.extensions.IForgeEntity, IRoastedEntity {
-
-	public EntityMixin(EntityType<?> pEntityType, Level pLevel) {
-		super(Entity.class);
-	}
+public abstract class EntityMixin implements Nameable, EntityAccess, CommandSource, IRoastedEntity {
 
 	@Shadow @Final protected SynchedEntityData entityData;
 	@Shadow public boolean isInPowderSnow;
@@ -38,9 +37,12 @@ public abstract class EntityMixin extends net.minecraftforge.common.capabilities
 	@Shadow public boolean canFreeze() {return false;}
 	@Shadow public boolean isFullyFrozen() {return false;}
 	@Shadow public DamageSources damageSources() {return null;}
+	@Shadow protected abstract void defineSynchedData();
+	private static final EntityDataAccessor<Integer> DATA_TICKS_ROASTED = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.INT);
 
-	@Inject(method = "<init>", at = @At("TAIL"))
-	public void init_inject(CallbackInfo info) {
+	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;defineSynchedData()V"))
+	public void init_inject(Entity e) {
+		defineSynchedData();
 		this.entityData.define(DATA_TICKS_ROASTED, 0);
 	}
 

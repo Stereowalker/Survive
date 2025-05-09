@@ -13,6 +13,7 @@ import com.google.gson.JsonParser;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.json.PotionJsonHolder;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -31,7 +32,7 @@ public class PotionDrinkDataManager implements IResourceReloadListener<Map<Resou
 			Map<ResourceLocation, PotionJsonHolder> drinkMap = new HashMap<>();
 
 			for (Entry<ResourceLocation, Resource> resource : manager.listResources("survive_modifiers/consumables/potions", (s) -> s.toString().endsWith(".json")).entrySet()) {
-				ResourceLocation drinkId = new ResourceLocation(
+				ResourceLocation drinkId = VersionHelper.toLoc(
 						resource.getKey().getNamespace(),
 						resource.getKey().getPath().replace("survive_modifiers/consumables/potions/", "").replace(".json", "")
 						);
@@ -70,6 +71,6 @@ public class PotionDrinkDataManager implements IResourceReloadListener<Map<Resou
 
 	@Override
 	public ResourceLocation id() {
-		return new ResourceLocation("survive:potion_data");
+		return VersionHelper.toLoc("survive:potion_data");
 	}
 }

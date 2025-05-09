@@ -1,5 +1,6 @@
 package com.stereowalker.survive.world.item;
 
+import com.stereowalker.survive.Survive;
 import com.stereowalker.unionlib.core.registries.RegistryHolder;
 import com.stereowalker.unionlib.core.registries.RegistryObject;
 
@@ -7,10 +8,12 @@ import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
-@RegistryHolder(registry = Item.class)
+@RegistryHolder(namespace = Survive.MOD_ID)
 public class HygieneItems {
+	@RegistryObject("used_bath_sponge")
+	public static final Item USED_BATH_SPONGE = new BodyCleaningItem(10, new Item.Properties().durability(200));
 	@RegistryObject("bath_sponge")
-	public static final Item BATH_SPONGE = new BodyCleaningItem(10, new Item.Properties().durability(200));
+	public static final Item BATH_SPONGE = new ConvertOnUseItem(USED_BATH_SPONGE, new Item.Properties().stacksTo(16));
 	@RegistryObject("white_washcloth")
 	public static final Item WHITE_WASHCLOTH = new BodyCleaningItem(2, new Item.Properties().durability(50));
 	@RegistryObject("orange_washcloth")
@@ -54,5 +57,5 @@ public class HygieneItems {
 	@RegistryObject("soap_mix")
 	public static final Item SOAP_MIX = new Item(new Item.Properties());
 	@RegistryObject("soap_bottle")
-	public static final Item SOAP_BOTTLE = new SoapItem(new Item.Properties().craftRemainder(Items.GLASS_BOTTLE), 2, 20);
+	public static final Item SOAP_BOTTLE = new SoapItem(new Item.Properties().craftRemainder(Items.GLASS_BOTTLE)/*.component(SDataComponents.SOAP_LEFT, 20)*/, 2, 20);
 }

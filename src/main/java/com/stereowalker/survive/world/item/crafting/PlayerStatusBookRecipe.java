@@ -3,11 +3,10 @@ package com.stereowalker.survive.world.item.crafting;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.survive.world.item.component.SDataComponents;
 
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -31,7 +30,7 @@ public class PlayerStatusBookRecipe extends CustomRecipe {
 			ItemStack stack = inv.getItem(i);
 			if (stack.getItem() == SItems.THERMOMETER) {
 				thermometer++;
-			} else if (stack.getItem() == Items.WRITTEN_BOOK && stack.getTag() != null && !stack.getTag().contains("status_owner")) {
+			} else if (stack.getItem() == Items.WRITTEN_BOOK && !SDataComponents.STATUS_OWNER_D.hasData(stack)) {
 				book++;
 			}
 			if (thermometer > 1 || book > 1) {
@@ -51,25 +50,6 @@ public class PlayerStatusBookRecipe extends CustomRecipe {
 			}
 		}
 		return ItemStack.EMPTY;
-	}
-
-	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
-		NonNullList<ItemStack> nonnulllist = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
-
-		for(int i = 0; i < nonnulllist.size(); ++i) {
-			ItemStack itemstack = inv.getItem(i);
-			if (itemstack.getItem() == SItems.CHARCOAL_FILTER) {
-				ItemStack filterClone = itemstack.copy();
-				if (filterClone.hurt(1, RandomSource.create(), null)) {
-					nonnulllist.set(i, ItemStack.EMPTY);
-				} else {
-					nonnulllist.set(i, filterClone);
-				}
-			}
-		}
-
-		return nonnulllist;
 	}
 
 	@Override

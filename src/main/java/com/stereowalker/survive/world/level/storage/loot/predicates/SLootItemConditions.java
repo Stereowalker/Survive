@@ -1,11 +1,11 @@
 package com.stereowalker.survive.world.level.storage.loot.predicates;
 
+import net.minecraft.world.level.storage.loot.Serializer;
 import com.stereowalker.survive.Survive;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.storage.loot.Serializer;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 

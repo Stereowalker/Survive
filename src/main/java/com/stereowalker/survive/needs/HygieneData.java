@@ -3,22 +3,18 @@ package com.stereowalker.survive.needs;
 import java.util.Random;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.particles.SParticleTypes;
 
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class HygieneData extends SurviveData {
-	private int uncleanLevel = 10;
+	private int uncleanLevel = 5;
 	private int hygieneTimer;
 
 	public HygieneData() {
-		this.uncleanLevel = 20;
+		this.uncleanLevel = 15;
 	}
 
 	/**
@@ -39,12 +35,11 @@ public class HygieneData extends SurviveData {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void clientTick(AbstractClientPlayer player) {
+	public void clientTick(Player player) {
 		if (!player.isCreative() && !player.isSpectator()) {
 			if (this.needsABath()) {
 				Random rand = new Random();
-				for(int i = 0; i < ((this.uncleanLevel-25)/10)+2; ++i) {
+				for(int i = 0; i < ((this.uncleanLevel-25)/20)+2; ++i) {
 					player.level().addParticle(SParticleTypes.STINK, player.getRandomX(0.5D), player.getRandomY() - 0.25D, player.getRandomZ(0.5D), (rand.nextDouble() - 0.5D) * 0.5D, -rand.nextDouble() * 0.5D, (rand.nextDouble() - 0.5D) * 0.5D);
 				}
 			}
@@ -68,8 +63,8 @@ public class HygieneData extends SurviveData {
 				this.dirty(1);
 				this.hygieneTimer = 0;
 			}
-			if (this.uncleanLevel > 100 && Survive.WELLBEING_CONFIG.enabled) {
-				((IRealisticEntity)player).getWellbeingData().setTimer(6000, 24000, "staying dirty too long");
+			if (Survive.HYGIENE_CONFIG.illnessLevel >= 0 && this.uncleanLevel > Survive.HYGIENE_CONFIG.illnessLevel && Survive.WELLBEING_CONFIG.enabled) {
+				((IRealisticEntity)player).wellbeingData().setTimer(6000, 24000, "staying dirty too long");
 			}
 		} else {
 			this.hygieneTimer = 0;
@@ -91,7 +86,7 @@ public class HygieneData extends SurviveData {
 	/**
 	 * Writes the hygiene data for the player.
 	 */
-	public void write(CompoundTag compound) {
+	public void write(CompoundTag compound, boolean reducedData) {
 		compound.putFloat("uncleanLevel", this.uncleanLevel);
 		compound.putInt("hygieneTimer", this.hygieneTimer);
 	}
@@ -114,7 +109,7 @@ public class HygieneData extends SurviveData {
 	 * Get whether the player should take a shower.
 	 */
 	public boolean needsABath() {
-		return this.uncleanLevel > 25;
+		return this.uncleanLevel > 30;
 	}
 
 	/**
@@ -133,7 +128,6 @@ public class HygieneData extends SurviveData {
 
 	@Override
 	public void save(LivingEntity player) {
-		SurviveEntityStats.setHygieneStats(player, this);
 	}
 
 	@Override

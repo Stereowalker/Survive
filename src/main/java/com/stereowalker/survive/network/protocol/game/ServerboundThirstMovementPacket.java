@@ -3,8 +3,10 @@ package com.stereowalker.survive.network.protocol.game;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ServerboundThirstMovementPacket extends ServerboundUnionPacket {
@@ -49,8 +51,14 @@ public class ServerboundThirstMovementPacket extends ServerboundUnionPacket {
 				moveMul+=0.5F;
 			if (jump)
 				moveMul+=1.5F;
-			((IRealisticEntity)sender).getWaterData().addExhaustion(sender, 0.1F*moveMul);
+			((IRealisticEntity)sender).waterData().addExhaustion(sender, 0.1F*moveMul);
 		}
 		return true;
+	}
+	
+	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_thirst_movement");
+	@Override
+	public ResourceLocation id() {
+		return id;
 	}
 }

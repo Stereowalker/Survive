@@ -4,10 +4,11 @@ import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import com.stereowalker.survive.world.item.component.SDataComponents;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -31,6 +32,6 @@ public class BottleItemMixin {
 	@Inject(method = "turnBottleIntoItem", at = @At("HEAD"))
 	public void turnBottleIntoItem(ItemStack pBottleStack, Player pPlayer, ItemStack pFilledBottleStack, CallbackInfoReturnable<ItemStack> cir) {
 		if (PotionUtils.getPotion(pFilledBottleStack) == Potions.WATER)
-			pFilledBottleStack.getTag().putString("biome_source", pPlayer.level().getBiome(fillPos).unwrapKey().get().location().toString());
+			SDataComponents.BIOME_SOURCE_D.setData(pFilledBottleStack, pPlayer.level().getBiome(fillPos).unwrapKey().get().location());
 	}
 }

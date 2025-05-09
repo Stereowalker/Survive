@@ -1,11 +1,11 @@
 package com.stereowalker.survive.compat;
 
-import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
-
 import java.util.Map.Entry;
 
 import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
 import com.stereowalker.survive.world.temperature.TemperatureQuery;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -15,7 +15,7 @@ import net.minecraft.world.entity.Entity;
 
 public class SItemProperties {
 	public static void registerAll() {
-		ItemProperties.register(SItems.THERMOMETER, new ResourceLocation("temperature"), (stack, level, livingentity, count) -> {
+		ItemProperties.register(SItems.THERMOMETER, VersionHelper.toLoc("temperature"), (stack, level, livingentity, count) -> {
 			Entity entity = (Entity)(livingentity != null ? livingentity : stack.getEntityRepresentation());
 			if (entity == null) {
 				return 0.0F;
