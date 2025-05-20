@@ -7,8 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BiomeNotCondition extends TemperatureChangeCondition<BiomeNotCondition.Instance>{
 
@@ -60,7 +58,6 @@ public class BiomeNotCondition extends TemperatureChangeCondition<BiomeNotCondit
 		}
 		
 		@Override
-		@OnlyIn(Dist.CLIENT)
 		public Component getAdditionalContext() {
 			return Component.translatable("temperature_context.not_biome", this.biome);
 		}

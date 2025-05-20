@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:ice",
     "survive:temperature_regulator",
     "survive:plated_temperature_regulator"
   ]

@@ -65,15 +65,16 @@ public abstract class AbstractTemperatureRegulatorBlock extends Block {
 	public abstract boolean canAddPlate(BlockState pState, ItemStack plate);
 	public abstract boolean canRemovePlates(BlockState pState);
 	public abstract ItemStack getPlateStack(BlockState pState);
-
+	
 	@Override
 	public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+		ItemStack pStack = pPlayer.getItemInHand(pHand);
 		int plate_count = pState.getValue(PLATE_COUNT);
-		if (plate_count < 4 && canAddPlate(pState, pPlayer.getItemInHand(pHand))) {
-			return handlePlates(pPlayer.getItemInHand(pHand), pState, pLevel, pPos, true);
-		} else if (plate_count > 0 && canRemovePlates(pState) && pPlayer.getItemInHand(pHand).isEmpty()) {
+		if (plate_count < 4 && canAddPlate(pState, pStack)) {
+			return handlePlates(pStack, pState, pLevel, pPos, true);
+		} else if (plate_count > 0 && canRemovePlates(pState) && pStack.isEmpty()) {
 			pPlayer.addItem(getPlateStack(pState));
-			return handlePlates(pPlayer.getItemInHand(pHand), pState, pLevel, pPos, false);
+			return handlePlates(pStack, pState, pLevel, pPos, false);
 		} else {
 			return InteractionResult.PASS;
 		}

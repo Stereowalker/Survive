@@ -3,6 +3,7 @@ package com.stereowalker.survive.world.item.crafting;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.SItems;
+import com.stereowalker.unionlib.util.LoaderHelper;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
@@ -28,10 +29,15 @@ public class CanteenFillingRecipe extends CustomRecipe {
 		Potion savedPotion = null;
 		int bottles = 0;
 		int canteens = 0;
+		boolean nether = false;
 		for (int i = 0; i < inv.getContainerSize(); i++) {
 			ItemStack stack = inv.getItem(i);
 			if (stack.getItem() == SItems.CANTEEN) {
 				canteens++;
+			}
+			if (stack.getItem() == SItems.NETHERITE_CANTEEN) {
+				canteens++;
+				nether = true;
 			}
 			else if (stack.getItem() == Items.POTION) {
 				if (savedPotion == null) {
@@ -45,11 +51,11 @@ public class CanteenFillingRecipe extends CustomRecipe {
 			} else if (!stack.isEmpty()) {
 				return false;
 			}
-			if (bottles > Survive.THIRST_CONFIG.canteen_fill_amount) {
+			if (bottles > Survive.THIRST_CONFIG.canteenFillAmount(nether)) {
 				return false;
 			}
 		}
-		return savedPotion != null && bottles <= Survive.THIRST_CONFIG.canteen_fill_amount && canteens == 1;
+		return savedPotion != null && bottles <= Survive.THIRST_CONFIG.canteenFillAmount(nether) && canteens == 1;
 	}
 
 	@Override
@@ -74,8 +80,8 @@ public class CanteenFillingRecipe extends CustomRecipe {
 		NonNullList<ItemStack> nonnulllist = NonNullList.withSize(pContainer.getContainerSize(), ItemStack.EMPTY);
 	      for(int i = 0; i < nonnulllist.size(); ++i) {
 	         ItemStack item = pContainer.getItem(i);
-	         if (item.hasCraftingRemainingItem()) {
-	            nonnulllist.set(i, item.getCraftingRemainingItem());
+	         if (LoaderHelper.hasCraftRemainder(item)) {
+	            nonnulllist.set(i, LoaderHelper.craftRemainder(item));
 	         }
 	         if (item.getItem() == Items.POTION) {
 	        	 nonnulllist.set(i, new ItemStack(Items.GLASS_BOTTLE));

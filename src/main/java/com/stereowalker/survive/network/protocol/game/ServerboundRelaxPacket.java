@@ -1,12 +1,13 @@
 package com.stereowalker.survive.network.protocol.game;
 
 import com.stereowalker.survive.Survive;
-import com.stereowalker.survive.core.SurviveEntityStats;
-import com.stereowalker.survive.needs.StaminaData;
+import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ServerboundRelaxPacket extends ServerboundUnionPacket {
@@ -30,10 +31,14 @@ public class ServerboundRelaxPacket extends ServerboundUnionPacket {
 	@Override
 	public boolean handleOnServer(ServerPlayer sender) {
 		if (Survive.STAMINA_CONFIG.enabled) {
-			StaminaData stats = SurviveEntityStats.getEnergyStats(sender);
-			stats.relax(this.amount, sender.getAttributeValue(SAttributes.MAX_STAMINA));
-			stats.save(sender);
+			((IRealisticEntity)sender).staminaData().relax(this.amount, sender.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 		}
 		return true;
+	}
+	
+	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_relax");
+	@Override
+	public ResourceLocation id() {
+		return id;
 	}
 }

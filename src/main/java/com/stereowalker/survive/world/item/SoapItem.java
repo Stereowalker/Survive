@@ -2,17 +2,15 @@ package com.stereowalker.survive.world.item;
 
 import java.util.List;
 
+import com.stereowalker.survive.world.item.component.SDataComponents;
+
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class SoapItem extends Item {
 	public int soapEfficacy;
@@ -24,18 +22,11 @@ public class SoapItem extends Item {
 		this.soapMaxAmount = soapMaxAmount;
 	}
 
-	public static CompoundTag soapTag(int soap) {
-		CompoundTag nbt = new CompoundTag();
-		nbt.putInt("SoapLeft", soap);
-		return nbt;
-	}
-
 	public static ItemStack addPropertiesToSoap(ItemStack stack, int drinks) {
-		stack.setTag(soapTag(drinks));
+		SDataComponents.SOAP_LEFT_D.setData(stack, drinks);
 		return stack;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public ItemStack getDefaultInstance() {
 		return addPropertiesToSoap(new ItemStack(this), this.soapMaxAmount);
@@ -46,21 +37,21 @@ public class SoapItem extends Item {
 	}
 
 	public static int getSoapLeft(ItemStack stack) {
-		return stack.getOrCreateTag().getInt("SoapLeft");
+		return SDataComponents.SOAP_LEFT_D.getData(stack);
 	}
 
 	public static void setSoapLeft(ItemStack stack, int drinks) {
 		if (stack.getItem() instanceof SoapItem)
-			stack.getOrCreateTag().putInt("SoapLeft", Mth.clamp(drinks, 0, ((SoapItem)stack.getItem()).soapMaxAmount));
+			SDataComponents.SOAP_LEFT_D.setData(stack, Mth.clamp(drinks, 0, ((SoapItem)stack.getItem()).soapMaxAmount));
 	}
 
 	public static void decrementSoap(ItemStack stack) {
-		setSoapLeft(stack, getSoapLeft(stack) - 1);
+		setSoapLeft(stack, SDataComponents.SOAP_LEFT_D.getData(stack) - 1);
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
-		tooltip.add(Component.translatable("tooltip.soap_left", getSoapLeft(stack)).withStyle(ChatFormatting.AQUA));
+	public void appendHoverText(ItemStack pStack, Level pLevel, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
+		pTooltipComponents.add(Component.translatable("tooltip.soap_left", SDataComponents.SOAP_LEFT_D.getData(pStack)).withStyle(ChatFormatting.AQUA));
 	}
 
 }

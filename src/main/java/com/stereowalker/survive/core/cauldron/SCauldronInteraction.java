@@ -6,6 +6,7 @@ import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.HygieneItems;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
+import com.stereowalker.survive.world.item.component.SDataComponents;
 import com.stereowalker.survive.world.level.block.SBlocks;
 
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -68,9 +69,9 @@ public interface SCauldronInteraction extends CauldronInteraction {
 		addToCauldron(PURIFIED_WATER, SItems.PURIFIED_WATER_BOWL, new ItemStack(Items.BOWL), SoundEvents.BOTTLE_EMPTY);
 		fillEmptyCauldron(SItems.PURIFIED_WATER_BOWL, new ItemStack(Items.BOWL), SBlocks.PURIFIED_WATER_CAULDRON.defaultBlockState(), SoundEvents.BOTTLE_EMPTY);
 		//Glass bottle Interactions
-		takeFromCauldron(PURIFIED_WATER, Items.GLASS_BOTTLE, PotionUtils.setPotion(new ItemStack(Items.POTION), SPotions.PURIFIED_WATER), SoundEvents.BOTTLE_FILL);
+		takeFromCauldron(PURIFIED_WATER, Items.GLASS_BOTTLE, PotionUtils.setPotion(new ItemStack(Items.POTION), SPotions.PURIFIED_WATER.holder().value()), SoundEvents.BOTTLE_FILL);
 		PURIFIED_WATER.put(Items.POTION, (p_175704_, p_175705_, p_175706_, p_175707_, p_175708_, p_175709_) -> {
-	         if (p_175704_.getValue(LayeredCauldronBlock.LEVEL) != 3 && PotionUtils.getPotion(p_175709_) == SPotions.PURIFIED_WATER) {
+	         if (p_175704_.getValue(LayeredCauldronBlock.LEVEL) != 3 && PotionUtils.getPotion(p_175709_) == SPotions.PURIFIED_WATER.holder().value()) {
 	            if (!p_175705_.isClientSide) {
 	               p_175707_.setItemInHand(p_175708_, ItemUtils.createFilledResult(p_175709_, p_175707_, new ItemStack(Items.GLASS_BOTTLE)));
 	               p_175707_.awardStat(Stats.USE_CAULDRON);
@@ -87,7 +88,7 @@ public interface SCauldronInteraction extends CauldronInteraction {
 	      });
 		//This will most likely override the default potion action. Anybody messing with this will cause this mod's to not work
 		EMPTY.put(Items.POTION, (blockstate, level, pos, player, interactionHand, p_175737_) -> {
-			if (PotionUtils.getPotion(p_175737_) != Potions.WATER && PotionUtils.getPotion(p_175737_) != SPotions.PURIFIED_WATER) {
+			if (PotionUtils.getPotion(p_175737_) != Potions.WATER && PotionUtils.getPotion(p_175737_) != SPotions.PURIFIED_WATER.holder().value()) {
 				return InteractionResult.PASS;
 			} else {
 				if (!level.isClientSide) {
@@ -125,7 +126,7 @@ public interface SCauldronInteraction extends CauldronInteraction {
 		PURIFIED_WATER.put(SItems.CANTEEN, (blockstate, level, pos, player, interactionHand, p_175723_) -> {
 			if (!level.isClientSide) {
 				Item item = p_175723_.getItem();
-				player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175723_, player, CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), blockstate.getValue(LayeredCauldronBlock.LEVEL), SPotions.PURIFIED_WATER)));
+				player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175723_, player, CanteenItem.addToCanteen(new ItemStack(SItems.FILLED_CANTEEN), blockstate.getValue(LayeredCauldronBlock.LEVEL), SPotions.PURIFIED_WATER.holder().value())));
 				player.awardStat(Stats.USE_CAULDRON);
 				player.awardStat(Stats.ITEM_USED.get(item));
 				level.setBlockAndUpdate(pos, Blocks.CAULDRON.defaultBlockState());
@@ -137,12 +138,12 @@ public interface SCauldronInteraction extends CauldronInteraction {
 		});
 
 		EMPTY.put(SItems.FILLED_CANTEEN, (blockstate, level, pos, player, interactionHand, p_175737_) -> {
-			if (PotionUtils.getPotion(p_175737_) != Potions.WATER && PotionUtils.getPotion(p_175737_) != SPotions.PURIFIED_WATER) {
+			if (PotionUtils.getPotion(p_175737_) != Potions.WATER && PotionUtils.getPotion(p_175737_) != SPotions.PURIFIED_WATER.holder().value()) {
 				return InteractionResult.PASS;
 			} else {
 				if (!level.isClientSide) {
 					CanteenItem item = (CanteenItem) p_175737_.getItem();
-					int drinksLeft = item.getDrinksLeft(p_175737_);
+					int drinksLeft = SDataComponents.DRINKS_LEFT_D.getData(p_175737_);
 					if (drinksLeft > 3) {
 						player.setItemInHand(interactionHand, ItemUtils.createFilledResult(p_175737_, player, CanteenItem.addToCanteen(p_175737_.copy(), drinksLeft - 3, PotionUtils.getPotion(p_175737_))));
 					} else {

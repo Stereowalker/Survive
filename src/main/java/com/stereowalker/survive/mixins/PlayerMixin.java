@@ -9,6 +9,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import com.mojang.datafixers.util.Pair;
+import com.stereowalker.survive.FoodUtils.State;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.json.ConsummableJsonHolder;
@@ -22,12 +24,15 @@ import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.WaterData;
 import com.stereowalker.survive.needs.WellbeingData;
 import com.stereowalker.survive.world.DataMaps;
+import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -41,8 +46,13 @@ import net.minecraft.world.level.Level;
 public abstract class PlayerMixin extends LivingEntity implements IRealisticEntity {
 	@Shadow protected FoodData foodData;
 	@Shadow private int sleepCounter;
+	private TemperatureData temperatureData = new TemperatureData();
 	private WellbeingData wellbeingData = new WellbeingData();
 	private NutritionData nutritionData = new NutritionData();
+	private HygieneData hygieneData = new HygieneData();
+	private StaminaData staminaData = new StaminaData(getAttributeValue(SAttributes.MAX_STAMINA.holder()));
+	private SleepData sleepData = new SleepData();
+	private WaterData waterData = new WaterData();
 
 	protected PlayerMixin(EntityType<? extends LivingEntity> type, Level worldIn) {
 		super(type, worldIn);
@@ -55,8 +65,17 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	
 	@Inject(method = "eat", at = @At("HEAD"))
 	public void eatInject(Level pLevel, ItemStack pFood, CallbackInfoReturnable<ItemStack> cir) {
-		this.getStaminaData().eat(pFood.getItem(), pFood, this);
-		this.getWaterData().drink(pFood.getItem(), pFood, this);
+		if (pFood./*has(DataComponents.FOOD)*/isEdible() && foodData instanceof CustomFoodData custom) {
+			FoodProperties foodproperties = pFood./*get(DataComponents.FOOD)*/getItem().getFoodProperties();
+			for (Pair<MobEffectInstance, Float> effect : foodproperties.getEffects()) {
+				if (effect.getFirst().getEffect() == MobEffects.HUNGER || custom.IsSpoiled() == State.Spoiled) {
+					custom.consumeUnclean();
+					break;
+				}
+			}
+		}
+		this.staminaData().eat(pFood.getItem(), pFood, this);
+		this.waterData().drink(pFood.getItem(), pFood, this);
 		this.getRealFoodData().markAsSpoiled(pFood, this);
 	}
 
@@ -68,22 +87,21 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			ServerPlayer player = (ServerPlayer)(Object)this;
 			if (Survive.THIRST_CONFIG.enabled) {
 				if (player.level().getDifficulty() == Difficulty.PEACEFUL && player.level().getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION)) {
-					if (getWaterData().needWater() && player.tickCount % 10 == 0) {
-						getWaterData().setWaterLevel(getWaterData().getWaterLevel() + 1);
+					if (waterData().needWater() && player.tickCount % 10 == 0) {
+						waterData().setWaterLevel(waterData().getWaterLevel() + 1);
 					}
 				}
-				getWaterData().save(player);
 			}
 		}
 		//
 		if (!this.level().isClientSide) {
-			getStaminaData().baseTick((Player)(Object)this);
-			getHygieneData().baseTick((Player)(Object)this);
+			staminaData().baseTick((Player)(Object)this);
+			hygieneData().baseTick((Player)(Object)this);
 			this.nutritionData.baseTick((Player)(Object)this);
-			getTemperatureData().baseTick((Player)(Object)this);
-			getWaterData().baseTick((Player)(Object)this);
+			temperatureData().baseTick((Player)(Object)this);
+			waterData().baseTick((Player)(Object)this);
 			this.wellbeingData.baseTick((Player)(Object)this);
-			getSleepData().baseTick((Player)(Object)this);
+			sleepData().baseTick((Player)(Object)this);
 		}
 	}
 	
@@ -95,77 +113,94 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			return foodData.needsFood();
 		}
 	}
+	
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = {"jumpFromGround"})
+	public void morphExhaustionDuringJump(Player player, float value) {
+		bypassFoodExhaustion(value, value*2.5f, Mth.ceil(value*2.5f), "Jumped", this.isSprinting());
+	}
 
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = {"jumpFromGround", "actuallyHurt", "checkMovementStatistics"})
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = {"actuallyHurt"})
 	public void morphExhaustion(Player player, float value) {
-		if (Survive.STAMINA_CONFIG.enabled) {
-			getStaminaData().addExhaustion(player, value*2.5f, "Jumped, Got hurt or moved");
-		}
-		else if (Survive.CONFIG.nutrition_enabled) {
-			this.nutritionData.removeCarbs(Mth.ceil(value*2.5f));
-		}
-		else {
-			player.causeFoodExhaustion(value);
-		}
+		bypassFoodExhaustion(value, value*2.5f, Mth.ceil(value*2.5f), "Got hurt", false);
 	}
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = "attack")
 	public void morphStaminaDuringAttack(Player player, float value) {
-		if (Survive.STAMINA_CONFIG.enabled) {
-			getStaminaData().addExhaustion(player, 1.25f, "Player Attacked");
-		}
-		else if (Survive.CONFIG.nutrition_enabled) {
-			this.nutritionData.removeCarbs(Mth.ceil(value*2.5f));
-		}
-		else {
-			player.causeFoodExhaustion(value);
-		}
+		bypassFoodExhaustion(value, 1.25f, Mth.ceil(value*2.5f), "Player Attacked", true);
+	}
+	
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = {"checkMovementStatistics"})
+	public void morphExhaustionMovement(Player player, float value) {
+		bypassFoodExhaustion(value, value*2.5f, Mth.ceil(value*2.5f), "Movement", player.isSprinting() || player.isSwimming());
 	}
 
 	@Inject(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;eat(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/LivingEntity;)V"))
-	//	@Inject(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;eat(Lnet/minecraft/world/item/Item;Lnet/minecraft/world/item/ItemStack;)V"))
+//	@Inject(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;eat(Lnet/minecraft/world/item/ItemStack;)V"))
 	public void addNutrients(Level arg0, ItemStack p_213357_2_, CallbackInfoReturnable<ItemStack> cir) {
 		if (Survive.CONFIG.nutrition_enabled) {
 			float protein = 1;
 			float carbs = 1;
+			float fats = 1;
 			if (DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(p_213357_2_.getItem()))) {
 				ConsummableJsonHolder data = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(p_213357_2_.getItem()));
 				protein = data.getProteinRatio();
 				carbs = data.getCarbohydrateRatio();
+				fats = data.getFatRatio();
 			}
-			FoodProperties food = p_213357_2_.getItem().getFoodProperties();
-			float total = protein+carbs;
-			this.nutritionData.addCarbs(food.getNutrition()*Mth.ceil((carbs/total)*10));
-			this.nutritionData.addProtein(food.getNutrition()*Mth.ceil((protein/total)*10));
+			FoodProperties food = p_213357_2_./*get(DataComponents.FOOD)*/getItem().getFoodProperties();
+			float total = protein+carbs+fats;
+			this.nutritionData.carbs().add(food.getNutrition()*Mth.ceil((carbs/total)*100));
+			this.nutritionData.protein().add(food.getNutrition()*Mth.ceil((protein/total)*100));
+			this.nutritionData.fat().add(food.getNutrition()*Mth.ceil((fats/total)*100));
 		}
 	}
 	
 	@Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
 	public void readAdditionalSaveData_inject(CompoundTag pCompound, CallbackInfo ci) {
 		if (pCompound.contains("surviveData", 10)) {
-			this.wellbeingData.read(pCompound);
-			this.nutritionData.read(pCompound);
+			CompoundTag surviveData = pCompound.getCompound("surviveData");
+			if (surviveData.contains("temperature", 10)) this.temperatureData.read(surviveData.getCompound("temperature"));
+			if (surviveData.contains("wellbeing", 10)) this.wellbeingData.read(surviveData.getCompound("wellbeing"));
+			if (surviveData.contains("nutrition", 10)) this.nutritionData.read(surviveData.getCompound("nutrition"));
+			if (surviveData.contains("hygiene", 10)) this.hygieneData.read(surviveData.getCompound("hygiene"));
+			if (surviveData.contains("stamina", 10)) this.staminaData.read(surviveData.getCompound("stamina"));
+			if (surviveData.contains("sleep", 10)) this.sleepData.read(surviveData.getCompound("sleep"));
+			if (surviveData.contains("water", 10)) this.waterData.read(surviveData.getCompound("water"));
 		}
 	}
 	
 	@Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
 	public void addAdditionalSaveData_inject(CompoundTag pCompound, CallbackInfo ci) {
-		if (!pCompound.contains("surviveData", 10)) {
-			pCompound.put("surviveData", new CompoundTag());
-		}
-		this.wellbeingData.write(pCompound.getCompound("surviveData"));
-		this.nutritionData.write(pCompound.getCompound("surviveData"));
+		CompoundTag surviveData = new CompoundTag();
+		surviveData.put("temperature", this.temperatureData.write(false));
+		surviveData.put("wellbeing", this.wellbeingData.write(false));
+		surviveData.put("nutrition", this.nutritionData.write(false));
+		surviveData.put("hygiene", this.hygieneData.write(false));
+		surviveData.put("stamina", this.staminaData.write(false));
+		surviveData.put("sleep", this.sleepData.write(false));
+		surviveData.put("water", this.waterData.write(false));
+		pCompound.put("surviveData", surviveData);
 	}
 
-	public StaminaData getStaminaData() {
-		return SurviveEntityStats.getEnergyStats((Player)(Object)this);
+	public StaminaData staminaData() {
+		return this.staminaData;
+	}
+	
+	@Override
+	public void setStaminaData(StaminaData data) {
+		this.staminaData = data;
 	}
 
-	public HygieneData getHygieneData(){
-		return SurviveEntityStats.getHygieneStats((Player)(Object)this);
+	public HygieneData hygieneData(){
+		return this.hygieneData;
+	}
+	
+	@Override
+	public void setHygieneData(HygieneData data) {
+		this.hygieneData = data;
 	}
 
-	public NutritionData getNutritionData(){
+	public NutritionData nutritionData(){
 		return this.nutritionData;
 	}
 	
@@ -174,16 +209,27 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		this.nutritionData = data;
 	}
 
-	public TemperatureData getTemperatureData(){
-		return SurviveEntityStats.getTemperatureStats((Player)(Object)this);
+	public TemperatureData temperatureData(){
+		return temperatureData;
 	}
-
-	public WaterData getWaterData(){
-		return SurviveEntityStats.getWaterStats((Player)(Object)this);
+	
+	@Override
+	public void setTemperatureData(TemperatureData data) {
+		this.temperatureData = data;
 	}
 
 	@Override
-	public WellbeingData getWellbeingData(){
+	public WaterData waterData(){
+		return waterData;
+	}
+	
+	@Override
+	public void setWaterData(WaterData data) {
+		this.waterData = data;
+	}
+
+	@Override
+	public WellbeingData wellbeingData(){
 		return this.wellbeingData;
 	}
 	
@@ -192,8 +238,14 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		this.wellbeingData = data;
 	}
 
-	public SleepData getSleepData(){
-		return SurviveEntityStats.getSleepStats((Player)(Object)this);
+	@Override
+	public SleepData sleepData(){
+		return this.sleepData;
+	}
+	
+	@Override
+	public void setSleepData(SleepData data) {
+		this.sleepData = data;
 	}
 
 	public CustomFoodData getRealFoodData(){

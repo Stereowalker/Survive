@@ -7,9 +7,11 @@ import com.stereowalker.survive.needs.WaterData;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.unionlib.network.protocol.game.ServerboundUnionPacket;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -79,7 +81,7 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 			FluidState fluid = sender.level().getFluidState(pos);
 			if (heldItem.isEmpty()) {
 				if (sender.isCrouching()) {
-					WaterData waterStats = ((IRealisticEntity)sender).getWaterData();
+					WaterData waterStats = ((IRealisticEntity)sender).waterData();
 					if (waterStats.needWater()) {
 						boolean flag = false;
 						if (block.getBlock() == Blocks.WATER_CAULDRON) {
@@ -105,7 +107,6 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 						sender.swing(InteractionHand.MAIN_HAND);
 						new ClientboundDrinkSoundPacket(pos).send(sender);
 					}
-					waterStats.save(sender);
 				}
 			} else if (heldItem.getItem() == Items.BOWL) {
 				if (isValidContainerSource(waterAmount)) {
@@ -124,5 +125,11 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 
 	public static boolean isValidStack(ItemStack stack) {
 		return stack.getItem() == Items.BOWL || stack.isEmpty();
+	}
+	
+	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_interact_with_water");
+	@Override
+	public ResourceLocation id() {
+		return id;
 	}
 }

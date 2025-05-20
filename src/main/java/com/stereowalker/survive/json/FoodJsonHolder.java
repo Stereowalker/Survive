@@ -5,13 +5,21 @@ import org.apache.logging.log4j.MarkerManager;
 
 import com.google.gson.JsonObject;
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.api.json.JsonHolder;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
 public class FoodJsonHolder extends ConsummableJsonHolder {
     private static final Marker MARKER = MarkerManager.getMarker("FOOD_DRINK_DATA");
 	private int timeFresh = 12000;
 	private int lifespan = 156000;
+	
+	public FoodJsonHolder(CompoundTag nbt) {
+		super(nbt);
+		this.timeFresh = nbt.getInt("time_fresh");
+		this.lifespan = nbt.getInt("lifespan");
+	}
 
 	public FoodJsonHolder(ResourceLocation itemID, JsonObject object) {
 		super(itemID, object);
@@ -36,6 +44,19 @@ public class FoodJsonHolder extends ConsummableJsonHolder {
 
 	public int ticksFresh() {
 		return timeFresh;
+	}
+	
+	@Override
+	public CompoundTag serialize() {
+		CompoundTag nbt = super.serialize();
+		nbt.putInt("time_fresh", this.timeFresh);
+		nbt.putInt("lifespan", this.lifespan);
+		return nbt;
+	}
+
+	@Override
+	public JsonHolder deserialize(CompoundTag input) {
+		return new FoodJsonHolder(input);
 	}
 
 }

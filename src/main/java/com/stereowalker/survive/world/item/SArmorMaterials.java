@@ -16,14 +16,14 @@ import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
-public enum SArmorMaterial implements ArmorMaterial
+public enum SArmorMaterials implements ArmorMaterial
 {
 	WOOL("wool", 1, Util.make(new EnumMap<>(ArmorItem.Type.class), (p_266652_) -> {
 		p_266652_.put(ArmorItem.Type.BOOTS, 1);
 		p_266652_.put(ArmorItem.Type.LEGGINGS, 1);
 		p_266652_.put(ArmorItem.Type.CHESTPLATE, 1);
 		p_266652_.put(ArmorItem.Type.HELMET, 1);
-	}), 1, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> {
+	}), 9, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> {
 		return Ingredient.of(Items.WHITE_WOOL);
 	}),
 	STIFFENED_HONEY("stiffened_honey", 1, Util.make(new EnumMap<>(ArmorItem.Type.class), (p_266652_) -> {
@@ -31,8 +31,8 @@ public enum SArmorMaterial implements ArmorMaterial
 		p_266652_.put(ArmorItem.Type.LEGGINGS, 1);
 		p_266652_.put(ArmorItem.Type.CHESTPLATE, 1);
 		p_266652_.put(ArmorItem.Type.HELMET, 1);
-	}), 1, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> {
-		return Ingredient.of(Items.WHITE_WOOL);
+	}), 9, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F, () -> {
+		return Ingredient.of(SItems.STIFFENED_HONEY);
 	});
 
 
@@ -52,7 +52,7 @@ public enum SArmorMaterial implements ArmorMaterial
 	private final float knockbackResistance;
 	private final LazyLoadedValue<Ingredient> repairIngredient;
 
-	private SArmorMaterial(String p_268171_, int p_268303_, EnumMap<ArmorItem.Type, Integer> p_267941_, int p_268086_, SoundEvent p_268145_, float p_268058_, float p_268180_, Supplier<Ingredient> p_268256_) {
+	private SArmorMaterials(String p_268171_, int p_268303_, EnumMap<ArmorItem.Type, Integer> p_267941_, int p_268086_, SoundEvent p_268145_, float p_268058_, float p_268180_, Supplier<Ingredient> p_268256_) {
 		this.name = p_268171_;
 		this.durabilityMultiplier = p_268303_;
 		this.f_265966_ = p_267941_;

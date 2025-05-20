@@ -1,0 +1,11 @@
+{
+	"energy": 2,
+	"thirst_consumption": 2,
+	"thirst_chance": 0.1,
+	"lifespan": 5571,
+	"ticks_fresh": 429,
+	"nutrition": {
+		"carbohydrate_ratio": 1,
+		"protein_ratio": 9
+	}
+}

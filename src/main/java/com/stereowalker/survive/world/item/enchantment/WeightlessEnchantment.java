@@ -11,6 +11,18 @@ public class WeightlessEnchantment extends Enchantment {
 	}
 	
 	@Override
+	public boolean isTreasureOnly() {
+		return true;
+	}
+	
+	@Override
+	protected boolean checkCompatibility(Enchantment ench) 
+	{
+		return ench instanceof FeatherweightEnchantment ? false : super.checkCompatibility(ench);
+	}
+	
+	//1.20.1
+	@Override
 	public int getMinCost(int enchantmentLevel) 
 	{
 		return 5 * enchantmentLevel + 6;
@@ -23,19 +35,8 @@ public class WeightlessEnchantment extends Enchantment {
 	}
 	
 	@Override
-	public boolean isTreasureOnly() {
-		return true;
-	}
-	
-	@Override
 	public int getMaxLevel()
 	{
 		return 1;
-	}
-	
-	@Override
-	protected boolean checkCompatibility(Enchantment ench) 
-	{
-		return ench instanceof FeatherweightEnchantment ? false : super.checkCompatibility(ench);
 	}
 }

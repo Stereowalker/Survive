@@ -2,6 +2,7 @@ package com.stereowalker.survive.tags;
 
 import com.stereowalker.survive.Survive;
 import com.stereowalker.unionlib.util.RegistryHelper;
+import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -14,7 +15,7 @@ public class FluidSTags {
 	}
 
 	private static TagKey<Fluid> create(String pName) {
-		return TagKey.create(RegistryHelper.fluidKey(), new ResourceLocation(Survive.MOD_ID, pName));
+		return TagKey.create(RegistryHelper.fluidKey(), VersionHelper.toLoc(Survive.MOD_ID, pName));
 	}
 
 	public static TagKey<Fluid> create(ResourceLocation name) {

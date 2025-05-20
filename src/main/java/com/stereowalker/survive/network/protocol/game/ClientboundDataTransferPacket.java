@@ -9,14 +9,14 @@ import com.stereowalker.survive.api.json.JsonHolder;
 import com.stereowalker.survive.json.ArmorJsonHolder;
 import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.survive.json.FluidJsonHolder;
+import com.stereowalker.survive.json.FoodJsonHolder;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.unionlib.network.protocol.game.ClientboundUnionPacket;
+import com.stereowalker.unionlib.util.VersionHelper;
 
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.entity.player.Player;
 
 public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 	private ResourceLocation stat;
@@ -47,38 +47,53 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public boolean handleOnClient(LocalPlayer sender) {
-		if (settings instanceof ArmorJsonHolder) {
+	public boolean runOnClient(Player sender) {
+		if (settings instanceof ArmorJsonHolder armor) {
 			if (this.clear) {
 				Survive.getInstance().getLogger().info("Clearing Client Side Armor Data");
 				DataMaps.Client.armor = ImmutableMap.of();
 			}
 			Map<ResourceLocation,ArmorJsonHolder> statMap = new HashMap<>();
 			statMap.putAll(DataMaps.Client.armor);
-			statMap.put(stat, (ArmorJsonHolder) settings);
+			statMap.put(stat, armor);
 			DataMaps.Client.armor = ImmutableMap.copyOf(statMap);
 		}
-		if (settings instanceof FluidJsonHolder) {
+		if (settings instanceof FluidJsonHolder fluid) {
 			if (this.clear) {
 				Survive.getInstance().getLogger().info("Clearing Client Side Fluid Data");
 				DataMaps.Client.fluid = ImmutableMap.of();
 			}
 			Map<ResourceLocation,FluidJsonHolder> statMap = new HashMap<>();
 			statMap.putAll(DataMaps.Client.fluid);
-			statMap.put(stat, (FluidJsonHolder) settings);
+			statMap.put(stat, fluid);
 			DataMaps.Client.fluid = ImmutableMap.copyOf(statMap);
 		}
-		if (settings instanceof BiomeJsonHolder) {
+		if (settings instanceof BiomeJsonHolder biome) {
 			if (this.clear) {
 				Survive.getInstance().getLogger().info("Clearing Client Side Biome Data");
 				DataMaps.Client.biome = ImmutableMap.of();
 			}
 			Map<ResourceLocation,BiomeJsonHolder> statMap = new HashMap<>();
 			statMap.putAll(DataMaps.Client.biome);
-			statMap.put(stat, (BiomeJsonHolder) settings);
+			statMap.put(stat, biome);
 			DataMaps.Client.biome = ImmutableMap.copyOf(statMap);
 		}
+		if (settings instanceof FoodJsonHolder consummable) {
+			if (this.clear) {
+				Survive.getInstance().getLogger().info("Clearing Client Side Consummable Data");
+				DataMaps.Client.consummableItem = ImmutableMap.of();
+			}
+			Map<ResourceLocation,FoodJsonHolder> statMap = new HashMap<>();
+			statMap.putAll(DataMaps.Client.consummableItem);
+			statMap.put(stat, consummable);
+			DataMaps.Client.consummableItem = ImmutableMap.copyOf(statMap);
+		}
 		return true;
+	}
+
+	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "clientbound_data_transfer");
+	@Override
+	public ResourceLocation id() {
+		return id;
 	}
 }

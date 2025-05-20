@@ -75,7 +75,7 @@ public class PurifiedWaterCraftingSerializer implements RecipeSerializer<Purifie
     }
 	
 	protected static NonNullList<Ingredient> add(NonNullList<Ingredient> ing){
-		ItemStack potion = PotionUtils.setPotion(new ItemStack(Items.POTION), SPotions.PURIFIED_WATER);
+		ItemStack potion = PotionUtils.setPotion(new ItemStack(Items.POTION), SPotions.PURIFIED_WATER.holder().value());
 		if (ing.get(ing.size()-1).test(potion)) {
 			return ing;
 		} else {

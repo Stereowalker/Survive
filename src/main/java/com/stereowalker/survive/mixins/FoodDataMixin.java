@@ -16,19 +16,19 @@ public class FoodDataMixin {
 	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;heal(F)V"))
 	public void nutritionHeal(Player player, float value) {
 		if (Survive.CONFIG.nutrition_enabled && player instanceof IRealisticEntity real) {
-			int protein = real.getNutritionData().getProteinLevel();
-			if (protein > 200 && protein <= 300) {
-				player.heal(value*0.8f);
-				real.getNutritionData().removeProtein(1);
-			} else if (protein > 100 && protein <= 200) {
+			int protein = real.nutritionData().protein().level();
+			if (protein > 2000 && protein <= 3000) {
+				player.heal(value*1.5f);
+				real.nutritionData().protein().remove(10);
+			} else if (protein > 1000 && protein <= 2000) {
 				player.heal(value);
-				real.getNutritionData().removeProtein(1);
-			} else if (protein > 0 && protein <= 100) {
+				real.nutritionData().protein().remove(10);
+			} else if (protein > 0 && protein <= 1000) {
 				player.heal(value*0.5f);
-				real.getNutritionData().removeProtein(1);
-			} else if (protein >= -100 && protein <= 0) {
+				real.nutritionData().protein().remove(10);
+			} else if (protein >= -1000 && protein <= 0) {
 				player.heal(value*0.1f);
-				real.getNutritionData().removeProtein(1);
+				real.nutritionData().protein().remove(10);
 			}
 		} else {
 			player.heal(value);
