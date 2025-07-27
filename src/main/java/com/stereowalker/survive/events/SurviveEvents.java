@@ -1,5 +1,7 @@
 package com.stereowalker.survive.events;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +57,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -159,6 +162,12 @@ public class SurviveEvents {
 		}
 		if (living instanceof Player player) {
 			FoodUtils.giveLifespanToFood(player.getInventory().items, player.level().getGameTime());
+			for (ChunkPos chunk : TempEvents.GLOBAL_BLOCK_TEMPS.keySet()) {
+				if (!player.level().hasChunk(chunk.x, chunk.z)) {
+					TempEvents.discardChunk(chunk);
+					TempEvents.log("Discarding Chunks "+chunk);
+				}
+			}
 		}
 	}
 
@@ -173,6 +182,8 @@ public class SurviveEvents {
 	}
 	
 	private static record PathNode(BlockPos pos, double cost) {
+	}
+	private static record Offset(int dx, int dy, int dz) {
 	}
 	
 	private static List<BlockPos> getNeighbors(BlockPos pos){
@@ -211,6 +222,23 @@ public class SurviveEvents {
 		return Double.POSITIVE_INFINITY;
 	}
 
+	private static final List<Offset> SPHERE_OFFSETS_RANGE_2 = buildSphereOffsets(2);
+	private static final List<Offset> SPHERE_OFFSETS_RANGE_5 = buildSphereOffsets(5);
+	private static final List<Offset> SPHERE_OFFSETS_RANGE_6 = buildSphereOffsets(6);
+	private static List<Offset> buildSphereOffsets(int rangeInBlocks) {
+		List<Offset> finalList = new ArrayList<>();
+		for (int x = -rangeInBlocks; x <= rangeInBlocks; x++) {
+			for (int y = -rangeInBlocks; y <= rangeInBlocks; y++) {
+				for (int z = -rangeInBlocks; z <= rangeInBlocks; z++) {
+					if (x*x + y*y + z*z <= rangeInBlocks*rangeInBlocks) {
+						finalList.add(new Offset(x, y, z));
+					}
+				}
+			}
+		}
+		return Collections.unmodifiableList(finalList);
+	}
+
 	@SuppressWarnings("deprecation")
 	public static double getExactTemperature(Level world, BlockPos pos, TempType type) {
 		float skyLight = world.getChunkSource().getLightEngine().getLayerListener(LightLayer.SKY).getLightValue(pos);
@@ -235,94 +263,52 @@ public class SurviveEvents {
 			return biomeTemp;
 
 		case BLOCK:
-			float totalBlockTemp = 0;
-			int rangeInBlocks = 5;
-			for (int x = -rangeInBlocks; x <= rangeInBlocks; x++) {
-				for (int y = -rangeInBlocks; y <= rangeInBlocks; y++) {
-					for (int z = -rangeInBlocks; z <= rangeInBlocks; z++) {
+			return TempEvents.tempOrCache(pos, SPHERE_OFFSETS_RANGE_2, SPHERE_OFFSETS_RANGE_5, (offsets) -> {
+				float totalBlockTemp = 0;
+				int rangeInBlocks = 5;
+				
+				for (Offset offset : offsets) {
+					float blockTemp = 0;
+					BlockPos heatSource = new BlockPos(pos.getX()+offset.dx, pos.getY()+offset.dy, pos.getZ()+offset.dz);
+					float blockLight = world.getChunkSource().getLightEngine().getLayerListener(LightLayer.BLOCK).getLightValue(heatSource);
+					BlockState heatState = world.getBlockState(heatSource);
+					float sourceRange;
+					if (heatState.getBlock() instanceof TemperatureEmitter) {
+						sourceRange = ((TemperatureEmitter)heatState.getBlock()).getModificationRange(heatState);
+					} else {
+						sourceRange = DataMaps.Server.blockTemperature.containsKey(RegistryHelper.blocks().getKey(heatState.getBlock())) ? DataMaps.Server.blockTemperature.get(RegistryHelper.blocks().getKey(heatState.getBlock())).getRange() : 5;
+					}
 
-						float blockTemp = 0;
-						BlockPos heatSource = new BlockPos(pos.getX()+x, pos.getY()+y, pos.getZ()+z);
-						float blockLight = world.getChunkSource().getLightEngine().getLayerListener(LightLayer.BLOCK).getLightValue(heatSource);
-						BlockState heatState = world.getBlockState(heatSource);
-						float sourceRange;
+					if (pos.closerThan(heatSource, sourceRange)) {
+						blockTemp += blockLight/500.0F;
+						//Radiator Override
 						if (heatState.getBlock() instanceof TemperatureEmitter) {
-							sourceRange = ((TemperatureEmitter)heatState.getBlock()).getModificationRange(heatState);
-						} else {
-							sourceRange = DataMaps.Server.blockTemperature.containsKey(RegistryHelper.blocks().getKey(heatState.getBlock())) ? DataMaps.Server.blockTemperature.get(RegistryHelper.blocks().getKey(heatState.getBlock())).getRange() : 5;
+							blockTemp = ((TemperatureEmitter)heatState.getBlock()).getTemperatureModification(heatState);
+						}
+						else if (TempEvents.STATE_CACHE.containsKey(heatState)) {
+							blockTemp += TempEvents.STATE_CACHE.get(heatState).tempModifier();
 						}
 
-						if (pos.closerThan(heatSource, sourceRange)) {
-							blockTemp += blockLight/500.0F;
-							//Radiator Override
-							if (heatState.getBlock() instanceof TemperatureEmitter) {
-								blockTemp = ((TemperatureEmitter)heatState.getBlock()).getTemperatureModification(heatState);
+						//Complex calculation for distance
+						boolean doDistanceCalculation = true;
+						if (doDistanceCalculation) {
+							double effectiveDistance = getEffectiveDistance(world, heatSource, pos, rangeInBlocks);
+							if (effectiveDistance <= rangeInBlocks) {								
+								totalBlockTemp+=blockTemp * (1 - effectiveDistance / rangeInBlocks);
 							}
-							else if (DataMaps.Server.blockTemperature.containsKey(RegistryHelper.blocks().getKey(heatState.getBlock()))) {
-								BlockTemperatureJsonHolder blockTemperatureData = DataMaps.Server.blockTemperature.get(RegistryHelper.blocks().getKey(heatState.getBlock()));
-								if (blockTemperatureData.getStateChangeProperty() != null) {
-									boolean setTemp = false;
-									List<Triple<IBlockPropertyHandler<?>,List<PropertyPair<?>>,Map<String,Float>>> changeProperty = blockTemperatureData.getStateChangeProperty();
-									first:
-										for (Triple<IBlockPropertyHandler<?>, List<PropertyPair<?>>, Map<String, Float>> handler : changeProperty) {
-											boolean meets = true;
-											for (PropertyPair<?> requirements : handler.getMiddle()) {
-												if (!heatState.getValue(requirements.getFirst()).equals(requirements.getSecond())) {
-													meets = false;
-													break;
-												}
-											}
-											if (meets)
-												for (String prop2 : handler.getRight().keySet())
-													if (heatState.getValue(handler.getLeft().derivedProperty()).equals(handler.getLeft().getValue(prop2))) {
-														blockTemp += handler.getRight().get(prop2);
-														setTemp = true;
-														break first;
-													}
-										}
-									if (!setTemp) blockTemp += blockTemperatureData.getTemperatureModifier();
-								}
-								else {
-									blockTemp += blockTemperatureData.getTemperatureModifier();
-
-									if (blockTemperatureData.usesLevelProperty()) {
-										if (heatState.hasProperty(BlockStateProperties.LEVEL)) {
-											blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL)+1)/16;
-										}
-										else if (heatState.hasProperty(BlockStateProperties.LEVEL_COMPOSTER)) {
-											blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_COMPOSTER)+1)/9;
-										}
-										else if (heatState.hasProperty(BlockStateProperties.LEVEL_FLOWING)) {
-											blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_FLOWING))/8;
-										}
-										else if (heatState.hasProperty(BlockStateProperties.LEVEL_CAULDRON)) {
-											blockTemp*=(heatState.getValue(BlockStateProperties.LEVEL_CAULDRON)+1)/4;
-										}
-									}
-								}
-							}
-							
-							//Complex calculation for distance
-							boolean doDistanceCalculation = true;
-							if (doDistanceCalculation) {
-								double effectiveDistance = getEffectiveDistance(world, heatSource, pos, rangeInBlocks);
-								if (effectiveDistance <= rangeInBlocks) {								
-									totalBlockTemp+=blockTemp * (1 - effectiveDistance / rangeInBlocks);
-								}
-							}
-							else totalBlockTemp+=blockTemp;
 						}
+						else totalBlockTemp+=blockTemp;
 					}
 				}
-			}
-			return totalBlockTemp;
+				return totalBlockTemp;
+			});
 
 		case SHADE:
 			return ((skyLight / 7.5F) - 1);
 
 		case ENTITY:
 			float totalEntityTemp = 0;
-			rangeInBlocks = 5;
+			int rangeInBlocks = 5;
 			for (Entity entity : world.getEntitiesOfClass(Entity.class, /*AABB.encapsulatingFullBlocks*/new AABB(pos.offset(rangeInBlocks, rangeInBlocks, rangeInBlocks), pos.offset(-rangeInBlocks, -rangeInBlocks, -rangeInBlocks)))) {
 				float sourceRange = DataMaps.Server.entityTemperature.containsKey(RegistryHelper.entityTypes().getKey(entity.getType())) ? DataMaps.Server.entityTemperature.get(RegistryHelper.entityTypes().getKey(entity.getType())).getRange() : 5;
 				if (pos.closerThan(entity.blockPosition(), sourceRange)) {
@@ -340,7 +326,7 @@ public class SurviveEvents {
 	}
 
 	private enum TempType {
-		BIOME("biome", 7, false), BLOCK("block", 9, true), ENTITY("entity", 9, true), SHADE("shade", 200, true), SUN("sun", 200, true);
+		BIOME("biome", 6, false), BLOCK("block", 8, true), ENTITY("entity", 9, true), SHADE("shade", 200, true), SUN("sun", 200, true);
 
 		String name;
 		double reductionAmount;
@@ -451,7 +437,8 @@ public class SurviveEvents {
 	}
 
 	public static void addReload(LevelAccessor lvl) {
-		System.out.println("Start Resistering Temperature Queries");
+		TempEvents.buildStateCache();
+		Survive.getInstance().getLogger().info("Start Resistering Temperature Queries");
 		//Environment
 		for (TempType type : TempType.values()) {
 			TemperatureQuery.registerQuery("survive:"+type.getName(), ContributingFactor.ENVIRONMENTAL, (player, temp, level, pos, applyTemp)-> {
