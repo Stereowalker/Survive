@@ -32,6 +32,7 @@ import com.stereowalker.survive.core.particles.SParticleTypes;
 import com.stereowalker.survive.core.registries.SurviveRegistries;
 import com.stereowalker.survive.events.SleepEvents;
 import com.stereowalker.survive.events.SurviveEvents;
+import com.stereowalker.survive.events.TempEvents;
 import com.stereowalker.survive.events.ThirstEvents;
 import com.stereowalker.survive.hooks.ColdStorage;
 import com.stereowalker.survive.json.ArmorJsonHolder;
@@ -92,10 +93,10 @@ import com.stereowalker.unionlib.api.collectors.ReloadListeners;
 import com.stereowalker.unionlib.api.creativetabs.CreativeTabBuilder;
 import com.stereowalker.unionlib.api.creativetabs.CreativeTabPopulator;
 import com.stereowalker.unionlib.api.registries.RegistryCollector;
-import com.stereowalker.unionlib.client.gui.components.ModList;
 import com.stereowalker.unionlib.event.potionfluid.FluidToPotionEvent;
 import com.stereowalker.unionlib.event.potionfluid.PotionToFluidEvent;
 import com.stereowalker.unionlib.insert.Inserts;
+import com.stereowalker.unionlib.insert.ServerInserts;
 import com.stereowalker.unionlib.mod.MinecraftMod;
 import com.stereowalker.unionlib.mod.PacketHolder;
 import com.stereowalker.unionlib.mod.ServerSegment;
@@ -104,8 +105,6 @@ import com.stereowalker.unionlib.util.VersionHelper;
 import com.stereowalker.unionlib.world.level.material.FluidProperties;
 
 import net.minecraft.client.renderer.BiomeColors;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
@@ -152,8 +151,6 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	public static final TemperatureConfig TEMPERATURE_CONFIG = new TemperatureConfig();
 	public static final ThirstConfig THIRST_CONFIG = new ThirstConfig();
 	public static final WellbeingConfig WELLBEING_CONFIG = new WellbeingConfig();
-	
-
 	
 	public static void sendPacket(WrittenBookContent tag) {
 		new ServerboundPlayerStatusBookPacket(tag, !Survive.TEMPERATURE_CONFIG.displayTempInFahrenheit, 
@@ -332,6 +329,8 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addInsert(Inserts.LIVING_TICK, SurviveEvents::updateEnvTemperature);
 		collector.addInsert(Inserts.PLAYER_RESTORE, SurviveEvents::restoreStats);
 		collector.addInsert(Inserts.LOGGED_OUT, SurviveEvents::desyncClient);
+		collector.addInsert(ServerInserts.SERVER_STARTING, TempEvents::serverStart);
+		collector.addInsert(ServerInserts.SERVER_STOPPING, TempEvents::serverStop);
 		collector.addInsert(Inserts.LEVEL_LOAD, SurviveEvents::addReload);
 		collector.addInsert(Inserts.LOOT_TABLE_LOAD, (id,lootTable,cancel)->{
 			String ANIMAL_LOOT = "entities/animal_fat";
