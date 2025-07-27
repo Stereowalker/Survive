@@ -22,10 +22,6 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 
-/**
- * Maps marker type to texture.
- * @author Hunternif
- */
 public class FluidDataManager implements IResourceReloadListener<Map<ResourceLocation, FluidJsonHolder>> {
 	@Override
 	public CompletableFuture<Map<ResourceLocation, FluidJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
