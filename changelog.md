@@ -1,4 +1,1 @@
-- The player now starts with a few stacks of nutrients
-- Prevent nutrients from stacking up beyond 3000
-- Used a data object to ensure version consistency
-- Use loader helper to add pool to loot tables
+- Improved block temp calculation
