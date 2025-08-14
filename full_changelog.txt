@@ -1,3 +1,6 @@
+[10.1.9]
+- Improved block temp calculation
+
 [10.1.8]
 - The player now starts with a few stacks of nutrients
 - Prevent nutrients from stacking up beyond 3000
