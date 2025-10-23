@@ -78,6 +78,7 @@ import com.stereowalker.survive.world.item.enchantment.StaminaEnchantments;
 import com.stereowalker.survive.world.item.enchantment.TemperatureEnchantments;
 import com.stereowalker.survive.world.level.CGameRules;
 import com.stereowalker.survive.world.level.block.SBlocks;
+import com.stereowalker.survive.world.level.block.entity.SBlockEntityType;
 import com.stereowalker.survive.world.level.material.PurifiedWaterFluid;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.seasons.Seasons;
@@ -319,6 +320,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addRegistry(SurviveRegistries.SEASON, SurviveRegistries.Keys.SEASON, true);
 		collector.addCustom(SurviveRegistries.Keys.CONDITION, TemperatureChangeConditions::registerAll);
 		collector.addCustom(SurviveRegistries.Keys.SEASON, Seasons::registerAll);
+		collector.addCustom(Registries.BLOCK_ENTITY_TYPE, SBlockEntityType::registerAll);
 		collector.addCustom(Registries.MOB_EFFECT, (override) -> {
 			MobEffects.FIRE_RESISTANCE.value().addAttributeModifier(SAttributes.HEAT_RESISTANCE.holder(), "795606d6-4ac6-4ae7-8311-63ccdb293eb4", 5.0D, AttributeModifier.Operation.ADD_VALUE);
 		});
