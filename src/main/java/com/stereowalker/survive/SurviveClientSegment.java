@@ -17,6 +17,7 @@ import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.TemperatureRegulatorPlateItem;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
+import com.stereowalker.survive.world.item.component.SDataComponents;
 import com.stereowalker.survive.world.level.block.PlatedTemperatureRegulatorBlock;
 import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.SFluids;
@@ -45,8 +46,11 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -139,6 +143,13 @@ public class SurviveClientSegment extends ClientSegment {
 					TooltipEvents.accessoryTooltip(player, stack, tip, showWeight, showTemp);
 				}
 				FoodUtils.applyFoodStatusToTooltip(player, stack, tip);
+				
+				if (SDataComponents.BIOME_SOURCE_D.hasData(stack) && player.level().registryAccess()
+				.lookup(Registries.BIOME)
+				.get().get(ResourceKey.create(Registries.BIOME, SDataComponents.BIOME_SOURCE_D.getData(stack)))
+				.get().is(BiomeTags.IS_OCEAN)) {
+					tip.add(Component.translatable("Sea Water"));
+				}
 			}
 		});
 	}
