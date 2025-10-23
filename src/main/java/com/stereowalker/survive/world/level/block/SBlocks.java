@@ -26,8 +26,8 @@ public class SBlocks {
             .sound(SoundType.EMPTY));
 	@RegistryObject("purified_water_cauldron")
 	public static final Block PURIFIED_WATER_CAULDRON = new LayeredCauldronBlock(BlockBehaviour.Properties.copy(Blocks.CAULDRON), (precipitation) -> false, SCauldronInteraction.PURIFIED_WATER);
-	@RegistryObject("potash_cauldron")
-	public static final Block POTASH_CAULDRON = new PotashCauldronBlock(BlockBehaviour.Properties.copy(Blocks.CAULDRON));
+	@RegistryObject("drying_cauldron")
+	public static final Block DRYING_CAULDRON = new DryingCauldronBlock(BlockBehaviour.Properties.copy(Blocks.CAULDRON));
 	@RegistryObject("temperature_regulator")
 	public static final Block TEMPERATURE_REGULATOR = new TemperatureRegulatorBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).requiresCorrectToolForDrops().strength(3.5F).noOcclusion());
 	@RegistryObject("plated_temperature_regulator")

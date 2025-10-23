@@ -1,0 +1,28 @@
+package com.stereowalker.survive.mixins;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import com.stereowalker.survive.world.level.block.entity.DryingCauldronBlockEntity;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AbstractCauldronBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+
+@Mixin(AbstractCauldronBlock.class)
+public class AbstractCauldronBlockMixin {
+	@Inject(method = "use", at = @At(value = "HEAD"), cancellable = true)
+	public void useItemOn_inject(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit, CallbackInfoReturnable<InteractionResult> cir) {
+		if (pState.getBlock() == Blocks.CAULDRON && !pLevel.isClientSide && DryingCauldronBlockEntity.setResult(pLevel, pPlayer.getItemInHand(pHand), pPos, pPlayer, pHand)) {
+			cir.setReturnValue(InteractionResult.sidedSuccess(pLevel.isClientSide));
+		}
+	}
+}

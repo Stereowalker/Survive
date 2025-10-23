@@ -14,12 +14,16 @@ import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.IRoastedEntity;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
+import com.stereowalker.survive.world.item.HygieneItems;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.TemperatureRegulatorPlateItem;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
 import com.stereowalker.survive.world.item.component.SDataComponents;
+import com.stereowalker.survive.world.level.block.DryingCauldronBlock;
+import com.stereowalker.survive.world.level.block.DryingCauldronBlock.FluidToDry;
 import com.stereowalker.survive.world.level.block.PlatedTemperatureRegulatorBlock;
 import com.stereowalker.survive.world.level.block.SBlocks;
+import com.stereowalker.survive.world.level.block.entity.DryingCauldronBlockEntity;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.unionlib.api.collectors.ColorOverrideCollector;
 import com.stereowalker.unionlib.api.collectors.InsertCollector;
@@ -35,13 +39,16 @@ import com.stereowalker.unionlib.util.LoaderHelper;
 import com.stereowalker.unionlib.util.ScreenHelper;
 import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 import com.stereowalker.unionlib.util.VersionHelper;
+import com.stereowalker.unionlib.util.math.Color;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
@@ -90,17 +97,33 @@ public class SurviveClientSegment extends ClientSegment {
 			return Survive.PURIFIED_WATER_COLOR;
 		}, SBlocks.PURIFIED_WATER, SBlocks.PURIFIED_WATER_CAULDRON);
 		collector.overrideBlocks((state, displayReader, blockPos, tintIndex) -> {
-			return 0x483c35;
-		}, SBlocks.POTASH_CAULDRON);
+			if (state.getValue(DryingCauldronBlock.FLUID) == FluidToDry.POTASH) {
+				return Color.parse("0x483c35").brighter(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+			}
+			else if (state.getValue(DryingCauldronBlock.FLUID) == FluidToDry.SEA_SALT) {
+				return Color.fromIntRGB(BiomeColors.getAverageWaterColor(displayReader, blockPos))
+						.brighter(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+			}
+			else {
+				return new Color(1f, 0, 0).brighter(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+			}
+//			if (displayReader.getBlockEntity(blockPos) instanceof DryingCauldronBlockEntity dbe) {
+//				if (dbe.getResult().getItem() == HygieneItems.POTASH) {
+//				}
+//				else {
+//				}
+//			}
+//			return 0x483c35;
+		}, SBlocks.DRYING_CAULDRON);
 		collector.overrideBlocks((state, displayReader, blockPos, tintIndex) -> {
 			return PlatedTemperatureRegulatorBlock.getColor(state);
 		}, SBlocks.PLATED_TEMPERATURE_REGULATOR);
 		collector.overrideItems((stack, tintIndex) -> {
 			return tintIndex > 0 ? -1 : PotionUtils.getPotion(stack) == SPotions.PURIFIED_WATER.holder().value() ? Survive.PURIFIED_WATER_COLOR : PotionUtils.getColor(stack);
 	      }, Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION);
-		collector.overrideItems((stack, tintIndex) -> {
-			return TemperatureRegulatorPlateItem.getColor(stack);
-		}, SItems.LARGE_HEATING_PLATE, SItems.LARGE_COOLING_PLATE, SItems.MEDIUM_HEATING_PLATE, SItems.MEDIUM_COOLING_PLATE, SItems.SMALL_HEATING_PLATE, SItems.SMALL_COOLING_PLATE);
+//		collector.overrideItems((stack, tintIndex) -> {
+//			return TemperatureRegulatorPlateItem.getColor(stack);
+//		}, SItems.LARGE_HEATING_PLATE, SItems.LARGE_COOLING_PLATE, SItems.MEDIUM_HEATING_PLATE, SItems.MEDIUM_COOLING_PLATE, SItems.SMALL_HEATING_PLATE, SItems.SMALL_COOLING_PLATE);
 	}
 	
 	@Override
