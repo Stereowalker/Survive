@@ -329,14 +329,14 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	
 	@Override
 	public void registerInserts(InsertCollector collector) {
-		collector.addInsert(Inserts.LIVING_TICK, SurviveEvents::sendToClient);
-		collector.addInsert(Inserts.LIVING_TICK, SurviveEvents::updateEnvTemperature);
-		collector.addInsert(Inserts.PLAYER_RESTORE, SurviveEvents::restoreStats);
-		collector.addInsert(Inserts.LOGGED_OUT, SurviveEvents::desyncClient);
-		collector.addInsert(ServerInserts.SERVER_STARTING, TempEvents::serverStart);
-		collector.addInsert(ServerInserts.SERVER_STOPPING, TempEvents::serverStop);
-		collector.addInsert(Inserts.LEVEL_LOAD, SurviveEvents::addReload);
-		collector.addInsert(Inserts.LOOT_TABLE_LOAD, (id,lootTable,cancel)->{
+		collector.addInsert(Inserts.LIVING_TICK, insert -> SurviveEvents.sendToClient(insert.living()));
+		collector.addInsert(Inserts.LIVING_TICK, insert -> SurviveEvents.updateEnvTemperature(insert.living()));
+		collector.addInsert(Inserts.PLAYER_RESTORE, insert -> SurviveEvents.restoreStats(insert.thisPlayer(), insert.thatPlayer(), insert.keepEverything()));
+		collector.addInsert(Inserts.LOGGED_OUT, insert -> SurviveEvents.desyncClient(insert.player()));
+		collector.addInsert(ServerInserts.SERVER_STARTING, insert -> TempEvents.serverStart(insert.server()));
+		collector.addInsert(ServerInserts.SERVER_STOPPING, insert -> TempEvents.serverStop(insert.server()));
+		collector.addInsert(Inserts.LEVEL_LOAD, insert -> SurviveEvents.addReload(insert.level()));
+		collector.addInsert(Inserts.LOOT_TABLE_LOAD, insert ->{
 			String ANIMAL_LOOT = "entities/animal_fat";
 			List<Pair<ResourceLocation, List<String>>> LOOT_MODIFIERS = Lists.newArrayList(
 					Pair.of(VersionHelper.toLoc("entities/sheep"), Lists.newArrayList(ANIMAL_LOOT)),
@@ -351,10 +351,10 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			};
 			
 			LOOT_MODIFIERS.forEach((pair) -> {
-				if(id.equals(pair.getKey())) {
+				if(insert.name().equals(pair.getKey())) {
 					pair.getValue().forEach((file) -> {
 						Survive.getInstance().debug("Injecting \""+file+"\" in "+pair.getKey());
-						LoaderHelper.addPoolToLootTable(lootTable.get(), LootPool.lootPool()
+						LoaderHelper.addPoolToLootTable(insert.table().get(), LootPool.lootPool()
 								.add(getInjectEntry.apply(file, 1))
 								.setBonusRolls(UniformGenerator.between(0.0F, 1.0F))
 								.name("survive_inject").build());
@@ -362,22 +362,22 @@ public class Survive extends MinecraftMod implements PacketHolder {
 				}
 			});
 		});
-		collector.addInsert(Inserts.MENU_OPEN, (player, menu)->{
-			if (player != null)
-				FoodUtils.giveLifespanToFood(menu.getItems(), player.level().getGameTime());
+		collector.addInsert(Inserts.MENU_OPEN, insert ->{
+			if (insert.player() != null)
+				FoodUtils.giveLifespanToFood(insert.menu().getItems(), insert.player().level().getGameTime());
 		});
-		collector.addInsert(Inserts.PLAYER_CAN_SLEEP, SleepEvents::allowSleep);
-		collector.addInsert(Inserts.PLAYER_CONTINUE_SLEEP, SleepEvents::allowSleep);
-		collector.addInsert(Inserts.INTERACT_WITH_BLOCK, ThirstEvents::interactWithWaterSourceBlock);
-		collector.addInsert(Inserts.INTERACT_WITH_ITEM, ThirstEvents::interactWithWaterSourceBlock);
-		collector.addInsert(Inserts.INTERACT_WITH_ITEM, StaminaData::clickItem);
-		collector.addInsert(Inserts.MENU_OPEN, (player, menu) -> {
-			if (menu instanceof ChestMenu chest && chest.getContainer() instanceof ChestBlockEntity block && player instanceof ServerPlayer pl) {
+		collector.addInsert(Inserts.PLAYER_CAN_SLEEP, insert -> SleepEvents.allowSleep(insert.player(), insert.pos(), insert.vanillaProblem(), insert.problem()));
+		collector.addInsert(Inserts.PLAYER_CONTINUE_SLEEP, insert -> SleepEvents.allowSleep(insert.player(), insert.sleepingPos(), insert.mayContinueSleeping()));
+		collector.addInsert(Inserts.INTERACT_WITH_BLOCK, insert -> ThirstEvents.interactWithWaterSourceBlock(insert.player(), insert.level(), insert.hand(), insert.hitResult(), insert.cancel()));
+		collector.addInsert(Inserts.INTERACT_WITH_ITEM, insert -> ThirstEvents.interactWithWaterSourceBlock(insert.player(), insert.level(), insert.hand(), insert.cancel()));
+		collector.addInsert(Inserts.INTERACT_WITH_ITEM, insert -> StaminaData.clickItem(insert.player(), insert.level(), insert.hand(), insert.cancel()));
+		collector.addInsert(Inserts.MENU_OPEN, insert -> {
+			if (insert.menu() instanceof ChestMenu chest && chest.getContainer() instanceof ChestBlockEntity block && insert.player() instanceof ServerPlayer pl) {
 				ColdStorage cold = (ColdStorage)block;
 			}
 		});
-		collector.addInsert(Inserts.LEVEL_WAKE_UP, (level, time)->{
-			SleepEvents.replenishEnergy(level);
+		collector.addInsert(Inserts.LEVEL_WAKE_UP, insert -> {
+			SleepEvents.replenishEnergy(insert.level());
 		});
 	}
 	

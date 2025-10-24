@@ -131,30 +131,30 @@ public class SurviveClientSegment extends ClientSegment {
 	
 	@Override
 	public void registerInserts(InsertCollector collector) {
-		collector.addInsert(ClientInserts.SCREEN_RENDER_FINISH, (screen, renderer, mouse) -> {
-			if (screen instanceof AbstractContainerScreen cont && cont.getMenu() instanceof ColdMenu cold) {
+		collector.addInsert(ClientInserts.SCREEN_RENDER_FINISH, insert -> {
+			if (insert.screen() instanceof AbstractContainerScreen cont && cont.getMenu() instanceof ColdMenu cold) {
 				float progress = (float)cold.coldness() / (float)cold.maxColdness();
 				if (progress > 0) {
 					int i = ((cont.width - cont.imageWidth) / 2) + 9;
 					int j = ((cont.height - cont.imageHeight) / 2);
 					if (cont instanceof ContainerScreen c) j += c.containerRows * 18;
 					j += 96;
-					renderer.blit(VersionHelper.toLoc("survive:textures/gui/coldness.png"), i, j + 17, 0, 0, 158, 22);
+					insert.guiRenderer().blit(VersionHelper.toLoc("survive:textures/gui/coldness.png"), i, j + 17, 0, 0, 158, 22);
 					
 					int i1 = 142;
 					int j1 = Mth.ceil(progress * 142.0F);
-					renderer.blit(VersionHelper.toLoc("survive:textures/gui/coldness.png"), i + 8, j + 17 + 4, 0, 30, j1, 10);
+					insert.guiRenderer().blit(VersionHelper.toLoc("survive:textures/gui/coldness.png"), i + 8, j + 17 + 4, 0, 30, j1, 10);
 				}
 				
 			}
 		});
-		collector.addInsert(ClientInserts.ITEM_TOOLTIP, (stack, player, tip, flag)->{
-			if (player != null) {
+		collector.addInsert(ClientInserts.ITEM_TOOLTIP, insert ->{
+			if (insert.player() != null) {
 				boolean showWeight = false;
 				boolean showTemp = false;
 				if ((Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights) || Survive.TEMPERATURE_CONFIG.enabled) {
 					for(EquipmentSlot type : EquipmentSlot.values()) {
-						if (LoaderHelper.canEquip(player, stack, type) && type.getType() == Type.HUMANOID_ARMOR) {
+						if (LoaderHelper.canEquip(insert.player(), insert.itemStack(), type) && type.getType() == Type.HUMANOID_ARMOR) {
 							showWeight = Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights;
 							showTemp = Survive.TEMPERATURE_CONFIG.enabled;
 							break;
@@ -163,15 +163,15 @@ public class SurviveClientSegment extends ClientSegment {
 				}
 
 				if (showWeight || showTemp) {
-					TooltipEvents.accessoryTooltip(player, stack, tip, showWeight, showTemp);
+					TooltipEvents.accessoryTooltip(insert.player(), insert.itemStack(), insert.tooltips(), showWeight, showTemp);
 				}
-				FoodUtils.applyFoodStatusToTooltip(player, stack, tip);
+				FoodUtils.applyFoodStatusToTooltip(insert.player(), insert.itemStack(), insert.tooltips());
 				
-				if (SDataComponents.BIOME_SOURCE_D.hasData(stack) && player.level().registryAccess()
+				if (SDataComponents.BIOME_SOURCE_D.hasData(insert.itemStack()) && insert.player().level().registryAccess()
 				.lookup(Registries.BIOME)
-				.get().get(ResourceKey.create(Registries.BIOME, SDataComponents.BIOME_SOURCE_D.getData(stack)))
+				.get().get(ResourceKey.create(Registries.BIOME, SDataComponents.BIOME_SOURCE_D.getData(insert.itemStack())))
 				.get().is(BiomeTags.IS_OCEAN)) {
-					tip.add(Component.translatable("Sea Water"));
+					insert.tooltips().add(Component.translatable("Sea Water"));
 				}
 			}
 		});
