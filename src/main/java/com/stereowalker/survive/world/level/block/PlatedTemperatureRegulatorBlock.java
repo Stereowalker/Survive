@@ -11,6 +11,7 @@ import com.stereowalker.survive.world.item.TemperatureRegulatorPlateItem;
 import com.stereowalker.survive.world.level.block.state.properties.SBlockStateProperties;
 import com.stereowalker.survive.world.level.block.state.properties.TempRegulationPlateSize;
 import com.stereowalker.survive.world.level.block.state.properties.TempRegulationPlateType;
+import com.stereowalker.unionlib.util.math.Color;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -79,18 +80,18 @@ public class PlatedTemperatureRegulatorBlock extends AbstractTemperatureRegulato
 		return pState.getValue(TEMP_REG_TYPE) == newControl && pState.getValue(RADIATOR_SIZE) == newSize;
 	}
 
-	public static int getColor(BlockState pState) {
+	public static Color getColor(BlockState pState) {
 		if (pState.getBlock() instanceof PlatedTemperatureRegulatorBlock) {
 			if (pState.getValue(POWERED)) {
 				switch (pState.getValue(TEMP_REG_TYPE)) {
 				case HEATER:
-					return 0xbd6d3f;
+					return Color.parse("#bd6d3f");
 				case CHILLER:
-					return 0x7ab2d3;
+					return Color.parse("#7ab2d3");
 				}
 			} else return pState.getValue(TEMP_REG_TYPE).getColor();
 		}
-		return 0xFFFFFF;
+		return Color.named("white");
 	}
 
 	@Override
