@@ -1,12 +1,13 @@
 package com.stereowalker.survive.world.item.enchantment;
 
+import com.stereowalker.survive.Survive;
 import com.stereowalker.unionlib.core.registries.RegistryHolder;
 import com.stereowalker.unionlib.core.registries.RegistryObject;
 
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
-@RegistryHolder(registry = Enchantment.class)
+@RegistryHolder(namespace = Survive.MOD_ID)
 public class StaminaEnchantments {
 	@RegistryObject("featherweight")
 	public static final Enchantment FEATHERWEIGHT = new FeatherweightEnchantment(Enchantment.definition(ItemTags.ARMOR_ENCHANTABLE, 5, 5, Enchantment.dynamicCost(6, 5), Enchantment.dynamicCost(26, 5), 1, new EquipmentSlot[] {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET}));
