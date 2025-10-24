@@ -116,14 +116,14 @@ public class SurviveClientSegment extends ClientSegment {
 //			return 0x483c35;
 		}, SBlocks.DRYING_CAULDRON);
 		collector.overrideBlocks((state, displayReader, blockPos, tintIndex) -> {
-			return PlatedTemperatureRegulatorBlock.getColor(state);
+			return PlatedTemperatureRegulatorBlock.getColor(state).toIntRGB();
 		}, SBlocks.PLATED_TEMPERATURE_REGULATOR);
 		collector.overrideItems((stack, tintIndex) -> {
 			return tintIndex > 0 ? -1 : PotionUtils.getPotion(stack) == SPotions.PURIFIED_WATER.holder().value() ? Survive.PURIFIED_WATER_COLOR : PotionUtils.getColor(stack);
 	      }, Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION);
-//		collector.overrideItems((stack, tintIndex) -> {
-//			return TemperatureRegulatorPlateItem.getColor(stack);
-//		}, SItems.LARGE_HEATING_PLATE, SItems.LARGE_COOLING_PLATE, SItems.MEDIUM_HEATING_PLATE, SItems.MEDIUM_COOLING_PLATE, SItems.SMALL_HEATING_PLATE, SItems.SMALL_COOLING_PLATE);
+		collector.overrideItems((stack, tintIndex) -> {
+			return TemperatureRegulatorPlateItem.getColor(stack).toIntARGB();
+		}, SItems.LARGE_HEATING_PLATE, SItems.LARGE_COOLING_PLATE, SItems.MEDIUM_HEATING_PLATE, SItems.MEDIUM_COOLING_PLATE, SItems.SMALL_HEATING_PLATE, SItems.SMALL_COOLING_PLATE);
 	}
 	
 	@Override
