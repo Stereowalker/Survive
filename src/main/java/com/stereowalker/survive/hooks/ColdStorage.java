@@ -7,6 +7,7 @@ import com.stereowalker.survive.FoodUtils;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.component.SDataComponents;
+import com.stereowalker.unionlib.util.VersionHelper.VanillaComponents;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -78,7 +79,7 @@ public interface ColdStorage {
 			int foodAmount = 0;
 			for (int i = 0; i < slotCount(); i++) {
 				ItemStack stack = get(i);
-				if (stack./*has(DataComponents.FOOD)*/isEdible()) {
+				if (VanillaComponents.FOOD.hasData(stack)) {
 					FoodUtils.giveLifespanToFood(stack, gameTime);
 					foodAmount += stack.getCount();
 				}

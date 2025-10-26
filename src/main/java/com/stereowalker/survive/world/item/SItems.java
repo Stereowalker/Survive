@@ -14,7 +14,6 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 
 @RegistryHolder(namespace = Survive.MOD_ID)
 public class SItems {

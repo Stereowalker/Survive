@@ -16,7 +16,6 @@ import com.stereowalker.survive.needs.IRoastedEntity;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.inventory.SMenuType;
-import com.stereowalker.survive.world.item.HygieneItems;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.TemperatureRegulatorPlateItem;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
@@ -25,7 +24,6 @@ import com.stereowalker.survive.world.level.block.DryingCauldronBlock;
 import com.stereowalker.survive.world.level.block.DryingCauldronBlock.FluidToDry;
 import com.stereowalker.survive.world.level.block.PlatedTemperatureRegulatorBlock;
 import com.stereowalker.survive.world.level.block.SBlocks;
-import com.stereowalker.survive.world.level.block.entity.DryingCauldronBlockEntity;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.unionlib.api.collectors.ColorOverrideCollector;
 import com.stereowalker.unionlib.api.collectors.InsertCollector;
@@ -42,11 +40,11 @@ import com.stereowalker.unionlib.util.LoaderHelper;
 import com.stereowalker.unionlib.util.ScreenHelper;
 import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 import com.stereowalker.unionlib.util.VersionHelper;
+import com.stereowalker.unionlib.util.VersionHelper.VanillaComponents;
 import com.stereowalker.unionlib.util.math.Color;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -235,7 +233,7 @@ public class SurviveClientSegment extends ClientSegment {
 			}
 		});
 		collector.register("nutrition", Order.END, (gui,renderer,width,height)->{
-			if (gui.getCameraPlayer() instanceof IRealisticEntity real && Survive.CONFIG.nutrition_enabled && (gui.getCameraPlayer().getMainHandItem()/*.has(DataComponents.FOOD)*/.isEdible() || gui.getCameraPlayer().getOffhandItem()/*.has(DataComponents.FOOD)*/.isEdible() || Survive.CONFIG.always_render_nut)) {
+			if (gui.getCameraPlayer() instanceof IRealisticEntity real && Survive.CONFIG.nutrition_enabled && (VanillaComponents.FOOD.hasData(gui.getCameraPlayer().getMainHandItem()) || VanillaComponents.FOOD.hasData(gui.getCameraPlayer().getOffhandItem()) || Survive.CONFIG.always_render_nut)) {
 				ScreenOffset position = Survive.CONFIG.nut_offset;
 				int x = ScreenHelper.getXOffset(position, gui.minecraft) + Survive.CONFIG.nut_xLoc;
 				int y = ScreenHelper.getYOffset(position, gui.minecraft) + Survive.CONFIG.nut_yLoc;

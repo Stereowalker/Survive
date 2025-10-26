@@ -15,6 +15,7 @@ import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.api.insert.InsertResultCanceller;
 import com.stereowalker.unionlib.util.RegistryHelper;
+import com.stereowalker.unionlib.util.VersionHelper.VanillaComponents;
 
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
@@ -71,7 +72,7 @@ public class StaminaData extends SurviveData implements Stamina {
 	}
 	
 	public void eat(Item pItem, ItemStack pStack, LivingEntity entity) {
-		if (pStack.isEdible() && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(pItem))) {
+		if (VanillaComponents.FOOD.hasData(pStack) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(pItem))) {
 			if (entity instanceof ServerPlayer && !entity.level().isClientSide) {
 				ServerPlayer player = (ServerPlayer)entity;
 				relax(DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(pItem)).getEnergyAmount(), player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
