@@ -115,8 +115,17 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 		List<Triple<IBlockPropertyHandler<?>, List<PropertyPair<?>>, Map<String, Float>>> toRemove = Lists.newArrayList();
 		for (Triple<IBlockPropertyHandler<?>, List<PropertyPair<?>>, Map<String, Float>> prop : stateChangePropertyIn) {
 			if (!BuiltInRegistries.BLOCK.get(blockID).defaultBlockState().hasProperty(prop.getLeft().derivedProperty())) {
-				Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data {} from JSON: This block has doesn't have the \"{}\" property, please remove this line", blockID, prop.getLeft().derivedProperty().getName());
-				toRemove.add(prop);
+				boolean found = false;
+				for (var property : BuiltInRegistries.BLOCK.get(blockID).defaultBlockState().getProperties()) {
+					if (property.equals(prop.getLeft().derivedProperty())) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data {} from JSON: This block has doesn't have the \"{}\" property, please remove this line", blockID, prop.getLeft().derivedProperty().getName());
+					toRemove.add(prop);
+				}
 			}
 		}
 		toRemove.forEach((s) -> stateChangePropertyIn.remove(s));
