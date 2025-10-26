@@ -233,8 +233,16 @@ public class DryingCauldronBlockEntity extends BlockEntity {
 		}
 		if (flag) sunPower -= 20;
 		BlockState blockBelow = level.getBlockState(worldPosition.below());
-		if (blockBelow.getBlock() == Blocks.CAMPFIRE && blockBelow.getValue(CampfireBlock.LIT)) {
-			camfirePower = 300;
+		if (blockBelow.getValue(CampfireBlock.LIT)) {
+			if (blockBelow.getBlock() == Blocks.CAMPFIRE) {
+				camfirePower = 50;
+			}
+			else if (blockBelow.getBlock() == Blocks.SOUL_CAMPFIRE) {
+				camfirePower = 70;
+			}
+			else if (blockBelow.getBlock() == SBlocks.REALISTIC_CAMPFIRE) {
+				camfirePower = blockBelow.getValue(RealisticCampfireBlock.HEAT) * 75; //Maxes at 300;
+			}
 		}
 		int combinedPower = sunPower + camfirePower;
 		if (combinedPower > 0) {

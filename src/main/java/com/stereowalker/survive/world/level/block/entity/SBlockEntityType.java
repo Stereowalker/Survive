@@ -27,6 +27,10 @@ public class SBlockEntityType {
 	@RegistryObject("drying_cauldron")
 	public static final BlockEntityType<DryingCauldronBlockEntity> DRYING_CAULDRON = register("drying_cauldron", BlockEntityType.Builder.of(DryingCauldronBlockEntity::new, SBlocks.DRYING_CAULDRON)
 	.build(Util.fetchChoiceType(References.BLOCK_ENTITY, "drying_cauldron")));
+	
+	@RegistryObject("realistic_campfire")
+	public static final BlockEntityType<RealisticCampfireBlockEntity> REALISIC_CAMPFIRE = register("realistic_campfire", BlockEntityType.Builder.of(RealisticCampfireBlockEntity::new, SBlocks.REALISTIC_CAMPFIRE)
+	.build(Util.fetchChoiceType(References.BLOCK_ENTITY, "realistic_campfire")));
 			
 
 	public static void registerAll(RegistryCollector.Custom<BlockEntityType<?>> registry) {
