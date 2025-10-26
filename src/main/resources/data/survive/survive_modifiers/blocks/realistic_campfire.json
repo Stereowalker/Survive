@@ -1,0 +1,13 @@
+{
+  "temperature_modifier": 0,
+  "blockstate_property_overrides": [
+    {
+	  "name": "heat",
+	  "type": "integer",
+	  "min": 0,
+	  "max": 4,
+      "values": {"1": 1.2168, "2": 2.4336, "3": 3.6504, "4": 4.8672}
+    }   
+  ],
+  "range": 5
+}
