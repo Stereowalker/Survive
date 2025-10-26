@@ -90,6 +90,7 @@ import com.stereowalker.unionlib.api.collectors.ConfigCollector;
 import com.stereowalker.unionlib.api.collectors.DefaultAttributeModifier;
 import com.stereowalker.unionlib.api.collectors.FluidPropertyCollector;
 import com.stereowalker.unionlib.api.collectors.InsertCollector;
+import com.stereowalker.unionlib.api.collectors.PackCollector;
 import com.stereowalker.unionlib.api.collectors.PacketCollector;
 import com.stereowalker.unionlib.api.collectors.ReloadListeners;
 import com.stereowalker.unionlib.api.creativetabs.CreativeTabBuilder;
@@ -111,9 +112,11 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -248,6 +251,11 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		
 		collector.builder().addContainer(SItems.FILLED_CANTEEN);
 		collector.builder().addContainer(SItems.FILLED_NETHERITE_CANTEEN);
+	}
+	
+	@Override
+	public void setupPacks(PackCollector collector) {
+		collector.addPack("datapacks/replace_vanilla", Component.literal("Replace Vanilla"), PackType.SERVER_DATA);
 	}
 	
 	@SuppressWarnings("unchecked")
