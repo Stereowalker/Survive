@@ -25,6 +25,7 @@ import com.stereowalker.survive.needs.WellbeingData;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.unionlib.util.RegistryHelper;
+import com.stereowalker.unionlib.util.VersionHelper.VanillaComponents;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -65,8 +66,8 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	
 	@Inject(method = "eat", at = @At("HEAD"))
 	public void eatInject(Level pLevel, ItemStack pFood, FoodProperties pFoodProperties, CallbackInfoReturnable<ItemStack> cir) {
-		if (pFood.has(DataComponents.FOOD) && foodData instanceof CustomFoodData custom) {
-			FoodProperties foodproperties = pFood.get(DataComponents.FOOD);
+		if (VanillaComponents.FOOD.hasData(pFood) && foodData instanceof CustomFoodData custom) {
+			FoodProperties foodproperties = VanillaComponents.FOOD.getData(pFood);
 			for (PossibleEffect effect : foodproperties.effects()) {
 				if (effect.effect().getEffect() == MobEffects.HUNGER || custom.IsSpoiled() == State.Spoiled) {
 					custom.consumeUnclean();
@@ -141,7 +142,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 				carbs = data.getCarbohydrateRatio();
 				fats = data.getFatRatio();
 			}
-			FoodProperties food = p_213357_2_.get(DataComponents.FOOD);
+			FoodProperties food = VanillaComponents.FOOD.getData(p_213357_2_);
 			float total = protein+carbs+fats;
 			this.nutritionData.carbs().add(food.nutrition()*Mth.ceil((carbs/total)*100));
 			this.nutritionData.protein().add(food.nutrition()*Mth.ceil((protein/total)*100));

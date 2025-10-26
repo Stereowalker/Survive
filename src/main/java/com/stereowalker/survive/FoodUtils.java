@@ -8,6 +8,7 @@ import com.stereowalker.survive.json.FoodJsonHolder;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.item.component.SDataComponents;
 import com.stereowalker.unionlib.util.RegistryHelper;
+import com.stereowalker.unionlib.util.VersionHelper.VanillaComponents;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
@@ -55,7 +56,7 @@ public class FoodUtils {
 	public static void giveLifespanToFood(NonNullList<ItemStack> items, long gametime) {
 		if (Survive.FOOD_CONFIG.enabled) {
 			items.forEach((stack) -> {
-				if (stack.has(DataComponents.FOOD) && !SDataComponents.FOOD_STATUS_D.hasData(stack) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
+				if (VanillaComponents.FOOD.hasData(stack) && !SDataComponents.FOOD_STATUS_D.hasData(stack) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
 					long lifespan = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan();
 					if (lifespan > 0) {
 						long shaveAMinuteOff = gametime - (gametime % (20 * 60));
@@ -74,7 +75,7 @@ public class FoodUtils {
 
 	public static void giveLifespanToFood(ItemStack stack, long gametime) {
 		if (Survive.FOOD_CONFIG.enabled) {
-			if (stack.has(DataComponents.FOOD) && !SDataComponents.FOOD_STATUS_D.hasData(stack) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
+			if (VanillaComponents.FOOD.hasData(stack) && !SDataComponents.FOOD_STATUS_D.hasData(stack) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
 				long lifespan = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan();
 				if (lifespan > 0) {
 					long shaveAMinuteOff = gametime - (gametime % (20 * 60));
@@ -89,7 +90,7 @@ public class FoodUtils {
 	}
 
 	public static void applyFoodStatusToTooltip(Player player, ItemStack stack, List<Component> tip) {
-		if (stack.has(DataComponents.FOOD)) {//TODO: Use version helper to check this in the future
+		if (VanillaComponents.FOOD.hasData(stack)) {//TODO: Use version helper to check this in the future
 			if (Survive.FOOD_CONFIG.enabled) {
 				State state = foodStatus(stack, player.level());
 				if (state == State.Fresh)
