@@ -1,0 +1,11 @@
+{
+  "temperature_modifier": 0,
+  "blockstate_property_overrides": [
+    {
+	  "name": "lit",
+	  "type": "boolean",
+      "values": {"true": 6.8672}
+    }   
+  ],
+  "range": 5
+}
