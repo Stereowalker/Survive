@@ -28,6 +28,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.Property;
 
 public class TempEvents {
 	public static final Map<ChunkPos, Map<BlockPos, Float>> GLOBAL_BLOCK_TEMPS = new ConcurrentHashMap<>();
@@ -150,12 +151,23 @@ public class TempEvents {
 							}
 						}
 						if (meets)
-							for (String prop2 : handler.getRight().keySet())
-								if (heatState.getValue(handler.getLeft().derivedProperty()).equals(handler.getLeft().getValue(prop2))) {
+							for (String prop2 : handler.getRight().keySet()) {
+								Property<?> property = null;
+								for (var p : heatState.getProperties()) {
+									if (p.equals(handler.getLeft().derivedProperty())) {
+										property = p;
+										break;
+									}
+								}
+								if (property == null) {
+									logger.error("Could not find property {} in block {}", handler.getLeft().derivedProperty(), heatState);
+								}
+								else if (heatState.getValue(property).equals(handler.getLeft().getValue(prop2))) {
 									blockTemp += handler.getRight().get(prop2);
 									setTemp = true;
 									break first;
 								}
+							}
 					}
 				if (!setTemp) blockTemp += blockTemperatureData.getTemperatureModifier();
 			}
