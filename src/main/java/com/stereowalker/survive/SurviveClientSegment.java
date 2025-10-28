@@ -94,6 +94,8 @@ public class SurviveClientSegment extends ClientSegment {
 	public void setupRenderLayers(RenderLayerCollector collector) {
 		RenderType frendertype = RenderType.translucent();
 		collector.setFluidRenderLayer(frendertype, SFluids.PURIFIED_WATER, SFluids.FLOWING_PURIFIED_WATER);
+        RenderType cutout = RenderType.cutout();
+		collector.setBlockRenderLayer(cutout, SBlocks.REALISTIC_CAMPFIRE);
 	}
 	
 	@Override

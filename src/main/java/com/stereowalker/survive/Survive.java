@@ -520,6 +520,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			populator.addItems(SItems.MAGMA_PASTE);
 			populator.addItems(SItems.SEA_SALT);
 			populator.addItems(SItems.SALT_BOX);
+			populator.addItems(SItems.REALISTIC_CAMPFIRE);
 			populator.addItems(SItems.CANTEEN);
 			populator.getParams().holders().lookup(Registries.POTION).ifPresent(p_327138_ -> {
 				generatePotionEffectTypes(populator.getOutput(), p_327138_, SItems.FILLED_CANTEEN, THIRST_CONFIG.canteen_fill_amount, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
