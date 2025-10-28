@@ -1,3 +1,13 @@
+[10.1.10]
+- Items with sea water are now indicated in the tooltips
+- Added sea salt and slightly altered how potash is obtained
+- Fix temperature regulator plate items not rendering
+- Added a Salt Box block
+- Fix block properties not affecting temps
+- Soul campfires now give off heat
+- Made campfires behave a bit more realistically
+- Updated UnionLib to 12.1.1
+
 [10.1.9]
 - Improved block temp calculation
 
