@@ -7,13 +7,13 @@ import com.stereowalker.unionlib.core.registries.RegistryHolder;
 import com.stereowalker.unionlib.core.registries.RegistryObject;
 
 import net.minecraft.world.level.biome.Biome.Precipitation;
-import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -40,5 +40,10 @@ public class SBlocks {
 	public static final Block SALT_BOX = new SaltBoxBlock(
 	            BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).strength(2.5F).sound(SoundType.WOOD).ignitedByLava()
 	        );
+	@RegistryObject("realistic_campfire")
+	public static final Block REALISTIC_CAMPFIRE = new RealisticCampfireBlock(true, 1,
+            BlockBehaviour.Properties.of().mapColor(MapColor.PODZOL).instrument(NoteBlockInstrument.BASS).strength(2.0F)
+                .sound(SoundType.WOOD).lightLevel(bs -> bs.getValue(RealisticCampfireBlock.HEAT) * 3 + 3).noOcclusion().ignitedByLava()
+        );
 }
 

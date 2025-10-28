@@ -14,6 +14,7 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 @RegistryHolder(namespace = Survive.MOD_ID)
 public class SItems {
@@ -85,4 +86,7 @@ public class SItems {
 	public static final Item SEA_SALT = new Item(new Item.Properties());
 	@RegistryObject("salt_box")
 	public static final Item SALT_BOX = new BlockItem(SBlocks.SALT_BOX, (new Item.Properties()));
+	@RegistryObject("realistic_campfire")
+	public static final Item REALISTIC_CAMPFIRE = new BlockItem(SBlocks.REALISTIC_CAMPFIRE, new Item.Properties());
+    
 }
