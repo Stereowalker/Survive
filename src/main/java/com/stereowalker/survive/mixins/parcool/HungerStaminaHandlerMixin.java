@@ -3,8 +3,11 @@ package com.stereowalker.survive.mixins.parcool;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.alrex.parcool.common.attachment.stamina.ReadonlyStamina;
+import com.alrex.parcool.common.attachment.common.ReadonlyStamina;
 import com.alrex.parcool.common.network.payload.StaminaProcessOnServerPayload;
 import com.alrex.parcool.common.stamina.IParCoolStaminaHandler;
 import com.alrex.parcool.common.stamina.StaminaType;
@@ -60,12 +63,12 @@ public class HungerStaminaHandlerMixin implements IParCoolStaminaHandler {
 		else
 			return new ReadonlyStamina(player.getFoodData().getFoodLevel() < 6, player.getFoodData().getFoodLevel(), 20);
 	}
-
-	@Overwrite
-	public void processOnServer(Player player, int value) {
-		if (Survive.STAMINA_CONFIG.parcool)
+	
+	@Inject(method = "processOnServer", at = @At("HEAD"), cancellable = true)
+	public void processOnServer_inject(Player player, int value, CallbackInfo ci) {
+		if (Survive.STAMINA_CONFIG.parcool) {
 			((StaminaData)PlayerNeeds.api().getStamina(player)).addExhaustion((float) value / 1000.0f, true);
-		else
-			player.causeFoodExhaustion((float) value / 1000.0f);
+			ci.cancel();
+		}
 	}
 }
