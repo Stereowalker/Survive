@@ -55,12 +55,12 @@ public class TemperatureConfig implements ConfigObject {
 	@UnionConfig.Comment(comment = {"This is intended for users who want to use the older temperature system","This feature will be removed in a later version of the mod"})
 	public boolean useLegacyTemperatureSystem = false;
 
-	@UnionConfig.Entry(name = "Pneumaticcraft Air Conditioning Air Usage Modifier", type = Type.COMMON)
+	@UnionConfig.Entry(name = "Pneumaticcraft Air Conditioning Air Usage Modifier", side = ConfigSide.Shared)
 	@UnionConfig.Comment(comment = {"This is the multiplier for how much air to use to cool the player using the pnuematiccraft air conditioner.","The formula is deltaT * numUpgrades * modifier"})
 	@UnionConfig.Range(min = 0.0001D, max = 100.0D)
 	public double airConAirUsageModifier = 1.0D;
 
-	@UnionConfig.Entry(name = "Pneumaticcraft Air Conditioning Temperature Modifier", type = Type.COMMON)
+	@UnionConfig.Entry(name = "Pneumaticcraft Air Conditioning Temperature Modifier", side = ConfigSide.Shared)
 	@UnionConfig.Comment(comment = {"This is the multiplier for how much each upgrade affects the temperature modifier using the pnuematiccraft air conditioner.","The formula for the temperature modification is deltaT * numUpgrades * modifier"})
 	@UnionConfig.Range(min = 0.0001D, max = 100.0D)
 	public double airConTempModifier = 2.0D;
