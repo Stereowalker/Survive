@@ -19,12 +19,11 @@ import net.minecraft.world.level.block.state.BlockState;
 public class PotashCauldronBlock extends LayeredCauldronBlock {
 
 	public PotashCauldronBlock(BlockBehaviour.Properties properties) {
-		super(properties, (precipitation) -> false, SCauldronInteraction.POTASH);
+		super(properties, (precipitation) -> false, SCauldronInteraction.DRYING);
 	}
 
 	@Override
 	public void handlePrecipitation(BlockState pState, Level pLevel, BlockPos pPos, Precipitation pPrecipitation) {
-
 	}
 
 	@Override

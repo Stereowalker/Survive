@@ -81,4 +81,11 @@ public class SItems {
 	public static final Item STIFFENED_HONEY_LEGGINGS = new ArmorItem(SArmorMaterials.STIFFENED_HONEY, ArmorItem.Type.LEGGINGS, new Item.Properties());
 	@RegistryObject("stiffened_honey_boots")
 	public static final Item STIFFENED_HONEY_BOOTS = new ArmorItem(SArmorMaterials.STIFFENED_HONEY, ArmorItem.Type.BOOTS, new Item.Properties());
+	@RegistryObject("sea_salt")
+	public static final Item SEA_SALT = new Item(new Item.Properties());
+	@RegistryObject("salt_box")
+	public static final Item SALT_BOX = new BlockItem(SBlocks.SALT_BOX, (new Item.Properties()));
+	@RegistryObject("realistic_campfire")
+	public static final Item REALISTIC_CAMPFIRE = new BlockItem(SBlocks.REALISTIC_CAMPFIRE, new Item.Properties());
+    
 }

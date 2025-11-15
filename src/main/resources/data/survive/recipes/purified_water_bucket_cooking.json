@@ -4,7 +4,7 @@
     "item": "minecraft:water_bucket"
   },
   "result": {
-    "id": "survive:purified_water_bucket"
+    "item": "survive:purified_water_bucket"
   },
   "cookingtime": 600
 }

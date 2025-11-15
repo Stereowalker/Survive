@@ -6,6 +6,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.stereowalker.survive.client.events.TooltipEvents;
+import com.stereowalker.survive.client.gui.screens.inventory.SaltBoxScreen;
 import com.stereowalker.survive.client.particle.HygieneParticle;
 import com.stereowalker.survive.core.TempDisplayMode;
 import com.stereowalker.survive.core.particles.SParticleTypes;
@@ -14,14 +15,19 @@ import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.IRoastedEntity;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
+import com.stereowalker.survive.world.inventory.SMenuType;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.TemperatureRegulatorPlateItem;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
+import com.stereowalker.survive.world.item.component.SDataComponents;
+import com.stereowalker.survive.world.level.block.DryingCauldronBlock;
+import com.stereowalker.survive.world.level.block.DryingCauldronBlock.FluidToDry;
 import com.stereowalker.survive.world.level.block.PlatedTemperatureRegulatorBlock;
 import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.unionlib.api.collectors.ColorOverrideCollector;
 import com.stereowalker.unionlib.api.collectors.InsertCollector;
+import com.stereowalker.unionlib.api.collectors.MenuCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector;
 import com.stereowalker.unionlib.api.collectors.OverlayCollector.Order;
 import com.stereowalker.unionlib.api.collectors.ParticleCollector;
@@ -34,6 +40,8 @@ import com.stereowalker.unionlib.util.LoaderHelper;
 import com.stereowalker.unionlib.util.ScreenHelper;
 import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 import com.stereowalker.unionlib.util.VersionHelper;
+import com.stereowalker.unionlib.util.VersionHelper.VanillaComponents;
+import com.stereowalker.unionlib.util.math.Color;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -41,10 +49,15 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
@@ -77,6 +90,8 @@ public class SurviveClientSegment extends ClientSegment {
 	public void setupRenderLayers(RenderLayerCollector collector) {
 		RenderType frendertype = RenderType.translucent();
 		collector.setFluidRenderLayer(frendertype, SFluids.PURIFIED_WATER, SFluids.FLOWING_PURIFIED_WATER);
+        RenderType cutout = RenderType.cutout();
+		collector.setBlockRenderLayer(cutout, SBlocks.REALISTIC_CAMPFIRE);
 	}
 	
 	@Override
@@ -85,45 +100,56 @@ public class SurviveClientSegment extends ClientSegment {
 			return Survive.PURIFIED_WATER_COLOR;
 		}, SBlocks.PURIFIED_WATER, SBlocks.PURIFIED_WATER_CAULDRON);
 		collector.overrideBlocks((state, displayReader, blockPos, tintIndex) -> {
-			return 0x483c35;
-		}, SBlocks.POTASH_CAULDRON);
+			if (state.getValue(DryingCauldronBlock.FLUID) == FluidToDry.POTASH) {
+				return Color.parse("0x483c35").brighter(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+			}
+			else if (state.getValue(DryingCauldronBlock.FLUID) == FluidToDry.SEA_SALT) {
+				return Color.fromIntRGB(BiomeColors.getAverageWaterColor(displayReader, blockPos))
+						.brighter(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+			}
+			else {
+				return new Color(1f, 0, 0).brighter(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+			}
+//			if (displayReader.getBlockEntity(blockPos) instanceof DryingCauldronBlockEntity dbe) {
+//			}
+		}, SBlocks.DRYING_CAULDRON);
 		collector.overrideBlocks((state, displayReader, blockPos, tintIndex) -> {
-			return PlatedTemperatureRegulatorBlock.getColor(state);
+			return PlatedTemperatureRegulatorBlock.getColor(state).toIntRGB();
 		}, SBlocks.PLATED_TEMPERATURE_REGULATOR);
 		collector.overrideItems((stack, tintIndex) -> {
 			return tintIndex > 0 ? -1 : PotionUtils.getPotion(stack) == SPotions.PURIFIED_WATER.holder().value() ? Survive.PURIFIED_WATER_COLOR : PotionUtils.getColor(stack);
 	      }, Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION);
 		collector.overrideItems((stack, tintIndex) -> {
-			return TemperatureRegulatorPlateItem.getColor(stack);
+			return TemperatureRegulatorPlateItem.getColor(stack).toIntARGB();
 		}, SItems.LARGE_HEATING_PLATE, SItems.LARGE_COOLING_PLATE, SItems.MEDIUM_HEATING_PLATE, SItems.MEDIUM_COOLING_PLATE, SItems.SMALL_HEATING_PLATE, SItems.SMALL_COOLING_PLATE);
 	}
 	
 	@Override
 	public void registerInserts(InsertCollector collector) {
-		collector.addInsert(ClientInserts.SCREEN_RENDER_FINISH, (screen, renderer, mouse) -> {
-			if (screen instanceof AbstractContainerScreen cont && cont.getMenu() instanceof ColdMenu cold) {
+		collector.addInsert(ClientInserts.SCREEN_RENDER_FINISH, insert -> {
+			if (insert.screen() instanceof AbstractContainerScreen cont && cont.getMenu() instanceof ColdMenu cold) {
 				float progress = (float)cold.coldness() / (float)cold.maxColdness();
 				if (progress > 0) {
 					int i = ((cont.width - cont.imageWidth) / 2) + 9;
 					int j = ((cont.height - cont.imageHeight) / 2);
 					if (cont instanceof ContainerScreen c) j += c.containerRows * 18;
 					j += 96;
-					renderer.blit(VersionHelper.toLoc("survive:textures/gui/coldness.png"), i, j + 17, 0, 0, 158, 22);
+					insert.guiRenderer().blit(VersionHelper.toLoc("survive:textures/gui/coldness.png"), i, j + 17, 0, 0, 158, 22);
 					
 					int i1 = 142;
 					int j1 = Mth.ceil(progress * 142.0F);
-					renderer.blit(VersionHelper.toLoc("survive:textures/gui/coldness.png"), i + 8, j + 17 + 4, 0, 30, j1, 10);
+					insert.guiRenderer().blit(VersionHelper.toLoc("survive:textures/gui/coldness.png"), i + 8, j + 17 + 4, 0, 30, j1, 10);
 				}
 				
 			}
 		});
-		collector.addInsert(ClientInserts.ITEM_TOOLTIP, (stack, player, tip, flag)->{
-			if (player != null) {
+		collector.addInsert(ClientInserts.ITEM_TOOLTIP, insert ->{
+			if (insert.player() != null) {
 				boolean showWeight = false;
 				boolean showTemp = false;
 				if ((Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights) || Survive.TEMPERATURE_CONFIG.enabled) {
 					for(EquipmentSlot type : EquipmentSlot.values()) {
-						if (LoaderHelper.canEquip(player, stack, type) && type.getType() == Type.ARMOR) {
+						if (LoaderHelper.canEquip(insert.player(), insert.itemStack(), type) && type.getType() == Type.ARMOR) {
 							showWeight = Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights;
 							showTemp = Survive.TEMPERATURE_CONFIG.enabled;
 							break;
@@ -132,9 +158,16 @@ public class SurviveClientSegment extends ClientSegment {
 				}
 
 				if (showWeight || showTemp) {
-					TooltipEvents.accessoryTooltip(player, stack, tip, showWeight, showTemp);
+					TooltipEvents.accessoryTooltip(insert.player(), insert.itemStack(), insert.tooltips(), showWeight, showTemp);
 				}
-				FoodUtils.applyFoodStatusToTooltip(player, stack, tip);
+				FoodUtils.applyFoodStatusToTooltip(insert.player(), insert.itemStack(), insert.tooltips());
+				
+				if (SDataComponents.BIOME_SOURCE_D.hasData(insert.itemStack()) && insert.player().level().registryAccess()
+				.lookup(Registries.BIOME)
+				.get().get(ResourceKey.create(Registries.BIOME, SDataComponents.BIOME_SOURCE_D.getData(insert.itemStack())))
+				.get().is(BiomeTags.IS_OCEAN)) {
+					insert.tooltips().add(Component.translatable("Sea Water"));
+				}
 			}
 		});
 	}
@@ -200,7 +233,7 @@ public class SurviveClientSegment extends ClientSegment {
 			}
 		});
 		collector.register("nutrition", Order.END, (gui,renderer,width,height)->{
-			if (gui.getCameraPlayer() instanceof IRealisticEntity real && Survive.CONFIG.nutrition_enabled && (gui.getCameraPlayer().getMainHandItem()/*.has(DataComponents.FOOD)*/.isEdible() || gui.getCameraPlayer().getOffhandItem()/*.has(DataComponents.FOOD)*/.isEdible() || Survive.CONFIG.always_render_nut)) {
+			if (gui.getCameraPlayer() instanceof IRealisticEntity real && Survive.CONFIG.nutrition_enabled && (VanillaComponents.FOOD.hasData(gui.getCameraPlayer().getMainHandItem()) || VanillaComponents.FOOD.hasData(gui.getCameraPlayer().getOffhandItem()) || Survive.CONFIG.always_render_nut)) {
 				ScreenOffset position = Survive.CONFIG.nut_offset;
 				int x = ScreenHelper.getXOffset(position, gui.minecraft) + Survive.CONFIG.nut_xLoc;
 				int y = ScreenHelper.getYOffset(position, gui.minecraft) + Survive.CONFIG.nut_yLoc;
@@ -406,6 +439,11 @@ public class SurviveClientSegment extends ClientSegment {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 		Minecraft.getInstance().getProfiler().pop();
+	}
+	
+	@Override
+	public void setupMenus(MenuCollector collector) {
+		collector.addMenu(SMenuType.SALT_BOX, SaltBoxScreen::new);
 	}
 
 }

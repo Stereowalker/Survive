@@ -2,6 +2,7 @@ package com.stereowalker.survive.world.item;
 
 import com.stereowalker.survive.world.level.block.state.properties.TempRegulationPlateSize;
 import com.stereowalker.survive.world.level.block.state.properties.TempRegulationPlateType;
+import com.stereowalker.unionlib.util.math.Color;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -24,10 +25,10 @@ public class TemperatureRegulatorPlateItem extends Item {
 		return size;
 	}
 	
-	public static int getColor(ItemStack stack) {
+	public static Color getColor(ItemStack stack) {
 		if (stack.getItem() instanceof TemperatureRegulatorPlateItem) {
 			return ((TemperatureRegulatorPlateItem)stack.getItem()).getType().getColor();
-		} else return 0xffffff;
+		} else return Color.named("white");
 	}
 
 }

@@ -28,6 +28,9 @@
 	"BottleItemMixin",
 	"PotionBrewingMixin",
 	"ServerPlayerMixin",
+	"LevelMixin",
+	"BucketItemMixin",
+	"AbstractCauldronBlockMixin",
 	"parcool.HungerStaminaHandlerMixin"
   ],
   "client": [

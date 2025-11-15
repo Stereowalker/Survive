@@ -15,6 +15,7 @@ import com.stereowalker.survive.damagesource.SDamageTypes;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.TemperatureUtil;
+import com.stereowalker.unionlib.util.VersionHelper.VanillaComponents;
 
 //import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.EntityTypeTags;
@@ -103,7 +104,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	@Inject(method = "completeUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;triggerItemUseEffects(Lnet/minecraft/world/item/ItemStack;I)V"))
 	public void completeUsingItem_inject(CallbackInfo ci) {
-		if (!getUseItem()./*has(DataComponents.FOOD)*/isEdible() && this instanceof IRealisticEntity) {
+		if (!VanillaComponents.FOOD.hasData(getUseItem()) && this instanceof IRealisticEntity) {
 			((IRealisticEntity)this).drink(this.level(), getUseItem());
 		}
 	}

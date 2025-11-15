@@ -30,6 +30,7 @@ import com.stereowalker.survive.core.particles.SParticleTypes;
 import com.stereowalker.survive.core.registries.SurviveRegistries;
 import com.stereowalker.survive.events.SleepEvents;
 import com.stereowalker.survive.events.SurviveEvents;
+import com.stereowalker.survive.events.TempEvents;
 import com.stereowalker.survive.events.ThirstEvents;
 import com.stereowalker.survive.hooks.ColdStorage;
 import com.stereowalker.survive.json.ArmorJsonHolder;
@@ -63,6 +64,7 @@ import com.stereowalker.survive.tags.ItemSTags;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
+import com.stereowalker.survive.world.inventory.SMenuType;
 import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.HygieneItems;
 import com.stereowalker.survive.world.item.SCreativeModeTab;
@@ -74,6 +76,7 @@ import com.stereowalker.survive.world.item.enchantment.StaminaEnchantments;
 import com.stereowalker.survive.world.item.enchantment.TemperatureEnchantments;
 import com.stereowalker.survive.world.level.CGameRules;
 import com.stereowalker.survive.world.level.block.SBlocks;
+import com.stereowalker.survive.world.level.block.entity.SBlockEntityType;
 import com.stereowalker.survive.world.level.material.PurifiedWaterFluid;
 import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.seasons.Seasons;
@@ -85,6 +88,7 @@ import com.stereowalker.unionlib.api.collectors.ConfigCollector;
 import com.stereowalker.unionlib.api.collectors.DefaultAttributeModifier;
 import com.stereowalker.unionlib.api.collectors.FluidPropertyCollector;
 import com.stereowalker.unionlib.api.collectors.InsertCollector;
+import com.stereowalker.unionlib.api.collectors.PackCollector;
 import com.stereowalker.unionlib.api.collectors.PacketCollector;
 import com.stereowalker.unionlib.api.collectors.ReloadListeners;
 import com.stereowalker.unionlib.api.creativetabs.CreativeTabBuilder;
@@ -93,6 +97,7 @@ import com.stereowalker.unionlib.api.registries.RegistryCollector;
 import com.stereowalker.unionlib.event.potionfluid.FluidToPotionEvent;
 import com.stereowalker.unionlib.event.potionfluid.PotionToFluidEvent;
 import com.stereowalker.unionlib.insert.Inserts;
+import com.stereowalker.unionlib.insert.ServerInserts;
 import com.stereowalker.unionlib.mod.MinecraftMod;
 import com.stereowalker.unionlib.mod.PacketHolder;
 import com.stereowalker.unionlib.mod.ServerSegment;
@@ -104,8 +109,11 @@ import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -143,8 +151,6 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	public static final TemperatureConfig TEMPERATURE_CONFIG = new TemperatureConfig();
 	public static final ThirstConfig THIRST_CONFIG = new ThirstConfig();
 	public static final WellbeingConfig WELLBEING_CONFIG = new WellbeingConfig();
-	
-
 	
 	public static void sendPacket(CompoundTag tag) {
 		new ServerboundPlayerStatusBookPacket(tag, !Survive.TEMPERATURE_CONFIG.displayTempInFahrenheit, 
@@ -240,6 +246,11 @@ public class Survive extends MinecraftMod implements PacketHolder {
 //		collector.builder().addContainer(SItems.FILLED_NETHERITE_CANTEEN);
 	}
 	
+	@Override
+	public void setupPacks(PackCollector collector) {
+		collector.addPack("datapacks/replace_vanilla", Component.literal("Replace Vanilla"), PackType.SERVER_DATA);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void setupFluids(FluidPropertyCollector collector) {
@@ -308,10 +319,12 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		if (Survive.TEMPERATURE_CONFIG.enabled) {
 			collector.addRegistryHolder(Registries.ENCHANTMENT, TemperatureEnchantments.class);
 		}
+		collector.addRegistryHolder(Registries.MENU, SMenuType.class);
 		collector.addRegistry(SurviveRegistries.CONDITION, SurviveRegistries.Keys.CONDITION, true);
 		collector.addRegistry(SurviveRegistries.SEASON, SurviveRegistries.Keys.SEASON, true);
 		collector.addCustom(SurviveRegistries.Keys.CONDITION, TemperatureChangeConditions::registerAll);
 		collector.addCustom(SurviveRegistries.Keys.SEASON, Seasons::registerAll);
+		collector.addCustom(Registries.BLOCK_ENTITY_TYPE, SBlockEntityType::registerAll);
 		collector.addCustom(Registries.MOB_EFFECT, (override) -> {
 			MobEffects.FIRE_RESISTANCE.addAttributeModifier(SAttributes.HEAT_RESISTANCE.holder().value(), "795606d6-4ac6-4ae7-8311-63ccdb293eb4", 5.0D, AttributeModifier.Operation.ADDITION);
 		});
@@ -325,12 +338,14 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	
 	@Override
 	public void registerInserts(InsertCollector collector) {
-		collector.addInsert(Inserts.LIVING_TICK, SurviveEvents::sendToClient);
-		collector.addInsert(Inserts.LIVING_TICK, SurviveEvents::updateEnvTemperature);
-		collector.addInsert(Inserts.PLAYER_RESTORE, SurviveEvents::restoreStats);
-		collector.addInsert(Inserts.LOGGED_OUT, SurviveEvents::desyncClient);
-		collector.addInsert(Inserts.LEVEL_LOAD, SurviveEvents::addReload);
-		collector.addInsert(Inserts.LOOT_TABLE_LOAD, (id,lootTable,cancel)->{
+		collector.addInsert(Inserts.LIVING_TICK, insert -> SurviveEvents.sendToClient(insert.living()));
+		collector.addInsert(Inserts.LIVING_TICK, insert -> SurviveEvents.updateEnvTemperature(insert.living()));
+		collector.addInsert(Inserts.PLAYER_RESTORE, insert -> SurviveEvents.restoreStats(insert.thisPlayer(), insert.thatPlayer(), insert.keepEverything()));
+		collector.addInsert(Inserts.LOGGED_OUT, insert -> SurviveEvents.desyncClient(insert.player()));
+		collector.addInsert(ServerInserts.SERVER_STARTING, insert -> TempEvents.serverStart(insert.server()));
+		collector.addInsert(ServerInserts.SERVER_STOPPING, insert -> TempEvents.serverStop(insert.server()));
+		collector.addInsert(Inserts.LEVEL_LOAD, insert -> SurviveEvents.addReload(insert.level()));
+		collector.addInsert(Inserts.LOOT_TABLE_LOAD, insert ->{
 			String ANIMAL_LOOT = "entities/animal_fat";
 			List<Pair<ResourceLocation, List<String>>> LOOT_MODIFIERS = Lists.newArrayList(
 					Pair.of(VersionHelper.toLoc("entities/sheep"), Lists.newArrayList(ANIMAL_LOOT)),
@@ -346,10 +361,10 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			};
 			
 			LOOT_MODIFIERS.forEach((pair) -> {
-				if(id.equals(pair.getKey())) {
+				if(insert.name().equals(pair.getKey())) {
 					pair.getValue().forEach((file) -> {
 						Survive.getInstance().debug("Injecting \""+file+"\" in "+pair.getKey());
-						LoaderHelper.addPoolToLootTable(lootTable.get(), LootPool.lootPool()
+						LoaderHelper.addPoolToLootTable(insert.table().get(), LootPool.lootPool()
 								.add(getInjectEntry.apply(file, 1))
 								.setBonusRolls(UniformGenerator.between(0.0F, 1.0F))
 								.name("survive_inject").build());
@@ -357,22 +372,22 @@ public class Survive extends MinecraftMod implements PacketHolder {
 				}
 			});
 		});
-		collector.addInsert(Inserts.MENU_OPEN, (player, menu)->{
-			if (player != null)
-				FoodUtils.giveLifespanToFood(menu.getItems(), player.level().getGameTime());
+		collector.addInsert(Inserts.MENU_OPEN, insert ->{
+			if (insert.player() != null)
+				FoodUtils.giveLifespanToFood(insert.menu().getItems(), insert.player().level().getGameTime());
 		});
-		collector.addInsert(Inserts.PLAYER_CAN_SLEEP, SleepEvents::allowSleep);
-		collector.addInsert(Inserts.PLAYER_CONTINUE_SLEEP, SleepEvents::allowSleep);
-		collector.addInsert(Inserts.INTERACT_WITH_BLOCK, ThirstEvents::interactWithWaterSourceBlock);
-		collector.addInsert(Inserts.INTERACT_WITH_ITEM, ThirstEvents::interactWithWaterSourceBlock);
-		collector.addInsert(Inserts.INTERACT_WITH_ITEM, StaminaData::clickItem);
-		collector.addInsert(Inserts.MENU_OPEN, (player, menu) -> {
-			if (menu instanceof ChestMenu chest && chest.getContainer() instanceof ChestBlockEntity block && player instanceof ServerPlayer pl) {
+		collector.addInsert(Inserts.PLAYER_CAN_SLEEP, insert -> SleepEvents.allowSleep(insert.player(), insert.pos(), insert.vanillaProblem(), insert.problem()));
+		collector.addInsert(Inserts.PLAYER_CONTINUE_SLEEP, insert -> SleepEvents.allowSleep(insert.player(), insert.sleepingPos(), insert.mayContinueSleeping()));
+		collector.addInsert(Inserts.INTERACT_WITH_BLOCK, insert -> ThirstEvents.interactWithWaterSourceBlock(insert.player(), insert.level(), insert.hand(), insert.hitResult(), insert.cancel()));
+		collector.addInsert(Inserts.INTERACT_WITH_ITEM, insert -> ThirstEvents.interactWithWaterSourceBlock(insert.player(), insert.level(), insert.hand(), insert.cancel()));
+		collector.addInsert(Inserts.INTERACT_WITH_ITEM, insert -> StaminaData.clickItem(insert.player(), insert.level(), insert.hand(), insert.cancel()));
+		collector.addInsert(Inserts.MENU_OPEN, insert -> {
+			if (insert.menu() instanceof ChestMenu chest && chest.getContainer() instanceof ChestBlockEntity block && insert.player() instanceof ServerPlayer pl) {
 				ColdStorage cold = (ColdStorage)block;
 			}
 		});
-		collector.addInsert(Inserts.LEVEL_WAKE_UP, (level, time)->{
-			SleepEvents.replenishEnergy(level);
+		collector.addInsert(Inserts.LEVEL_WAKE_UP, insert -> {
+			SleepEvents.replenishEnergy(insert.level());
 		});
 	}
 	
@@ -504,6 +519,9 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			populator.addItems(SItems.USED_CHARCOAL_FILTER);
 			populator.addItems(SItems.PURIFIED_WATER_BUCKET);
 			populator.addItems(SItems.MAGMA_PASTE);
+			populator.addItems(SItems.SEA_SALT);
+			populator.addItems(SItems.SALT_BOX);
+			populator.addItems(SItems.REALISTIC_CAMPFIRE);
 			populator.addItems(SItems.CANTEEN);
 			populator.getParams().holders().lookup(Registries.POTION).ifPresent(p_327138_ -> {
 				generatePotionEffectTypes(populator.getOutput(), p_327138_, SItems.FILLED_CANTEEN, THIRST_CONFIG.canteen_fill_amount, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);

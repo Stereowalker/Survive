@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 public interface SCauldronInteraction extends CauldronInteraction {
-	public static Map<Item, CauldronInteraction> POTASH = CauldronInteraction.newInteractionMap();
+	public static Map<Item, CauldronInteraction> DRYING = CauldronInteraction.newInteractionMap();
 	public static Map<Item, CauldronInteraction> PURIFIED_WATER = CauldronInteraction.newInteractionMap();
 
 	CauldronInteraction FILL_PURIFIED_WATER = (p_175683_, p_175684_, p_175685_, p_175686_, p_175687_, p_175688_) -> {
@@ -41,10 +41,10 @@ public interface SCauldronInteraction extends CauldronInteraction {
 	}
 
 	public static void bootStrap() {
-		CauldronInteraction.addDefaultInteractions(POTASH);
+		CauldronInteraction.addDefaultInteractions(DRYING);
 		CauldronInteraction.addDefaultInteractions(PURIFIED_WATER);
 
-		addSurviveDefaultInteractions(POTASH);
+		addSurviveDefaultInteractions(DRYING);
 		addSurviveDefaultInteractions(PURIFIED_WATER);
 		addSurviveDefaultInteractions(EMPTY);
 		addSurviveDefaultInteractions(LAVA);
@@ -57,9 +57,9 @@ public interface SCauldronInteraction extends CauldronInteraction {
 			}, SoundEvents.BUCKET_FILL);
 		});
 		//Potash Solution Interactions
-		fillEmptyCauldron(HygieneItems.POTASH_SOLUTION, new ItemStack(Items.GLASS_BOTTLE), SBlocks.POTASH_CAULDRON.defaultBlockState(), SoundEvents.BOTTLE_EMPTY);
-		addToCauldron(POTASH, HygieneItems.POTASH_SOLUTION, new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
-		takeFromCauldron(POTASH, Items.GLASS_BOTTLE, new ItemStack(HygieneItems.POTASH_SOLUTION), SoundEvents.BOTTLE_FILL);
+		fillEmptyCauldron(HygieneItems.POTASH_SOLUTION, new ItemStack(Items.GLASS_BOTTLE), SBlocks.DRYING_CAULDRON.defaultBlockState(), SoundEvents.BOTTLE_EMPTY);
+		addToCauldron(DRYING, HygieneItems.POTASH_SOLUTION, new ItemStack(Items.GLASS_BOTTLE), SoundEvents.BOTTLE_EMPTY);
+		takeFromCauldron(DRYING, Items.GLASS_BOTTLE, new ItemStack(HygieneItems.POTASH_SOLUTION), SoundEvents.BOTTLE_FILL);
 		//Water Bowl Interactions
 		takeFromCauldron(WATER, Items.BOWL, new ItemStack(SItems.WATER_BOWL), SoundEvents.BOTTLE_FILL);
 		addToCauldron(WATER, SItems.WATER_BOWL, new ItemStack(Items.BOWL), SoundEvents.BOTTLE_EMPTY);

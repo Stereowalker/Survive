@@ -52,11 +52,13 @@ public class SDataComponents {
 //			);
 	public static final VersionHelper.Data<FoodUtils.FoodStatus> FOOD_STATUS_D = new VersionHelper.Data<FoodUtils.FoodStatus>(
 			(stack) -> stack.getTag() != null && stack.getTag().contains("food_status"),
-			(stack) -> new FoodUtils.FoodStatus(stack.getTag().getCompound("food_status").getLong("creationTime"), stack.getTag().getCompound("food_status").getLong("lifespan")),
+			(stack) -> new FoodUtils.FoodStatus(stack.getTag().getCompound("food_status").getLong("creationTime"), stack.getTag().getCompound("food_status").getLong("lifespan"), stack.getTag().getCompound("food_status").getLong("saltDose")),
 			(stack, dat) -> {
 				CompoundTag tag = new CompoundTag();
 				tag.putLong("creationTime", dat.creationTime());
 				tag.putDouble("lifespan", dat.lifespan());
+				tag.putDouble("lifespan", dat.lifespan());
+				tag.putDouble("saltDose", dat.saltDose());
 				stack.getOrCreateTag().put("food_status", tag);
 			},
 			(stack) -> stack.removeTagKey("food_status"));

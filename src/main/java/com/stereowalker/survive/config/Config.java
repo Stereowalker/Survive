@@ -105,6 +105,11 @@ public class Config implements ConfigObject {
 			"A lot of the mechanics in this mod become a lot more unreasonable without enchantments"})
 	public boolean disable_enchantments = false;
 	
+	@UnionConfig.Entry(group = "Micellaneous", name = "Odds To Ignite Campfire", side = ConfigSide.Shared)
+	@UnionConfig.Comment(comment = {"The odds a campfire will light on fire each time you attempt to ignite it"})
+	@UnionConfig.Range(min = 0, max = 1)
+	public float igniteCampfireOdds = 0.5f;
+	
 	//
 	//Other mods
 	@UnionConfig.Entry(group = "Other" , name = "Origins Heat Resistant Races", side = ConfigSide.Shared)

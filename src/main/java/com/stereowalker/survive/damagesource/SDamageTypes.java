@@ -13,5 +13,6 @@ public interface SDamageTypes {
 	ResourceKey<DamageType> DEHYDRATE = ResourceKey.create(Registries.DAMAGE_TYPE, VersionHelper.toLoc("survive:dehydrate"));
 	ResourceKey<DamageType> OVERHYDRATE = ResourceKey.create(Registries.DAMAGE_TYPE, VersionHelper.toLoc("survive:overhydrate"));
 	ResourceKey<DamageType> OVEREAT = ResourceKey.create(Registries.DAMAGE_TYPE, VersionHelper.toLoc("survive:overeat"));
+	ResourceKey<DamageType> BOIL = ResourceKey.create(Registries.DAMAGE_TYPE, VersionHelper.toLoc("survive:boil"));
 	ResourceKey<DamageType> OVERWORK = ResourceKey.create(Registries.DAMAGE_TYPE, VersionHelper.toLoc("survive:overwork"));
 }

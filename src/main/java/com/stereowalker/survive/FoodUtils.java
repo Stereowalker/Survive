@@ -8,6 +8,7 @@ import com.stereowalker.survive.json.FoodJsonHolder;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.item.component.SDataComponents;
 import com.stereowalker.unionlib.util.RegistryHelper;
+import com.stereowalker.unionlib.util.VersionHelper.VanillaComponents;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -18,11 +19,12 @@ import net.minecraft.world.level.Level;
 
 public class FoodUtils {
 
-	public record FoodStatus(long creationTime, double lifespan) {
+	public record FoodStatus(long creationTime, double lifespan, double saltDose) {
 		public static final Codec<FoodStatus> CODEC = RecordCodecBuilder.create(
 				builder -> builder.group(
 						Codec.LONG.fieldOf("creation_time").forGetter(FoodStatus::creationTime),
-						Codec.DOUBLE.fieldOf("lifespan").forGetter(FoodStatus::lifespan)
+						Codec.DOUBLE.fieldOf("lifespan").forGetter(FoodStatus::lifespan),
+						Codec.DOUBLE.fieldOf("salt_dose").forGetter(FoodStatus::saltDose)
 						)
 				.apply(builder, FoodStatus::new)
 				);
@@ -31,25 +33,30 @@ public class FoodUtils {
 //				FoodStatus::creationTime,
 //				ByteBufCodecs.DOUBLE,
 //				FoodStatus::lifespan,
+//				ByteBufCodecs.DOUBLE,
+//				FoodStatus::saltDose,
 //				FoodStatus::new
 //				);
 		
 		public long expireTime() {return creationTime + (long)Math.floor(lifespan);}
 		
-		public FoodStatus extendTime(float extension) { return new FoodStatus(creationTime, lifespan + extension);}
+		public FoodStatus extendTime(float extension) { return new FoodStatus(creationTime, lifespan + extension, saltDose);}
+		
+		public FoodStatus increaseSalt(float extension) { return new FoodStatus(creationTime, lifespan, saltDose + extension);}
 	}
 
 
 	public enum State {Fresh, Good, Okay, Spoiling, Spoiled}
+	public enum Saltiness {None, Light, Average, Heavy, Extreme}
 
 	public static void giveLifespanToFood(NonNullList<ItemStack> items, long gametime) {
 		if (Survive.FOOD_CONFIG.enabled) {
 			items.forEach((stack) -> {
-				if (stack./*has(DataComponents.FOOD)*/isEdible() && !SDataComponents.FOOD_STATUS_D.hasData(stack) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
+				if (VanillaComponents.FOOD.hasData(stack) && !SDataComponents.FOOD_STATUS_D.hasData(stack) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
 					long lifespan = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan();
 					if (lifespan > 0) {
 						long shaveAMinuteOff = gametime - (gametime % (20 * 60));
-						SDataComponents.FOOD_STATUS_D.setData(stack, new FoodStatus(shaveAMinuteOff, lifespan));
+						SDataComponents.FOOD_STATUS_D.setData(stack, new FoodStatus(shaveAMinuteOff, lifespan, 0));
 					}
 				}
 			});
@@ -64,11 +71,11 @@ public class FoodUtils {
 
 	public static void giveLifespanToFood(ItemStack stack, long gametime) {
 		if (Survive.FOOD_CONFIG.enabled) {
-			if (stack./*has(DataComponents.FOOD)*/isEdible() && !SDataComponents.FOOD_STATUS_D.hasData(stack) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
+			if (VanillaComponents.FOOD.hasData(stack) && !SDataComponents.FOOD_STATUS_D.hasData(stack) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
 				long lifespan = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem())).lifespan();
 				if (lifespan > 0) {
 					long shaveAMinuteOff = gametime - (gametime % (20 * 60));
-					SDataComponents.FOOD_STATUS_D.setData(stack, new FoodStatus(shaveAMinuteOff, lifespan));
+					SDataComponents.FOOD_STATUS_D.setData(stack, new FoodStatus(shaveAMinuteOff, lifespan, 0));
 				}
 			}
 		} else {
@@ -79,18 +86,33 @@ public class FoodUtils {
 	}
 
 	public static void applyFoodStatusToTooltip(Player player, ItemStack stack, List<Component> tip) {
-		if (stack./*has(DataComponents.FOOD)*/isEdible() && Survive.FOOD_CONFIG.enabled) {
-			State state = foodStatus(stack, player.level());
-			if (state == State.Fresh)
-				tip.add(Component.literal("Fresh").setStyle(Style.EMPTY.withColor(0x88ff88)));
-			else if (state == State.Good)
-				tip.add(Component.literal("Good").setStyle(Style.EMPTY.withColor(0x00ff00)));
-			else if (state == State.Spoiling)
-				tip.add(Component.literal("Spoiling").setStyle(Style.EMPTY.withColor(0xaaff00)));
-			else if (state == State.Spoiled)
-				tip.add(Component.literal("Spoiled").setStyle(Style.EMPTY.withColor(0x88aa00)));
-			else
-				tip.add(Component.literal("Okay").setStyle(Style.EMPTY.withColor(0xffff00)));
+		if (VanillaComponents.FOOD.hasData(stack)) {//TODO: Use version helper to check this in the future
+			if (Survive.FOOD_CONFIG.enabled) {
+				State state = foodStatus(stack, player.level());
+				if (state == State.Fresh)
+					tip.add(Component.literal("Fresh").setStyle(Style.EMPTY.withColor(0x88ff88)));
+				else if (state == State.Good)
+					tip.add(Component.literal("Good").setStyle(Style.EMPTY.withColor(0x00ff00)));
+				else if (state == State.Spoiling)
+					tip.add(Component.literal("Spoiling").setStyle(Style.EMPTY.withColor(0xaaff00)));
+				else if (state == State.Spoiled)
+					tip.add(Component.literal("Spoiled").setStyle(Style.EMPTY.withColor(0x88aa00)));
+				else
+					tip.add(Component.literal("Okay").setStyle(Style.EMPTY.withColor(0xffff00)));
+			}
+			if (SDataComponents.FOOD_STATUS_D.hasData(stack)) {
+				var fd = SDataComponents.FOOD_STATUS_D.getData(stack);
+				if (fd.saltDose > 500) {
+					tip.add(Component.literal("Deathly Salted").setStyle(Style.EMPTY));
+				} else if (fd.saltDose > 250) {
+					tip.add(Component.literal("Heavily Salted").setStyle(Style.EMPTY));
+				} else if (fd.saltDose > 125) {
+					tip.add(Component.literal("Salted").setStyle(Style.EMPTY));
+				} else if (fd.saltDose > 10) {
+					tip.add(Component.literal("Lightly Salted").setStyle(Style.EMPTY));
+				}
+			}
+			
 		}
 	}
 
