@@ -5,7 +5,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.events.TempEvents;
 
 import net.minecraft.core.BlockPos;
@@ -21,7 +20,7 @@ public abstract class LevelMixin
         if (cir.getReturnValue())
         {
             TempEvents.invalidateBlockTemp(pos);
-            System.out.println("Discarding Blocks "+pos);
+            TempEvents.log("Discarding Blocks "+pos);
         }
     }
 }
