@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-import com.stereowalker.survive.compat.PneumaticraftCompat;
-import net.minecraftforge.fml.ModList;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -20,6 +18,7 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.api.IBlockPropertyHandler;
 import com.stereowalker.survive.api.IBlockPropertyHandler.PropertyPair;
 import com.stereowalker.survive.api.world.level.block.TemperatureEmitter;
+import com.stereowalker.survive.compat.PneumaticraftCompat;
 import com.stereowalker.survive.compat.SereneSeasonsCompat;
 import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.core.SurviveEntityStats;
@@ -41,6 +40,7 @@ import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
 import com.stereowalker.survive.world.temperature.TemperatureQuery;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeInstance;
+import com.stereowalker.unionlib.util.LoaderHelper;
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.VersionHelper;
@@ -481,7 +481,7 @@ public class SurviveEvents {
 		});
 		TemperatureQuery.registerQuery("survive:aircon", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
 			float airconMod = 0;
-			if (ModList.get().isLoaded("pneumaticcraft")) {
+			if (LoaderHelper.isModLoaded("pneumaticcraft")) {
 				airconMod = PneumaticraftCompat.getACMod(player, temp, level, pos, applyTemp);
 			}
 			return airconMod;
