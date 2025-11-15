@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
+import com.stereowalker.survive.compat.PneumaticraftCompat;
+import net.minecraftforge.fml.ModList;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -476,6 +478,13 @@ public class SurviveEvents {
 			} else {
 				return (double)(SurviveEntityStats.getWetTime(player)) / -1800.0D;
 			}
+		});
+		TemperatureQuery.registerQuery("survive:aircon", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
+			float airconMod = 0;
+			if (ModList.get().isLoaded("pneumaticcraft")) {
+				airconMod = PneumaticraftCompat.getACMod(player, temp, level, pos, applyTemp);
+			}
+			return airconMod;
 		});
 		TemperatureQuery.registerQuery("survive:cooling_enchantment", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
 			double coolingMod = 0.0D;

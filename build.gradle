@@ -42,6 +42,7 @@ dependencies {
     implementation ("com.github.glitchfiend:TerraBlender-neoforge:1.21-4.0.0.1")
     implementation ("com.github.glitchfiend:SereneSeasons-neoforge:1.21-${_serene_seasons_version}")
     implementation ("com.github.glitchfiend:BiomesOPlenty-neoforge:${_minecraft_version}-${_bop_version}")
+    implementation fg.deobf("curse.maven:pneumaticcraft-repressurized-281849:4843223")
 	//implementation ("curse.maven:origins-474438:"+originsID)
 	//implementation ("curse.maven:create-328085:"+createID)
 	//implementation ("curse.maven:flywheel-486392:"+flywheelID)
