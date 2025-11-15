@@ -1,3 +1,7 @@
+[10.1.11]
+- Add Pneumaticraft compat (thanks to Patrick Magauran)
+- Fix log spam when blocks change
+
 [10.1.10]
 - Items with sea water are now indicated in the tooltips
 - Added sea salt and slightly altered how potash is obtained
