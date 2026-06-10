@@ -28,7 +28,7 @@ public class TemperatureRegulatorPlateItem extends Item {
 	public static Color getColor(ItemStack stack) {
 		if (stack.getItem() instanceof TemperatureRegulatorPlateItem) {
 			return ((TemperatureRegulatorPlateItem)stack.getItem()).getType().getColor();
-		} else return Color.named("white");
+		} else return Color.parse("white");
 	}
 
 }

@@ -42,6 +42,7 @@ import com.stereowalker.unionlib.util.ScreenHelper.ScreenOffset;
 import com.stereowalker.unionlib.util.VersionHelper;
 import com.stereowalker.unionlib.util.VersionHelper.VanillaComponents;
 import com.stereowalker.unionlib.util.math.Color;
+import com.stereowalker.unionlib.util.math.MutableColor;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -101,14 +102,14 @@ public class SurviveClientSegment extends ClientSegment {
 		}, SBlocks.PURIFIED_WATER, SBlocks.PURIFIED_WATER_CAULDRON);
 		collector.overrideBlocks((state, displayReader, blockPos, tintIndex) -> {
 			if (state.getValue(DryingCauldronBlock.FLUID) == FluidToDry.POTASH) {
-				return Color.parse("0x483c35").brighter(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+				return Color.parse("0x483c35").brighten(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
 			}
 			else if (state.getValue(DryingCauldronBlock.FLUID) == FluidToDry.SEA_SALT) {
 				return Color.fromIntRGB(BiomeColors.getAverageWaterColor(displayReader, blockPos))
-						.brighter(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+						.brighten(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
 			}
 			else {
-				return new Color(1f, 0, 0).brighter(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+				return new MutableColor(1f, 0, 0).brighten(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
 			}
 //			if (displayReader.getBlockEntity(blockPos) instanceof DryingCauldronBlockEntity dbe) {
 //			}

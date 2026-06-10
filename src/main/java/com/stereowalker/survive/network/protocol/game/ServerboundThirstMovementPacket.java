@@ -15,14 +15,14 @@ public class ServerboundThirstMovementPacket extends ServerboundUnionPacket {
 	private boolean jump;
 
 	public ServerboundThirstMovementPacket(final float moveF, final float moveS, final boolean jump) {
-		super(Survive.getInstance().channel);
+		super(null);
 		this.moveF = moveF;
 		this.moveS = moveS;
 		this.jump = jump;
 	}
 
 	public ServerboundThirstMovementPacket(FriendlyByteBuf byteBuf) {
-		super(byteBuf, Survive.getInstance().channel);
+		super(byteBuf);
 		this.moveF = byteBuf.readFloat();
 		this.moveS = byteBuf.readFloat();
 		this.jump = byteBuf.readBoolean();

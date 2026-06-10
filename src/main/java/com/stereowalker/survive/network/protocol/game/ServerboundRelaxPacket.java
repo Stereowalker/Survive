@@ -14,12 +14,12 @@ public class ServerboundRelaxPacket extends ServerboundUnionPacket {
 	int amount;
 
 	public ServerboundRelaxPacket(int amount) {
-		super(Survive.getInstance().channel);
+		super(null);
 		this.amount = amount;
 	}
 
 	public ServerboundRelaxPacket(FriendlyByteBuf packetBuffer) {
-		super(packetBuffer, Survive.getInstance().channel);
+		super(packetBuffer);
 		this.amount = packetBuffer.readVarInt();
 	}
 
