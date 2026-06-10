@@ -35,7 +35,7 @@ publishing {
             }
         
         	groupId = project.group
-			artifactId = project.archivesBaseName
+			artifactId = project._mod_name
 			version = project.version
         }
     }
