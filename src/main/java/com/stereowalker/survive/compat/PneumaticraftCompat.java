@@ -20,6 +20,7 @@ public class PneumaticraftCompat {
         float mod = 0.0f;
 		CommonArmorHandler handler = CommonArmorHandler.getHandlerForPlayer(player);
 
+		if (CommonUpgradeHandlers.airConHandler == null) return 0;
         if (!handler.isUpgradeEnabled(CommonUpgradeHandlers.airConHandler)
                 || !handler.isArmorReady(EquipmentSlot.CHEST)
                 || handler.getArmorPressure(EquipmentSlot.CHEST) < 0.1) {
