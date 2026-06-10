@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.PriorityQueue;
 
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -46,10 +48,14 @@ import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.VersionHelper;
 import com.stereowalker.unionlib.util.math.UnionMathHelper;
 
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -154,9 +160,9 @@ public class SurviveEvents {
 		}
 		if (living != null && living instanceof ServerPlayer player) {
 			if (player.isAlive()) {
-				for (ResourceLocation queryId : TemperatureQuery.queries.keySet()) {
-					double queryValue = TemperatureQuery.queries.get(queryId).getA().run(player, ((IRealisticEntity)player).temperatureData().getTemperatureLevel(), player.level(), player.blockPosition(), true);
-					TemperatureData.setTemperatureModifier(player, queryId, queryValue, TemperatureQuery.queries.get(queryId).getB());
+				for (Entry<ResourceLocation, Tuple<TemperatureQuery, ContributingFactor>> entry : TemperatureQuery.queries.entrySet()) {
+					double queryValue = entry.getValue().getA().run(player, ((IRealisticEntity)player).temperatureData().getTemperatureLevel(), player.level(), player.blockPosition(), true);
+					TemperatureData.setTemperatureModifier(player, entry.getKey(), queryValue, entry.getValue().getB());
 				}
 			}
 		}
@@ -181,28 +187,53 @@ public class SurviveEvents {
 		}
 	}
 	
-	private static record PathNode(BlockPos pos, double cost) {
+	private static record PathNode(BlockPos pos, double cost) implements Comparable<PathNode> {
+		@Override
+	    public int compareTo(PathNode other) {
+	        return Double.compare(this.cost, other.cost);
+	    }
 	}
 	private static record Offset(int dx, int dy, int dz) {
 	}
 	
-	private static List<BlockPos> getNeighbors(BlockPos pos){
-		return Lists.newArrayList(pos.above(), pos.below(), pos.north(), pos.south(), pos.west(), pos.east());
-	}
-	
 	private static double getBlockTransmissionCost(Level level, BlockPos pos) {
 		BlockState state = level.getBlockState(pos);
-		if (!state.getFluidState().isEmpty() && !state.getFluidState().getTags().toList().contains(FluidTags.LAVA))
+		if (!state.getFluidState().isEmpty() && !state.getFluidState().is(FluidTags.LAVA))
 			return 1.2f;
 		else if (state.isSolid())
 			return 5.0f;
 		return 1.0f;
 	}
 	
+	public static Object2DoubleOpenHashMap<BlockPos> buildThermalCostMap(Level level, BlockPos startPos, double maxCost) {
+		PriorityQueue<PathNode> queue = new PriorityQueue<>();
+	    Object2DoubleOpenHashMap<BlockPos> bestCosts = new Object2DoubleOpenHashMap<>(500);
+	    bestCosts.defaultReturnValue(Double.POSITIVE_INFINITY);
+	    bestCosts.put(startPos, 0.0);
+	    queue.add(new PathNode(startPos, 0));
+	    while (!queue.isEmpty()) {
+	        PathNode current = queue.poll();
+	        if (current.cost > bestCosts.getDouble(current.pos)) continue;
+	        
+	        for (Direction direction : Direction.values()) {
+	            BlockPos neighbor = current.pos.relative(direction);
+	            double costToEnter = getBlockTransmissionCost(level, neighbor);
+	            double newCost = current.cost + costToEnter;
+	            
+	            if (newCost <= maxCost && newCost < bestCosts.getDouble(neighbor)) {
+	                bestCosts.put(neighbor, newCost);
+	                queue.add(new PathNode(neighbor, newCost));
+	            }
+	        }
+	    }
+	    return bestCosts;
+	}
+	
 	public static double getEffectiveDistance(Level level, BlockPos startPos, BlockPos target, double maxCost) {
 		if (startPos.equals(target)) return 0;
-		PriorityQueue<PathNode> queue = new PriorityQueue<>(Comparator.comparingDouble(node -> node.cost));
-		Map<BlockPos, Double> bestCosts = new HashMap<>();
+		PriorityQueue<PathNode> queue = new PriorityQueue<>(/* Comparator.comparingDouble(node -> node.cost) */);
+		Object2DoubleOpenHashMap<BlockPos> bestCosts = new Object2DoubleOpenHashMap<>();
+		bestCosts.defaultReturnValue(Double.POSITIVE_INFINITY);
 		bestCosts.put(startPos, 0.0);
 		queue.add(new PathNode(startPos, 0));
 		while (!queue.isEmpty()) {
@@ -210,10 +241,11 @@ public class SurviveEvents {
 			if (current.pos.equals(target)) return current.cost;
 			if (current.cost > maxCost) continue;
 			
-			for (BlockPos neighbor : getNeighbors(current.pos)) {
+			for (Direction direction : Direction.values()) {
+				BlockPos neighbor = current.pos.relative(direction);
 				double costToEnter = getBlockTransmissionCost(level, neighbor);
 				double newCost = current.cost + costToEnter;
-				if (newCost < bestCosts.getOrDefault(neighbor, Double.POSITIVE_INFINITY)) {
+				if (newCost <= maxCost && newCost < bestCosts.getDouble(neighbor)) {
 					bestCosts.put(neighbor, newCost);
 					queue.add(new PathNode(neighbor, newCost));
 				}
@@ -239,7 +271,6 @@ public class SurviveEvents {
 		return Collections.unmodifiableList(finalList);
 	}
 
-	@SuppressWarnings("deprecation")
 	public static double getExactTemperature(Level world, BlockPos pos, TempType type) {
 		float skyLight = world.getChunkSource().getLightEngine().getLayerListener(LightLayer.SKY).getLightValue(pos);
 		float gameTime = world.getDayTime() % 24000L;
@@ -249,8 +280,9 @@ public class SurviveEvents {
 		switch (type) {
 		case SUN:
 			float sunIntensity = 5.0f;
-			if (world.getBiome(pos).unwrapKey().isPresent() && DataMaps.Server.biome.containsKey(world.getBiome(pos).unwrapKey().get().location())) {
-				sunIntensity = DataMaps.Server.biome.get(world.getBiome(pos).unwrapKey().get().location()).getSunIntensity();
+			Optional<ResourceKey<Biome>> biomeKey = world.getBiome(pos).unwrapKey();
+			if (biomeKey.isPresent() && DataMaps.Server.biome.containsKey(biomeKey.get().location())) {
+				sunIntensity = DataMaps.Server.biome.get(biomeKey.get().location()).getSunIntensity();
 			}
 			if (skyLight > 5.0F) return gameTime*sunIntensity;
 			else return -1.0F * sunIntensity;
@@ -266,17 +298,22 @@ public class SurviveEvents {
 			return TempEvents.tempOrCache(pos, SPHERE_OFFSETS_RANGE_2, SPHERE_OFFSETS_RANGE_5, (offsets) -> {
 				float totalBlockTemp = 0;
 				int rangeInBlocks = 5;
-				
+				var blockLightListener = world.getChunkSource().getLightEngine().getLayerListener(LightLayer.BLOCK);
+				int currentRange = (offsets.size() < 100) ? 2 : 5;
+				Object2DoubleOpenHashMap<BlockPos> thermalMap = buildThermalCostMap(world, pos, currentRange);
 				for (Offset offset : offsets) {
 					float blockTemp = 0;
 					BlockPos heatSource = new BlockPos(pos.getX()+offset.dx, pos.getY()+offset.dy, pos.getZ()+offset.dz);
-					float blockLight = world.getChunkSource().getLightEngine().getLayerListener(LightLayer.BLOCK).getLightValue(heatSource);
+					
+					float blockLight = blockLightListener.getLightValue(heatSource);
 					BlockState heatState = world.getBlockState(heatSource);
 					float sourceRange;
+					TempEvents.TempData stateData = null;
 					if (heatState.getBlock() instanceof TemperatureEmitter) {
 						sourceRange = ((TemperatureEmitter)heatState.getBlock()).getModificationRange(heatState);
 					} else {
-						sourceRange = DataMaps.Server.blockTemperature.containsKey(RegistryHelper.blocks().getKey(heatState.getBlock())) ? DataMaps.Server.blockTemperature.get(RegistryHelper.blocks().getKey(heatState.getBlock())).getRange() : 5;
+						stateData = TempEvents.STATE_CACHE.get(heatState);
+						sourceRange = stateData != null ? stateData.sourceRange() : 0; //DataMaps.Server.blockTemperature.containsKey(RegistryHelper.blocks().getKey(heatState.getBlock())) ? DataMaps.Server.blockTemperature.get(RegistryHelper.blocks().getKey(heatState.getBlock())).getRange() : 5;
 					}
 
 					if (pos.closerThan(heatSource, sourceRange)) {
@@ -285,14 +322,12 @@ public class SurviveEvents {
 						if (heatState.getBlock() instanceof TemperatureEmitter) {
 							blockTemp = ((TemperatureEmitter)heatState.getBlock()).getTemperatureModification(heatState);
 						}
-						else if (TempEvents.STATE_CACHE.containsKey(heatState)) {
-							blockTemp += TempEvents.STATE_CACHE.get(heatState).tempModifier();
-						}
+						else if (stateData != null) blockTemp += stateData.tempModifier();
 
 						//Complex calculation for distance
 						boolean doDistanceCalculation = true;
 						if (doDistanceCalculation) {
-							double effectiveDistance = getEffectiveDistance(world, heatSource, pos, rangeInBlocks);
+							double effectiveDistance = thermalMap.getDouble(heatSource)/*getEffectiveDistance(world, heatSource, pos, rangeInBlocks)*/;
 							if (effectiveDistance <= rangeInBlocks) {								
 								totalBlockTemp+=blockTemp * (1 - effectiveDistance / rangeInBlocks);
 							}
@@ -310,10 +345,11 @@ public class SurviveEvents {
 			float totalEntityTemp = 0;
 			int rangeInBlocks = 5;
 			for (Entity entity : world.getEntitiesOfClass(Entity.class, AABB.encapsulatingFullBlocks(pos.offset(rangeInBlocks, rangeInBlocks, rangeInBlocks), pos.offset(-rangeInBlocks, -rangeInBlocks, -rangeInBlocks)))) {
-				float sourceRange = DataMaps.Server.entityTemperature.containsKey(RegistryHelper.entityTypes().getKey(entity.getType())) ? DataMaps.Server.entityTemperature.get(RegistryHelper.entityTypes().getKey(entity.getType())).getRange() : 5;
+				ResourceLocation entityKey = RegistryHelper.entityTypes().getKey(entity.getType());
+				float sourceRange = DataMaps.Server.entityTemperature.containsKey(entityKey) ? DataMaps.Server.entityTemperature.get(entityKey).getRange() : 5;
 				if (pos.closerThan(entity.blockPosition(), sourceRange)) {
-					if (DataMaps.Server.entityTemperature.containsKey(RegistryHelper.entityTypes().getKey(entity.getType()))) {
-						EntityTemperatureJsonHolder entityTemperatureData = DataMaps.Server.entityTemperature.get(RegistryHelper.entityTypes().getKey(entity.getType()));
+					if (DataMaps.Server.entityTemperature.containsKey(entityKey)) {
+						EntityTemperatureJsonHolder entityTemperatureData = DataMaps.Server.entityTemperature.get(entityKey);
 						totalEntityTemp+=entityTemperatureData.getTemperatureModifier();
 					}
 				}
