@@ -1,12 +1,14 @@
 package com.stereowalker.survive.events;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.tuple.Triple;
@@ -31,29 +33,33 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 
 public class TempEvents {
+	private static final int MAX_PENDING_TASKS = 10;
 	public static final Map<ChunkPos, Map<BlockPos, Float>> GLOBAL_BLOCK_TEMPS = new ConcurrentHashMap<>();
 	public static final Map<BlockPos, Float> INVALID_PRE_COMPUTED_TEMPS = new ConcurrentHashMap<>();
 	private static ExecutorService ex = null; 
 	public static Logger logger = LogManager.getLogger("TempEvents");
-	
+
 	protected static final Map<BlockState, TempData> STATE_CACHE = new ConcurrentHashMap<>();
-	protected static final Queue<Function<?,?>> TO_PROCESS = new LinkedList<>();
-	
-	protected static record TempData(float tempModifier, float conductionCoeff /*Add implementation later*/) {
+	protected static final Queue<ProcessQueue<?>> TO_PROCESS = new ConcurrentLinkedQueue<>();
+
+	protected static record TempData(float tempModifier, float conductionCoeff /*Add implementation later*/, float sourceRange) {
 	}
-	
+	protected static record ProcessQueue<T>(BlockPos pos, T object, Function<T,Float> function) {
+	}
+
 	public static void serverStart(MinecraftServer server) {
 		if (ex == null || ex.isShutdown() || ex.isTerminated()) {
-			ex = Executors.newSingleThreadExecutor();
+			ex = new ThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(MAX_PENDING_TASKS), new ThreadPoolExecutor.DiscardOldestPolicy());
 		}
 	}
-	
+
 	public static void serverStop(MinecraftServer server) {
 		ex.shutdown();
 		TO_PROCESS.clear();
 		GLOBAL_BLOCK_TEMPS.clear();
+		INVALID_PRE_COMPUTED_TEMPS.clear();
 	}
-	
+
 	protected static class JobEntry {
 		final BlockPos pos;
 		final long enqueuedAt;
@@ -62,11 +68,11 @@ public class TempEvents {
 			this.enqueuedAt = System.nanoTime();
 		}
 	}
-	
+
 	public static void log(String m) {
 		if (LoaderHelper.isDevEnvironment()) logger.info(m);
 	}
-	
+
 	public static void discardChunk(ChunkPos chunk) {
 		GLOBAL_BLOCK_TEMPS.remove(chunk);
 	}
@@ -77,8 +83,10 @@ public class TempEvents {
 				for (int z = -rangeInBlocks; z <= rangeInBlocks; z++) {
 					BlockPos heatSource = new BlockPos(block.getX()+x, block.getY()+y, block.getZ()+z);
 					ChunkPos chunk = new ChunkPos(heatSource);
-					if (GLOBAL_BLOCK_TEMPS.containsKey(chunk) && GLOBAL_BLOCK_TEMPS.get(chunk).containsKey(local(chunk, heatSource))) {
-						INVALID_PRE_COMPUTED_TEMPS.put(heatSource, GLOBAL_BLOCK_TEMPS.get(chunk).remove(local(chunk, heatSource)));
+					Map<BlockPos, Float> chunkMap = GLOBAL_BLOCK_TEMPS.get(chunk);
+					if (chunkMap != null) {
+						Float removed = chunkMap.remove(local(chunk, heatSource));
+						if (removed != null) INVALID_PRE_COMPUTED_TEMPS.put(heatSource, removed);
 					}
 				}
 			}
@@ -94,31 +102,36 @@ public class TempEvents {
 	}
 	public static <T> float tempOrCache(BlockPos block, T quick, T full, Function<T,Float> calc) {
 		ChunkPos chunk = new ChunkPos(block);
-		float temp = calc.apply(quick);
+		float temp = 0;
 		if (GLOBAL_BLOCK_TEMPS.containsKey(chunk) && GLOBAL_BLOCK_TEMPS.get(chunk).containsKey(local(chunk, block))) {
 			temp = GLOBAL_BLOCK_TEMPS.get(chunk).get(local(chunk, block));
-//			log("Pulled Cache at"+block+" "+chunk+" "+local(chunk, block)+" "+temp);
+			//			log("Pulled Cache at"+block+" "+chunk+" "+local(chunk, block)+" "+temp);
 			return temp;
 		}
 		else {
 			if (INVALID_PRE_COMPUTED_TEMPS.containsKey(block))
 				temp = INVALID_PRE_COMPUTED_TEMPS.remove(block);
+			else
+				temp = calc.apply(quick);
 			cacheTemp(block, temp);
-			TO_PROCESS.add(calc);
+			TO_PROCESS.add(new ProcessQueue<T>(block, full, calc));
 			ex.submit(() -> {
-				while (TO_PROCESS.size() > 5) TO_PROCESS.remove();
-				if (TO_PROCESS.size() > 0) {
+				while (TO_PROCESS.size() > 5) TO_PROCESS.poll(); 
+
+				@SuppressWarnings("unchecked")
+				ProcessQueue<T> task = (ProcessQueue<T>) TO_PROCESS.poll();
+				if (task != null) {
 					long start = System.nanoTime();
-					cacheTemp(block, ((Function<T, Float>) TO_PROCESS.remove()).apply(full));
+					cacheTemp(task.pos(), task.function().apply(task.object()));
 					long end = System.nanoTime();
-//					log("Cachine "+block+" "+((end - start) / 1000000.0D)+"ms");	
+//					log("Caching "+block+" "+((end - start) / 1000000.0D)+"ms");	
 				}
-				});
+			});
 			return temp;
 		}
 	}
-	
-	
+
+
 	public static void buildStateCache() {
 		Survive.getInstance().getLogger().info("Started Building BlockState temp cache");
 		long start = System.nanoTime();
@@ -135,8 +148,10 @@ public class TempEvents {
 
 	private static TempData computeTempDataFor(BlockState heatState) {
 		float blockTemp = 0;
+		float range = 5;
 		if (DataMaps.Server.blockTemperature.containsKey(RegistryHelper.blocks().getKey(heatState.getBlock()))) {
 			BlockTemperatureJsonHolder blockTemperatureData = DataMaps.Server.blockTemperature.get(RegistryHelper.blocks().getKey(heatState.getBlock()));
+			range = blockTemperatureData.getRange();
 			if (blockTemperatureData.getStateChangeProperty() != null) {
 				boolean setTemp = false;
 				heatState.getBlock().getStateDefinition().getPossibleStates();
@@ -190,6 +205,6 @@ public class TempEvents {
 				}
 			}
 		}
-		return new TempData(blockTemp, 1);
+		return new TempData(blockTemp, 1, range);
 	}
 }
