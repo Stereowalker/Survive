@@ -27,7 +27,7 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 	private String tempPage;
 
 	public ServerboundPlayerStatusBookPacket(final WrittenBookContent book, final boolean celcius, final String sleepPage, final String tempPage) {
-		super(Survive.getInstance().channel);
+		super(null);
 		this.book = book;
 		this.celcius = celcius;
 		this.sleepPage = sleepPage;
@@ -35,7 +35,7 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 	}
 
 	public ServerboundPlayerStatusBookPacket(RegistryFriendlyByteBuf byteBuf) {
-		super(byteBuf, Survive.getInstance().channel);
+		super(byteBuf);
 		this.book = WrittenBookContent.STREAM_CODEC.decode(byteBuf);
 		this.celcius = byteBuf.readBoolean();
 		this.sleepPage = byteBuf.readUtf();

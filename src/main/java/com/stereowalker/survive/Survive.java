@@ -65,6 +65,7 @@ import com.stereowalker.survive.tags.FluidSTags;
 import com.stereowalker.survive.tags.ItemSTags;
 import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.effect.SMobEffects;
+import com.stereowalker.survive.world.entity.EntityData;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 import com.stereowalker.survive.world.inventory.SMenuType;
 import com.stereowalker.survive.world.item.CanteenItem;
@@ -84,10 +85,11 @@ import com.stereowalker.survive.world.level.material.SFluids;
 import com.stereowalker.survive.world.seasons.Seasons;
 import com.stereowalker.survive.world.spellcraft.SSpells;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeConditions;
+import com.stereowalker.unionlib.api.collectors.ArmorCollector;
 import com.stereowalker.unionlib.api.collectors.BrewingRecipeCollector;
 import com.stereowalker.unionlib.api.collectors.CommandCollector;
 import com.stereowalker.unionlib.api.collectors.ConfigCollector;
-import com.stereowalker.unionlib.api.collectors.DefaultAttributeModifier;
+import com.stereowalker.unionlib.api.collectors.EntityModifier;
 import com.stereowalker.unionlib.api.collectors.FluidPropertyCollector;
 import com.stereowalker.unionlib.api.collectors.InsertCollector;
 import com.stereowalker.unionlib.api.collectors.PackCollector;
@@ -118,6 +120,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -307,7 +310,6 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	@Override
 	public void setupRegistries(RegistryCollector collector) {
 		collector.addRegistryHolder(Registries.ATTRIBUTE, SAttributes.class);
-		collector.addRegistryHolder(Registries.ARMOR_MATERIAL, SArmorMaterials.class);
 		collector.addRegistryHolder(Registries.BLOCK, SBlocks.class);
 		collector.addRegistryHolder(Registries.FLUID, SFluids.class);
 		collector.addRegistryHolder(Registries.ITEM, SItems.class);
@@ -390,9 +392,9 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	}
 	
 	@Override
-	public void modifyDefaultEntityAttributes(DefaultAttributeModifier modifier) {
-		super.modifyDefaultEntityAttributes(modifier);
-		modifier.addToEntity(EntityType.PLAYER, SAttributes.COLD_RESISTANCE.holder(), SAttributes.HEAT_RESISTANCE.holder(), SAttributes.MAX_STAMINA.holder());
+	public void modifyEntity(EntityModifier modifier) {
+		modifier.addAttributeToEntity(EntityType.PLAYER, () -> SAttributes.COLD_RESISTANCE.holder(), () -> SAttributes.HEAT_RESISTANCE.holder(), () -> SAttributes.MAX_STAMINA.holder());
+		modifier.defineRevisedSynchedData(Entity.class, EntityData.DATA_TICKS_ROASTED, 0);
 	}
 	
 	@Override
@@ -465,6 +467,12 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	@Override
 	public void registerCreativeTabs(CreativeTabBuilder builder) {
 		builder.addTab("main_tab", SCreativeModeTab.TAB_MAIN);
+	}
+	
+	@Override
+	public void registerArmorMaterials(ArmorCollector builder) {
+		builder.registerArmorMaterial(SArmorMaterials.WOOL);
+		builder.registerArmorMaterial(SArmorMaterials.STIFFENED_HONEY);
 	}
 	
 	@Override

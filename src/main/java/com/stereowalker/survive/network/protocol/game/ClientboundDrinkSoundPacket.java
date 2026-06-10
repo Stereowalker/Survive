@@ -18,12 +18,12 @@ public class ClientboundDrinkSoundPacket extends ClientboundUnionPacket {
 	private BlockPos pos;
 
 	public ClientboundDrinkSoundPacket(final BlockPos pos) {
-		super(Survive.getInstance().channel);
+		super(null);
 		this.pos = pos;
 	}
 
 	public ClientboundDrinkSoundPacket(RegistryFriendlyByteBuf byteBuf) {
-		super(byteBuf, Survive.getInstance().channel);
+		super(byteBuf);
 		this.pos = byteBuf.readBlockPos();
 	}
 

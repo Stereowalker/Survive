@@ -1,22 +1,19 @@
 package com.stereowalker.survive.mixins;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import com.stereowalker.survive.needs.IRoastedEntity;
+import com.stereowalker.survive.world.entity.EntityData;
+import com.stereowalker.unionlib.network.syncher.IRevisedDataEntity;
 
 import net.minecraft.commands.CommandSource;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.damagesource.DamageSources;
@@ -28,7 +25,6 @@ import net.minecraft.world.level.entity.EntityAccess;
 @Mixin(Entity.class)
 public abstract class EntityMixin implements Nameable, EntityAccess, CommandSource, IRoastedEntity {
 
-	@Shadow @Final protected SynchedEntityData entityData;
 	@Shadow public boolean isInPowderSnow;
 	@Shadow public int tickCount;
 	@Shadow public Level level() {return null;}
@@ -37,16 +33,7 @@ public abstract class EntityMixin implements Nameable, EntityAccess, CommandSour
 	@Shadow public boolean canFreeze() {return false;}
 	@Shadow public boolean isFullyFrozen() {return false;}
 	@Shadow public DamageSources damageSources() {return null;}
-	@Shadow protected abstract void defineSynchedData(SynchedEntityData.Builder pBuilder);
 	
-	private static final EntityDataAccessor<Integer> DATA_TICKS_ROASTED = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.INT);
-
-	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;defineSynchedData(Lnet/minecraft/network/syncher/SynchedEntityData$Builder;)V"))
-	public void init_inject(Entity e, SynchedEntityData.Builder synchedentitydata$builder) {
-		defineSynchedData(synchedentitydata$builder);
-		synchedentitydata$builder.define(DATA_TICKS_ROASTED, 0);
-	}
-
 	@Inject(method = "saveWithoutId", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getUUID()Ljava/util/UUID;"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void saveWithoutId_inject(CompoundTag pCompound, CallbackInfoReturnable<CompoundTag> cir) {
 		int i = this.getTicksRoasted();
@@ -62,12 +49,14 @@ public abstract class EntityMixin implements Nameable, EntityAccess, CommandSour
 
 	@Override
 	public int getTicksRoasted() {
-		return this.entityData.get(DATA_TICKS_ROASTED);
+		IRevisedDataEntity rde = (IRevisedDataEntity)this;
+		return rde.getRevisedEntityData().get(EntityData.DATA_TICKS_ROASTED);
 	}
 
 	@Override
 	public void setTicksRoasted(int pTicksFrozen) {
-		this.entityData.set(DATA_TICKS_ROASTED, pTicksFrozen);
+		IRevisedDataEntity rde = (IRevisedDataEntity)this;
+		rde.getRevisedEntityData().set(EntityData.DATA_TICKS_ROASTED, pTicksFrozen);
 	}
 
 	@Override

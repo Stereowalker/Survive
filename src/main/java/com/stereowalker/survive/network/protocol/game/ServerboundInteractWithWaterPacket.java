@@ -32,7 +32,7 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 	private InteractionHand hand;
 
 	public ServerboundInteractWithWaterPacket(final BlockPos pos, final float addThirst, final double waterAmount, final double hydrationAmount, final InteractionHand hand) {
-		super(Survive.getInstance().channel);
+		super(null);
 		this.pos = pos;
 		this.addThirst = addThirst;
 		this.waterAmount = waterAmount;
@@ -45,7 +45,7 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 	}
 
 	public ServerboundInteractWithWaterPacket(RegistryFriendlyByteBuf packetBuffer) {
-		super(packetBuffer, Survive.getInstance().channel);
+		super(packetBuffer);
 		this.pos = packetBuffer.readBlockPos();
 		this.addThirst = packetBuffer.readFloat();
 		this.hand = packetBuffer.readEnum(InteractionHand.class);

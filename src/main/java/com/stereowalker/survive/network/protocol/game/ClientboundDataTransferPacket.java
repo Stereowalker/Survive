@@ -26,14 +26,14 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 	private boolean clear;
 
 	public ClientboundDataTransferPacket(final ResourceLocation statIn, final JsonHolder settingsIn, final boolean clear) {
-		super(Survive.getInstance().channel);
+		super(null);
 		this.stat = statIn;
 		this.settings = settingsIn;
 		this.clear = clear;
 	}
 
 	public ClientboundDataTransferPacket(RegistryFriendlyByteBuf byteBuf) {
-		super(byteBuf, Survive.getInstance().channel);
+		super(byteBuf);
 		this.stat = byteBuf.readResourceLocation();
 		String cl = byteBuf.readUtf();
 		this.settings = JsonHolder.deserialize(byteBuf.readNbt(), JsonHolder.HOLD.get(cl));

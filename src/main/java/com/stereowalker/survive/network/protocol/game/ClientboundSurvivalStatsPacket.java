@@ -18,7 +18,7 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 	private boolean legacyStats;
 
 	public ClientboundSurvivalStatsPacket(final CompoundTag statsIn, final boolean legacyStats) {
-		super(Survive.getInstance().channel);
+		super(null);
 		this.stats = statsIn;
 		this.legacyStats = legacyStats;
 	}
@@ -40,7 +40,7 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 	}
 
 	public ClientboundSurvivalStatsPacket(RegistryFriendlyByteBuf byteBuf) {
-		super(byteBuf, Survive.getInstance().channel);
+		super(byteBuf);
 		this.stats = byteBuf.readNbt();
 		this.legacyStats = byteBuf.readBoolean();
 	}
