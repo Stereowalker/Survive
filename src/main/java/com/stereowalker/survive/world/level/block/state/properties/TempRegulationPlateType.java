@@ -1,12 +1,13 @@
 package com.stereowalker.survive.world.level.block.state.properties;
 
 import com.stereowalker.unionlib.util.math.Color;
+import com.stereowalker.unionlib.util.math.ImmutableColor;
 
 import net.minecraft.util.StringRepresentable;
 
 public enum TempRegulationPlateType implements StringRepresentable {
-	CHILLER("chiller", new Color(.616f, .659f, .686f)), 
-	HEATER("heater", new Color(.702f, .659f, .635f));
+	CHILLER("chiller", new ImmutableColor(.616f, .659f, .686f)), 
+	HEATER("heater", new ImmutableColor(.702f, .659f, .635f));
 
 	private final String name;
 	private final Color color;

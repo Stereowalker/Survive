@@ -91,7 +91,7 @@ public class PlatedTemperatureRegulatorBlock extends AbstractTemperatureRegulato
 				}
 			} else return pState.getValue(TEMP_REG_TYPE).getColor();
 		}
-		return Color.named("white");
+		return Color.parse("white");
 	}
 
 	@Override
