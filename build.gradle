@@ -1,66 +1,70 @@
 plugins {
+	id 'java'
 	id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'net.minecraftforge.gradle' version '[7.0.17,8)'
     id "me.modmuss50.mod-publish-plugin" version "0.7.4"
 	id "com.modrinth.minotaur" version "2.+"
+    id 'net.minecraftforge.renamer' version '1.1.2'
 }
 apply from: "main.gradle"
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
-apply plugin: 'org.spongepowered.mixin'
+
+renamer.enableMixinRefmaps {
+	config "${_mod_id}.mixins.json"
+	source (sourceSets.main) {
+		refMap = _mod_name+"-refmap.json"
+	}
+	jar(tasks.named('jar'))
+}
+renamer.classes(tasks.named('jar', Jar)) {
+    archiveClassifier = 'srg'
+    mappings renamer.mixin.generatedMappings
+}
 
 // Should exist on all loaders and is loader specific
 repositories {
+maven fg.forgeMaven
 	mavenLocal()
+	minecraft.mavenizer(it) // In Kotlin, it = this
+    maven fg.minecraftLibsMaven
+    mavenCentral()
 	maven {url "https://modmaven.dev/" }// UnionLib
 	maven {url "https://girafi.dk/maven/"}
 	maven {url "https://www.cursemaven.com"} //CurseForge
-    maven {url = "https://maven.minecraftforge.net/"} // glitch
     maven {url = "https://repo.spongepowered.org/maven"} // mixin
-    
-    maven {url = "https://maven.theillusivec4.top/"}
-	maven {url 'https://maven.blamejared.com'}
-    maven {url "https://maven.shedaniel.me/"} // cloth config
 }
 
 dependencies {
-	minecraft "net.minecraftforge:forge:${_minecraft_version}-" + _loader_version
+	implementation minecraft.dependency("net.minecraftforge:forge:${_minecraft_version}-${_loader_version}")
 	annotationProcessor "org.spongepowered:mixin:"+modMixinVersion+":processor"
-	implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
-	
-	implementation fg.deobf("com.stereowalker.unionlib:UnionLib:${_minecraft_version}-${_unionlib_version}-${_loader}") {
-        exclude group: "net.minecraftforge", module: "forge"
-    }
-    minecraftLibrary ("org.tomlj:tomlj:1.0.0") {
-    	exclude group: 'com.google.code.findbugs', module: 'jsr305'
-    }
-	
+
+	implementation renamer.dependency("com.stereowalker.unionlib:UnionLib:${_minecraft_version}-${_unionlib_version}-${_loader}")
+
 	compileOnly ("mezz.jei:jei-${_minecraft_version}-common-api:${_jei_version}")
 	compileOnly ("mezz.jei:jei-${_minecraft_version}-forge-api:${_jei_version}")
 	compileOnly ("com.stereowalker.combat:C.O.M.B.A.T:1.18.2"+/*_minecraft_version+*/"-"+combatVersion+":api")
     //compileOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
     //compileOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE:api")
-	
-	implementation fg.deobf("mezz.jei:jei-${_minecraft_version}-forge:${_jei_version}")
+
+	implementation renamer.dependency("mezz.jei:jei-${_minecraft_version}-forge:${_jei_version}")
 	//runtimeOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
     //runtimeOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE")
-	
-    implementation fg.deobf("com.github.glitchfiend:GlitchCore-forge:${_minecraft_version}-0.0.1.1")
-    implementation fg.deobf("com.github.glitchfiend:TerraBlender-forge:${_minecraft_version}-3.0.1.10")
-    implementation fg.deobf("com.github.glitchfiend:SereneSeasons-forge:${_minecraft_version}-${_serene_seasons_version}")
-    implementation fg.deobf("com.github.glitchfiend:BiomesOPlenty-forge:${_minecraft_version}-${_bop_version}")
-    implementation fg.deobf("curse.maven:pneumaticcraft-repressurized-281849:4843223")
+
+    implementation renamer.dependency("com.github.glitchfiend:GlitchCore-forge:${_minecraft_version}-0.0.1.1")
+    implementation ("com.github.glitchfiend:TerraBlender-forge:${_minecraft_version}-3.0.1.10")
+    implementation ("com.github.glitchfiend:SereneSeasons-forge:${_minecraft_version}-${_serene_seasons_version}")
+    implementation ("com.github.glitchfiend:BiomesOPlenty-forge:${_minecraft_version}-${_bop_version}")
+    implementation renamer.dependency("curse.maven:pneumaticcraft-repressurized-281849:4843223")
 	//implementation ("curse.maven:origins-474438:"+originsID)
 	//implementation ("curse.maven:create-328085:"+createID)
 	//implementation ("curse.maven:flywheel-486392:"+flywheelID)
 }
+renamer.mappings(minecraft.dependency.toSrg)
 
 task apiJar(type: Jar) {
     from(sourceSets.main.allJava) {
