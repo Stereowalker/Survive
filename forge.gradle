@@ -1,4 +1,4 @@
-project.ext._mod_jar = jar
+project.ext._mod_jar = "jar"
 
 //mixin {
 //    add sourceSets.main, "${_mod_id}.refmap.json"
