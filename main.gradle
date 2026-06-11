@@ -1,3 +1,4 @@
+layout.buildDirectory = file("build_${_minecraft_version}_${_loader}")
 apply from: "${_loader}.gradle".toLowerCase()
 
 println('Java: ' + System.getProperty('java.version'))
@@ -28,26 +29,27 @@ tasks.named('processResources', ProcessResources).configure {
 
 publishing {
 	publications {
-        mavenJava(MavenPublication) {
+		mavenJava(MavenPublication) {
+			from components.java
 			afterEvaluate {
-                artifact project._mod_jar
-            }
-        
-        	groupId = project.group
-			artifactId = project.archivesBaseName
-			version = project.version
-        }
-    }
-    repositories {
-        maven {
-            name = "modmaven"
+				artifacts.removeIf { it.classifier == null && it.extension == 'jar' }
+				artifact project._mod_jar
+				groupId = project.group
+				artifactId = project._mod_name
+				version = project.version
+			}
+		}
+	}
+	repositories {
+		maven {
+			name = "modmaven"
 			credentials {
 				username "$System.env.ARTIFACTORYUSER"
 				password "$System.env.ARTIFACTORYPASS"
 			}
 			url = "https://modmaven.dev/artifactory/local-releases/"
-        }
-    }
+		}
+	}
 }
 
 publishMods {
@@ -88,18 +90,22 @@ modrinth {
     }
 }
 
-task uploadToAllSites {
-    dependsOn "publishCurseforge"
-    dependsOn "modrinth"
-    group = "publishing"
+tasks.register('uploadToAllSites') {
+	dependsOn "publishCurseforge"
+	dependsOn "modrinth"
+	group = "publishing"
+	description = "Publishes to CurseForge and Modrinth"
 }
 
-task uploadToAllSitesAndMaven {
-    dependsOn "publish"
-    dependsOn "uploadToAllSites"
-    group = "publishing"
+tasks.register('uploadToAllSitesAndMaven') {
+	dependsOn "publish"
+	dependsOn "uploadToAllSites"
+	group = "publishing"
+	description = "Publishes to all sites and Maven"
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    it.options.release = 21
+    options.compilerArgs += ['-parameters']
 }

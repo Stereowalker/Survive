@@ -1,10 +1,9 @@
 plugins {
+	id 'java'
 	id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'org.spongepowered.mixin' version '0.7.+'
+    id 'net.minecraftforge.gradle' version '[7.0.17,8)'
     id "me.modmuss50.mod-publish-plugin" version "0.7.4"
 	id "com.modrinth.minotaur" version "2.+"
 }
@@ -13,11 +12,13 @@ apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
-apply plugin: 'org.spongepowered.mixin'
 
 // Should exist on all loaders and is loader specific
 repositories {
+	minecraft.mavenizer(it) // In Kotlin, it = this
+	maven fg.forgeMaven
+	maven fg.minecraftLibsMaven
+	mavenCentral()
 	mavenLocal()
 	maven {url "https://modmaven.dev/" }// UnionLib
 	maven {url "https://girafi.dk/maven/"}
@@ -30,9 +31,9 @@ repositories {
 }
 
 dependencies {
-	minecraft "net.minecraftforge:forge:${_minecraft_version}-" + _loader_version
-	annotationProcessor "org.spongepowered:mixin:"+modMixinVersion+":processor"
-	implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+	implementation minecraft.dependency("net.minecraftforge:forge:${_minecraft_version}-${_loader_version}")
+    //annotationProcessor 'net.minecraftforge:eventbus-validator:7.0.1'
+	//annotationProcessor "org.spongepowered:mixin:"+modMixinVersion+":processor"
 	
 	implementation ("com.stereowalker.unionlib:UnionLib:${_minecraft_version}-${_unionlib_version}-${_loader}")
 	

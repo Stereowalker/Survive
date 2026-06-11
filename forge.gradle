@@ -1,42 +1,37 @@
 project.ext._mod_jar = jar
 
-mixin {
-    add sourceSets.main, "${_mod_id}.refmap.json"
-    config "${_mod_id}.mixins.json"
-}
+//mixin {
+//    add sourceSets.main, "${_mod_id}.refmap.json"
+//    config "${_mod_id}.mixins.json"
+//}
 
 minecraft {
     mappings channel: mappingsChannel, version: mappingsVersion
-    reobf = false
-    copyIdeResources = true
-    //makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    accessTransformers = files("src/main/resources/META-INF/accesstransformer.dev")
     runs {
-        client {
-            workingDirectory project.file("run/${project._loader}-Client")
-            property 'forge.logging.markers', 'REGISTRIES'
-			arg "-mixin.config=${_mod_id}.mixins.json"
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-			property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-            mods {
-                "${_mod_id}" {
-                    source sourceSets.main
-                }
-            }
+        configureEach {
+            workingDir = layout.projectDirectory.dir('run')
+
+            systemProperty 'eventbus.api.strictRuntimeChecks', 'true'
+            systemProperty 'forge.enabledGameTestNamespaces', 'examplemod'
+			args "--mixin.config=${_mod_id}.mixins.json"
         }
 
-        server {
-            workingDirectory project.file("run/${project._loader}-Server")
-            property 'forge.logging.markers', 'REGISTRIES'
-			arg "-mixin.config=${_mod_id}.mixins.json"
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.disableRefMap', 'true'
-            mods {
-                "${_mod_id}" {
-                    source sourceSets.main
-                }
-            }
+        register('client') {
+        	workingDir = layout.projectDirectory.dir("run/${project._loader}-Client")
+        }
+
+        register('server') {
+        	workingDir = layout.projectDirectory.dir("run/${project._loader}-Server")
+            args '--nogui'
+        }
+
+        register('gameTestServer')
+
+        register('data') {
+            workingDir = layout.projectDirectory.dir('run-data')
+
+            args '--mod', 'examplemod', '--all', '--output', layout.projectDirectory.dir('src/generated/resources'), '--existing', layout.projectDirectory.dir('src/main/resources')
         }
     }
 }
@@ -60,8 +55,4 @@ eclipse {
     synchronizationTasks 'genEclipseRuns'
 }
 
-sourceSets.each {
-    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
-    it.output.resourcesDir = dir
-    it.java.destinationDirectory = dir
-}
+sourceSets.main.resources { srcDir 'src/generated/resources' }
