@@ -1,5 +1,30 @@
-project.ext._mod_jar = jar
+project.ext._mod_jar = "renameJar"
 
+gradle.projectsEvaluated {
+    tasks.named('renameJar').configure {
+        output.set(tasks.named('jar', Jar).flatMap { it.archiveFile })
+    }
+}
+afterEvaluate {
+	tasks.register('preserveOriginalJar', Copy) {
+        from tasks.named('jar', Jar).flatMap { it.archiveFile }
+        into layout.buildDirectory.dir('libs')
+        rename { it.replace('.jar', '-dev.jar') }
+        dependsOn tasks.named('jar')
+    }
+    tasks.named('renameJar').configure {
+        output.set(tasks.named('jar', Jar).flatMap { it.archiveFile })
+    }
+
+    tasks.named('renameJar').configure {
+        dependsOn 'preserveOriginalJar'
+    }
+	// Replace the default jar in the java component with renameJar
+    configurations.apiElements.outgoing.artifacts.clear()
+    configurations.runtimeElements.outgoing.artifacts.clear()
+    configurations.apiElements.outgoing.artifact(tasks.named(project._mod_jar))
+    configurations.runtimeElements.outgoing.artifact(tasks.named(project._mod_jar))
+}
 //mixin {
 //    add sourceSets.main, "${_mod_id}.refmap.json"
 //    config "${_mod_id}.mixins.json"
@@ -7,7 +32,7 @@ project.ext._mod_jar = jar
 
 minecraft {
     mappings channel: mappingsChannel, version: mappingsVersion
-    accessTransformers = files("src/main/resources/META-INF/accesstransformer.cfg")
+    accessTransformers = files("src/main/resources/META-INF/accesstransformer.dev")
     runs {
         configureEach {
             workingDir = layout.projectDirectory.dir('run')
