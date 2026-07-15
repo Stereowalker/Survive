@@ -6,6 +6,6 @@
   ],
   "result": {
     "id": "survive:filled_netherite_canteen",
-    "components": { "survive:drinks_left": 3, "potion_contents": { "potion": "survive:purified_water"}}}
+    "components": { "survive:drinks_left": 3, "potion_contents": { "potion": "survive:purified_water"}}
   }
 }
