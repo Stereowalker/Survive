@@ -1,6 +1,7 @@
 package com.stereowalker.survive;
 
 import java.util.Random;
+import java.util.UUID;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -61,6 +62,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
+import net.minecraft.util.StringUtil;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.LivingEntity;
@@ -148,6 +150,18 @@ public class SurviveClientSegment extends ClientSegment {
 		});
 		collector.addInsert(ClientInserts.ITEM_TOOLTIP, insert ->{
 			if (insert.player() != null) {
+				//Status book
+				if (SDataComponents.STATUS_OWNER_D.hasData(insert.itemStack()) && !SDataComponents.STATUS_OWNER_D.getData(insert.itemStack()).equals(new UUID(0L, 0L))) {
+					String s = "";
+					if (insert.player().level() != null) {
+						s = insert.player().level().getPlayerByUUID(SDataComponents.STATUS_OWNER_D.getData(insert.itemStack())).getName().getString();
+					}
+					if (!StringUtil.isNullOrEmpty(s)) 
+						insert.tooltips().add(Component.translatable("book.forPatient", s).withStyle(ChatFormatting.GREEN));
+					else
+						insert.tooltips().add(Component.translatable("book.noPatient").withStyle(ChatFormatting.GREEN));
+				}
+				// Armor weight and temp
 				boolean showWeight = false;
 				boolean showTemp = false;
 				if ((Survive.STAMINA_CONFIG.enabled && Survive.STAMINA_CONFIG.enable_weights) || Survive.TEMPERATURE_CONFIG.enabled) {
@@ -163,8 +177,9 @@ public class SurviveClientSegment extends ClientSegment {
 				if (showWeight || showTemp) {
 					TooltipEvents.accessoryTooltip(insert.player(), insert.itemStack(), insert.tooltips(), showWeight, showTemp);
 				}
+				//Food status
 				FoodUtils.applyFoodStatusToTooltip(insert.player(), insert.itemStack(), insert.tooltips());
-				
+				//Sea water indicator
 				if (SDataComponents.BIOME_SOURCE_D.hasData(insert.itemStack()) && insert.player().level().registryAccess()
 				.lookup(Registries.BIOME)
 				.get().get(ResourceKey.create(Registries.BIOME, SDataComponents.BIOME_SOURCE_D.getData(insert.itemStack())))
