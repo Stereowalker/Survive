@@ -15,7 +15,7 @@ import com.stereowalker.survive.api.IBlockPropertyHandler;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 
-public class EnumBlockPropertyHandlerImpl<T extends Enum<T> & StringRepresentable> implements IBlockPropertyHandler<T> {
+public class EnumBlockPropertyHandlerImpl<T extends Enum<T> & StringRepresentable> implements IBlockPropertyHandler<T>, Cloneable {
 	String name;
 	List<String> allowed_values = Lists.newArrayList();
 	String className = "";
@@ -85,5 +85,15 @@ public class EnumBlockPropertyHandlerImpl<T extends Enum<T> & StringRepresentabl
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	@Override
+	public IBlockPropertyHandler<T> copy() {
+		try {
+			return (IBlockPropertyHandler<T>) clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
