@@ -59,21 +59,21 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 					vals.put("lit", temperatureIn);
 					vals.put("active", temperatureIn);
 					temperatureIn = 0;
-					stateChangePropertyIn.add(Triple.of(IBlockPropertyHandler.SAVED_PROPERTIES.get("boolean"), new ArrayList<PropertyPair<?>>(), vals));
+					stateChangePropertyIn.add(Triple.of(IBlockPropertyHandler.getSavedProperty("boolean"), new ArrayList<PropertyPair<?>>(), vals));
 					stopWorking();
 				} else if(this.hasMemberAndIsJsonArray(CHANGE_PROPERTY, object)) {
 					setWorkingOn(CHANGE_PROPERTY);
 					for (JsonElement e : object.get(CHANGE_PROPERTY).getAsJsonArray()) {
 						if (IBlockPropertyHandler.SAVED_PROPERTIES.containsKey(e.getAsJsonObject().get("type").getAsString())) {
 							JsonObject o = e.getAsJsonObject();
-							IBlockPropertyHandler<?> handler = IBlockPropertyHandler.SAVED_PROPERTIES.get(o.get("type").getAsString());
+							IBlockPropertyHandler<?> handler = IBlockPropertyHandler.getSavedProperty(o.get("type").getAsString()).copy();
 							Map<String,Float> vals = BlockPropertyHandlerImpl.deserialize(handler, o);
 							List<PropertyPair<?>> requirements = Lists.newArrayList();
 							if (this.hasMemberAndIsJsonArray("requires", o))
 								o.get("requires").getAsJsonArray().forEach((eme) -> {
 									String type = eme.getAsJsonObject().get("type").getAsString();
 									eme.getAsJsonObject().remove("type");
-									requirements.add(IBlockPropertyHandler.SAVED_PROPERTIES.get(type).requirements(eme.getAsJsonObject()));
+									requirements.add(IBlockPropertyHandler.getSavedProperty(type).requirements(eme.getAsJsonObject()));
 								});
 							o.remove("type");
 							stateChangePropertyIn.add(Triple.of(handler, requirements, vals));

@@ -16,11 +16,15 @@ import net.minecraft.world.level.block.state.properties.Property;
 public interface IBlockPropertyHandler<T extends Comparable<T>> {
 
 	public static final Map<String,IBlockPropertyHandler<?>> SAVED_PROPERTIES = Maps.newHashMap();
+	public static IBlockPropertyHandler<?> getSavedProperty(String key) {
+		return SAVED_PROPERTIES.get(key).copy();
+	}
 	public Map<String,Float> deserialize(JsonObject object);
 	public PropertyPair<?> requirements(JsonObject object);
 	public T getValue(String value);
 	public Property<T> derivedProperty();
 	public void setName(String name);
+	public IBlockPropertyHandler<T> copy();
 	
 	public class PropertyPair<S extends Comparable<S>> extends Pair<Property<S>, S> {
 
