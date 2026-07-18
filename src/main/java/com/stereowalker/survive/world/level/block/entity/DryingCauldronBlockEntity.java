@@ -53,7 +53,7 @@ public class DryingCauldronBlockEntity extends BlockEntity {
 		super.saveAdditional(tag, registries);
 		tag.putInt("waterContentLeft", waterContentLeft);
 		tag.putInt("resultCount", resultCount);
-		tag.put("result", result.save(registries, new CompoundTag()));
+		tag.put("result", getResult().save(registries, new CompoundTag()));
 	}
 
 	@Override
@@ -233,7 +233,7 @@ public class DryingCauldronBlockEntity extends BlockEntity {
 		}
 		if (flag) sunPower -= 20;
 		BlockState blockBelow = level.getBlockState(worldPosition.below());
-		if (blockBelow.getValue(CampfireBlock.LIT)) {
+		if (blockBelow.hasProperty(CampfireBlock.LIT) && blockBelow.getValue(CampfireBlock.LIT)) {
 			if (blockBelow.getBlock() == Blocks.CAMPFIRE) {
 				camfirePower = 50;
 			}
