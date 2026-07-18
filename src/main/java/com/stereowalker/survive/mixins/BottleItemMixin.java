@@ -13,7 +13,7 @@ import com.stereowalker.survive.world.item.component.SDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BottleItem;
 import net.minecraft.world.item.ItemStack;
@@ -25,13 +25,13 @@ import net.minecraft.world.phys.BlockHitResult;
 public class BottleItemMixin {
 	BlockPos fillPos = BlockPos.ZERO;
 	@Inject(method = "use", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/phys/BlockHitResult;getBlockPos()Lnet/minecraft/core/BlockPos;"), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void turnBottleIntoItem(Level pLevel, Player pPlayer, InteractionHand pHand, CallbackInfoReturnable<InteractionResultHolder> cir, List $$3, ItemStack $$4, BlockHitResult $$7, BlockPos $$8) {
+	public void turnBottleIntoItem(Level pLevel, Player pPlayer, InteractionHand pHand, CallbackInfoReturnable<InteractionResult> cir, List $$3, ItemStack $$4, BlockHitResult $$7, BlockPos $$8) {
 		fillPos = $$8;
 	}
 
 	@Inject(method = "turnBottleIntoItem", at = @At("HEAD"))
 	public void turnBottleIntoItem(ItemStack pBottleStack, Player pPlayer, ItemStack pFilledBottleStack, CallbackInfoReturnable<ItemStack> cir) {
 		if (pFilledBottleStack.has(DataComponents.POTION_CONTENTS) && pFilledBottleStack.get(DataComponents.POTION_CONTENTS).is(Potions.WATER))
-			SDataComponents.BIOME_SOURCE_D.setData(pFilledBottleStack, pPlayer.level().getBiome(fillPos).unwrapKey().get().location());
+			SDataComponents.BIOME_SOURCE_D.setData(pFilledBottleStack, pPlayer.level().getBiome(fillPos).unwrapKey().get().identifier());
 	}
 }

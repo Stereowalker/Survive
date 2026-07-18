@@ -8,13 +8,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.stereowalker.survive.hooks.ColdStorage;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 @Mixin(ChestBlockEntity.class)
 public abstract class ChestBlockEntityMixin extends RandomizableContainerBlockEntity implements ColdStorage {
@@ -25,13 +25,13 @@ public abstract class ChestBlockEntityMixin extends RandomizableContainerBlockEn
 	long lastAccessed;
 
 	@Inject(method = "loadAdditional", at = @At("TAIL"))
-	private void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries, CallbackInfo ci) {
-		load(pTag, pRegistries);
+	private void loadAdditional(ValueInput pTag, CallbackInfo ci) {
+		load(pTag);
 	}
 
 	@Inject(method = "saveAdditional", at = @At("TAIL"))
-	private void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries, CallbackInfo ci) {
-		save(pTag, pRegistries);
+	private void saveAdditional(ValueOutput pTag, CallbackInfo ci) {
+		save(pTag);
 	}
 
 	@Override

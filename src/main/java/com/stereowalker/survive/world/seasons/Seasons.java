@@ -8,10 +8,10 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.unionlib.api.registries.RegistryCollector;
 import com.stereowalker.unionlib.util.VersionHelper;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class Seasons {
-	public static final Map<ResourceLocation, Season> SEASON_LIST = new HashMap<ResourceLocation, Season>();
+	public static final Map<Identifier, Season> SEASON_LIST = new HashMap<Identifier, Season>();
 
 	public static final Season NONE = register("none", new Season(0));
 	public static final Season DRY_BEGIN = register("dry_begin", new Season(0.1f));
@@ -39,7 +39,7 @@ public class Seasons {
 	}
 	
 	public static void registerAll(RegistryCollector.Custom<Season> registry) {
-		for(Entry<ResourceLocation, Season> season : SEASON_LIST.entrySet()) {
+		for(Entry<Identifier, Season> season : SEASON_LIST.entrySet()) {
 			registry.register(season.getKey(), season.getValue());
 //			Survive.getInstance().debug("Season: \""+season.getKey().toString()+"\" registered");
 		}

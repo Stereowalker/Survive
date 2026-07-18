@@ -9,7 +9,7 @@ import com.stereowalker.survive.api.json.JsonHolder;
 import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * @author Stereowalker
@@ -18,20 +18,20 @@ import net.minecraft.resources.ResourceLocation;
 public class FluidJsonHolder implements JsonHolder {
     private static final Marker DRINK_DATA = MarkerManager.getMarker("FLUID");
     
-	private ResourceLocation itemID;
+	private Identifier itemID;
 	//Thirst
 	private int thirstAmount = 0;
 	private float hydrationAmount = 0;
 	private float thirstChance = 0;
 	
 	public FluidJsonHolder(CompoundTag nbt) {
-		this.itemID = VersionHelper.toLoc(nbt.getString("id"));
-		this.thirstAmount = nbt.getInt("thirst_amount");
-		this.hydrationAmount = nbt.getFloat("hydration_amount");
-		this.thirstChance = nbt.getFloat("thirst_chance");
+		this.itemID = VersionHelper.toLoc(nbt.getString("id").get());
+		this.thirstAmount = nbt.getInt("thirst_amount").get();
+		this.hydrationAmount = nbt.getFloat("hydration_amount").get();
+		this.thirstChance = nbt.getFloat("thirst_chance").get();
 	}
 	
-	public FluidJsonHolder(ResourceLocation itemID, JsonObject object) {
+	public FluidJsonHolder(Identifier itemID, JsonObject object) {
 		String THIRST = "thirst";
 		String THIRSTY = "thirst_chance";
 		
@@ -63,7 +63,7 @@ public class FluidJsonHolder implements JsonHolder {
 		}
 	}
 
-	public ResourceLocation getItemID() {
+	public Identifier getItemID() {
 		return itemID;
 	}
 

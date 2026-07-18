@@ -8,8 +8,8 @@ import com.stereowalker.survive.Survive;
 
 //import io.github.edwinmindcraft.calio.api.event.DynamicRegistrationEvent;
 //import io.github.edwinmindcraft.origins.api.origin.Origin;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.resources.Identifier;
+//import net.minecraftforge.common.MinecraftForge;
 
 public class OriginsCompat {
 	public static void initOriginsPatcher() {
@@ -24,7 +24,7 @@ public class OriginsCompat {
 //			if (origin.getPowers() != null) {
 //				Survive.getInstance().getLogger().info("Gave "+event.getRegistryName()+" the Heat Resistance power");
 //				event.setNewEntry(new Origin(
-//						new ImmutableSet.Builder<ResourceLocation>().addAll(origin.getPowers()).add(Survive.getInstance().location("heat_resistance")).build(),
+//						new ImmutableSet.Builder<Identifier>().addAll(origin.getPowers()).add(Survive.getInstance().location("heat_resistance")).build(),
 //						origin.getIcon(),
 //						origin.isUnchoosable(),
 //						origin.getOrder(),
@@ -38,7 +38,7 @@ public class OriginsCompat {
 //			if (origin.getPowers() != null) {
 //				Survive.getInstance().getLogger().info("Gave "+event.getRegistryName()+" the Cold Blooded power");
 //				event.setNewEntry(new Origin(
-//						new ImmutableSet.Builder<ResourceLocation>().addAll(origin.getPowers()).add(Survive.getInstance().location("cold_blooded")).build(),
+//						new ImmutableSet.Builder<Identifier>().addAll(origin.getPowers()).add(Survive.getInstance().location("cold_blooded")).build(),
 //						origin.getIcon(),
 //						origin.isUnchoosable(),
 //						origin.getOrder(),
@@ -52,7 +52,7 @@ public class OriginsCompat {
 //			if (origin.getPowers() != null) {
 //				Survive.getInstance().getLogger().info("Gave "+event.getRegistryName()+" the Air From Canteen power");
 //				event.setNewEntry(new Origin(
-//						new ImmutableSet.Builder<ResourceLocation>().addAll(origin.getPowers()).add(Survive.getInstance().location("air_from_canteen")).build(),
+//						new ImmutableSet.Builder<Identifier>().addAll(origin.getPowers()).add(Survive.getInstance().location("air_from_canteen")).build(),
 //						origin.getIcon(),
 //						origin.isUnchoosable(),
 //						origin.getOrder(),

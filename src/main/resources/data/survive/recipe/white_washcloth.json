@@ -6,9 +6,7 @@
   "type": "minecraft:crafting_shapeless",
   "group": "washcloth",
   "ingredients": [
-    {
-      "item": "minecraft:string"
-    }
+    "minecraft:string"
   ],
   "result": {
     "id": "survive:white_washcloth"

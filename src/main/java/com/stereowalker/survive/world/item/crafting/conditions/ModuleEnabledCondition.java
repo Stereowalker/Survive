@@ -16,7 +16,7 @@ public record ModuleEnabledCondition(String module) implements ICondition
     ).apply(b, ModuleEnabledCondition::new));
     
 //  @Override
-//  public ResourceLocation getID()
+//  public Identifier getID()
 //  {
 //      return NAME;
 //  }

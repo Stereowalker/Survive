@@ -9,6 +9,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * @author stereowalker
@@ -150,20 +152,20 @@ public class WellbeingData extends SurviveData {
 	}
 
 	@Override
-	public void read(CompoundTag compound) {
-		if (compound.contains("timeUntilUnwell", 99)) {
-			this.isWell = compound.getBoolean("isWell");
-			this.timeUntilWell = compound.getInt("timeUntilWell");
-			this.timeUntilUnwell = compound.getInt("timeUntilUnwell");
-			this.timeUntilHypothermia = compound.getInt("timeUntilHypothermia");
-			this.timeUntilHyperthermia = compound.getInt("timeUntilHyperthermia");
-			this.intensity = compound.getInt("unwellIntensity");
-			this.reason = compound.getString("unwellReason");
-		}
+	public void read(ValueInput compound) {
+//		if (compound.contains("timeUntilUnwell", 99)) {
+			this.isWell = compound.getBooleanOr("isWell", true);
+			this.timeUntilWell = compound.getIntOr("timeUntilWell", 0);
+			this.timeUntilUnwell = compound.getIntOr("timeUntilUnwell", 0);
+			this.timeUntilHypothermia = compound.getIntOr("timeUntilHypothermia", 0);
+			this.timeUntilHyperthermia = compound.getIntOr("timeUntilHyperthermia", 0);
+			this.intensity = compound.getIntOr("unwellIntensity", 0);
+			this.reason = compound.getStringOr("unwellReason", "");
+//		}
 	}
 
 	@Override
-	public void write(CompoundTag compound, boolean reducedData) {
+	public void write(ValueOutput compound, boolean reducedData) {
 		compound.putBoolean("isWell", this.isWell);
 		compound.putInt("timeUntilWell", this.timeUntilWell);
 		compound.putInt("timeUntilUnwell", this.timeUntilUnwell);

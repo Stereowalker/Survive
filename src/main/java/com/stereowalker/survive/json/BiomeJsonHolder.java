@@ -17,12 +17,12 @@ import com.stereowalker.survive.world.seasons.Season;
 import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BiomeJsonHolder implements JsonHolder {
 	private static final Marker BLOCK_TEMPERATURE_DATA = MarkerManager.getMarker("BLOCK_TEMPERATURE_DATA");
 
-	private ResourceLocation biomeID;
+	private Identifier biomeID;
 	private final float thirst_chance;
 	private final int unwell_intensity;
 	private final float temperature;
@@ -32,17 +32,17 @@ public class BiomeJsonHolder implements JsonHolder {
 	private final Map<Season,Float> seasonModifiers;
 	
 	public BiomeJsonHolder(CompoundTag nbt) {
-		this.biomeID = VersionHelper.toLoc(nbt.getString("id"));
-		this.thirst_chance = nbt.getFloat("thirst_chance");
-		this.unwell_intensity = nbt.getInt("unwell_intensity");
-		this.temperature = nbt.getFloat("temperature");
-		this.wetnessModifier = nbt.getFloat("wetnessModifier");
-		this.sun_intensity = nbt.getFloat("sun_intensity");
+		this.biomeID = VersionHelper.toLoc(nbt.getString("id").get());
+		this.thirst_chance = nbt.getFloat("thirst_chance").get();
+		this.unwell_intensity = nbt.getInt("unwell_intensity").get();
+		this.temperature = nbt.getFloat("temperature").get();
+		this.wetnessModifier = nbt.getFloat("wetnessModifier").get();
+		this.sun_intensity = nbt.getFloat("sun_intensity").get();
 		altitude_level_modifier = null;
 		seasonModifiers = null;
 	}
 
-	public BiomeJsonHolder(ResourceLocation biomeID, JsonObject object) {
+	public BiomeJsonHolder(Identifier biomeID, JsonObject object) {
 		String ALTITUDE_LEVEL_MODIFIER = "altitude_level_modifier";
 		String SEASON_MODIFIER = "season_modifier";
 
@@ -124,7 +124,7 @@ public class BiomeJsonHolder implements JsonHolder {
 		this.altitude_level_modifier = altitude_level_modifierIn;
 	}
 
-	public ResourceLocation getItemID() {
+	public Identifier getItemID() {
 		return biomeID;
 	}
 

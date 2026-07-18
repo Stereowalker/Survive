@@ -4,23 +4,23 @@ import com.stereowalker.unionlib.util.VersionHelper;
 import com.stereowalker.unionlib.util.math.UnionMathHelper;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class TemperatureModifier {
-	private ResourceLocation id;
+	private Identifier id;
 	private double mod;
 	private ContributingFactor factor;
 	
 	public TemperatureModifier() {
 	}
 	
-	public TemperatureModifier(ResourceLocation id, double mod) {
+	public TemperatureModifier(Identifier id, double mod) {
 		this.id = id;
 		this.mod = mod;
 		this.factor = ContributingFactor.INTERNAL;
 	}
 	
-	public TemperatureModifier(ResourceLocation id, double mod, ContributingFactor factor) {
+	public TemperatureModifier(Identifier id, double mod, ContributingFactor factor) {
 		this.id = id;
 		this.mod = mod;
 		this.factor = factor;
@@ -34,7 +34,7 @@ public class TemperatureModifier {
 		return factor;
 	}
 	
-	public ResourceLocation getId() {
+	public Identifier getId() {
 		return id;
 	}
 	
@@ -46,9 +46,9 @@ public class TemperatureModifier {
 	}
 	
 	public void read(CompoundTag nbt) {
-		this.id = VersionHelper.toLoc(nbt.getString("id"));
-		this.mod = nbt.getDouble("mod");
-		this.factor = nbt.getInt("factor") >= ContributingFactor.values().length ? ContributingFactor.INTERNAL : ContributingFactor.values()[nbt.getInt("factor")];
+		this.id = VersionHelper.toLoc(nbt.getString("id").get());
+		this.mod = nbt.getDouble("mod").get();
+		this.factor = nbt.getInt("factor").get() >= ContributingFactor.values().length ? ContributingFactor.INTERNAL : ContributingFactor.values()[nbt.getInt("factor").get()];
 	}
 	
 	/**

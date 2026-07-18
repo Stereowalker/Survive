@@ -6,7 +6,7 @@ import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.world.level.block.SBlocks;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.cauldron.CauldronInteraction.InteractionMap;
+import net.minecraft.core.cauldron.CauldronInteraction.Dispatcher;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AbstractCauldronBlock;
 import net.minecraft.world.level.block.Block;
@@ -14,26 +14,27 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
 
 @Mixin(LayeredCauldronBlock.class)
 public abstract class LayeredCauldronBlockMixin extends AbstractCauldronBlock {
 
-	public LayeredCauldronBlockMixin(Properties pProperties, InteractionMap pInteractions) {
-		super(pProperties, pInteractions);
+	public LayeredCauldronBlockMixin(Properties properties, Dispatcher interactions) {
+		super(properties, interactions);
 	}
 
 	@Override
 	public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
-		if (!pLevel.isClientSide) {
+		if (!pLevel.isClientSide()) {
 			heatOrCoolCauldron(pState, pLevel, pPos);
 		}
 		super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
 	}
 	
 	@Override
-	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos,
+	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, Orientation pFromPos,
 			boolean pIsMoving) {
-		if (!pLevel.isClientSide) {
+		if (!pLevel.isClientSide()) {
 			heatOrCoolCauldron(pState, pLevel, pPos);
 		}
 		super.neighborChanged(pState, pLevel, pPos, pBlock, pFromPos, pIsMoving);

@@ -6,12 +6,8 @@
     "X"
   ],
   "key": {
-    "X": {
-      "item": "minecraft:paper"
-    },
-    "O": {
-      "item": "minecraft:charcoal"
-    }
+    "X": "minecraft:paper",
+    "O": "minecraft:charcoal"
   },
   "result": {
     "id": "survive:charcoal_filter",

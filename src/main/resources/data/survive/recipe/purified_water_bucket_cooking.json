@@ -1,8 +1,6 @@
 {
   "type": "minecraft:smelting",
-  "ingredient": {
-    "item": "minecraft:water_bucket"
-  },
+  "ingredient": "minecraft:water_bucket",
   "result": {
     "id": "survive:purified_water_bucket"
   },

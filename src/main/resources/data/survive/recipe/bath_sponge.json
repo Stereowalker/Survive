@@ -5,9 +5,7 @@
 	}],
   	"type": "minecraft:crafting_shapeless",
   	"ingredients": [
-    	{
-      		"item": "minecraft:sponge"
-    	}
+    	"minecraft:sponge"
   	],
   	"result": {
     	"id": "survive:bath_sponge",

@@ -6,7 +6,7 @@ import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 public class BiomeNotCondition extends TemperatureChangeCondition<BiomeNotCondition.Instance>{
@@ -30,15 +30,15 @@ public class BiomeNotCondition extends TemperatureChangeCondition<BiomeNotCondit
 	
 	@Override
 	public Instance createInstance(CompoundTag nbt) {
-		float temperatureIn = nbt.getFloat("temperature");
-		String biomeIn = nbt.getString("biome");
+		float temperatureIn = nbt.getFloat("temperature").get();
+		String biomeIn = nbt.getString("biome").get();
 		return new Instance(temperatureIn, VersionHelper.toLoc(biomeIn));
 	}
 
 	static class Instance extends TemperatureChangeInstance {
-		private ResourceLocation biome;
+		private Identifier biome;
 
-		public Instance(float temperatureIn, ResourceLocation biomeIn) {
+		public Instance(float temperatureIn, Identifier biomeIn) {
 			super(temperatureIn);
 			this.biome = biomeIn;
 		}

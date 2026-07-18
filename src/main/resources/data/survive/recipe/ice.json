@@ -6,9 +6,7 @@
     "XXX"
   ],
   "key": {
-    "X": {
-      "item": "survive:ice_cube"
-    }
+    "X": "survive:ice_cube"
   },
   "result": {
     "id": "minecraft:ice"

@@ -121,8 +121,8 @@ public class FoodUtils {
 	}
 
 	public static State foodStatus(ItemStack stack, Level level) {
-		if (SDataComponents.FOOD_STATUS_D.hasData(stack) && (level.isClientSide ?  DataMaps.Client.consummableItem : DataMaps.Server.consummableItem).containsKey(RegistryHelper.items().getKey(stack.getItem())) && Survive.FOOD_CONFIG.enabled) {
-			FoodJsonHolder food = (level.isClientSide ?  DataMaps.Client.consummableItem : DataMaps.Server.consummableItem).get(RegistryHelper.items().getKey(stack.getItem()));
+		if (SDataComponents.FOOD_STATUS_D.hasData(stack) && (level.isClientSide() ?  DataMaps.Client.consummableItem : DataMaps.Server.consummableItem).containsKey(RegistryHelper.items().getKey(stack.getItem())) && Survive.FOOD_CONFIG.enabled) {
+			FoodJsonHolder food = (level.isClientSide() ?  DataMaps.Client.consummableItem : DataMaps.Server.consummableItem).get(RegistryHelper.items().getKey(stack.getItem()));
 			long timeTill = SDataComponents.FOOD_STATUS_D.getData(stack).expireTime() - level.getGameTime();
 			long timeSince = food.lifespan() - timeTill;
 			if (timeTill < 0) {

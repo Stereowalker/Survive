@@ -4,7 +4,7 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.VersionHelper;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -18,7 +18,7 @@ public class ItemSTags {
 		return TagKey.create(RegistryHelper.itemKey(), VersionHelper.toLoc(Survive.MOD_ID, pName));
 	}
 
-	public static TagKey<Item> create(ResourceLocation name) {
+	public static TagKey<Item> create(Identifier name) {
 		return TagKey.create(RegistryHelper.itemKey(), name);
 	}
 }

@@ -5,11 +5,11 @@ import org.apache.commons.lang3.mutable.MutableInt;
 
 import com.stereowalker.survive.Survive;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 @EventBusSubscriber
 public class NutritionData extends SurviveData {
@@ -98,28 +98,28 @@ public class NutritionData extends SurviveData {
 	/**
 	 * Reads the water data for the player.
 	 */
-	public void read(CompoundTag compound) {
-		if (compound.contains("carbLevel", 99)) {
-			this.carb.level = new MutableInt(compound.getInt("carbLevel"));
-			this.carb.timer = new MutableInt(compound.getInt("carbTimer"));
-			this.carb.stack = new MutableFloat(compound.getFloat("carbStack"));
+	public void read(ValueInput compound) {
+//		if (compound.contains("carbLevel", 99)) {
+			this.carb.level = new MutableInt(compound.getIntOr("carbLevel", 0));
+			this.carb.timer = new MutableInt(compound.getIntOr("carbTimer", 0));
+			this.carb.stack = new MutableFloat(compound.getFloatOr("carbStack", 0));
 			
-			this.protein.level = new MutableInt(compound.getInt("proteinLevel"));
-			this.protein.timer = new MutableInt(compound.getInt("proteinTimer"));
-			this.protein.stack = new MutableFloat(compound.getFloat("proteinStack"));
+			this.protein.level = new MutableInt(compound.getIntOr("proteinLevel", 0));
+			this.protein.timer = new MutableInt(compound.getIntOr("proteinTimer", 0));
+			this.protein.stack = new MutableFloat(compound.getFloatOr("proteinStack", 0));
 			
-			this.fat.level = new MutableInt(compound.getInt("fatLevel"));
-			this.fat.timer = new MutableInt(compound.getInt("fatTimer"));
-			this.fat.stack = new MutableFloat(compound.getFloat("fatStack"));
+			this.fat.level = new MutableInt(compound.getIntOr("fatLevel", 0));
+			this.fat.timer = new MutableInt(compound.getIntOr("fatTimer", 0));
+			this.fat.stack = new MutableFloat(compound.getFloatOr("fatStack", 0));
 			
-			this.maintenanceTicks = compound.getInt("maintenanceTicks");
-		}
+			this.maintenanceTicks = compound.getIntOr("maintenanceTicks", 0);
+//		}
 	}
 
 	/**
 	 * Writes the water data for the player.
 	 */
-	public void write(CompoundTag compound, boolean reducedData) {
+	public void write(ValueOutput compound, boolean reducedData) {
 		compound.putInt("carbLevel", this.carb.level.getValue());
 		if (!reducedData) {
 			compound.putInt("carbTimer", this.carb.timer.getValue());

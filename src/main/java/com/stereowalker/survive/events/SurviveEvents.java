@@ -53,13 +53,15 @@ import com.stereowalker.unionlib.util.math.UnionMathHelper;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -67,10 +69,12 @@ import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.food.FoodProperties.PossibleEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.Consumable;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
+import net.minecraft.world.item.consume_effects.ConsumeEffect;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -94,14 +98,14 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 public class SurviveEvents {
 	
 	public static void desyncClient(Player player) {
-		if (!player.level().isClientSide && DataMaps.Server.syncedClients.containsKey(player.getUUID()) ) {
+		if (!player.level().isClientSide() && DataMaps.Server.syncedClients.containsKey(player.getUUID()) ) {
 			Survive.getInstance().getLogger().info("Removing Client ("+player.getDisplayName().getString()+") From Survive Data Sync List");
 			DataMaps.Server.syncedClients.put(player.getUUID(), false); 
 		}
 	}
 
 	public static void sendToClient(LivingEntity living) {
-		if (living != null && !living.level().isClientSide && living instanceof ServerPlayer player) {
+		if (living != null && !living.level().isClientSide() && living instanceof ServerPlayer player) {
 			new ClientboundSurvivalStatsPacket(player, true).send(player);
 			new ClientboundSurvivalStatsPacket(player, false).send(player);
 			if (!DataMaps.Server.syncedClients.containsKey(player.getUUID()))
@@ -154,29 +158,29 @@ public class SurviveEvents {
 			return false;
 		} else {
 			Biome biome = world.getBiome(position).value();
-			return biome.getPrecipitationAt(position) == Biome.Precipitation.SNOW || 
-					biome.getTemperature(position) <= 0.15F || 
+			return biome.getPrecipitationAt(position, world.getSeaLevel()) == Biome.Precipitation.SNOW || 
+					biome.getTemperature(position, world.getSeaLevel()) <= 0.15F || 
 					ModHelper.isPrimalWinterLoaded() || 
 					(ModHelper.isSereneSeasonsLoaded() && SereneSeasonsCompat.snowsHere(world, position));
 		}
 	}
 
 	public static void updateEnvTemperature(LivingEntity living) {
-		if (living != null && living instanceof ServerPlayer player && !living.level().isClientSide) {
+		if (living != null && living instanceof ServerPlayer player && !living.level().isClientSide()) {
 			SurviveEntityStats.addWetTime(player, player.isUnderWater() ? 2 : player.isInWaterOrRain() ? 1 : -2);
 		}
 		if (living != null && living instanceof ServerPlayer player) {
 			if (player.isAlive()) {
-				for (Entry<ResourceLocation, Tuple<TemperatureQuery, ContributingFactor>> entry : TemperatureQuery.queries.entrySet()) {
+				for (Entry<Identifier, Tuple<TemperatureQuery, ContributingFactor>> entry : TemperatureQuery.queries.entrySet()) {
 					double queryValue = entry.getValue().getA().run(player, ((IRealisticEntity)player).temperatureData().getTemperatureLevel(), player.level(), player.blockPosition(), true);
 					TemperatureData.setTemperatureModifier(player, entry.getKey(), queryValue, entry.getValue().getB());
 				}
 			}
 		}
 		if (living instanceof Player player) {
-			FoodUtils.giveLifespanToFood(player.getInventory().items, player.level().getGameTime());
+			FoodUtils.giveLifespanToFood(player.getInventory().getNonEquipmentItems(), player.level().getGameTime());
 			for (ChunkPos chunk : TempEvents.GLOBAL_BLOCK_TEMPS.keySet()) {
-				if (!player.level().hasChunk(chunk.x, chunk.z)) {
+				if (!player.level().hasChunk(chunk.x(), chunk.z())) {
 					TempEvents.discardChunk(chunk);
 					TempEvents.log("Discarding Chunks "+chunk);
 				}
@@ -280,7 +284,7 @@ public class SurviveEvents {
 
 	public static double getExactTemperature(Level world, BlockPos pos, TempType type) {
 		float skyLight = world.getChunkSource().getLightEngine().getLayerListener(LightLayer.SKY).getLightValue(pos);
-		float gameTime = world.getDayTime() % 24000L;
+		float gameTime = world.getOverworldClockTime() % 24000L;
 		gameTime = gameTime/(200/3);
 		gameTime = (float) Math.sin(Math.toRadians(gameTime));
 
@@ -288,8 +292,8 @@ public class SurviveEvents {
 		case SUN:
 			float sunIntensity = 5.0f;
 			Optional<ResourceKey<Biome>> biomeKey = world.getBiome(pos).unwrapKey();
-			if (biomeKey.isPresent() && DataMaps.Server.biome.containsKey(biomeKey.get().location())) {
-				sunIntensity = DataMaps.Server.biome.get(biomeKey.get().location()).getSunIntensity();
+			if (biomeKey.isPresent() && DataMaps.Server.biome.containsKey(biomeKey.get().identifier())) {
+				sunIntensity = DataMaps.Server.biome.get(biomeKey.get().identifier()).getSunIntensity();
 			}
 			if (skyLight > 5.0F) return gameTime*sunIntensity;
 			else return -1.0F * sunIntensity;
@@ -352,7 +356,7 @@ public class SurviveEvents {
 			float totalEntityTemp = 0;
 			int rangeInBlocks = 5;
 			for (Entity entity : world.getEntitiesOfClass(Entity.class, AABB.encapsulatingFullBlocks(pos.offset(rangeInBlocks, rangeInBlocks, rangeInBlocks), pos.offset(-rangeInBlocks, -rangeInBlocks, -rangeInBlocks)))) {
-				ResourceLocation entityKey = RegistryHelper.entityTypes().getKey(entity.getType());
+				Identifier entityKey = RegistryHelper.entityTypes().getKey(entity.getType());
 				float sourceRange = DataMaps.Server.entityTemperature.containsKey(entityKey) ? DataMaps.Server.entityTemperature.get(entityKey).getRange() : 5;
 				if (pos.closerThan(entity.blockPosition(), sourceRange)) {
 					if (DataMaps.Server.entityTemperature.containsKey(entityKey)) {
@@ -424,14 +428,14 @@ public class SurviveEvents {
 	public static void interactWithWaterSourceBlock(PlayerInteractEvent.RightClickEmpty event) {
 		HitResult raytraceresult = getPlayerPOVHitResult(event.getLevel(), event.getEntity(), ClipContext.Fluid.SOURCE_ONLY);
 		BlockPos blockpos = ((BlockHitResult)raytraceresult).getBlockPos();
-		if (event.getLevel().isClientSide && ServerboundInteractWithWaterPacket.isValidStack(event.getItemStack()) && event.getHand() == InteractionHand.MAIN_HAND) {
+		if (event.getLevel().isClientSide() && ServerboundInteractWithWaterPacket.isValidStack(event.getItemStack()) && event.getHand() == InteractionHand.MAIN_HAND) {
 			//Source Block Of Water
 			Fluid fluid = event.getLevel().getFluidState(blockpos).getType();
 			if (DataMaps.Client.fluid.containsKey(RegistryHelper.fluids().getKey(fluid))) {
 				FluidJsonHolder fluidHolder = DataMaps.Client.fluid.get(RegistryHelper.fluids().getKey(fluid));
 				float thirstChance = fluidHolder.getThirstChance();
-				if (DataMaps.Client.biome.containsKey(event.getLevel().getBiome(blockpos).unwrapKey().get().location())) {
-					BiomeJsonHolder biomeData = DataMaps.Client.biome.get(event.getLevel().getBiome(blockpos).unwrapKey().get().location());
+				if (DataMaps.Client.biome.containsKey(event.getLevel().getBiome(blockpos).unwrapKey().get().identifier())) {
+					BiomeJsonHolder biomeData = DataMaps.Client.biome.get(event.getLevel().getBiome(blockpos).unwrapKey().get().identifier());
 					if (biomeData.getThirstChance() >= 0)
 						thirstChance = biomeData.getThirstChance();
 				}
@@ -492,8 +496,8 @@ public class SurviveEvents {
 			float seasonMod = 0;
 			if (ModHelper.isSereneSeasonsLoaded()) {
 				Season season = SereneSeasonsCompat.modifyTemperatureBySeason(level, pos);
-				if (level.getBiome(pos).unwrapKey().isPresent() && DataMaps.Server.biome.containsKey(level.getBiome(pos).unwrapKey().get().location())) {
-					seasonMod = DataMaps.Server.biome.get(level.getBiome(pos).unwrapKey().get().location()).getSeasonModifiers().get(season);
+				if (level.getBiome(pos).unwrapKey().isPresent() && DataMaps.Server.biome.containsKey(level.getBiome(pos).unwrapKey().get().identifier())) {
+					seasonMod = DataMaps.Server.biome.get(level.getBiome(pos).unwrapKey().get().identifier()).getSeasonModifiers().get(season);
 				} else {
 					seasonMod = season.getModifier();
 				}
@@ -506,7 +510,7 @@ public class SurviveEvents {
 		TemperatureQuery.registerQuery("survive:dimension", ContributingFactor.ENVIRONMENTAL, (player, temp, level, pos, applyTemp)->{
 			for (String dimensionList : ServerConfig.dimensionModifiers) {
 				String[] dimension = dimensionList.split(",");
-				ResourceLocation loc = VersionHelper.toLoc(dimension[0]);
+				Identifier loc = VersionHelper.toLoc(dimension[0]);
 				if (RegistryHelper.matchesRegistryKey(loc, level.dimension())) {
 					return Float.parseFloat(dimension[1]);
 				}
@@ -515,8 +519,8 @@ public class SurviveEvents {
 		});
 		//Internal
 		TemperatureQuery.registerQuery("survive:wetness", ContributingFactor.INTERNAL, (player, temp, level, pos, applyTemp)->{
-			if (level.getBiome(pos).unwrapKey().isPresent() && DataMaps.Server.biome.containsKey(level.getBiome(pos).unwrapKey().get().location())) {
-				float f = DataMaps.Server.biome.get(level.getBiome(pos).unwrapKey().get().location()).getWetnessModifier();
+			if (level.getBiome(pos).unwrapKey().isPresent() && DataMaps.Server.biome.containsKey(level.getBiome(pos).unwrapKey().get().identifier())) {
+				float f = DataMaps.Server.biome.get(level.getBiome(pos).unwrapKey().get().identifier()).getWetnessModifier();
 				return ((double)(SurviveEntityStats.getWetTime(player)) / -1800.0D) * f;
 			} else {
 				return (double)(SurviveEntityStats.getWetTime(player)) / -1800.0D;
@@ -630,11 +634,17 @@ public class SurviveEvents {
 	public static void eat(LivingEntity user, ItemStack stack) {
 		if (user instanceof IRealisticEntity ire) {
 			if (VanillaComponents.FOOD.hasData(stack) && user instanceof Player player && player.getFoodData() instanceof CustomFoodData custom) {
-				FoodProperties foodproperties = VanillaComponents.FOOD.getData(stack);
-				for (PossibleEffect effect : foodproperties.effects()) {
-					if (effect.effect().getEffect() == MobEffects.HUNGER || custom.IsSpoiled() == State.Spoiled) {
-						custom.consumeUnclean();
-						break;
+				Consumable cons = stack.get(DataComponents.CONSUMABLE);
+				if (cons != null) {
+					mainloop:
+					for (ConsumeEffect ceffect : cons.onConsumeEffects()) {
+						if (ceffect instanceof ApplyStatusEffectsConsumeEffect asece)
+							for (MobEffectInstance effect : asece.effects()) {
+								if (effect.getEffect() == MobEffects.HUNGER || custom.IsSpoiled() == State.Spoiled) {
+									custom.consumeUnclean();
+									break mainloop;
+								}
+							}
 					}
 				}
 			}

@@ -43,12 +43,12 @@ dependencies {
     //compileOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
     //compileOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE:api")
 	
-	implementation ("mezz.jei:jei-${_minecraft_version}-neoforge:${_jei_version}")
+	compileOnly ("mezz.jei:jei-${_minecraft_version}-neoforge:${_jei_version}")
 	//runtimeOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
     //runtimeOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE")
 	
     //implementation ("com.github.glitchfiend:GlitchCore-forge:${_minecraft_version}-2.0.0.4")
-    implementation ("com.github.glitchfiend:TerraBlender-forge:1.21-4.0.0.1")
+    //implementation ("com.github.glitchfiend:TerraBlender-forge:1.21-4.0.0.1")
     implementation ("com.github.glitchfiend:SereneSeasons-forge:${_serene_seasons_version}")
     //implementation ("com.github.glitchfiend:BiomesOPlenty-forge:${_minecraft_version}-${_bop_version}")
 	//implementation ("curse.maven:origins-474438:"+originsID)

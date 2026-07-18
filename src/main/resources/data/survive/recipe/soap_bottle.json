@@ -4,9 +4,7 @@
 		"module": "hygiene"
 	}],
 	"type": "minecraft:smelting",
-	"ingredient": {
-		"item": "survive:soap_mix"
-	},
+	"ingredient": "survive:soap_mix",
 	"result": {
 		"id": "survive:soap_bottle",
 		"components": { "survive:soap_left": 20}

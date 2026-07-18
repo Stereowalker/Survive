@@ -10,7 +10,6 @@ import com.stereowalker.survive.world.level.block.RealisticCampfireBlock;
 import com.stereowalker.survive.world.level.block.SBlocks;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -37,6 +36,8 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class DryingCauldronBlockEntity extends BlockEntity {
 
@@ -49,19 +50,19 @@ public class DryingCauldronBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
+	protected void saveAdditional(ValueOutput tag) {
+		super.saveAdditional(tag);
 		tag.putInt("waterContentLeft", waterContentLeft);
 		tag.putInt("resultCount", resultCount);
-		tag.put("result", getResult().save(registries, new CompoundTag()));
+		tag.store("result", ItemStack.CODEC, getResult());
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
-		waterContentLeft = tag.getInt("waterContentLeft");
-		resultCount = tag.getInt("resultCount");
-		result = ItemStack.parse(registries, tag.get("result")).orElse(ItemStack.EMPTY);
+	protected void loadAdditional(ValueInput tag) {
+		super.loadAdditional(tag);
+		waterContentLeft = tag.getIntOr("waterContentLeft", 0);
+		resultCount = tag.getIntOr("resultCount", 0);
+		result = tag.read("result", ItemStack.CODEC).orElse(ItemStack.EMPTY);
 	}
 	
 	public static int calculateFromTicks(int ticks, int level) {
@@ -76,7 +77,7 @@ public class DryingCauldronBlockEntity extends BlockEntity {
 		BlockState state = level.getBlockState(pos);
 		if (item.getItem() == HygieneItems.POTASH_SOLUTION) {
 			if (!(level.getBlockEntity(pos) instanceof DryingCauldronBlockEntity)) {
-				if (!level.isClientSide) {
+				if (!level.isClientSide()) {
 					player.setItemInHand(hand, ItemUtils.createFilledResult(item, player, new ItemStack(Items.GLASS_BOTTLE)));
 					player.awardStat(Stats.FILL_CAULDRON);
 					player.awardStat(Stats.ITEM_USED.get(item.getItem()));
@@ -91,7 +92,7 @@ public class DryingCauldronBlockEntity extends BlockEntity {
 				}
 			}
 			else if (level.getBlockEntity(pos) instanceof DryingCauldronBlockEntity dbe && dbe.result.getItem() == HygieneItems.POTASH && state.getValue(LayeredCauldronBlock.LEVEL) < 3) {
-				if (!level.isClientSide) {
+				if (!level.isClientSide()) {
 					player.setItemInHand(hand, ItemUtils.createFilledResult(item, player, new ItemStack(Items.GLASS_BOTTLE)));
 					player.awardStat(Stats.USE_CAULDRON);
 					player.awardStat(Stats.ITEM_USED.get(item.getItem()));
@@ -109,7 +110,7 @@ public class DryingCauldronBlockEntity extends BlockEntity {
 				.get().is(BiomeTags.IS_OCEAN)) {
 			if (item.getItem() == Items.WATER_BUCKET) {
 				if (!(level.getBlockEntity(pos) instanceof DryingCauldronBlockEntity)) {
-					if (!level.isClientSide) {
+					if (!level.isClientSide()) {
 						player.setItemInHand(hand, ItemUtils.createFilledResult(item, player, new ItemStack(Items.BUCKET)));
 						player.awardStat(Stats.FILL_CAULDRON);
 						player.awardStat(Stats.ITEM_USED.get(item.getItem()));
@@ -126,7 +127,7 @@ public class DryingCauldronBlockEntity extends BlockEntity {
 				}
 			} else if (item.getItem() == Items.POTION && item.get(DataComponents.POTION_CONTENTS).is(Potions.WATER)) {
 				if (!(level.getBlockEntity(pos) instanceof DryingCauldronBlockEntity)) {
-					if (!level.isClientSide) {
+					if (!level.isClientSide()) {
 						player.setItemInHand(hand, ItemUtils.createFilledResult(item, player, new ItemStack(Items.GLASS_BOTTLE)));
 						player.awardStat(Stats.FILL_CAULDRON);
 						player.awardStat(Stats.ITEM_USED.get(item.getItem()));
@@ -143,7 +144,7 @@ public class DryingCauldronBlockEntity extends BlockEntity {
 					else System.out.println("NO DBE");
 				}
 				else if (level.getBlockEntity(pos) instanceof DryingCauldronBlockEntity dbe && dbe.result.getItem() == SItems.SEA_SALT && state.getValue(LayeredCauldronBlock.LEVEL) < 3) {
-					if (!level.isClientSide) {
+					if (!level.isClientSide()) {
 						player.setItemInHand(hand, ItemUtils.createFilledResult(item, player, new ItemStack(Items.GLASS_BOTTLE)));
 						player.awardStat(Stats.USE_CAULDRON);
 						player.awardStat(Stats.ITEM_USED.get(item.getItem()));
@@ -157,7 +158,7 @@ public class DryingCauldronBlockEntity extends BlockEntity {
 				}
 			} else if ((item.getItem() == SItems.FILLED_CANTEEN || item.getItem() == SItems.NETHERITE_CANTEEN) && item.get(DataComponents.POTION_CONTENTS).is(Potions.WATER)) {
 				if (!(level.getBlockEntity(pos) instanceof DryingCauldronBlockEntity)) {
-					if (!level.isClientSide) {
+					if (!level.isClientSide()) {
 
 						int drinksLeft = SDataComponents.DRINKS_LEFT_D.getData(item);
 						if (drinksLeft > 3) {
@@ -181,7 +182,7 @@ public class DryingCauldronBlockEntity extends BlockEntity {
 					else System.out.println("NO DBE");
 				}
 				else if (level.getBlockEntity(pos) instanceof DryingCauldronBlockEntity dbe && dbe.result.getItem() == SItems.SEA_SALT && state.getValue(LayeredCauldronBlock.LEVEL) < 3) {
-					if (!level.isClientSide) {
+					if (!level.isClientSide()) {
 						int cauldronLevelToFill = 3 - state.getValue(LayeredCauldronBlock.LEVEL);
 						int drinksLeft = SDataComponents.DRINKS_LEFT_D.getData(item);
 						if (drinksLeft > cauldronLevelToFill) {
@@ -225,7 +226,7 @@ public class DryingCauldronBlockEntity extends BlockEntity {
 		int camfirePower = 0;
 		BlockPos above = this.worldPosition.above();
 		boolean flag = level.isRainingAt(above);
-		if (level.isDay() && !level.isClientSide) {
+		if (level.isBrightOutside() && !level.isClientSide()) {
 			float f = this.getBrightness(level, above);
 			if (!flag && level.canSeeSky(above)) {
 				sunPower = Mth.ceil(f * (2f/3f)); //Maxes out at 10

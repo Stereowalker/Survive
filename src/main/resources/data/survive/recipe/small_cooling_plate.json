@@ -6,15 +6,9 @@
     " # "
   ],
   "key": {
-    "S": {
-      "item": "minecraft:cobblestone"
-    },
-	"R": {
-      "item": "minecraft:redstone"
-    },
-	"#": {
-      "item": "survive:ice_cube"
-    }
+    "S": "minecraft:cobblestone",
+	"R": "minecraft:redstone",
+	"#": "survive:ice_cube"
   },
   "result": {
     "id": "survive:small_cooling_plate"

@@ -8,10 +8,10 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.unionlib.api.registries.RegistryCollector;
 import com.stereowalker.unionlib.util.VersionHelper;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class TemperatureChangeConditions {
-	public static final Map<ResourceLocation, TemperatureChangeCondition<?>> CONDITION_LIST = new HashMap<ResourceLocation, TemperatureChangeCondition<?>>();
+	public static final Map<Identifier, TemperatureChangeCondition<?>> CONDITION_LIST = new HashMap<Identifier, TemperatureChangeCondition<?>>();
 
 	public static final TemperatureChangeCondition<?> DEFAULT = register("default", new DefaultCondition());
 	public static final TemperatureChangeCondition<?> UNDERWATER = register("underwater", new UnderwaterCondition());
@@ -25,7 +25,7 @@ public class TemperatureChangeConditions {
 	}
 	
 	public static void registerAll(RegistryCollector.Custom<TemperatureChangeCondition<?>> registry) {
-		for(Entry<ResourceLocation, TemperatureChangeCondition<?>> condition : CONDITION_LIST.entrySet()) {
+		for(Entry<Identifier, TemperatureChangeCondition<?>> condition : CONDITION_LIST.entrySet()) {
 			registry.register(condition.getKey(), condition.getValue());
 //			Survive.getInstance().debug("Condition: \""+condition.getKey().toString()+"\" registered");
 		}

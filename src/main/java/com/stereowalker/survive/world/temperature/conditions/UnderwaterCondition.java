@@ -32,9 +32,9 @@ public class UnderwaterCondition extends TemperatureChangeCondition<UnderwaterCo
 	
 	@Override
 	public Instance createInstance(CompoundTag nbt) {
-		float temperatureIn = nbt.getFloat("temperature");
-		int depthIn = nbt.getInt("depth");
-		String operationIn = nbt.getString("operation");
+		float temperatureIn = nbt.getFloat("temperature").get();
+		int depthIn = nbt.getInt("depth").get();
+		String operationIn = nbt.getString("operation").get();
 		return new Instance(temperatureIn, depthIn, operationIn);
 	}
 	

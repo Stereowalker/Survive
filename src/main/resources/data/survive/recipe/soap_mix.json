@@ -5,15 +5,9 @@
 	}],
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "survive:potash"
-    },
-    {
-      "tag": "c:animal_fat"
-    },
-    {
-      "item": "minecraft:glass_bottle"
-    }
+    "survive:potash",
+    "#c:animal_fat",
+    "minecraft:glass_bottle"
   ],
   "result": {
     "id": "survive:soap_mix"

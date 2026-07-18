@@ -1,15 +1,9 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "minecraft:barrel"
-    },
-    {
-      "item": "minecraft:leather"
-    },
-    {
-      "item": "minecraft:leather"
-    }
+    "minecraft:barrel",
+    "minecraft:leather",
+    "minecraft:leather"
   ],
   "result": {
     "count": 1,

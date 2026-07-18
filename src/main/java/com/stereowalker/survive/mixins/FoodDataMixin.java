@@ -7,14 +7,14 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.needs.IRealisticEntity;
 
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.food.FoodData;
 
 @Mixin(FoodData.class)
 public class FoodDataMixin {
 
-	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;heal(F)V"))
-	public void nutritionHeal(Player player, float value) {
+	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;heal(F)V"))
+	public void nutritionHeal(ServerPlayer player, float value) {
 		if (Survive.CONFIG.nutrition_enabled && player instanceof IRealisticEntity real) {
 			int protein = real.nutritionData().protein().level();
 			if (protein > 2000 && protein <= 3000) {

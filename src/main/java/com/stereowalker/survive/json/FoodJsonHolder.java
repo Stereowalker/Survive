@@ -8,7 +8,7 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.api.json.JsonHolder;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class FoodJsonHolder extends ConsummableJsonHolder {
     private static final Marker MARKER = MarkerManager.getMarker("FOOD_DRINK_DATA");
@@ -17,11 +17,11 @@ public class FoodJsonHolder extends ConsummableJsonHolder {
 	
 	public FoodJsonHolder(CompoundTag nbt) {
 		super(nbt);
-		this.timeFresh = nbt.getInt("time_fresh");
-		this.lifespan = nbt.getInt("lifespan");
+		this.timeFresh = nbt.getInt("time_fresh").get();
+		this.lifespan = nbt.getInt("lifespan").get();
 	}
 
-	public FoodJsonHolder(ResourceLocation itemID, JsonObject object) {
+	public FoodJsonHolder(Identifier itemID, JsonObject object) {
 		super(itemID, object);
 		
 		if(object.entrySet().size() != 0) {

@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "minecraft:magma_cream"
-    },
-    {
-      "item": "minecraft:glowstone_dust"
-    }
+    "minecraft:magma_cream",
+    "minecraft:glowstone_dust"
   ],
   "result": {
     "id": "survive:magma_paste"

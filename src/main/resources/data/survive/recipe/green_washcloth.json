@@ -6,12 +6,8 @@
   "type": "minecraft:crafting_shapeless",
   "group": "washcloth",
   "ingredients": [
-    {
-      "item": "survive:white_washcloth"
-    },
-    {
-      "item": "minecraft:green_dye"
-    }
+    "survive:white_washcloth",
+    "minecraft:green_dye"
   ],
   "result": {
     "id": "survive:green_washcloth"

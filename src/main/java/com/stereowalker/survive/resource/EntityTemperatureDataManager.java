@@ -15,7 +15,8 @@ import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
 import com.stereowalker.unionlib.util.VersionHelper;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -25,14 +26,14 @@ import net.minecraftforge.registries.ForgeRegistries;
  * Loads block temperatures from json
  * @author Stereowalker
  */
-public class EntityTemperatureDataManager implements IResourceReloadListener<Map<ResourceLocation, EntityTemperatureJsonHolder>> {
+public class EntityTemperatureDataManager implements IResourceReloadListener<Map<Identifier, EntityTemperatureJsonHolder>> {
 	@Override
-	public CompletableFuture<Map<ResourceLocation, EntityTemperatureJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
+	public CompletableFuture<Map<Identifier, EntityTemperatureJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
-			Map<ResourceLocation, EntityTemperatureJsonHolder> drinkMap = new HashMap<>();
+			Map<Identifier, EntityTemperatureJsonHolder> drinkMap = new HashMap<>();
 
-			for (Entry<ResourceLocation, Resource> resource : manager.listResources("survive_modifiers/entities", (s) -> s.toString().endsWith(".json")).entrySet()) {
-				ResourceLocation entityId = VersionHelper.toLoc(
+			for (Entry<Identifier, Resource> resource : manager.listResources("survive_modifiers/entities", (s) -> s.toString().endsWith(".json")).entrySet()) {
+				Identifier entityId = VersionHelper.toLoc(
 						resource.getKey().getNamespace(),
 						resource.getKey().getPath().replace("survive_modifiers/entities/", "").replace(".json", "")
 						);
@@ -61,16 +62,16 @@ public class EntityTemperatureDataManager implements IResourceReloadListener<Map
 	}
 
 	@Override
-	public CompletableFuture<Void> apply(Map<ResourceLocation, EntityTemperatureJsonHolder> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
+	public CompletableFuture<Void> apply(Map<Identifier, EntityTemperatureJsonHolder> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.runAsync(() -> {
-			for (ResourceLocation drinkId : data.keySet()) {
+			for (Identifier drinkId : data.keySet()) {
 				Survive.registerEntityTemperatures(drinkId, data.get(drinkId));
 			}
 		});
 	}
 
 	@Override
-	public ResourceLocation id() {
+	public Identifier id() {
 		return VersionHelper.toLoc("survive:entity_data");
 	}
 }

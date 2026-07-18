@@ -12,8 +12,9 @@ import com.stereowalker.unionlib.util.VersionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -98,13 +99,13 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 						}
 						if (flag) {
 							int stacks = 0;
-							if (DataMaps.Server.biome.containsKey(sender.level().getBiome(pos).unwrapKey().get().location())) {
-								BiomeJsonHolder biomeData = DataMaps.Server.biome.get(sender.level().getBiome(pos).unwrapKey().get().location());
+							if (DataMaps.Server.biome.containsKey(sender.level().getBiome(pos).unwrapKey().get().identifier())) {
+								BiomeJsonHolder biomeData = DataMaps.Server.biome.get(sender.level().getBiome(pos).unwrapKey().get().identifier());
 								stacks = biomeData.getUnwellIntensity();
 							}
 							waterStats.drink((int) waterAmount, (float) hydrationAmount, stacks, WaterData.applyThirst(sender, addThirst));
 						}
-						sender.level().playSound(sender, pos, new ItemStack(Items.POTION).getDrinkingSound(), SoundSource.PLAYERS, 0.5F, sender.level().random.nextFloat() * 0.1F + 0.9F);
+						sender.level().playSound(sender, pos, SoundEvents.GENERIC_DRINK.value(), SoundSource.PLAYERS, 0.5F, sender.level().getRandom().nextFloat() * 0.1F + 0.9F);
 						sender.swing(InteractionHand.MAIN_HAND);
 						new ClientboundDrinkSoundPacket(pos).send(sender);
 					}
@@ -128,9 +129,9 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 		return stack.getItem() == Items.BOWL || stack.isEmpty();
 	}
 	
-	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_interact_with_water");
+	public static Identifier id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_interact_with_water");
 	@Override
-	public ResourceLocation id() {
+	public Identifier id() {
 		return id;
 	}
 }

@@ -15,4 +15,9 @@ public abstract class ServerPlayerMixin implements IRealisticEntity {
 	public void morphExhaustion(ServerPlayer player, float value) {
 		bypassFoodExhaustion(value, value*2.5f, Mth.ceil(value*2.5f), "Movement", player.isSprinting() || player.isSwimming());
 	}
+	
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;causeFoodExhaustion(F)V"), method = {"jumpFromGround"})
+	public void morphExhaustionDuringJump(ServerPlayer player, float value) {
+		bypassFoodExhaustion(value, value*2.5f, Mth.ceil(value*2.5f), "Jumped", player.isSprinting());
+	}
 }

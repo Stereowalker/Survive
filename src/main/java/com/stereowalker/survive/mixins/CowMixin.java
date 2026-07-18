@@ -12,11 +12,11 @@ import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.animal.cow.AbstractCow;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
-@Mixin(Cow.class)
+@Mixin(AbstractCow.class)
 public abstract class CowMixin extends Animal {
 
 	protected CowMixin(EntityType<? extends Animal> p_27557_, Level p_27558_) {

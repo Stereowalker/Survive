@@ -5,7 +5,6 @@ import java.util.Random;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.api.needs.Water;
 import com.stereowalker.survive.config.ServerConfig;
-import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.damagesource.SDamageSources;
 import com.stereowalker.survive.damagesource.SDamageTypes;
 import com.stereowalker.survive.json.BiomeJsonHolder;
@@ -17,8 +16,8 @@ import com.stereowalker.survive.world.item.component.SDataComponents;
 import com.stereowalker.unionlib.util.RegistryHelper;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
@@ -28,7 +27,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class WaterData extends SurviveData implements Water {
 	private int tempDropTicks = 0;
@@ -80,7 +81,7 @@ public class WaterData extends SurviveData implements Water {
 			float biomef = -1;
 			int stacks = 0;
 			if (SDataComponents.BIOME_SOURCE_D.hasData(pStack)) {
-				ResourceLocation biomeSource = SDataComponents.BIOME_SOURCE_D.getData(pStack);
+				Identifier biomeSource = SDataComponents.BIOME_SOURCE_D.getData(pStack);
 				if (DataMaps.Server.biome.containsKey(biomeSource)) {
 					BiomeJsonHolder biomeData = DataMaps.Server.biome.get(biomeSource);
 					biomef = biomeData.getThirstChance();
@@ -148,7 +149,7 @@ public class WaterData extends SurviveData implements Water {
 				this.waterLevel = Math.max(this.waterLevel - 1, 0);
 		}
 
-		boolean flag = player.level().getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION);
+		boolean flag = player.level() instanceof ServerLevel serlev && serlev.getGameRules().get(GameRules.NATURAL_HEALTH_REGENERATION);
 		if (this.waterLevel >= 40) {
 			++this.waterTimer;
 			if (this.waterTimer >= 10) {
@@ -200,23 +201,23 @@ public class WaterData extends SurviveData implements Water {
 	/**
 	 * Reads the water data for the player.
 	 */
-	public void read(CompoundTag compound) {
-		if (compound.contains("waterLevel", 99)) {
-			this.tempDropTicks = compound.getInt("tempDropTicks");
-			this.waterLevel = compound.getInt("waterLevel");
-			this.waterTimer = compound.getInt("waterTickTimer");
-			this.waterHydrationLevel = compound.getFloat("waterHydrationLevel");
-			this.waterExhaustionLevel = compound.getFloat("waterExhaustionLevel");
-			this.uncleanConsumption = compound.getInt("uncleanComsumption");
-			this.uncleanStacks = compound.getInt("uncleanStacks");
-		}
+	public void read(ValueInput compound) {
+//		if (compound.contains("waterLevel", 99)) {
+			this.tempDropTicks = compound.getIntOr("tempDropTicks", 0);
+			this.waterLevel = compound.getIntOr("waterLevel", 0);
+			this.waterTimer = compound.getIntOr("waterTickTimer", 0);
+			this.waterHydrationLevel = compound.getFloatOr("waterHydrationLevel", 0);
+			this.waterExhaustionLevel = compound.getFloatOr("waterExhaustionLevel", 0);
+			this.uncleanConsumption = compound.getIntOr("uncleanComsumption", 0);
+			this.uncleanStacks = compound.getIntOr("uncleanStacks", 0);
+//		}
 
 	}
 
 	/**
 	 * Writes the water data for the player.
 	 */
-	public void write(CompoundTag compound, boolean reducedData) {
+	public void write(ValueOutput compound, boolean reducedData) {
 		compound.putInt("tempDropTicks", this.tempDropTicks);
 		compound.putInt("waterLevel", this.waterLevel);
 		compound.putInt("waterTickTimer", this.waterTimer);
@@ -259,7 +260,7 @@ public class WaterData extends SurviveData implements Water {
 	 */
 	public void addExhaustion(Player player, float exhaustion) {
 		if (!player.getAbilities().invulnerable) {
-			if (!player.level().isClientSide) {
+			if (!player.level().isClientSide()) {
 				this.addExhaustion(exhaustion);
 			}
 

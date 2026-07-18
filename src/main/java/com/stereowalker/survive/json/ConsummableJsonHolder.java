@@ -9,7 +9,7 @@ import com.stereowalker.survive.api.json.JsonHolder;
 import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 /**
@@ -19,7 +19,7 @@ import net.minecraft.util.Mth;
 public class ConsummableJsonHolder implements JsonHolder {
     private static final Marker DRINK_DATA = MarkerManager.getMarker("DRINK_DATA");
     
-	private ResourceLocation itemID;
+	private Identifier itemID;
 	//Thirst
 	private int thirstAmount = 0;
 	private float hydrationAmount = 0;
@@ -45,10 +45,10 @@ public class ConsummableJsonHolder implements JsonHolder {
 	private boolean overwritesDefaultHungerChance = false;
 	
 	public ConsummableJsonHolder(CompoundTag nbt) {
-		this.itemID = VersionHelper.toLoc(nbt.getString("id"));
+		this.itemID = VersionHelper.toLoc(nbt.getString("id").get());
 	}
 	
-	public ConsummableJsonHolder(ResourceLocation itemID, JsonObject object) {
+	public ConsummableJsonHolder(Identifier itemID, JsonObject object) {
 		String HUNGER = "hunger";
 		String ENERGY = "energy";
 		String SATURATION = "saturation";
@@ -146,7 +146,7 @@ public class ConsummableJsonHolder implements JsonHolder {
 		}
 	}
 
-	public ResourceLocation getItemID() {
+	public Identifier getItemID() {
 		return itemID;
 	}
 

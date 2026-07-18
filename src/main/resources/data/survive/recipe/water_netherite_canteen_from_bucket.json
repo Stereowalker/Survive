@@ -1,8 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    { "item": "minecraft:water_bucket" },
-    { "item": "survive:netherite_canteen" }
+    "minecraft:water_bucket",
+    "survive:netherite_canteen"
   ],
   "result": {
     "id": "survive:filled_netherite_canteen",

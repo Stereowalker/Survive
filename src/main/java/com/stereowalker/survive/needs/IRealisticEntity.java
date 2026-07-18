@@ -33,7 +33,7 @@ public interface IRealisticEntity {
 	 */
 	public default void addStaminaExhaustion(float exhaustion, String reason, boolean causeStrain) {
 		if ((self() instanceof Player player && !player.getAbilities().invulnerable) || !(self() instanceof Player)) {
-			if (!self().level().isClientSide) {
+			if (!self().level().isClientSide()) {
 				staminaData().addExhaustion(exhaustion, causeStrain);
 			}
 

@@ -36,7 +36,7 @@ public abstract class CampfireBlockMixin extends BaseEntityBlock implements Simp
 	
 	@Override
 	public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
-		if (!pLevel.isClientSide) {
+		if (!pLevel.isClientSide()) {
 			if (pLevel.getBlockState(pPos.above()).getBlock() == Blocks.WATER_CAULDRON) {
 				BlockState old = pLevel.getBlockState(pPos.above());
 				pLevel.setBlockAndUpdate(pPos.above(), SBlocks.PURIFIED_WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, old.getValue(LayeredCauldronBlock.LEVEL)));

@@ -8,10 +8,11 @@ import com.stereowalker.survive.world.level.block.state.properties.TempRegulatio
 import com.stereowalker.survive.world.level.block.state.properties.TempRegulationPlateType;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -25,7 +26,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
@@ -34,7 +34,7 @@ public abstract class AbstractTemperatureRegulatorBlock extends Block {
 	public static final EnumProperty<TempRegulationPlateSize> RADIATOR_SIZE = SBlockStateProperties.TEMP_REG_SIZE;
 	public static final IntegerProperty PLATE_COUNT = SBlockStateProperties.PLATE_COUNT;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-	public static final DirectionProperty FACING = DirectionalBlock.FACING;
+	public static final EnumProperty<Direction> FACING = DirectionalBlock.FACING;
 
 	public AbstractTemperatureRegulatorBlock(Properties properties) {
 		super(properties);
@@ -67,7 +67,7 @@ public abstract class AbstractTemperatureRegulatorBlock extends Block {
 	public abstract ItemStack getPlateStack(BlockState pState);
 	
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+	public InteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
 		int plate_count = pState.getValue(PLATE_COUNT);
 		if (plate_count < 4 && canAddPlate(pState, pStack)) {
 			return handlePlates(pStack, pState, pLevel, pPos, true);
@@ -75,11 +75,11 @@ public abstract class AbstractTemperatureRegulatorBlock extends Block {
 			pPlayer.addItem(getPlateStack(pState));
 			return handlePlates(pStack, pState, pLevel, pPos, false);
 		} else {
-			return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+			return InteractionResult.PASS;
 		}
 	}
 
-	public ItemInteractionResult handlePlates(ItemStack plate, BlockState pState, Level pLevel, BlockPos pPos, boolean add) {
+	public InteractionResult handlePlates(ItemStack plate, BlockState pState, Level pLevel, BlockPos pPos, boolean add) {
 		int plate_count = pState.getValue(PLATE_COUNT);
 		int newCount = plate_count+(add?1:-1);
 
@@ -107,9 +107,9 @@ public abstract class AbstractTemperatureRegulatorBlock extends Block {
 		}
 
 		if (alteredPlates) {
-			pLevel.playLocalSound(pPos.getX(), pPos.getY(), pPos.getZ(), SoundEvents.STONE_PLACE, SoundSource.BLOCKS, 1.0F + pLevel.random.nextFloat(), 0, false);
+			pLevel.playLocalSound(pPos.getX(), pPos.getY(), pPos.getZ(), SoundEvents.STONE_PLACE, SoundSource.BLOCKS, 1.0F + pLevel.getRandom().nextFloat(), 0, false);
 		}
-		return ItemInteractionResult.sidedSuccess(pLevel.isClientSide);
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override

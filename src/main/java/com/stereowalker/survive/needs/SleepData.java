@@ -3,13 +3,16 @@ package com.stereowalker.survive.needs;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.effect.SMobEffects;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.attribute.BedRule.Rule;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class SleepData extends SurviveData {
 	private int awakeTimer;
@@ -34,7 +37,7 @@ public class SleepData extends SurviveData {
 		else
 			if (player.isSleeping())
 				addAwakeTime(serverplayer, -player.getSleepTimer());
-			else if (serverplayer.level().dimensionType().bedWorks())
+			else if (serverplayer.level().environmentAttributes().getValue(EnvironmentAttributes.BED_RULE, player.blockPosition()).canSleep() != Rule.NEVER)
 				addAwakeTime(serverplayer, 1);
 		if (player.tickCount % 20 == 0)
 			addTiredEffect(serverplayer);
@@ -52,14 +55,14 @@ public class SleepData extends SurviveData {
 	}
 
 	@Override
-	public void read(CompoundTag compound) {
-		if (compound.contains("awakeTimer", 99)) {
-			this.awakeTimer = compound.getInt("awakeTimer");
-		}
+	public void read(ValueInput compound) {
+//		if (compound.contains("awakeTimer", 99)) {
+			this.awakeTimer = compound.getIntOr("awakeTimer", 0);
+//		}
 	}
 
 	@Override
-	public void write(CompoundTag compound, boolean reducedData) {
+	public void write(ValueOutput compound, boolean reducedData) {
 		compound.putInt("awakeTimer", this.awakeTimer);
 	}
 

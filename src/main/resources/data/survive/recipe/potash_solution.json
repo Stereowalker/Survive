@@ -5,9 +5,7 @@
 	}],
   "type": "survive:crafting_shapeless_with_purified_water",
   "ingredients": [
-    {
-      "item": "survive:wood_ash"
-    }
+    "survive:wood_ash"
   ],
   "result": {
     "id": "survive:potash_solution"

@@ -1,5 +1,6 @@
 package com.stereowalker.survive;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -49,21 +50,22 @@ import com.stereowalker.unionlib.util.math.MutableColor;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderType;
+//import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BiomeTags;
-import net.minecraft.util.FastColor;
+//import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -72,13 +74,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class SurviveClientSegment extends ClientSegment {
 
-	public static final ResourceLocation GUI_ICONS = VersionHelper.toLoc(Survive.MOD_ID, "textures/gui/icons.png");
+	public static final Identifier GUI_ICONS = VersionHelper.toLoc(Survive.MOD_ID, "textures/gui/icons.png");
 	public static float maxContainerCoolness;
 	@Override
-	public ResourceLocation getModIcon() {
+	public Identifier getModIcon() {
 		return VersionHelper.toLoc(Survive.MOD_ID, "textures/icon.png");
 	}
 	
@@ -98,43 +101,64 @@ public class SurviveClientSegment extends ClientSegment {
 		collector.addFactory(SParticleTypes.CLEAN, HygieneParticle.CleanFactory::new);
 	}
 	
-	@Override
-	public void setupRenderLayers(RenderLayerCollector collector) {
-		RenderType frendertype = RenderType.translucent();
-		collector.setFluidRenderLayer(frendertype, SFluids.PURIFIED_WATER, SFluids.FLOWING_PURIFIED_WATER);
-        RenderType cutout = RenderType.cutout();
-		collector.setBlockRenderLayer(cutout, SBlocks.REALISTIC_CAMPFIRE);
-	}
+//	@Override
+//	public void setupRenderLayers(RenderLayerCollector collector) {
+//		RenderType frendertype = RenderType.translucent();
+//		collector.setFluidRenderLayer(frendertype, SFluids.PURIFIED_WATER, SFluids.FLOWING_PURIFIED_WATER);
+//        RenderType cutout = RenderType.cutout();
+//		collector.setBlockRenderLayer(cutout, SBlocks.REALISTIC_CAMPFIRE);
+//	}
 	
 	@Override
 	public void setupColorOverrides(ColorOverrideCollector collector) {
-		collector.overrideBlocks((state, displayReader, blockPos, tintIndex) -> {
-			return Survive.PURIFIED_WATER_COLOR;
-		}, SBlocks.PURIFIED_WATER, SBlocks.PURIFIED_WATER_CAULDRON);
-		collector.overrideBlocks((state, displayReader, blockPos, tintIndex) -> {
-			if (state.getValue(DryingCauldronBlock.FLUID) == FluidToDry.POTASH) {
-				return Color.parse("0x483c35").brighten(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+		collector.overrideBlocks(List.of(new BlockTintSource() {
+			@Override
+			public int color(BlockState state) {
+				return Survive.PURIFIED_WATER_COLOR;
 			}
-			else if (state.getValue(DryingCauldronBlock.FLUID) == FluidToDry.SEA_SALT) {
-				return Color.fromIntRGB(BiomeColors.getAverageWaterColor(displayReader, blockPos))
-						.brighten(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+		}), SBlocks.PURIFIED_WATER, SBlocks.PURIFIED_WATER_CAULDRON);
+		collector.overrideBlocks(List.of(new BlockTintSource() {
+			@Override
+			public int color(BlockState state) {
+				if (state.getValue(DryingCauldronBlock.FLUID) == FluidToDry.POTASH) {
+					return Color.parse("0x483c35").brighten(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+				}
+				else if (state.getValue(DryingCauldronBlock.FLUID) == FluidToDry.SEA_SALT) {
+					return Color.fromIntRGB(-1)
+							.brighten(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+				}
+				else {
+					return new MutableColor(1f, 0, 0).brighten(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+				}
 			}
-			else {
-				return new MutableColor(1f, 0, 0).brighten(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+			public int colorInWorld(BlockState state, net.minecraft.client.renderer.block.BlockAndTintGetter level, net.minecraft.core.BlockPos pos) {
+				if (state.getValue(DryingCauldronBlock.FLUID) == FluidToDry.POTASH) {
+					return Color.parse("0x483c35").brighten(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+				}
+				else if (state.getValue(DryingCauldronBlock.FLUID) == FluidToDry.SEA_SALT) {
+					return Color.fromIntRGB(BiomeColors.getAverageWaterColor(level, pos))
+							.brighten(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+				}
+				else {
+					return new MutableColor(1f, 0, 0).brighten(state.getValue(DryingCauldronBlock.BOILING) * 0.12f).toIntRGB();
+				}
+//				if (displayReader.getBlockEntity(blockPos) instanceof DryingCauldronBlockEntity dbe) {
+//				}
 			}
-//			if (displayReader.getBlockEntity(blockPos) instanceof DryingCauldronBlockEntity dbe) {
-//			}
-		}, SBlocks.DRYING_CAULDRON);
-		collector.overrideBlocks((state, displayReader, blockPos, tintIndex) -> {
-			return PlatedTemperatureRegulatorBlock.getColor(state).toIntRGB();
-		}, SBlocks.PLATED_TEMPERATURE_REGULATOR);
-		collector.overrideItems((stack, tintIndex) -> {
-			PotionContents contents = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
-			return tintIndex > 0 ? -1 : contents.is(SPotions.PURIFIED_WATER.holder()) ? Survive.PURIFIED_WATER_COLOR : FastColor.ARGB32.opaque(contents.getColor());
-	      }, Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION);
-		collector.overrideItems((stack, tintIndex) -> {
-			return TemperatureRegulatorPlateItem.getColor(stack).toIntARGB();
-		}, SItems.LARGE_HEATING_PLATE, SItems.LARGE_COOLING_PLATE, SItems.MEDIUM_HEATING_PLATE, SItems.MEDIUM_COOLING_PLATE, SItems.SMALL_HEATING_PLATE, SItems.SMALL_COOLING_PLATE);
+		}), SBlocks.DRYING_CAULDRON);
+		collector.overrideBlocks(List.of(new BlockTintSource() {
+			@Override
+			public int color(BlockState state) {
+				return PlatedTemperatureRegulatorBlock.getColor(state).toIntRGB();
+			}
+		}), SBlocks.PLATED_TEMPERATURE_REGULATOR);
+//		collector.overrideItems((stack, tintIndex) -> {
+//			PotionContents contents = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+//			return tintIndex > 0 ? -1 : contents.is(SPotions.PURIFIED_WATER.holder()) ? Survive.PURIFIED_WATER_COLOR : FastColor.ARGB32.opaque(contents.getColor());
+//	      }, Items.POTION, Items.SPLASH_POTION, Items.LINGERING_POTION);
+//		collector.overrideItems((stack, tintIndex) -> {
+//			return TemperatureRegulatorPlateItem.getColor(stack).toIntARGB();
+//		}, SItems.LARGE_HEATING_PLATE, SItems.LARGE_COOLING_PLATE, SItems.MEDIUM_HEATING_PLATE, SItems.MEDIUM_COOLING_PLATE, SItems.SMALL_HEATING_PLATE, SItems.SMALL_COOLING_PLATE);
 	}
 	
 	@Override
@@ -230,31 +254,31 @@ public class SurviveClientSegment extends ClientSegment {
 		collector.register("tired", Order.END, (gui,renderer,width,height)->{
 			if (Survive.CONFIG.tired_overlay && gui.minecraft.player.hasEffect(SMobEffects.TIREDNESS.holder())) {
 //				gui.setupOverlayRenderState(true, false);
-				RenderSystem.enableBlend();
-				RenderSystem.defaultBlendFunc();
-				RenderSystem.disableDepthTest();
-				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-				RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//				RenderSystem.enableBlend();
+//				RenderSystem.defaultBlendFunc();
+//				RenderSystem.disableDepthTest();
+//				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//				RenderSystem.setShader(GameRenderer::getPositionTexShader);
 				renderTiredOverlay(gui, renderer);
 			}
 		});
 		collector.register("heat_stroke", Order.END, (gui,renderer,width,height)->{
 //			gui.setupOverlayRenderState(true, false);
-			RenderSystem.enableBlend();
-			RenderSystem.defaultBlendFunc();
-			RenderSystem.disableDepthTest();
-			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//			RenderSystem.enableBlend();
+//			RenderSystem.defaultBlendFunc();
+//			RenderSystem.disableDepthTest();
+//			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			renderHeatStroke(gui, renderer);
 		});
 		collector.register("temperature", Order.END, (gui,renderer,width,height)->{
 			if (!gui.minecraft.options.hideGui && Survive.TEMPERATURE_CONFIG.enabled && !Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
 				//				gui.setupOverlayRenderState(true, false);
-				RenderSystem.enableBlend();
-				RenderSystem.defaultBlendFunc();
-				RenderSystem.disableDepthTest();
-				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-				RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//				RenderSystem.enableBlend();
+//				RenderSystem.defaultBlendFunc();
+//				RenderSystem.disableDepthTest();
+//				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//				RenderSystem.setShader(GameRenderer::getPositionTexShader);
 				renderTemperature(gui, ScreenOffset.TOP, gui.getCameraPlayer(), renderer, true);
 			}
 		});
@@ -290,7 +314,7 @@ public class SurviveClientSegment extends ClientSegment {
 	public static void renderTemperature(Gui gui, ScreenOffset position, Player playerentity, GuiRenderer renderer, boolean forgeOverlay) {
 		int x = ScreenHelper.getXOffset(position, gui.minecraft) + Survive.TEMPERATURE_CONFIG.tempXLoc;
 		int y = ScreenHelper.getYOffset(position, gui.minecraft) + Survive.TEMPERATURE_CONFIG.tempYLoc;
-		Minecraft.getInstance().getProfiler().push("temperature");
+//		Minecraft.getInstance().getProfiler().push("temperature");
 		//		if (!forgeOverlay) {
 		//			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		//			RenderSystem.setShaderTexture(0, GUI_ICONS);
@@ -334,7 +358,7 @@ public class SurviveClientSegment extends ClientSegment {
 				}
 			}
 		}
-		Minecraft.getInstance().getProfiler().pop();
+//		Minecraft.getInstance().getProfiler().pop();
 		//		if (!forgeOverlay) {
 		//			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		//			RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
@@ -347,25 +371,25 @@ public class SurviveClientSegment extends ClientSegment {
 	public static void renderHeatStroke(Gui gui, GuiRenderer renderer)
 	{
 		if (((IRoastedEntity)gui.minecraft.player).getTicksRoasted() > 0) {
-			gui.renderTextureOverlay(renderer.guiGraphics(), Survive.getInstance().location("textures/misc/burning_overlay.png"), ((IRoastedEntity)gui.minecraft.player).getPercentRoasted());
+			gui.extractTextureOverlay(renderer.guiGraphics(), Survive.getInstance().location("textures/misc/burning_overlay.png"), ((IRoastedEntity)gui.minecraft.player).getPercentRoasted());
 		}
 	}
 
 	@SuppressWarnings("resource")
 	public static void renderTiredOverlay(Gui gui, GuiRenderer graphics) {
-		Minecraft.getInstance().getProfiler().push("tired");
+//		Minecraft.getInstance().getProfiler().push("tired");
 		int amplifier = Minecraft.getInstance().player.getEffect(SMobEffects.TIREDNESS.holder()).getAmplifier() + 1;
 		amplifier/=(Survive.CONFIG.tiredTimeStacks/5);
 		amplifier = Mth.clamp(amplifier, 0, 4);
-		gui.renderTextureOverlay(graphics.guiGraphics(), Survive.getInstance().location("textures/misc/sleep_overlay_"+(amplifier)+".png"), 0.5F);
-		Minecraft.getInstance().getProfiler().pop();
+		gui.extractTextureOverlay(graphics.guiGraphics(), Survive.getInstance().location("textures/misc/sleep_overlay_"+(amplifier)+".png"), 0.5F);
+//		Minecraft.getInstance().getProfiler().pop();
 	}
 
 	public static void renderThirst(Gui gui, GuiRenderer graphics, int j1, int k1, boolean forgeOverlay) {
 		Player player = (Player)gui.minecraft.getCameraEntity();
 		IRealisticEntity realisticPlayer = (IRealisticEntity)player;
 		int waterL = (int) realisticPlayer.waterData().getWaterLevel();
-		gui.minecraft.getProfiler().push("thirst");
+//		gui.minecraft.getProfiler().push("thirst");
 		for(int k6 = 0; k6 < 10; ++k6) {
 			int i7 = k1;
 			int k7 = 16;
@@ -389,7 +413,7 @@ public class SurviveClientSegment extends ClientSegment {
 				graphics.blit(GUI_ICONS, k8, i7, k7 + 45, 54, 9, 9);
 			}
 		}
-		gui.minecraft.getProfiler().pop();
+//		gui.minecraft.getProfiler().pop();
 	}
 
 	public static void renderEnergyBars(Gui gui, GuiRenderer graphics, MutableInt moveUp, int j1, int k1, boolean forgeOverlay) {
@@ -399,10 +423,10 @@ public class SurviveClientSegment extends ClientSegment {
 		float maxStamina = (float) player.getAttributeValue(SAttributes.MAX_STAMINA.holder());
 		int l = (int) real.staminaData().getLTS();
 		if (real.staminaData().isDeadTired()) l = (int) real.staminaData().getReserveLevel();
-		Minecraft.getInstance().getProfiler().push("energy");
+//		Minecraft.getInstance().getProfiler().push("energy");
 		if (!forgeOverlay) {
-			RenderSystem.setShader(GameRenderer::getPositionTexShader);
-			RenderSystem.setShaderTexture(0, GUI_ICONS);
+//			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+//			RenderSystem.setShaderTexture(0, GUI_ICONS);
 		}
 		
 		int[] i9 = new int[30];
@@ -438,7 +462,7 @@ public class SurviveClientSegment extends ClientSegment {
 			moveUp.add(10);
 		}
 		if (real.staminaData().isExerting() || real.staminaData().isShortOfBreath()) {
-			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.5F);
+//			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 0.5F);
 			l = real.staminaData().isShortOfBreath() ? real.staminaData().getSTSRecovery() : real.staminaData().getBurstStamina();
 			for (int i = 0; i < Mth.ceil((float)maxStamina/20.0F); i++) {
 				for(int k6 = 0; k6 < 10; ++k6) {
@@ -462,9 +486,9 @@ public class SurviveClientSegment extends ClientSegment {
 					}
 				}
 			}
-			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		}
-		Minecraft.getInstance().getProfiler().pop();
+//		Minecraft.getInstance().getProfiler().pop();
 	}
 	
 	@Override

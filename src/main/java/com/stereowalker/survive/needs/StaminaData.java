@@ -18,24 +18,25 @@ import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.VersionHelper.VanillaComponents;
 
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 @EventBusSubscriber
 public class StaminaData extends SurviveData implements Stamina {
@@ -74,7 +75,7 @@ public class StaminaData extends SurviveData implements Stamina {
 	
 	public void eat(Item pItem, ItemStack pStack, LivingEntity entity) {
 		if (VanillaComponents.FOOD.hasData(pStack) && DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(pItem))) {
-			if (entity instanceof ServerPlayer && !entity.level().isClientSide) {
+			if (entity instanceof ServerPlayer && !entity.level().isClientSide()) {
 				ServerPlayer player = (ServerPlayer)entity;
 				relax(DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(pItem)).getEnergyAmount(), player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 			}
@@ -102,7 +103,7 @@ public class StaminaData extends SurviveData implements Stamina {
 		//Sets the maximum stamina
 		this.maxLongStamina = Mth.floor(player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 		//Forces the player awake if their energy is too low and it's day
-		if (player.isSleeping() && player.level().isDay() && this.longStamina < this.maxLongStamina/2) {
+		if (player.isSleeping() && player.level().isBrightOutside() && this.longStamina < this.maxLongStamina/2) {
 			player.sleepCounter = 0;
 		}
 		
@@ -195,7 +196,7 @@ public class StaminaData extends SurviveData implements Stamina {
 		} else {
 			this.energyTimer = 0;
 		}
-		if (difficulty == Difficulty.PEACEFUL && player.level().getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION)) {
+		if (difficulty == Difficulty.PEACEFUL && player.level() instanceof ServerLevel serlev && serlev.getGameRules().get(GameRules.NATURAL_HEALTH_REGENERATION)) {
 			if (this.isTired() && player.tickCount % 10 == 0) {
 				this.setEnergyLevel(this.getLTS() + 1);
 			}
@@ -205,27 +206,27 @@ public class StaminaData extends SurviveData implements Stamina {
 	/**
 	 * Reads the water data for the player.
 	 */
-	public void read(CompoundTag compound) {
-		if (compound.contains("longStamina", 99)) {
-			this.maxBurstStamina = compound.getInt("maxBurstStamina");
-			this.maxLongStamina = compound.getInt("maxLongStamina");
-			this.longStamina = compound.getInt("longStamina");
-			this.longExhaustion = compound.getFloat("longExhaustion");
-			this.shortStamina = compound.getInt("shortStamina");
-			this.shortExhaustion = compound.getFloat("shortExhaustion");
-			this.shortTermTimer = compound.getInt("shortTermTimer");
-			this.shortRecoveryTimer = compound.getInt("shortRecoveryTimer");
-			this.isStraining = compound.getBoolean("isStraining");
-			this.energyTimer = compound.getInt("energyTickTimer");
-			this.energyReserveLevel = compound.getInt("energyReserveLevel");
-		}
+	public void read(ValueInput input) {
+//		if (compound.contains("longStamina", 99)) {
+			this.maxBurstStamina = input.getIntOr("maxBurstStamina", 0);
+			this.maxLongStamina = input.getIntOr("maxLongStamina", 0);
+			this.longStamina = input.getIntOr("longStamina", 0);
+			this.longExhaustion = input.getFloatOr("longExhaustion", 0);
+			this.shortStamina = input.getIntOr("shortStamina", 0);
+			this.shortExhaustion = input.getFloatOr("shortExhaustion", 0);
+			this.shortTermTimer = input.getIntOr("shortTermTimer", 0);
+			this.shortRecoveryTimer = input.getIntOr("shortRecoveryTimer", 0);
+			this.isStraining = input.getBooleanOr("isStraining", false);
+			this.energyTimer = input.getIntOr("energyTickTimer", 0);
+			this.energyReserveLevel = input.getIntOr("energyReserveLevel", 0);
+//		}
 
 	}
 
 	/**
 	 * Writes the water data for the player.
 	 */
-	public void write(CompoundTag compound, boolean reducedData) {
+	public void write(ValueOutput compound, boolean reducedData) {
 		compound.putInt("maxBurstStamina", this.maxBurstStamina);
 		compound.putInt("maxLongStamina", this.maxLongStamina);
 		compound.putInt("longStamina", this.longStamina);
@@ -324,8 +325,8 @@ public class StaminaData extends SurviveData implements Stamina {
 
 	/////-----------EVENTS-----------/////
 
-	public static void clickItem(Player player, Level level, InteractionHand hand, InsertResultCanceller<InteractionResultHolder<ItemStack>> cancel) {
-		if(!cancel.wasCancelled() && player instanceof Player && cancel.cancelResult().getResult().consumesAction()) {
+	public static void clickItem(Player player, Level level, InteractionHand hand, InsertResultCanceller<InteractionResult> cancel) {
+		if(!cancel.wasCancelled() && player instanceof Player && cancel.cancelResult().consumesAction()) {
 
 		}
 	}

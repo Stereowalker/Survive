@@ -13,7 +13,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.Filterable;
 import net.minecraft.world.InteractionHand;
@@ -91,9 +91,9 @@ public class ServerboundPlayerStatusBookPacket extends ServerboundUnionPacket {
 		return true;
 	}
 	
-	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_player_status_book");
+	public static Identifier id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_player_status_book");
 	@Override
-	public ResourceLocation id() {
+	public Identifier id() {
 		return id;
 	}
 }

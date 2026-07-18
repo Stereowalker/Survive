@@ -9,13 +9,15 @@ import com.stereowalker.survive.damagesource.SDamageTypes;
 import com.stereowalker.survive.world.effect.SMobEffects;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class CustomFoodData extends FoodData {
 	int uncleanConsumption = 0;
@@ -27,7 +29,7 @@ public class CustomFoodData extends FoodData {
 	public CustomFoodData(FoodData originalFoodData) {
 		this.foodLevel = originalFoodData.foodLevel;
 		this.setSaturation(originalFoodData.getSaturationLevel());
-		this.setExhaustion(originalFoodData.getExhaustionLevel());
+		this.exhaustionLevel = originalFoodData.exhaustionLevel;
 		this.tickTimer = originalFoodData.tickTimer;
 	}
 	/**
@@ -80,13 +82,13 @@ public class CustomFoodData extends FoodData {
 	public void markAsSpoiled(ItemStack stack, LivingEntity living) {
 		isSpoiled = FoodUtils.foodStatus(stack, living.level());
 		if (IsSpoiled() == State.Spoiled) {
-			living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 1200));
+			living.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 1200));
 			living.addEffect(new MobEffectInstance(MobEffects.HUNGER, 1200));
 		}
 	}
 
 	@Override
-	public void tick(Player pPlayer) {
+	public void tick(ServerPlayer pPlayer) {
 		Difficulty difficulty = pPlayer.level().getDifficulty();
 		//Well fed
 		if (this.wellFed) {
@@ -150,19 +152,19 @@ public class CustomFoodData extends FoodData {
 				return this.needsFood();
 		}
 	}
-
+	
 	@Override
-	public void readAdditionalSaveData(CompoundTag pCompoundTag) {
-		super.readAdditionalSaveData(pCompoundTag);
-		if (pCompoundTag.contains("foodLevel", 99)) {
-			this.uncleanConsumption = pCompoundTag.getInt("foodUncleanConsumption");
-			this.causeAche = pCompoundTag.getBoolean("foodCauseAche");
-			this.wellFed = pCompoundTag.getBoolean("foodWellFed");
-		}
+	public void readAdditionalSaveData(ValueInput input) {
+		super.readAdditionalSaveData(input);
+//		if (pCompoundTag.contains("foodLevel", 99)) {
+//		}
+		this.uncleanConsumption = input.getIntOr("foodUncleanConsumption", 0);
+		this.causeAche = input.getBooleanOr("foodCauseAche", false);
+		this.wellFed = input.getBooleanOr("foodWellFed", false);
 	}
 
 	@Override
-	public void addAdditionalSaveData(CompoundTag pCompoundTag) {
+	public void addAdditionalSaveData(ValueOutput pCompoundTag) {
 		super.addAdditionalSaveData(pCompoundTag);
 		pCompoundTag.putFloat("foodUncleanConsumption", this.uncleanConsumption);
 		pCompoundTag.putBoolean("foodCauseAche", this.causeAche);

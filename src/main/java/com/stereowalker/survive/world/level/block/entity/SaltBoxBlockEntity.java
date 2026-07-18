@@ -1,21 +1,22 @@
 package com.stereowalker.survive.world.level.block.entity;
 
+import java.util.List;
+
 import com.stereowalker.survive.world.inventory.SaltBoxMenu;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.component.SDataComponents;
 import com.stereowalker.survive.world.level.block.SaltBoxBlock;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -25,6 +26,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class SaltBoxBlockEntity extends RandomizableContainerBlockEntity {
     private NonNullList<ItemStack> items = NonNullList.withSize(27, ItemStack.EMPTY);
@@ -46,7 +49,7 @@ public class SaltBoxBlockEntity extends RandomizableContainerBlockEntity {
         }
 
         @Override
-        protected boolean isOwnContainer(Player p_155060_) {
+		public boolean isOwnContainer(Player p_155060_) {
             if (p_155060_.containerMenu instanceof SaltBoxMenu) {
                 Container container = ((SaltBoxMenu)p_155060_.containerMenu).getContainer();
                 return container == SaltBoxBlockEntity.this;
@@ -61,10 +64,10 @@ public class SaltBoxBlockEntity extends RandomizableContainerBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
+    protected void saveAdditional(ValueOutput tag) {
+        super.saveAdditional(tag);
         if (!this.trySaveLootTable(tag)) {
-            ContainerHelper.saveAllItems(tag, this.items, registries);
+            ContainerHelper.saveAllItems(tag, this.items);
         }
         tag.putLong("lastGameTickUpdated", lastGameTickUpdated);
         for (int i = 0; i < 27; i++) {
@@ -73,15 +76,15 @@ public class SaltBoxBlockEntity extends RandomizableContainerBlockEntity {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    protected void loadAdditional(ValueInput tag) {
+        super.loadAdditional(tag);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (!this.tryLoadLootTable(tag)) {
-            ContainerHelper.loadAllItems(tag, this.items, registries);
+            ContainerHelper.loadAllItems(tag, this.items);
         }
-        lastGameTickUpdated = tag.getLong("lastGameTickUpdated");
+        lastGameTickUpdated = tag.getLongOr("lastGameTickUpdated", 0);
         for (int i = 0; i < 27; i++) {
-        	saltSludge[i] = tag.getInt("sludge"+i);
+        	saltSludge[i] = tag.getIntOr("sludge"+i, 0);
         }
     }
 
@@ -111,17 +114,25 @@ public class SaltBoxBlockEntity extends RandomizableContainerBlockEntity {
     }
 
     @Override
-    public void startOpen(Player player) {
-        if (!this.remove && !player.isSpectator()) {
-            this.openersCounter.incrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+    public void startOpen(ContainerUser containerUser) {
+        if (!this.remove && !containerUser.getLivingEntity().isSpectator()) {
+            this.openersCounter
+                .incrementOpeners(
+                    containerUser.getLivingEntity(), this.getLevel(), this.getBlockPos(), this.getBlockState(), containerUser.getContainerInteractionRange()
+                );
         }
     }
 
     @Override
-    public void stopOpen(Player player) {
-        if (!this.remove && !player.isSpectator()) {
-            this.openersCounter.decrementOpeners(player, this.getLevel(), this.getBlockPos(), this.getBlockState());
+    public void stopOpen(ContainerUser containerUser) {
+        if (!this.remove && !containerUser.getLivingEntity().isSpectator()) {
+            this.openersCounter.decrementOpeners(containerUser.getLivingEntity(), this.getLevel(), this.getBlockPos(), this.getBlockState());
         }
+    }
+
+    @Override
+    public List<ContainerUser> getEntitiesWithContainerOpen() {
+        return this.openersCounter.getEntitiesWithContainerOpen(this.getLevel(), this.getBlockPos());
     }
 
     public void recheckOpen() {
@@ -135,11 +146,11 @@ public class SaltBoxBlockEntity extends RandomizableContainerBlockEntity {
     }
 
     void playSound(BlockState state, SoundEvent sound) {
-        Vec3i vec3i = state.getValue(SaltBoxBlock.FACING).getNormal();
+        Vec3i vec3i = state.getValue(SaltBoxBlock.FACING).getUnitVec3i();
         double d0 = (double)this.worldPosition.getX() + 0.5 + (double)vec3i.getX() / 2.0;
         double d1 = (double)this.worldPosition.getY() + 0.5 + (double)vec3i.getY() / 2.0;
         double d2 = (double)this.worldPosition.getZ() + 0.5 + (double)vec3i.getZ() / 2.0;
-        this.level.playSound(null, d0, d1, d2, sound, SoundSource.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
+        this.level.playSound(null, d0, d1, d2, sound, SoundSource.BLOCKS, 0.5F, this.level.getRandom().nextFloat() * 0.1F + 0.9F);
     }
     
     ///

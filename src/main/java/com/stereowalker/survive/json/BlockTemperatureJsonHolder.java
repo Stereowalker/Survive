@@ -19,20 +19,20 @@ import com.stereowalker.survive.api.json.JsonHolder;
 import com.stereowalker.survive.json.property.BlockPropertyHandlerImpl;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class BlockTemperatureJsonHolder implements JsonHolder {
 	private static final Marker BLOCK_TEMPERATURE_DATA = MarkerManager.getMarker("BLOCK_TEMPERATURE_DATA");
-	private ResourceLocation itemID;
+	private Identifier itemID;
 	private final float temperatureModifier;
 	private final int range;
 	@Deprecated
 	private final boolean usesLevelProperty;
 	private final List<Triple<IBlockPropertyHandler<?>,List<PropertyPair<?>>,Map<String,Float>>> statePropertyOverride;
 
-	public BlockTemperatureJsonHolder(ResourceLocation blockID, JsonObject object) {
+	public BlockTemperatureJsonHolder(Identifier blockID, JsonObject object) {
 		String CHANGE_PROPERTY = "blockstate_property_overrides";
 		String LEVEL_PROPERTY = "uses_level_property";
 		String RANGE = "range";
@@ -150,7 +150,7 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 
 	}
 
-	public ResourceLocation getItemID() {
+	public Identifier getItemID() {
 		return itemID;
 	}
 

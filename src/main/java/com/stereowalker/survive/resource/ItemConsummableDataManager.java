@@ -17,7 +17,8 @@ import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
 import com.stereowalker.unionlib.util.VersionHelper;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -30,14 +31,14 @@ import net.minecraftforge.registries.ForgeRegistries;
  * Loads the item drink data from json
  * @author Stereowalker
  */
-public class ItemConsummableDataManager implements IResourceReloadListener<Map<ResourceLocation, FoodJsonHolder>> {
+public class ItemConsummableDataManager implements IResourceReloadListener<Map<Identifier, FoodJsonHolder>> {
 	@Override
-	public CompletableFuture<Map<ResourceLocation, FoodJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
+	public CompletableFuture<Map<Identifier, FoodJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
-			Map<ResourceLocation, FoodJsonHolder> drinkMap = new HashMap<>();
+			Map<Identifier, FoodJsonHolder> drinkMap = new HashMap<>();
 
-			for (Entry<ResourceLocation, Resource> resource : manager.listResources("survive_modifiers/consumables/items", (s) -> s.toString().endsWith(".json")).entrySet()) {
-				ResourceLocation drinkId = VersionHelper.toLoc(
+			for (Entry<Identifier, Resource> resource : manager.listResources("survive_modifiers/consumables/items", (s) -> s.toString().endsWith(".json")).entrySet()) {
+				Identifier drinkId = VersionHelper.toLoc(
 						resource.getKey().getNamespace(),
 						resource.getKey().getPath().replace("survive_modifiers/consumables/items/", "").replace(".json", "")
 						);
@@ -104,16 +105,16 @@ public class ItemConsummableDataManager implements IResourceReloadListener<Map<R
 	}
 
 	@Override
-	public CompletableFuture<Void> apply(Map<ResourceLocation, FoodJsonHolder> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
+	public CompletableFuture<Void> apply(Map<Identifier, FoodJsonHolder> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.runAsync(() -> {
-			for (ResourceLocation drinkId : data.keySet()) {
+			for (Identifier drinkId : data.keySet()) {
 				Survive.registerDrinkDataForItem(drinkId, data.get(drinkId));
 			}
 		});
 	}
 
 	@Override
-	public ResourceLocation id() {
+	public Identifier id() {
 		return VersionHelper.toLoc("survive:item_data");
 	}
 }

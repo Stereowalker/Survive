@@ -13,7 +13,7 @@ import com.stereowalker.survive.world.entity.EntityData;
 import com.stereowalker.unionlib.network.syncher.IRevisedDataEntity;
 
 import net.minecraft.commands.CommandSource;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.damagesource.DamageSources;
@@ -21,9 +21,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityAccess;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin implements Nameable, EntityAccess, CommandSource, IRoastedEntity {
+public abstract class EntityMixin implements Nameable, EntityAccess, CommandSource, IRoastedEntity, TypedInstance<EntityType<?>> {
 
 	@Shadow public boolean isInPowderSnow;
 	@Shadow public int tickCount;
@@ -35,7 +37,7 @@ public abstract class EntityMixin implements Nameable, EntityAccess, CommandSour
 	@Shadow public DamageSources damageSources() {return null;}
 	
 	@Inject(method = "saveWithoutId", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getUUID()Ljava/util/UUID;"), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void saveWithoutId_inject(CompoundTag pCompound, CallbackInfoReturnable<CompoundTag> cir) {
+	public void saveWithoutId_inject(ValueOutput pCompound, CallbackInfo ci) {
 		int i = this.getTicksRoasted();
 		if (i > 0) {
 			pCompound.putInt("TicksRoasted", this.getTicksRoasted());
@@ -43,8 +45,8 @@ public abstract class EntityMixin implements Nameable, EntityAccess, CommandSour
 	}
 
 	@Inject(method = "load", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setTicksFrozen(I)V"), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void load_inject(CompoundTag pCompound, CallbackInfo ci) {
-		this.setTicksRoasted(pCompound.getInt("TicksRoasted"));
+	public void load_inject(ValueInput pCompound, CallbackInfo ci) {
+		this.setTicksRoasted(pCompound.getIntOr("TicksRoasted", 0));
 	}
 
 	@Override
@@ -72,7 +74,7 @@ public abstract class EntityMixin implements Nameable, EntityAccess, CommandSour
 	
 	@Override
 	public boolean canRoast() {
-		return !this.getType().is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES);
+		return !this.is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES);
 	}
 
 }

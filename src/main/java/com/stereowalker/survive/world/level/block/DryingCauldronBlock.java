@@ -9,21 +9,21 @@ import com.stereowalker.survive.world.level.block.entity.DryingCauldronBlockEnti
 import com.stereowalker.survive.world.level.block.entity.SBlockEntityType;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
+import net.minecraft.world.entity.InsideBlockEffectType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -55,16 +55,18 @@ public class DryingCauldronBlock extends LayeredCauldronBlock implements EntityB
 	}
 
 	@Override
-	protected void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
+	protected void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
 		int boiling = pState.getValue(BOILING);
-		if (boiling > 0 && this.isEntityInsideContent(pState, pPos, pEntity)) {
-			pEntity.hurt(SDamageSources.source(pLevel.registryAccess(), SDamageTypes.BOIL), boiling / 5f);
+		if (boiling > 0/* && this.isEntityInsideContent(pState, pPos, pEntity)*/) {
+			effectApplier.runAfter(InsideBlockEffectType.CLEAR_FREEZE, (ent) -> {
+				ent.hurt(SDamageSources.source(pLevel.registryAccess(), SDamageTypes.BOIL), boiling / 5f);
+			});
 		}
-		super.entityInside(pState, pLevel, pPos, pEntity);
+		super.entityInside(pState, pLevel, pPos, pEntity, effectApplier, isPrecise);
 	}
 
 	@Override
-	protected int getAnalogOutputSignal(BlockState pState, Level pLevel, BlockPos pPos) {
+	protected int getAnalogOutputSignal(BlockState pState, Level pLevel, BlockPos pPos, Direction direction) {
 		return pState.getValue(LEVEL);
 	}
 
@@ -74,11 +76,11 @@ public class DryingCauldronBlock extends LayeredCauldronBlock implements EntityB
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos,
+	protected InteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos,
 			Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
 		
-		if (!pLevel.isClientSide && DryingCauldronBlockEntity.setResult(pLevel, pStack, pPos, pPlayer, pHand)) {
-			return ItemInteractionResult.sidedSuccess(pLevel.isClientSide);
+		if (!pLevel.isClientSide() && DryingCauldronBlockEntity.setResult(pLevel, pStack, pPos, pPlayer, pHand)) {
+			return InteractionResult.SUCCESS_SERVER;
 		}
 		else return super.useItemOn(pStack, pState, pLevel, pPos, pPlayer, pHand, pHitResult);
 	}
@@ -87,7 +89,7 @@ public class DryingCauldronBlock extends LayeredCauldronBlock implements EntityB
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-		return pLevel.isClientSide ? null : SaltBoxBlock.createTickerHelperExposed(pBlockEntityType, SBlockEntityType.DRYING_CAULDRON, (level, pos, state, blockentity) -> {
+		return pLevel.isClientSide() ? null : SaltBoxBlock.createTickerHelperExposed(pBlockEntityType, SBlockEntityType.DRYING_CAULDRON, (level, pos, state, blockentity) -> {
 			blockentity.tick((ServerLevel) pLevel, state);
 		});
 	}

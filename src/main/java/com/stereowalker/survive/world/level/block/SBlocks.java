@@ -20,7 +20,7 @@ import net.minecraft.world.level.material.PushReaction;
 @RegistryHolder(namespace = Survive.MOD_ID)
 public class SBlocks {
 	@RegistryObject("purified_water")
-	public static final Block PURIFIED_WATER = new LiquidBlock(() -> SFluids.PURIFIED_WATER, VersionHelper.blockPropertyWithId("survive:purified_water").mapColor(MapColor.WATER).noCollission().strength(100.0F).noLootTable()
+	public static final Block PURIFIED_WATER = new LiquidBlock(() -> SFluids.PURIFIED_WATER, VersionHelper.blockPropertyWithId("survive:purified_water").mapColor(MapColor.WATER).noCollision().strength(100.0F).noLootTable()
             .replaceable()
             .pushReaction(PushReaction.DESTROY)
             .liquid()

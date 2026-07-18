@@ -14,13 +14,13 @@ import com.stereowalker.unionlib.util.EntityHelper;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.player.Input;
+import net.minecraft.client.player.ClientInput;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.Difficulty;
 
 @Mixin(LocalPlayer.class)
 public abstract class LocalPlayerMixin extends AbstractClientPlayer implements IRealisticEntity {
-	@Shadow public Input input;
+	@Shadow public ClientInput input;
 	public LocalPlayerMixin(ClientLevel pClientLevel, GameProfile pGameProfile) {
 		super(pClientLevel, pGameProfile);
 	}
@@ -29,14 +29,9 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer implements I
 	public void tickInject(CallbackInfo ci) {
 		if (this.tickCount%290 == 288) {
 			if (this.level().getDifficulty() != Difficulty.PEACEFUL) {
-				new ServerboundThirstMovementPacket(this.input.forwardImpulse, this.input.leftImpulse, this.input.jumping).send();
+				new ServerboundThirstMovementPacket(this.input.getMoveVector().y, this.input.getMoveVector().x, this.input.keyPresses.jump()).send();
 			}
 		}
-	}
-
-	@Inject(method = "hasEnoughFoodToStartSprinting", at = @At(value = "HEAD"), cancellable = true)
-	public void tickInject(CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(this.isPassenger() || !staminaData().isShortOfBreath() || EntityHelper.mayFly(this));
 	}
 
 }
