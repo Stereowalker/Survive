@@ -247,6 +247,11 @@ public class StaminaData extends SurviveData implements Stamina {
 		return this.longStamina;
 	}
 	
+
+	public int getMaxLTS() {
+		return this.maxLongStamina;
+	}
+	
 	@Override
 	public int getBurstStamina() {
 		return this.shortStamina;
@@ -335,15 +340,6 @@ public class StaminaData extends SurviveData implements Stamina {
 	public static void leftClickEmpty(PlayerInteractEvent.LeftClickEmpty clickItem) {
 		if(!clickItem.isCanceled() && clickItem.getEntity() instanceof LocalPlayer && clickItem.getCancellationResult().consumesAction()) {
 			new ServerboundStaminaExhaustionPacket(0.3125F).send();
-		}
-	}
-
-	@SubscribeEvent
-	public static void replenishEnergyOnSleep(SleepFinishedTimeEvent event) {
-		for (Player player : event.getLevel().players()) {
-			StaminaData energyStats = ((IRealisticEntity)player).staminaData();
-			int staminaToRecover = Mth.ceil(((float)(event.getNewTime()-event.getLevel().dayTime())/Survive.STAMINA_CONFIG.sleepTime)*(energyStats.maxLongStamina+6));
-			energyStats.relax(staminaToRecover, player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));
 		}
 	}
 }

@@ -29,6 +29,7 @@ import com.stereowalker.survive.core.cauldron.SCauldronInteraction;
 import com.stereowalker.survive.core.particles.SParticleTypes;
 import com.stereowalker.survive.core.registries.SurviveRegistries;
 import com.stereowalker.survive.events.SleepEvents;
+import com.stereowalker.survive.events.StaminaEvents;
 import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.events.TempEvents;
 import com.stereowalker.survive.events.ThirstEvents;
@@ -391,6 +392,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		});
 		collector.addInsert(Inserts.LEVEL_WAKE_UP, insert -> {
 			SleepEvents.replenishEnergy(insert.level());
+			StaminaEvents.replenishEnergyOnSleep(insert.level(), insert.wakeUpTime());
 		});
 	}
 	
