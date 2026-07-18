@@ -342,6 +342,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	
 	@Override
 	public void registerInserts(InsertCollector collector) {
+		//TODO Keep in mind that now and in older versions, it was possible to rewind the clock so when managing food and all that, keep that into account and protect from rewinds
 		collector.addInsert(Inserts.LIVING_TICK, insert -> SurviveEvents.sendToClient(insert.living()));
 		collector.addInsert(Inserts.LIVING_TICK, insert -> SurviveEvents.updateEnvTemperature(insert.living()));
 		collector.addInsert(Inserts.PLAYER_RESTORE, insert -> SurviveEvents.restoreStats(insert.thisPlayer(), insert.thatPlayer(), insert.keepEverything()));
@@ -535,6 +536,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			populator.addItems(SItems.SALT_BOX);
 			populator.addItems(SItems.REALISTIC_CAMPFIRE);
 			populator.addItems(SItems.CANTEEN);
+			populator.addItems(SItems.SUGAR_WATER_BOTTLE);
 			populator.getParams().holders().lookup(Registries.POTION).ifPresent(p_327138_ -> {
 				generatePotionEffectTypes(populator.getOutput(), p_327138_, SItems.FILLED_CANTEEN, THIRST_CONFIG.canteen_fill_amount, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
 			});
