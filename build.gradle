@@ -34,20 +34,20 @@ dependencies {
     //compileOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
     //compileOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE:api")
 	
-	implementation ("mezz.jei:jei-${_minecraft_version}-neoforge:${_jei_version}")
+	compileOnly ("mezz.jei:jei-${_minecraft_version}-neoforge:${_jei_version}")
 	//runtimeOnly ("top.theillusivec4.caelus:caelus-forge:"+_minecraft_version+"-"+caelusVersion+"")
     //runtimeOnly ("vazkii.patchouli:Patchouli:${_minecraft_version}-${patchouliVersion}-FORGE")
 	
-    implementation ("com.github.glitchfiend:GlitchCore-neoforge:${_minecraft_version}-2.1.0.0")
-    implementation ("com.github.glitchfiend:TerraBlender-neoforge:1.21-4.0.0.1")
+    //implementation ("com.github.glitchfiend:GlitchCore-neoforge:${_minecraft_version}-2.1.0.0")
+    //implementation ("com.github.glitchfiend:TerraBlender-neoforge:1.21-4.0.0.1")
     implementation ("com.github.glitchfiend:SereneSeasons-neoforge:${_serene_seasons_version}")
-    implementation ("com.github.glitchfiend:BiomesOPlenty-neoforge:${_minecraft_version}-${_bop_version}")
-    implementation ("curse.maven:pneumaticcraft-repressurized-281849:6817362")
+    //implementation ("com.github.glitchfiend:BiomesOPlenty-neoforge:${_minecraft_version}-${_bop_version}")
+    //implementation ("curse.maven:pneumaticcraft-repressurized-281849:6817362")
 	//implementation ("curse.maven:origins-474438:"+originsID)
 	//implementation ("curse.maven:create-328085:"+createID)
 	//implementation ("curse.maven:flywheel-486392:"+flywheelID)
 	
-	implementation "curse.maven:parcool-482378:6940391"
+	compileOnly "curse.maven:parcool-482378:6940391"
 }
 
 task apiJar(type: Jar) {

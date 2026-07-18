@@ -6,12 +6,8 @@
     "SSS"
   ],
   "key": {
-    "S": {
-      "item": "minecraft:stone"
-    },
-	"R": {
-      "item": "minecraft:redstone"
-    }
+    "S": "minecraft:stone",
+	"R": "minecraft:redstone"
   },
   "result": {
     "id": "survive:temperature_regulator"

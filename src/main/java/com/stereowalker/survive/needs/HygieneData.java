@@ -5,9 +5,10 @@ import java.util.Random;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.particles.SParticleTypes;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class HygieneData extends SurviveData {
 	private int uncleanLevel = 5;
@@ -75,18 +76,18 @@ public class HygieneData extends SurviveData {
 	/**
 	 * Reads the hygiene data for the player.
 	 */
-	public void read(CompoundTag compound) {
-		if (compound.contains("uncleanLevel", 99)) {
-			this.uncleanLevel = compound.getInt("uncleanLevel");
-			this.hygieneTimer = compound.getInt("hygieneTimer");
-		}
+	public void read(ValueInput compound) {
+//		if (compound.contains("uncleanLevel", 99)) {
+			this.uncleanLevel = compound.getIntOr("uncleanLevel", 0);
+			this.hygieneTimer = compound.getIntOr("hygieneTimer", 0);
+//		}
 
 	}
 
 	/**
 	 * Writes the hygiene data for the player.
 	 */
-	public void write(CompoundTag compound, boolean reducedData) {
+	public void write(ValueOutput compound, boolean reducedData) {
 		compound.putFloat("uncleanLevel", this.uncleanLevel);
 		compound.putInt("hygieneTimer", this.hygieneTimer);
 	}

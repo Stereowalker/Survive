@@ -6,12 +6,8 @@
     " G "
   ],
   "key": {
-    "R": {
-      "item": "minecraft:redstone"
-    },
-    "G": {
-      "item": "minecraft:glass"
-    }
+    "R": "minecraft:redstone",
+    "G": "minecraft:glass"
   },
   "result": {
     "id": "survive:thermometer"

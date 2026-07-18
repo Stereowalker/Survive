@@ -1,6 +1,6 @@
 package com.stereowalker.survive.world.item;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 import com.stereowalker.survive.world.item.component.SDataComponents;
 
@@ -10,6 +10,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 public class SoapItem extends Item {
 	public int soapEfficacy;
@@ -49,8 +50,8 @@ public class SoapItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
-		pTooltipComponents.add(Component.translatable("tooltip.soap_left", SDataComponents.SOAP_LEFT_D.getData(pStack)).withStyle(ChatFormatting.AQUA));
+	public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, TooltipDisplay display, Consumer<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
+		pTooltipComponents.accept(Component.translatable("tooltip.soap_left", SDataComponents.SOAP_LEFT_D.getData(pStack)).withStyle(ChatFormatting.AQUA));
 	}
 
 }

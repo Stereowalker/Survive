@@ -15,11 +15,14 @@ import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class TemperatureData extends SurviveData implements Temperature {
 	private double temperatureLevel = 0;
@@ -27,7 +30,7 @@ public class TemperatureData extends SurviveData implements Temperature {
 	private int temperatureTimer;
 	private double targetTemperature = 0;
 	private int hypTimer = 0;
-	private Map<ResourceLocation,TemperatureModifier> temperatureModifiers = Maps.newHashMap();
+	private Map<Identifier,TemperatureModifier> temperatureModifiers = Maps.newHashMap();
 	private Map<ContributingFactor,Double> factors = Maps.newHashMap();
 	
 	public TemperatureData() {
@@ -107,7 +110,7 @@ public class TemperatureData extends SurviveData implements Temperature {
 		}
 	}
 
-	public TemperatureModifier getOrCreateModifier(ResourceLocation location) {
+	public TemperatureModifier getOrCreateModifier(Identifier location) {
 		if (!temperatureModifiers.containsKey(location)) { 
 			addModifier(new TemperatureModifier(location, 0));
 		}
@@ -118,7 +121,7 @@ public class TemperatureData extends SurviveData implements Temperature {
 //		setTemperatureModifier(entity, VersionHelper.toLoc(id), value);
 //	}
 //
-//	public static void setTemperatureModifier(LivingEntity entity, ResourceLocation id, double value) {
+//	public static void setTemperatureModifier(LivingEntity entity, Identifier id, double value) {
 //		setTemperatureModifier(entity, id, value, ContributingFactor.INTERNAL);
 //	}
 
@@ -126,7 +129,7 @@ public class TemperatureData extends SurviveData implements Temperature {
 		setTemperatureModifier(entity, VersionHelper.toLoc(id), value, factor);
 	}
 
-	public static void setTemperatureModifier(LivingEntity entity, ResourceLocation id, double value, ContributingFactor factor) {
+	public static void setTemperatureModifier(LivingEntity entity, Identifier id, double value, ContributingFactor factor) {
 		TemperatureData temp = ((IRealisticEntity)entity).temperatureData();
 		TemperatureModifier mod = SurviveHooks.getTemperatureModifer(entity, new TemperatureModifier(id, value, factor));
 		temp.getOrCreateModifier(id).setMod(mod.getMod()).setFactor(mod.getFactor());
@@ -187,30 +190,30 @@ public class TemperatureData extends SurviveData implements Temperature {
 	/**
 	 * Reads the water data for the player.
 	 */
-	public void read(CompoundTag compound) {
-		if (compound.contains("temperatureLevel", 99)) {
-			this.temperatureLevel = compound.getDouble("temperatureLevel");
-			this.targetTemperature = compound.getDouble("targetTemperature");
-			this.temperatureTimer = compound.getInt("temperatureTickTimer");
-			this.displayTemperature = compound.getDouble("displayTemperature");
-			this.hypTimer = compound.getInt("hypTimer");
+	public void read(ValueInput compound) {
+//		if (compound.contains("temperatureLevel", 99)) {
+			this.temperatureLevel = compound.getDoubleOr("temperatureLevel", 0);
+			this.targetTemperature = compound.getDoubleOr("targetTemperature", 0);
+			this.temperatureTimer = compound.getIntOr("temperatureTickTimer", 0);
+			this.displayTemperature = compound.getDoubleOr("displayTemperature", 0);
+			this.hypTimer = compound.getIntOr("hypTimer", 0);
 
-			ListTag modifiers = compound.getList("modifiers", NbtType.CompoundNBT);
-			Map<ResourceLocation,TemperatureModifier> temperatureModifiers = Maps.newHashMap();
+			ListTag modifiers = (ListTag) compound.read("modifiers", ExtraCodecs.NBT).get();
+			Map<Identifier,TemperatureModifier> temperatureModifiers = Maps.newHashMap();
 			for(int i = 0; i < modifiers.size(); i++) {
-				CompoundTag nbt = modifiers.getCompound(i);
+				CompoundTag nbt = modifiers.getCompoundOrEmpty(i);
 				TemperatureModifier modifier = new TemperatureModifier();
 				modifier.read(nbt);
 				temperatureModifiers.put(modifier.getId(), modifier);
 			}
 			this.temperatureModifiers = temperatureModifiers;
-		}
+//		}
 	}
 
 	/**
 	 * Writes the water data for the player.
 	 */
-	public void write(CompoundTag compound, boolean reducedData) {
+	public void write(ValueOutput compound, boolean reducedData) {
 		compound.putDouble("temperatureLevel", this.temperatureLevel);
 		compound.putDouble("targetTemperature", this.targetTemperature);
 		compound.putInt("temperatureTickTimer", this.temperatureTimer);
@@ -220,7 +223,7 @@ public class TemperatureData extends SurviveData implements Temperature {
 		for(TemperatureModifier modifier : temperatureModifiers.values()) {
 			modifiers.add(modifier.write(new CompoundTag()));
 		}
-		compound.put("modifiers", modifiers);
+		compound.store("modifiers", ExtraCodecs.NBT, modifiers);
 	}
 
 	/**

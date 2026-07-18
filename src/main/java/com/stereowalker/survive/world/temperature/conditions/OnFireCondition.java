@@ -31,9 +31,9 @@ public class OnFireCondition extends TemperatureChangeCondition<OnFireCondition.
 	
 	@Override
 	public Instance createInstance(CompoundTag nbt) {
-		float temperatureIn = nbt.getFloat("temperature");
-		int fireTimerIn = nbt.getInt("fireTimer");
-		String operationIn = nbt.getString("operation");
+		float temperatureIn = nbt.getFloat("temperature").get();
+		int fireTimerIn = nbt.getInt("fireTimer").get();
+		String operationIn = nbt.getString("operation").get();
 		return new Instance(temperatureIn, fireTimerIn, operationIn);
 	}
 

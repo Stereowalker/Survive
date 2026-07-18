@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.level.block.entity.RealisticCampfireBlockEntity;
 import com.stereowalker.survive.world.level.block.entity.SBlockEntityType;
 
@@ -11,13 +12,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -25,21 +28,27 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipePropertySet;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.CampfireBlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
@@ -50,7 +59,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class RealisticCampfireBlock extends CampfireBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     public static final IntegerProperty HEAT = IntegerProperty.create("heat", 0, 4);
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     private static final VoxelShape VIRTUAL_FENCE_POST = Block.box(6.0, 0.0, 6.0, 10.0, 16.0, 10.0);
     private static final int SMOKE_DISTANCE = 5;
 
@@ -67,40 +76,39 @@ public class RealisticCampfireBlock extends CampfireBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(
-        ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult
+    protected InteractionResult useItemOn(
+        ItemStack pStack, BlockState pState, Level level, BlockPos pPos, Player player, InteractionHand hand, BlockHitResult pHitResult
     ) {
-        if (pLevel.getBlockEntity(pPos) instanceof RealisticCampfireBlockEntity campfireblockentity) {
-            ItemStack itemstack = pPlayer.getItemInHand(pHand);
-            Optional<RecipeHolder<CampfireCookingRecipe>> optional = campfireblockentity.getCookableRecipe(itemstack);
-            if (optional.isPresent()) {
-                if (!pLevel.isClientSide && campfireblockentity.placeFood(pPlayer, itemstack, optional.get().value().getCookingTime())) {
-                    pPlayer.awardStat(Stats.INTERACT_WITH_CAMPFIRE);
-                    return ItemInteractionResult.SUCCESS;
+        if (level.getBlockEntity(pPos) instanceof RealisticCampfireBlockEntity campfireblockentity) {
+            ItemStack itemInHand = player.getItemInHand(hand);
+            if (level.recipeAccess().propertySet(RecipePropertySet.CAMPFIRE_INPUT).test(itemInHand)) {
+                if (level instanceof ServerLevel serverLevel && campfireblockentity.placeFood(serverLevel, player, itemInHand)) {
+                    player.awardStat(Stats.INTERACT_WITH_CAMPFIRE);
+                    return InteractionResult.SUCCESS_SERVER;
                 }
 
-                return ItemInteractionResult.CONSUME;
+                return InteractionResult.CONSUME;
             }
-            if (AbstractFurnaceBlockEntity.isFuel(pStack)) {
-            	if (!pLevel.isClientSide && campfireblockentity.placeFuel(pPlayer, itemstack)) {
-                    pPlayer.awardStat(Stats.INTERACT_WITH_CAMPFIRE);
-                    return ItemInteractionResult.SUCCESS;
+            if (level.fuelValues().isFuel(pStack)) {
+            	if (!level.isClientSide() && campfireblockentity.placeFuel(player, itemInHand)) {
+            		player.awardStat(Stats.INTERACT_WITH_CAMPFIRE);
+                    return InteractionResult.SUCCESS;
                 }
 
-                return ItemInteractionResult.CONSUME;
+                return InteractionResult.CONSUME;
             }
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.PASS;
     }
 
     @Override
-    protected void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
+    protected void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
         if (pState.getValue(HEAT) > 0 && pEntity instanceof LivingEntity) {
             pEntity.hurt(pLevel.damageSources().campfire(), pState.getValue(HEAT) * .25f);
         }
 
-        super.entityInside(pState, pLevel, pPos, pEntity);
+        super.entityInside(pState, pLevel, pPos, pEntity, effectApplier, isPrecise);
     }
 
     @Nullable
@@ -117,14 +125,14 @@ public class RealisticCampfireBlock extends CampfireBlock {
     }
 
     @Override
-    protected BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
-        if (pState.getValue(WATERLOGGED)) {
-            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction directionToNeighbour, BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
+        if (state.getValue(WATERLOGGED)) {
+            ticks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
-        return pFacing == Direction.DOWN
-            ? pState.setValue(SIGNAL_FIRE, Boolean.valueOf(this.isSmokeSource(pFacingState)))
-            : super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+        return directionToNeighbour == Direction.DOWN
+            ? state.setValue(SIGNAL_FIRE, this.isSmokeSource(neighbourState))
+            : super.updateShape(state, level, ticks, pos, directionToNeighbour, neighbourPos, neighbourState, random);
     }
 
     private boolean isSmokeSource(BlockState pState) {
@@ -167,10 +175,10 @@ public class RealisticCampfireBlock extends CampfireBlock {
     }
 
     @Override
-    protected void onProjectileHit(Level pLevel, BlockState pState, BlockHitResult pHit, Projectile pProjectile) {
-        BlockPos blockpos = pHit.getBlockPos();
-        if (!pLevel.isClientSide && pProjectile.isOnFire() && pProjectile.mayInteract(pLevel, blockpos) && !pState.getValue(LIT) && !pState.getValue(WATERLOGGED)) {
-            pLevel.setBlock(blockpos, pState.setValue(BlockStateProperties.LIT, Boolean.valueOf(true)), 11);
+    protected void onProjectileHit(Level p_level, BlockState p_state, BlockHitResult hit, Projectile p_projectile) {
+        BlockPos pos = hit.getBlockPos();
+        if (p_level instanceof ServerLevel serverLevel && p_projectile.isOnFire() && p_projectile.mayInteract(serverLevel, pos) && !p_state.getValue(LIT) && !p_state.getValue(WATERLOGGED)) {
+            p_level.setBlock(pos, p_state.setValue(BlockStateProperties.LIT, true), 11);
         }
     }
 
@@ -213,11 +221,12 @@ public class RealisticCampfireBlock extends CampfireBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        if (pLevel.isClientSide) {
+        if (pLevel.isClientSide()) {
             return pState.getValue(HEAT) > 0 ? createTickerHelper(pBlockEntityType, SBlockEntityType.REALISIC_CAMPFIRE, RealisticCampfireBlockEntity::particleTick) : null;
         } else {
+        	RecipeManager.CachedCheck<SingleRecipeInput, CampfireCookingRecipe> quickCheck = RecipeManager.createCheck(RecipeType.CAMPFIRE_COOKING);
             return pState.getValue(HEAT) > 0
-                ? createTickerHelper(pBlockEntityType, SBlockEntityType.REALISIC_CAMPFIRE, RealisticCampfireBlockEntity::cookTick)
+                ? createTickerHelper(pBlockEntityType, SBlockEntityType.REALISIC_CAMPFIRE, (innerLevel, pos, state, entity) -> RealisticCampfireBlockEntity.cookTick((ServerLevel)pLevel, pos, state, entity, quickCheck))
                 : createTickerHelper(pBlockEntityType, SBlockEntityType.REALISIC_CAMPFIRE, RealisticCampfireBlockEntity::cooldownTick);
         }
     }

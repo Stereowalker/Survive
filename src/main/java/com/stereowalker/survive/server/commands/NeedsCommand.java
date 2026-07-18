@@ -14,6 +14,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.PermissionProviderCheck;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 
@@ -22,7 +23,7 @@ public class NeedsCommand {
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 		dispatcher.register(
 				Commands.literal("needs").requires((p_137384_) -> {
-					return p_137384_.hasPermission(2);
+					return new PermissionProviderCheck<>(Commands.LEVEL_GAMEMASTERS).test(p_137384_);
 				}).then(Commands.literal("restore").then(Commands.argument("amount", FloatArgumentType.floatArg(0.1f)).then(Commands.argument("targets", EntityArgument.players())
 						.then(Commands.literal("cleansing").executes((e) -> {
 							return restore(e.getSource(), FloatArgumentType.getFloat(e, "amount"), NeedType.CLEANSING, EntityArgument.getPlayers(e, "targets"));

@@ -25,7 +25,7 @@ public class SurviveEntityStats {
 	
 	public static int getWetTime(LivingEntity entity) {
 		if (getModNBT(entity) != null && getModNBT(entity).contains(append("WetTime"))) {
-			return getModNBT(entity).getInt(append("WetTime"));
+			return getModNBT(entity).getIntOr(append("WetTime"), 0);
 		}
 		return 0;
 	}
@@ -95,14 +95,14 @@ public class SurviveEntityStats {
 	}
 
 	public static CompoundTag getModNBT(Entity entity) {
-		return entity.getPersistentData().getCompound(getModDataString());
+		return entity.getPersistentData().getCompoundOrEmpty(getModDataString());
 	}
 
 	public static CompoundTag getOrCreateModNBT(Entity entity) {
-		if (!entity.getPersistentData().contains(getModDataString(), 10)) {
+		if (!entity.getPersistentData().contains(getModDataString())) {
 			entity.getPersistentData().put(getModDataString(), new CompoundTag());
 		}
-		return entity.getPersistentData().getCompound(getModDataString());
+		return entity.getPersistentData().getCompoundOrEmpty(getModDataString());
 	}
 
 	public static void setModNBT(CompoundTag nbt, Entity entity) {

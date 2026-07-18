@@ -17,11 +17,11 @@ runs {
         modSource project.sourceSets.main
     }
     client {
-        systemProperty 'forge.enabledGameTestNamespaces', project._mod_id
+        systemProperty 'neoforge.enabledGameTestNamespaces', project._mod_id
         workingDirectory project.file("run/${project._loader}-Client")
     }
     server {
-        systemProperty 'forge.enabledGameTestNamespaces', project._mod_id
+        systemProperty 'neoforge.enabledGameTestNamespaces', project._mod_id
         workingDirectory project.file("run/${project._loader}-Server")
         //programArgument '--nogui'
     }

@@ -37,14 +37,14 @@ public class PotashCauldronBlock extends LayeredCauldronBlock {
 			worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, new ItemStack(HygieneItems.POTASH), 0, 0, 0));
 			lowerFillLevel(state, worldIn, pos);
 		}
-		else if (!worldIn.isClientSide && worldIn.getMaxLocalRawBrightness(pos.above()) >= 12 && random.nextInt(10) == 0) {
+		else if (!worldIn.isClientSide() && worldIn.getMaxLocalRawBrightness(pos.above()) >= 12 && random.nextInt(10) == 0) {
 			worldIn.addFreshEntity(new ItemEntity(worldIn, pos.getX()+0.5, pos.getY()+0.5, pos.getZ()+0.5, new ItemStack(HygieneItems.POTASH), 0, 0, 0));
 			lowerFillLevel(state, worldIn, pos);
 		}
 	}
 
 	protected boolean isUnderSun(BlockState state, ServerLevel level, BlockPos pos) {
-		if (level.isDay() && !level.isClientSide) {
+		if (level.isBrightOutside() && !level.isClientSide()) {
 			float f = this.getBrightness(level, pos);
 			boolean flag = level.isRainingAt(pos);
 			if (f > 0.5F && !flag && level.canSeeSky(pos)) {

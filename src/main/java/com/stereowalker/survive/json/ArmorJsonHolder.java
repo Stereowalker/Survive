@@ -18,27 +18,27 @@ import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ArmorJsonHolder implements JsonHolder {
     private static final Marker ARMOR_DATA = MarkerManager.getMarker("ARMOR_DATA");
     
-	private ResourceLocation itemID;
+	private Identifier itemID;
 	private final List<Pair<String,TemperatureChangeInstance>> temperatureModifier;
 	private final float weightModifier;
 	
 	public ArmorJsonHolder(CompoundTag nbt) {
-		this.itemID = VersionHelper.toLoc(nbt.getString("id"));
-		this.weightModifier = nbt.getFloat("weight_modifier");
+		this.itemID = VersionHelper.toLoc(nbt.getString("id").get());
+		this.weightModifier = nbt.getFloat("weight_modifier").get();
 		this.temperatureModifier = Lists.newArrayList();
 		
-		nbt.getList("temperature_modifiers", 10).forEach((comp) -> {
+		nbt.getList("temperature_modifiers").get().forEach((comp) -> {
 			CompoundTag nbt2 = (CompoundTag) comp;
-			this.temperatureModifier.add(Pair.of(nbt2.getString("condition"), SurviveRegistries.CONDITION.get(VersionHelper.toLoc(nbt2.getString("condition"))).createInstance(nbt2.getCompound("contents"))));
+			this.temperatureModifier.add(Pair.of(nbt2.getString("condition").get(), SurviveRegistries.CONDITION.get(VersionHelper.toLoc(nbt2.getString("condition").get())).createInstance(nbt2.getCompound("contents").get())));
 		});
 	}
 	
-	public ArmorJsonHolder(ResourceLocation itemID, JsonObject object) {
+	public ArmorJsonHolder(Identifier itemID, JsonObject object) {
 		List<Pair<String,TemperatureChangeInstance>> temperatureModifierIn = Lists.newArrayList();
 		float weightModifierIn = 0;
 		
@@ -90,7 +90,7 @@ public class ArmorJsonHolder implements JsonHolder {
 		this.weightModifier = weightModifierIn;
 	}
 
-	public ResourceLocation getItemID() {
+	public Identifier getItemID() {
 		return itemID;
 	}
 

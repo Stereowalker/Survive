@@ -4,7 +4,7 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.needs.IRoastedEntity;
 import com.stereowalker.unionlib.util.VersionHelper;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 
@@ -80,24 +80,24 @@ public enum SurviveHeartType {
 			VersionHelper.toLoc(Survive.MOD_ID, "hud/heart/roasted_hardcore_half_blinking")
 			);
 
-	private final ResourceLocation full;
-	private final ResourceLocation fullBlinking;
-	private final ResourceLocation half;
-	private final ResourceLocation halfBlinking;
-	private final ResourceLocation hardcoreFull;
-	private final ResourceLocation hardcoreFullBlinking;
-	private final ResourceLocation hardcoreHalf;
-	private final ResourceLocation hardcoreHalfBlinking;
+	private final Identifier full;
+	private final Identifier fullBlinking;
+	private final Identifier half;
+	private final Identifier halfBlinking;
+	private final Identifier hardcoreFull;
+	private final Identifier hardcoreFullBlinking;
+	private final Identifier hardcoreHalf;
+	private final Identifier hardcoreHalfBlinking;
 
 	private SurviveHeartType(
-			final ResourceLocation pFull,
-			final ResourceLocation pFullBlinking,
-			final ResourceLocation pHalf,
-			final ResourceLocation pHalfBlinking,
-			final ResourceLocation pHardcoreFull,
-			final ResourceLocation pHardcoreBlinking,
-			final ResourceLocation pHardcoreHalf,
-			final ResourceLocation pHardcoreHalfBlinking
+			final Identifier pFull,
+			final Identifier pFullBlinking,
+			final Identifier pHalf,
+			final Identifier pHalfBlinking,
+			final Identifier pHardcoreFull,
+			final Identifier pHardcoreBlinking,
+			final Identifier pHardcoreHalf,
+			final Identifier pHardcoreHalfBlinking
 			) {
 		this.full = pFull;
 		this.fullBlinking = pFullBlinking;
@@ -109,7 +109,7 @@ public enum SurviveHeartType {
 		this.hardcoreHalfBlinking = pHardcoreHalfBlinking;
 	}
 
-	public ResourceLocation getSprite(boolean pHardcore, boolean pHalfHeart, boolean pBlinking) {
+	public Identifier getSprite(boolean pHardcore, boolean pHalfHeart, boolean pBlinking) {
 		if (!pHardcore) {
 			if (pHalfHeart) {
 				return pBlinking ? this.halfBlinking : this.half;

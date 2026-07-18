@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.level.storage.loot.LootParams;
 
 public class PlatedTemperatureRegulatorBlock extends AbstractTemperatureRegulatorBlock implements TemperatureEmitter {
@@ -42,7 +43,7 @@ public class PlatedTemperatureRegulatorBlock extends AbstractTemperatureRegulato
 	}
 
 	@Override
-	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {
+	public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, Orientation orientation, boolean pIsMoving) {
 		if (hasPowerInEitherDirection(pLevel, pPos, pState.getValue(FACING)) && !pState.getValue(POWERED)) {
 			pLevel.setBlockAndUpdate(pPos, pState.setValue(POWERED, true));
 		} else if (!hasPowerInEitherDirection(pLevel, pPos, pState.getValue(FACING)) && pState.getValue(POWERED)) {

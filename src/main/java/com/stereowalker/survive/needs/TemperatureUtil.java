@@ -51,8 +51,8 @@ public class TemperatureUtil {
 		float f = (float)(TEMPERATURE_NOISE.getValue((double)((float)pos.getX() / 8.0F), (double)((float)pos.getZ() / 8.0F), false) * 4.0D);
 		float modifier = 1.0f;
 		float t = biome.value().getBaseTemperature();
-		if (biome.unwrapKey().isPresent() && DataMaps.Server.biome.containsKey(biome.unwrapKey().get().location())) {
-			BiomeJsonHolder temperatureData = DataMaps.Server.biome.get(biome.unwrapKey().get().location());
+		if (biome.unwrapKey().isPresent() && DataMaps.Server.biome.containsKey(biome.unwrapKey().get().identifier())) {
+			BiomeJsonHolder temperatureData = DataMaps.Server.biome.get(biome.unwrapKey().get().identifier());
 			t = (temperatureData.getTemperature() + 2) / 2;
 			if (pos.getY() > 64.0F) {
 				modifier = temperatureData.getAltitudeLevelModifier().getFirst();

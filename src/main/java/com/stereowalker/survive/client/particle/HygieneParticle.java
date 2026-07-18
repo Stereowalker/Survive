@@ -3,18 +3,19 @@ package com.stereowalker.survive.client.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 
-public class HygieneParticle extends TextureSheetParticle {
+public class HygieneParticle extends SingleQuadParticle {
 	private final double stinkPosX;
 	private final double stinkPosY;
 	private final double stinkPosZ;
 
-	protected HygieneParticle(ClientLevel world, double x, double y, double z, double xd, double yd, double zd, boolean colorParticle) {
-		super(world, x, y, z);
+	protected HygieneParticle(ClientLevel world, double x, double y, double z, double xd, double yd, double zd, boolean colorParticle, TextureAtlasSprite sprite) {
+		super(world, x, y, z, sprite);
 		this.xd = xd;
 		this.yd = yd;
 		this.zd = zd;
@@ -34,9 +35,10 @@ public class HygieneParticle extends TextureSheetParticle {
 		this.lifetime = (int)(Math.random() * 5.0D) + 20;
 	}
 
-	public ParticleRenderType getRenderType() {
-		return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
-	}
+	@Override
+    public SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.OPAQUE;
+    }
 
 	@Override
 	public void move(double x, double y, double z) {
@@ -52,10 +54,10 @@ public class HygieneParticle extends TextureSheetParticle {
 		f = 1.0F - f;
 		return this.quadSize * f;
 	}
-
+	
 	@Override
-	public int getLightColor(float partialTick) {
-		int i = super.getLightColor(partialTick);
+	protected int getLightCoords(float partialTick) {
+		int i = super.getLightCoords(partialTick);
 		float f = (float)this.age / (float)this.lifetime;
 		f = f * f;
 		f = f * f;
@@ -94,9 +96,8 @@ public class HygieneParticle extends TextureSheetParticle {
 		}
 
 		@Override
-		public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			HygieneParticle portalparticle = new HygieneParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, false);
-			portalparticle.pickSprite(this.spriteSet);
+		public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+			HygieneParticle portalparticle = new HygieneParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, false, this.spriteSet.get(random));
 			return portalparticle;
 		}
 	}
@@ -109,9 +110,8 @@ public class HygieneParticle extends TextureSheetParticle {
 		}
 
 		@Override
-		public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			HygieneParticle portalparticle = new HygieneParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, true);
-			portalparticle.pickSprite(this.spriteSet);
+		public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, RandomSource random) {
+			HygieneParticle portalparticle = new HygieneParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, true, this.spriteSet.get(random));
 			return portalparticle;
 		}
 	}

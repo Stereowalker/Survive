@@ -5,9 +5,7 @@
     "X X"
   ],
   "key": {
-    "X": {
-      "item": "minecraft:white_wool"
-    }
+    "X": "minecraft:white_wool"
   },
   "result": {
     "id": "survive:wool_boots"

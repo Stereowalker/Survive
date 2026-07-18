@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "survive:item/purified_water_bucket"
+  }
+}

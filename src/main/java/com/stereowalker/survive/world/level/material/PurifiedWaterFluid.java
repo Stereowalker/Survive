@@ -1,30 +1,21 @@
 package com.stereowalker.survive.world.level.material;
 
-import java.util.function.Consumer;
-
 import javax.annotation.Nullable;
 
-import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.level.block.SBlocks;
-import com.stereowalker.unionlib.util.VersionHelper;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
@@ -33,13 +24,10 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.pathfinder.PathType;
-//import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-//import net.neoforged.neoforge.common.SoundActions;
-//import net.neoforged.neoforge.fluids.FluidType;
 
 public abstract class PurifiedWaterFluid extends FlowingFluid {
 	@Override
@@ -76,8 +64,8 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
 	}
 
 	@Override
-	protected boolean canConvertToSource(Level level) {
-	      return level.getGameRules().getBoolean(GameRules.RULE_WATER_SOURCE_CONVERSION);
+	protected boolean canConvertToSource(ServerLevel level) {
+	      return level.getGameRules().get(GameRules.WATER_SOURCE_CONVERSION);
 	   }
 
 	@Override
@@ -113,10 +101,10 @@ public abstract class PurifiedWaterFluid extends FlowingFluid {
 //        {
 //            consumer.accept(new IClientFluidTypeExtensions()
 //            {
-//                private static final ResourceLocation UNDERWATER_LOCATION = VersionHelper.toLoc("textures/misc/underwater.png");
+//                private static final Identifier UNDERWATER_LOCATION = VersionHelper.toLoc("textures/misc/underwater.png");
 //
 //                @Override
-//                public ResourceLocation getRenderOverlayTexture(Minecraft mc)
+//                public Identifier getRenderOverlayTexture(Minecraft mc)
 //                {
 //                    return UNDERWATER_LOCATION;
 //                }

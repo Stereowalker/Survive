@@ -116,8 +116,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.effect.MobEffects;
@@ -352,7 +352,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		collector.addInsert(Inserts.LEVEL_LOAD, insert -> SurviveEvents.addReload(insert.level()));
 		collector.addInsert(Inserts.LOOT_TABLE_LOAD, insert ->{
 			String ANIMAL_LOOT = "entities/animal_fat";
-			List<Pair<ResourceLocation, List<String>>> LOOT_MODIFIERS = Lists.newArrayList(
+			List<Pair<Identifier, List<String>>> LOOT_MODIFIERS = Lists.newArrayList(
 					Pair.of(VersionHelper.toLoc("entities/sheep"), Lists.newArrayList(ANIMAL_LOOT)),
 					Pair.of(VersionHelper.toLoc("entities/chicken"), Lists.newArrayList(ANIMAL_LOOT)),
 					Pair.of(VersionHelper.toLoc("entities/cow"), Lists.newArrayList(ANIMAL_LOOT)),
@@ -416,22 +416,22 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	}
 
 	//TODO: FInd Somewhere to put all these
-	public static void registerDrinkDataForItem(ResourceLocation location, FoodJsonHolder drinkData) {
+	public static void registerDrinkDataForItem(Identifier location, FoodJsonHolder drinkData) {
 		DataMaps.Server.consummableItem.put(location, drinkData);
 	}
-	public static void registerDrinkDataForPotion(ResourceLocation location, PotionJsonHolder consummableData) {
+	public static void registerDrinkDataForPotion(Identifier location, PotionJsonHolder consummableData) {
 		DataMaps.Server.potionDrink.put(location, consummableData);
 	}
-	public static void registerArmorTemperatures(ResourceLocation location, ArmorJsonHolder armorData) {
+	public static void registerArmorTemperatures(Identifier location, ArmorJsonHolder armorData) {
 		DataMaps.Server.armor.put(location, armorData);
 	}
-	public static void registerBlockTemperatures(ResourceLocation location, BlockTemperatureJsonHolder drinkData) {
+	public static void registerBlockTemperatures(Identifier location, BlockTemperatureJsonHolder drinkData) {
 		DataMaps.Server.blockTemperature.put(location, drinkData);
 	}
-	public static void registerEntityTemperatures(ResourceLocation location, EntityTemperatureJsonHolder drinkData) {
+	public static void registerEntityTemperatures(Identifier location, EntityTemperatureJsonHolder drinkData) {
 		DataMaps.Server.entityTemperature.put(location, drinkData);
 	}
-	public static void registerBiomeTemperatures(ResourceLocation location, BiomeJsonHolder biomeData) {
+	public static void registerBiomeTemperatures(Identifier location, BiomeJsonHolder biomeData) {
 		DataMaps.Server.biome.put(location, biomeData);
 	}
 

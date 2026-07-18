@@ -9,7 +9,7 @@ import com.stereowalker.survive.world.temperature.TemperatureModifier.Contributi
 import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -21,8 +21,8 @@ import net.minecraft.world.level.Level;
  */
 @FunctionalInterface
 public interface TemperatureQuery {
-	public static Map<ResourceLocation,Tuple<TemperatureQuery, ContributingFactor>> queries = Maps.newHashMap();
-	public static void registerQuery(ResourceLocation id, ContributingFactor factor, TemperatureQuery query) {
+	public static Map<Identifier,Tuple<TemperatureQuery, ContributingFactor>> queries = Maps.newHashMap();
+	public static void registerQuery(Identifier id, ContributingFactor factor, TemperatureQuery query) {
 		queries.put(id, new Tuple<>(query, factor));
 	}
 	public static void registerQuery(String id, ContributingFactor factor, TemperatureQuery query) {

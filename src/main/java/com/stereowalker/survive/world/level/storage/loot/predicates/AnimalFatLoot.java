@@ -8,7 +8,6 @@ import com.stereowalker.survive.config.ServerConfig;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 /**
  * A LootItemCondition that checks whether it currently raining or trhundering.
@@ -26,9 +25,10 @@ public class AnimalFatLoot implements LootItemCondition {
 	AnimalFatLoot(int x) {
 	}
 
-	public LootItemConditionType getType() {
-		return SLootItemConditions.ANIMAL_FAT_CONFIG;
-	}
+    @Override
+    public MapCodec<AnimalFatLoot> codec() {
+        return CODEC;
+    }
 
 	public boolean test(LootContext p_82066_) {
 		ServerLevel serverlevel = p_82066_.getLevel();

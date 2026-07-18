@@ -16,7 +16,7 @@ import com.stereowalker.unionlib.resource.IResourceReloadListener;
 import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -25,14 +25,14 @@ import net.minecraft.util.profiling.ProfilerFiller;
  * Loads block temperatures from json
  * @author Stereowalker
  */
-public class BlockDataManager implements IResourceReloadListener<Map<ResourceLocation, BlockTemperatureJsonHolder>> {
+public class BlockDataManager implements IResourceReloadListener<Map<Identifier, BlockTemperatureJsonHolder>> {
 	@Override
-	public CompletableFuture<Map<ResourceLocation, BlockTemperatureJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
+	public CompletableFuture<Map<Identifier, BlockTemperatureJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
-			Map<ResourceLocation, BlockTemperatureJsonHolder> drinkMap = new HashMap<>();
+			Map<Identifier, BlockTemperatureJsonHolder> drinkMap = new HashMap<>();
 
-			for (Entry<ResourceLocation, Resource> resource : manager.listResources("survive_modifiers/blocks", (s) -> s.toString().endsWith(".json")).entrySet()) {
-				ResourceLocation blockId = VersionHelper.toLoc(
+			for (Entry<Identifier, Resource> resource : manager.listResources("survive_modifiers/blocks", (s) -> s.toString().endsWith(".json")).entrySet()) {
+				Identifier blockId = VersionHelper.toLoc(
 						resource.getKey().getNamespace(),
 						resource.getKey().getPath().replace("survive_modifiers/blocks/", "").replace(".json", "")
 						);
@@ -61,16 +61,16 @@ public class BlockDataManager implements IResourceReloadListener<Map<ResourceLoc
 	}
 
 	@Override
-	public CompletableFuture<Void> apply(Map<ResourceLocation, BlockTemperatureJsonHolder> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
+	public CompletableFuture<Void> apply(Map<Identifier, BlockTemperatureJsonHolder> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.runAsync(() -> {
-			for (ResourceLocation drinkId : data.keySet()) {
+			for (Identifier drinkId : data.keySet()) {
 				Survive.registerBlockTemperatures(drinkId, data.get(drinkId));
 			}
 		});
 	}
 
 	@Override
-	public ResourceLocation id() {
+	public Identifier id() {
 		return VersionHelper.toLoc("survive:block_data");
 	}
 }

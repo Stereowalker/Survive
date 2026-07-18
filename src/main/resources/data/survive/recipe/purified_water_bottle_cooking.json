@@ -1,5 +1,9 @@
 {
   "type": "survive:purified_water_bottle",
+  "ingredient": "minecraft:potato",
+  "result": {
+    "id": "minecraft:baked_potato"
+  },
   "experience": 0.25,
   "cookingtime": 200
 }

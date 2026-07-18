@@ -12,7 +12,7 @@ import com.stereowalker.unionlib.util.VersionHelper;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 
 @RegistryHolder(namespace = Survive.MOD_ID)
@@ -54,10 +54,10 @@ public class SDataComponents {
 			(stack, dat) -> stack.set(FOOD_STATUS, dat),
 			(stack) -> stack.remove(FOOD_STATUS));
 	@RegistryObject("biome_source")
-	public static final DataComponentType<ResourceLocation> BIOME_SOURCE = register(
-			p_333150_ -> p_333150_.persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC)
+	public static final DataComponentType<Identifier> BIOME_SOURCE = register(
+			p_333150_ -> p_333150_.persistent(Identifier.CODEC).networkSynchronized(Identifier.STREAM_CODEC)
 			);
-	public static final VersionHelper.Data<ResourceLocation> BIOME_SOURCE_D = new VersionHelper.Data<ResourceLocation>(
+	public static final VersionHelper.Data<Identifier> BIOME_SOURCE_D = new VersionHelper.Data<Identifier>(
 			(stack) -> stack.has(BIOME_SOURCE),
 			(stack) -> stack.get(BIOME_SOURCE),
 			(stack, dat) -> stack.set(BIOME_SOURCE, dat),

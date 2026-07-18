@@ -14,7 +14,7 @@ import net.minecraft.world.level.LevelAccessor;
 
 public class SleepEvents {
 	public static void allowSleep(Player player, BlockPos pos, BedSleepingProblem vanillaProblem, InsertSetter<BedSleepingProblem> problem) {
-		if (player instanceof ServerPlayer splayer && vanillaProblem == BedSleepingProblem.NOT_POSSIBLE_NOW) {
+		if (player instanceof ServerPlayer splayer && vanillaProblem.message().toString().contains("block.minecraft.bed.no_sleep")) {
 			if (Survive.CONFIG.enable_sleep && ((IRealisticEntity)splayer).sleepData().getAwakeTimer() > time(0) - 5000 && Survive.CONFIG.canSleepDuringDay) {
 				problem.set(null);
 			}

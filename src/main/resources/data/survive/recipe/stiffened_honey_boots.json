@@ -5,9 +5,7 @@
     "X X"
   ],
   "key": {
-    "X": {
-      "item": "survive:stiffened_honey"
-    }
+    "X": "survive:stiffened_honey"
   },
   "result": {
     "id": "survive:stiffened_honey_boots"

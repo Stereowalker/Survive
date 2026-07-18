@@ -9,10 +9,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.stereowalker.survive.FoodUtils.State;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
-import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.json.ConsummableJsonHolder;
 import com.stereowalker.survive.needs.CustomFoodData;
 import com.stereowalker.survive.needs.HygieneData;
@@ -24,9 +22,11 @@ import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.WaterData;
 import com.stereowalker.survive.needs.WellbeingData;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
+import com.stereowalker.unionlib.util.EntityHelper;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
@@ -35,8 +35,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntity implements IRealisticEntity {
@@ -59,19 +61,14 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		this.foodData = new CustomFoodData(this.foodData);
 	}
 	
-	@Inject(method = "eat", at = @At("HEAD"))
-	public void eatInject(Level pLevel, ItemStack pFood, FoodProperties pFoodProperties, CallbackInfoReturnable<ItemStack> cir) {
-		SurviveEvents.eat(this, pFood);
-	}
-
 	@Inject(method = "tick", at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/world/entity/player/Player;updateIsUnderwater()Z"))
 	public void tickInject(CallbackInfo ci) {
 		SurviveEntityStats.addStatsOnSpawn((Player)(Object)this);
 		//
-		if (!this.level().isClientSide && (Player)(Object)this instanceof ServerPlayer) {
+		if (!this.level().isClientSide() && (Player)(Object)this instanceof ServerPlayer) {
 			ServerPlayer player = (ServerPlayer)(Object)this;
 			if (Survive.THIRST_CONFIG.enabled) {
-				if (player.level().getDifficulty() == Difficulty.PEACEFUL && player.level().getGameRules().getBoolean(GameRules.RULE_NATURAL_REGENERATION)) {
+				if (player.level().getDifficulty() == Difficulty.PEACEFUL && player.level().getGameRules().get(GameRules.NATURAL_HEALTH_REGENERATION)) {
 					if (waterData().needWater() && player.tickCount % 10 == 0) {
 						waterData().setWaterLevel(waterData().getWaterLevel() + 1);
 					}
@@ -79,7 +76,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			}
 		}
 		//
-		if (!this.level().isClientSide) {
+		if (!this.level().isClientSide()) {
 			staminaData().baseTick((Player)(Object)this);
 			hygieneData().baseTick((Player)(Object)this);
 			this.nutritionData.baseTick((Player)(Object)this);
@@ -98,11 +95,6 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 			return foodData.needsFood();
 		}
 	}
-	
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = {"jumpFromGround"})
-	public void morphExhaustionDuringJump(Player player, float value) {
-		bypassFoodExhaustion(value, value*2.5f, Mth.ceil(value*2.5f), "Jumped", this.isSprinting());
-	}
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"), method = {"actuallyHurt"})
 	public void morphExhaustion(Player player, float value) {
@@ -114,27 +106,27 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		bypassFoodExhaustion(value, 1.25f, Mth.ceil(value*2.5f), "Player Attacked", true);
 	}
 
-	@Inject(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;eat(Lnet/minecraft/world/food/FoodProperties;)V"))
-	public void addNutrients(Level arg0, ItemStack p_213357_2_, FoodProperties pFoodProperties, CallbackInfoReturnable<ItemStack> cir) {
-		SurviveEvents.eatNutrition(this, p_213357_2_);
+	@Inject(method = "hasEnoughFoodToDoExhaustiveManoeuvres", at = @At(value = "HEAD"), cancellable = true)
+	public void tickInject(CallbackInfoReturnable<Boolean> cir) {
+		cir.setReturnValue(this.isPassenger() || !staminaData().isShortOfBreath() || EntityHelper.mayFly((Player)(Object)this));
 	}
 	
 	@Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
-	public void readAdditionalSaveData_inject(CompoundTag pCompound, CallbackInfo ci) {
-		if (pCompound.contains("surviveData", 10)) {
-			CompoundTag surviveData = pCompound.getCompound("surviveData");
-			if (surviveData.contains("temperature", 10)) this.temperatureData.read(surviveData.getCompound("temperature"));
-			if (surviveData.contains("wellbeing", 10)) this.wellbeingData.read(surviveData.getCompound("wellbeing"));
-			if (surviveData.contains("nutrition", 10)) this.nutritionData.read(surviveData.getCompound("nutrition"));
-			if (surviveData.contains("hygiene", 10)) this.hygieneData.read(surviveData.getCompound("hygiene"));
-			if (surviveData.contains("stamina", 10)) this.staminaData.read(surviveData.getCompound("stamina"));
-			if (surviveData.contains("sleep", 10)) this.sleepData.read(surviveData.getCompound("sleep"));
-			if (surviveData.contains("water", 10)) this.waterData.read(surviveData.getCompound("water"));
-		}
+	public void readAdditionalSaveData_inject(ValueInput pCompound, CallbackInfo ci) {
+//		if (pCompound.contains("surviveData", 10)) {
+			ValueInput surviveData = pCompound.childOrEmpty("surviveData");
+			if (surviveData.child("temperature").isPresent()) this.temperatureData.read(surviveData.childOrEmpty("temperature"));
+			if (surviveData.child("wellbeing").isPresent()) this.wellbeingData.read(surviveData.childOrEmpty("wellbeing"));
+			if (surviveData.child("nutrition").isPresent()) this.nutritionData.read(surviveData.childOrEmpty("nutrition"));
+			if (surviveData.child("hygiene").isPresent()) this.hygieneData.read(surviveData.childOrEmpty("hygiene"));
+			if (surviveData.child("stamina").isPresent()) this.staminaData.read(surviveData.childOrEmpty("stamina"));
+			if (surviveData.child("sleep").isPresent()) this.sleepData.read(surviveData.childOrEmpty("sleep"));
+			if (surviveData.child("water").isPresent()) this.waterData.read(surviveData.childOrEmpty("water"));
+//		}
 	}
 	
 	@Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
-	public void addAdditionalSaveData_inject(CompoundTag pCompound, CallbackInfo ci) {
+	public void addAdditionalSaveData_inject(ValueOutput pCompound, CallbackInfo ci) {
 		CompoundTag surviveData = new CompoundTag();
 		surviveData.put("temperature", this.temperatureData.write(false));
 		surviveData.put("wellbeing", this.wellbeingData.write(false));
@@ -143,7 +135,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 		surviveData.put("stamina", this.staminaData.write(false));
 		surviveData.put("sleep", this.sleepData.write(false));
 		surviveData.put("water", this.waterData.write(false));
-		pCompound.put("surviveData", surviveData);
+		pCompound.store("surviveData", ExtraCodecs.NBT, surviveData);
 	}
 
 	public StaminaData staminaData() {

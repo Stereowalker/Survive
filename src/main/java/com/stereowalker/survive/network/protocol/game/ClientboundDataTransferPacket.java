@@ -17,15 +17,15 @@ import com.stereowalker.unionlib.util.VersionHelper;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
-	private ResourceLocation stat;
+	private Identifier stat;
 	private JsonHolder settings;
 	private boolean clear;
 
-	public ClientboundDataTransferPacket(final ResourceLocation statIn, final JsonHolder settingsIn, final boolean clear) {
+	public ClientboundDataTransferPacket(final Identifier statIn, final JsonHolder settingsIn, final boolean clear) {
 		super(null);
 		this.stat = statIn;
 		this.settings = settingsIn;
@@ -34,7 +34,7 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 
 	public ClientboundDataTransferPacket(RegistryFriendlyByteBuf byteBuf) {
 		super(byteBuf);
-		this.stat = byteBuf.readResourceLocation();
+		this.stat = byteBuf.readIdentifier();
 		String cl = byteBuf.readUtf();
 		this.settings = JsonHolder.deserialize(byteBuf.readNbt(), JsonHolder.HOLD.get(cl));
 		this.clear = byteBuf.readBoolean();
@@ -42,7 +42,7 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 
 	@Override
 	public void encode(final FriendlyByteBuf byteBuf) {
-		byteBuf.writeResourceLocation(this.stat);
+		byteBuf.writeIdentifier(this.stat);
 		byteBuf.writeUtf(this.settings.getClass().descriptorString());
 		byteBuf.writeNbt(this.settings.serialize());
 		byteBuf.writeBoolean(this.clear);
@@ -55,7 +55,7 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 				Survive.getInstance().getLogger().info("Clearing Client Side Armor Data");
 				DataMaps.Client.armor = ImmutableMap.of();
 			}
-			Map<ResourceLocation,ArmorJsonHolder> statMap = new HashMap<>();
+			Map<Identifier,ArmorJsonHolder> statMap = new HashMap<>();
 			statMap.putAll(DataMaps.Client.armor);
 			statMap.put(stat, armor);
 			DataMaps.Client.armor = ImmutableMap.copyOf(statMap);
@@ -65,7 +65,7 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 				Survive.getInstance().getLogger().info("Clearing Client Side Fluid Data");
 				DataMaps.Client.fluid = ImmutableMap.of();
 			}
-			Map<ResourceLocation,FluidJsonHolder> statMap = new HashMap<>();
+			Map<Identifier,FluidJsonHolder> statMap = new HashMap<>();
 			statMap.putAll(DataMaps.Client.fluid);
 			statMap.put(stat, fluid);
 			DataMaps.Client.fluid = ImmutableMap.copyOf(statMap);
@@ -75,7 +75,7 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 				Survive.getInstance().getLogger().info("Clearing Client Side Biome Data");
 				DataMaps.Client.biome = ImmutableMap.of();
 			}
-			Map<ResourceLocation,BiomeJsonHolder> statMap = new HashMap<>();
+			Map<Identifier,BiomeJsonHolder> statMap = new HashMap<>();
 			statMap.putAll(DataMaps.Client.biome);
 			statMap.put(stat, biome);
 			DataMaps.Client.biome = ImmutableMap.copyOf(statMap);
@@ -85,7 +85,7 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 				Survive.getInstance().getLogger().info("Clearing Client Side Consummable Data");
 				DataMaps.Client.consummableItem = ImmutableMap.of();
 			}
-			Map<ResourceLocation,FoodJsonHolder> statMap = new HashMap<>();
+			Map<Identifier,FoodJsonHolder> statMap = new HashMap<>();
 			statMap.putAll(DataMaps.Client.consummableItem);
 			statMap.put(stat, consummable);
 			DataMaps.Client.consummableItem = ImmutableMap.copyOf(statMap);
@@ -93,9 +93,9 @@ public class ClientboundDataTransferPacket extends ClientboundUnionPacket {
 		return true;
 	}
 
-	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "clientbound_data_transfer");
+	public static Identifier id = VersionHelper.toLoc(Survive.MOD_ID, "clientbound_data_transfer");
 	@Override
-	public ResourceLocation id() {
+	public Identifier id() {
 		return id;
 	}
 }

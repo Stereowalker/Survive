@@ -17,6 +17,7 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.Consumables;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.block.Block;
 
@@ -35,11 +36,11 @@ public class SItems {
 	@RegistryObject("canteen")
 	public static final Item CANTEEN = new EmptyCanteenItem(false, VersionHelper.itemPropertyWithId("survive:canteen").stacksTo(1));
 	@RegistryObject("filled_canteen")
-	public static final Item FILLED_CANTEEN = new CanteenItem(VersionHelper.itemPropertyWithId("survive:filled_canteen").craftRemainder(CANTEEN).stacksTo(1).component(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).component(SDataComponents.DRINKS_LEFT, 0), false);
+	public static final Item FILLED_CANTEEN = new CanteenItem(VersionHelper.itemPropertyWithId("survive:filled_canteen").craftRemainder(CANTEEN).stacksTo(1).component(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).component(SDataComponents.DRINKS_LEFT, 0).component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK), false);
 	@RegistryObject("netherite_canteen")
 	public static final Item NETHERITE_CANTEEN = new EmptyCanteenItem(true, VersionHelper.itemPropertyWithId("survive:netherite_canteen").stacksTo(1).fireResistant());
 	@RegistryObject("filled_netherite_canteen")
-	public static final Item FILLED_NETHERITE_CANTEEN = new CanteenItem(VersionHelper.itemPropertyWithId("survive:filled_netherite_canteen").craftRemainder(CANTEEN).stacksTo(1).fireResistant().component(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).component(SDataComponents.DRINKS_LEFT, 0), true);
+	public static final Item FILLED_NETHERITE_CANTEEN = new CanteenItem(VersionHelper.itemPropertyWithId("survive:filled_netherite_canteen").craftRemainder(CANTEEN).stacksTo(1).fireResistant().component(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).component(SDataComponents.DRINKS_LEFT, 0).component(DataComponents.CONSUMABLE, Consumables.DEFAULT_DRINK), true);
 	@RegistryObject("water_bowl")
 	public static final Item WATER_BOWL = new WaterBowlItem(VersionHelper.itemPropertyWithId("survive:water_bowl").stacksTo(1));
 	@RegistryObject("purified_water_bowl")

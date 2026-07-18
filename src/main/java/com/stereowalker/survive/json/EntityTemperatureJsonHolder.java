@@ -8,16 +8,16 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.api.json.JsonHolder;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class EntityTemperatureJsonHolder implements JsonHolder {
     private static final Marker ENTITY_TEMPERATURE_DATA = MarkerManager.getMarker("ENTITY_TEMPERATURE_DATA");
     
-	private ResourceLocation entityID;
+	private Identifier entityID;
 	private final float temperatureModifier;
 	private final float range;
 	
-	public EntityTemperatureJsonHolder(ResourceLocation blockID, JsonObject object) {
+	public EntityTemperatureJsonHolder(Identifier blockID, JsonObject object) {
 		String TEMPERATURE_MODIFIER = "temperature_modifier";
 		String RANGE = "range";
 		
@@ -62,7 +62,7 @@ public class EntityTemperatureJsonHolder implements JsonHolder {
 		
 	}
 
-	public ResourceLocation getItemID() {
+	public Identifier getItemID() {
 		return entityID;
 	}
 

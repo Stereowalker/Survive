@@ -82,7 +82,7 @@ public class TempEvents {
 			for (int y = -rangeInBlocks; y <= rangeInBlocks; y++) {
 				for (int z = -rangeInBlocks; z <= rangeInBlocks; z++) {
 					BlockPos heatSource = new BlockPos(block.getX()+x, block.getY()+y, block.getZ()+z);
-					ChunkPos chunk = new ChunkPos(heatSource);
+					ChunkPos chunk = ChunkPos.containing(heatSource);
 					Map<BlockPos, Float> chunkMap = GLOBAL_BLOCK_TEMPS.get(chunk);
 					if (chunkMap != null) {
 						Float removed = chunkMap.remove(local(chunk, heatSource));
@@ -93,15 +93,15 @@ public class TempEvents {
 		}
 	}
 	public static BlockPos local(ChunkPos chunk, BlockPos block) {
-		return new BlockPos(block.getX() - (chunk.x * 16), block.getY(), block.getZ() - (chunk.z * 16));
+		return new BlockPos(block.getX() - (chunk.x() * 16), block.getY(), block.getZ() - (chunk.z() * 16));
 	}
 	public static void cacheTemp(BlockPos block, float temp) {
-		ChunkPos chunk = new ChunkPos(block);
+		ChunkPos chunk = ChunkPos.containing(block);
 		GLOBAL_BLOCK_TEMPS.computeIfAbsent(chunk, k -> new ConcurrentHashMap<>());
 		GLOBAL_BLOCK_TEMPS.get(chunk).put(local(chunk, block), temp);
 	}
 	public static <T> float tempOrCache(BlockPos block, T quick, T full, Function<T,Float> calc) {
-		ChunkPos chunk = new ChunkPos(block);
+		ChunkPos chunk = ChunkPos.containing(block);
 		float temp = 0;
 		if (GLOBAL_BLOCK_TEMPS.containsKey(chunk) && GLOBAL_BLOCK_TEMPS.get(chunk).containsKey(local(chunk, block))) {
 			temp = GLOBAL_BLOCK_TEMPS.get(chunk).get(local(chunk, block));

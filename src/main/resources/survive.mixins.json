@@ -30,6 +30,7 @@
 	"ServerPlayerMixin",
 	"LevelMixin",
 	"BucketItemMixin",
+	"FoodPropertiesMixin",
 	"AbstractCauldronBlockMixin",
 	"parcool.HungerStaminaHandlerMixin"
   ],

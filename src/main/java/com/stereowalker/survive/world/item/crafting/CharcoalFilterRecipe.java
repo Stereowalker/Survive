@@ -1,25 +1,29 @@
 package com.stereowalker.survive.world.item.crafting;
 
+import com.mojang.serialization.MapCodec;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.alchemy.SPotions;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 public class CharcoalFilterRecipe extends CustomRecipe {
+    public static final CharcoalFilterRecipe INSTANCE = new CharcoalFilterRecipe();
+    public static final MapCodec<CharcoalFilterRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, CharcoalFilterRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
-	public CharcoalFilterRecipe(CraftingBookCategory pCategory) {
-		super(pCategory);
+	public CharcoalFilterRecipe() {
+		super();
 	}
 
 	@Override
@@ -48,7 +52,7 @@ public class CharcoalFilterRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider ra) {
+	public ItemStack assemble(CraftingInput inv) {
 		for (int i = 0; i < inv.size(); i++) {
 			ItemStack stack = inv.getItem(i);
 			PotionContents contents = stack.get(DataComponents.POTION_CONTENTS);
@@ -110,12 +114,7 @@ public class CharcoalFilterRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
-	}
-
-	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return SRecipeSerializer.CRAFTING_SPECIAL_CHARCOAL_FILTERING;
 	}
 

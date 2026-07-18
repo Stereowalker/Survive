@@ -3,6 +3,7 @@ package com.stereowalker.survive.world.effect;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,7 +16,7 @@ public class EnergizedMobEffect extends MobEffect {
 	}
 
     @Override
-    public boolean applyEffectTick(LivingEntity living, int amplifier) {
+    public boolean applyEffectTick(ServerLevel level, LivingEntity living, int amplifier) {
         if (living instanceof Player player) {
         	IRealisticEntity realisticEntity = (IRealisticEntity)player;
         	realisticEntity.staminaData().relax(1, player.getAttributeValue(SAttributes.MAX_STAMINA.holder()));

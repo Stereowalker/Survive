@@ -1,5 +1,8 @@
 package com.stereowalker.survive.network.protocol.game;
 
+import org.slf4j.Logger;
+
+import com.mojang.logging.LogUtils;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.needs.IRealisticEntity;
@@ -9,11 +12,15 @@ import com.stereowalker.unionlib.util.VersionHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
 
 public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
+	private static final Logger LOGGER = LogUtils.getLogger();
 	private CompoundTag stats;
 	private boolean legacyStats;
 
@@ -57,20 +64,23 @@ public class ClientboundSurvivalStatsPacket extends ClientboundUnionPacket {
 			SurviveEntityStats.setModNBT(this.stats, sender);
 		} else {
 			IRealisticEntity player = (IRealisticEntity)sender;
-			if (this.stats.contains("temperature", 10)) player.temperatureData().read(this.stats.getCompound("temperature"));
-			if (this.stats.contains("wellbeing", 10)) player.wellbeingData().read(this.stats.getCompound("wellbeing"));
-			if (this.stats.contains("nutrition", 10)) player.nutritionData().read(this.stats.getCompound("nutrition"));
-			if (this.stats.contains("hygiene", 10)) player.hygieneData().read(this.stats.getCompound("hygiene"));
-			if (this.stats.contains("stamina", 10)) player.staminaData().read(this.stats.getCompound("stamina"));
-			if (this.stats.contains("sleep", 10)) player.sleepData().read(this.stats.getCompound("sleep"));
-			if (this.stats.contains("water", 10)) player.waterData().read(this.stats.getCompound("water"));
+			try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(LOGGER)) {
+				ValueInput tag = TagValueInput.create(reporter, sender.level().registryAccess(), stats);
+				if (this.stats.getCompound("temperature").isPresent()) player.temperatureData().read(tag.childOrEmpty("temperature"));
+				if (this.stats.getCompound("wellbeing").isPresent()) player.wellbeingData().read(tag.childOrEmpty("wellbeing"));
+				if (this.stats.getCompound("nutrition").isPresent()) player.nutritionData().read(tag.childOrEmpty("nutrition"));
+				if (this.stats.getCompound("hygiene").isPresent()) player.hygieneData().read(tag.childOrEmpty("hygiene"));
+				if (this.stats.getCompound("stamina").isPresent()) player.staminaData().read(tag.childOrEmpty("stamina"));
+				if (this.stats.getCompound("sleep").isPresent()) player.sleepData().read(tag.childOrEmpty("sleep"));
+				if (this.stats.getCompound("water").isPresent()) player.waterData().read(tag.childOrEmpty("water"));
+			}
 		}
 		return true;
 	}
 
-	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "clientbound_survival_stats");
+	public static Identifier id = VersionHelper.toLoc(Survive.MOD_ID, "clientbound_survival_stats");
 	@Override
-	public ResourceLocation id() {
+	public Identifier id() {
 		return id;
 	}
 }

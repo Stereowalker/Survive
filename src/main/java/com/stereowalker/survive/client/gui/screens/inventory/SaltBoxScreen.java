@@ -7,16 +7,15 @@ import com.stereowalker.unionlib.api.gui.SeamlessContainerScreen;
 import com.stereowalker.unionlib.util.VersionHelper;
 import com.stereowalker.unionlib.util.math.ImmutableColor;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 
 public class SaltBoxScreen extends AbstractContainerScreen<SaltBoxMenu> implements MenuAccess<SaltBoxMenu>, SeamlessContainerScreen {
-	private static final ResourceLocation CONTAINER_BACKGROUND = VersionHelper.toLoc(Survive.MOD_ID, "textures/gui/container/salt_box.png");
+	private static final Identifier CONTAINER_BACKGROUND = VersionHelper.toLoc(Survive.MOD_ID, "textures/gui/container/salt_box.png");
 	public final int containerRows;
 
 	public SaltBoxScreen(SaltBoxMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
@@ -31,7 +30,7 @@ public class SaltBoxScreen extends AbstractContainerScreen<SaltBoxMenu> implemen
 	@Override
 	public void drawContents(GuiRenderer renderer, int mouseX, int mouseY, Runnable originalContents) {
 		SeamlessContainerScreen.super.drawContents(renderer, mouseX, mouseY, originalContents);
-		this.renderTooltip(renderer.guiGraphics(), mouseX, mouseY);
+		this.extractTooltip(renderer.guiGraphics(), mouseX, mouseY);
 		renderBars(renderer);
 	}
 
@@ -53,9 +52,5 @@ public class SaltBoxScreen extends AbstractContainerScreen<SaltBoxMenu> implemen
 				renderer.fillOverlay(x, y, x + Mth.ceil((this.menu.data().get(k + j * 9) / 1000f) * 14f), y + 1, new ImmutableColor(.86f,.55f,.53f,1).toIntARGB());
 			}
 		}
-	}
-
-	@Override
-	protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
 	}
 }

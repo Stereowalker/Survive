@@ -22,7 +22,7 @@ public class DefaultCondition extends TemperatureChangeCondition<DefaultConditio
 	
 	@Override
 	public Instance createInstance(CompoundTag nbt) {
-		float temperatureIn = nbt.getFloat("temperature");
+		float temperatureIn = nbt.getFloat("temperature").get();
 		return new Instance(temperatureIn);
 	}
 	

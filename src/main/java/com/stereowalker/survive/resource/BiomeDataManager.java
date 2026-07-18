@@ -15,7 +15,7 @@ import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.unionlib.resource.IResourceReloadListener;
 import com.stereowalker.unionlib.util.VersionHelper;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -24,14 +24,14 @@ import net.minecraft.util.profiling.ProfilerFiller;
  * Loads block temperatures from json
  * @author Stereowalker
  */
-public class BiomeDataManager implements IResourceReloadListener<Map<ResourceLocation, BiomeJsonHolder>> {
+public class BiomeDataManager implements IResourceReloadListener<Map<Identifier, BiomeJsonHolder>> {
 	@Override
-	public CompletableFuture<Map<ResourceLocation, BiomeJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
+	public CompletableFuture<Map<Identifier, BiomeJsonHolder>> load(ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
-			Map<ResourceLocation, BiomeJsonHolder> drinkMap = new HashMap<>();
+			Map<Identifier, BiomeJsonHolder> drinkMap = new HashMap<>();
 
-			for (Entry<ResourceLocation, Resource> resource : manager.listResources("survive_modifiers/biomes", (s) -> s.toString().endsWith(".json")).entrySet()) {
-				ResourceLocation blockId = VersionHelper.toLoc(
+			for (Entry<Identifier, Resource> resource : manager.listResources("survive_modifiers/biomes", (s) -> s.toString().endsWith(".json")).entrySet()) {
+				Identifier blockId = VersionHelper.toLoc(
 						resource.getKey().getNamespace(),
 						resource.getKey().getPath().replace("survive_modifiers/biomes/", "").replace(".json", "")
 						);
@@ -60,16 +60,16 @@ public class BiomeDataManager implements IResourceReloadListener<Map<ResourceLoc
 	}
 
 	@Override
-	public CompletableFuture<Void> apply(Map<ResourceLocation, BiomeJsonHolder> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
+	public CompletableFuture<Void> apply(Map<Identifier, BiomeJsonHolder> data, ResourceManager manager, ProfilerFiller profiler, Executor executor) {
 		return CompletableFuture.runAsync(() -> {
-			for (ResourceLocation drinkId : data.keySet()) {
+			for (Identifier drinkId : data.keySet()) {
 				Survive.registerBiomeTemperatures(drinkId, data.get(drinkId));
 			}
 		});
 	}
 
 	@Override
-	public ResourceLocation id() {
+	public Identifier id() {
 		return VersionHelper.toLoc("survive:biome_data");
 	}
 }

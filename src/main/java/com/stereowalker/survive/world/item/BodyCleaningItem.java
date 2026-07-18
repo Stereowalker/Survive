@@ -4,7 +4,7 @@ import com.stereowalker.survive.needs.HygieneData;
 import com.stereowalker.survive.needs.IRealisticEntity;
 
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -21,7 +21,7 @@ public class BodyCleaningItem extends Item {
 	}
 	
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
+	public InteractionResult use(Level worldIn, Player playerIn, InteractionHand handIn) {
 		
 		HygieneData stats = ((IRealisticEntity)playerIn).hygieneData();
 		if (playerIn.isInWaterOrRain()) {

@@ -9,15 +9,14 @@ import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.survive.world.item.component.SDataComponents;
 import com.stereowalker.unionlib.util.VersionHelper.VanillaComponents;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface ColdStorage {
 	public float coldness();
@@ -58,12 +57,12 @@ public interface ColdStorage {
 		return 1f - lossFactor();
 	}
 	
-	default void load(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-		setColdness(pTag.getFloat("coldness"));
-		setLastAccessed(pTag.getLong("lastAccessed"));
+	default void load(ValueInput pTag) {
+		setColdness(pTag.getFloatOr("coldness", 0));
+		setLastAccessed(pTag.getLongOr("lastAccessed", 0));
     }
 	
-	default void save(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+	default void save(ValueOutput pTag) {
 		pTag.putFloat("coldness", coldness());
 		pTag.putLong("lastAccessed", lastAccessed());
     }

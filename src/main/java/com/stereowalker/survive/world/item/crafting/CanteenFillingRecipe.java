@@ -1,26 +1,30 @@
 package com.stereowalker.survive.world.item.crafting;
 
+import com.mojang.serialization.MapCodec;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.world.item.CanteenItem;
 import com.stereowalker.survive.world.item.SItems;
 import com.stereowalker.unionlib.util.LoaderHelper;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 public class CanteenFillingRecipe extends CustomRecipe {
+    public static final CanteenFillingRecipe INSTANCE = new CanteenFillingRecipe();
+    public static final MapCodec<CanteenFillingRecipe> MAP_CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, CanteenFillingRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
-	public CanteenFillingRecipe(CraftingBookCategory pCategory) {
-		super(pCategory);
+	public CanteenFillingRecipe() {
+		super();
 	}
 
 	@Override
@@ -58,7 +62,7 @@ public class CanteenFillingRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public ItemStack assemble(CraftingInput inv, HolderLookup.Provider ra) {
+	public ItemStack assemble(CraftingInput inv) {
 		int count = 0;
 		PotionContents savedPotion = null;
 		for (int i = 0; i < inv.size(); i++) {
@@ -91,12 +95,7 @@ public class CanteenFillingRecipe extends CustomRecipe {
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width * height >= 2;
-	}
-
-	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public RecipeSerializer<? extends CustomRecipe> getSerializer() {
 		return SRecipeSerializer.CRAFTING_SPECIAL_CANTEEN_FILLING;
 	}
 

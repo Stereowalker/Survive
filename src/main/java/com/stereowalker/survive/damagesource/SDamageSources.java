@@ -9,6 +9,6 @@ import net.minecraft.world.damagesource.DamageType;
 public class SDamageSources {
 
 	public static DamageSource source(RegistryAccess access, ResourceKey<DamageType> p_270957_) {
-		return new DamageSource(access.registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(p_270957_));
+		return new DamageSource(access.lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(p_270957_));
 	}
 }

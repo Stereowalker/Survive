@@ -28,7 +28,6 @@ public class HungerStaminaHandlerMixin implements IParCoolStaminaHandler {
 	@Shadow private int consumed = 0;
 
 	@Overwrite
-	@OnlyIn(value = Dist.CLIENT)
 	public ReadonlyStamina initializeStamina(LocalPlayer player, ReadonlyStamina current) {
 		if (Survive.STAMINA_CONFIG.parcool)
 			return new ReadonlyStamina(false, PlayerNeeds.api().getStamina(player).getBurstStamina(), 20);
@@ -37,25 +36,22 @@ public class HungerStaminaHandlerMixin implements IParCoolStaminaHandler {
 	}
 
 	@Overwrite
-	@OnlyIn(value = Dist.CLIENT)
 	public ReadonlyStamina consume(LocalPlayer player, ReadonlyStamina current, int value) {
 		this.consumed += value;
 		return current;
 	}
 
 	@Overwrite
-	@OnlyIn(value = Dist.CLIENT)
 	public ReadonlyStamina recover(LocalPlayer player, ReadonlyStamina current, int value) {
 		return current;
 	}
 
 	@Overwrite
-	@OnlyIn(value = Dist.CLIENT)
 	public ReadonlyStamina onTick(LocalPlayer player, ReadonlyStamina current) {
 		if (this.consumed > 0) {
-			PacketDistributor.sendToServer(
-					(CustomPacketPayload) new StaminaProcessOnServerPayload(StaminaType.HUNGER, this.consumed),
-					(CustomPacketPayload[]) new CustomPacketPayload[0]);
+//			PacketDistributor.sendToServer(
+//					(CustomPacketPayload) new StaminaProcessOnServerPayload(StaminaType.HUNGER, this.consumed),
+//					(CustomPacketPayload[]) new CustomPacketPayload[0]);
 			this.consumed = 0;
 		}
 		if (Survive.STAMINA_CONFIG.parcool)

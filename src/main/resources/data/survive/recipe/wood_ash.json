@@ -4,9 +4,7 @@
 		"module": "hygiene"
 	}],
 	"type": "minecraft:smelting",
-	"ingredient": {
-		"item": "minecraft:charcoal"
-	},
+	"ingredient": "minecraft:charcoal",
 	"result": {
     	"id": "survive:wood_ash"
   	},

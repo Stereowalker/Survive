@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "L": {
-      "tag": "minecraft:logs"
-    },
-    "S": {
-      "tag": "c:rods/wooden"
-    }
+    "L": "#minecraft:logs",
+    "S": "#c:rods/wooden"
   },
   "pattern": [
     " S ",

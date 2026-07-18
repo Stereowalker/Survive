@@ -20,19 +20,19 @@ import com.stereowalker.survive.json.property.BlockPropertyHandlerImpl;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class BlockTemperatureJsonHolder implements JsonHolder {
 	private static final Marker BLOCK_TEMPERATURE_DATA = MarkerManager.getMarker("BLOCK_TEMPERATURE_DATA");
-	private ResourceLocation itemID;
+	private Identifier itemID;
 	private final float temperatureModifier;
 	private final int range;
 	@Deprecated
 	private final boolean usesLevelProperty;
 	private final List<Triple<IBlockPropertyHandler<?>,List<PropertyPair<?>>,Map<String,Float>>> statePropertyOverride;
 
-	public BlockTemperatureJsonHolder(ResourceLocation blockID, JsonObject object) {
+	public BlockTemperatureJsonHolder(Identifier blockID, JsonObject object) {
 		String CHANGE_PROPERTY = "blockstate_property_overrides";
 		String LEVEL_PROPERTY = "uses_level_property";
 		String RANGE = "range";
@@ -114,9 +114,9 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 
 		List<Triple<IBlockPropertyHandler<?>, List<PropertyPair<?>>, Map<String, Float>>> toRemove = Lists.newArrayList();
 		for (Triple<IBlockPropertyHandler<?>, List<PropertyPair<?>>, Map<String, Float>> prop : stateChangePropertyIn) {
-			if (!BuiltInRegistries.BLOCK.get(blockID).defaultBlockState().hasProperty(prop.getLeft().derivedProperty())) {
+			if (!BuiltInRegistries.BLOCK.get(blockID).get().value().defaultBlockState().hasProperty(prop.getLeft().derivedProperty())) {
 				boolean found = false;
-				for (var property : BuiltInRegistries.BLOCK.get(blockID).defaultBlockState().getProperties()) {
+				for (var property : BuiltInRegistries.BLOCK.get(blockID).get().value().defaultBlockState().getProperties()) {
 					if (property.equals(prop.getLeft().derivedProperty())) {
 						found = true;
 						break;
@@ -131,10 +131,10 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 		toRemove.forEach((s) -> stateChangePropertyIn.remove(s));
 
 		if (usesLevelPropertyIn 
-				&& BuiltInRegistries.BLOCK.get(blockID).defaultBlockState().hasProperty(BlockStateProperties.LEVEL) 
-				&& BuiltInRegistries.BLOCK.get(blockID).defaultBlockState().hasProperty(BlockStateProperties.LEVEL_CAULDRON)
-				&& BuiltInRegistries.BLOCK.get(blockID).defaultBlockState().hasProperty(BlockStateProperties.LEVEL_COMPOSTER)
-				&& BuiltInRegistries.BLOCK.get(blockID).defaultBlockState().hasProperty(BlockStateProperties.LEVEL_FLOWING)) {
+				&& BuiltInRegistries.BLOCK.get(blockID).get().value().defaultBlockState().hasProperty(BlockStateProperties.LEVEL) 
+				&& BuiltInRegistries.BLOCK.get(blockID).get().value().defaultBlockState().hasProperty(BlockStateProperties.LEVEL_CAULDRON)
+				&& BuiltInRegistries.BLOCK.get(blockID).get().value().defaultBlockState().hasProperty(BlockStateProperties.LEVEL_COMPOSTER)
+				&& BuiltInRegistries.BLOCK.get(blockID).get().value().defaultBlockState().hasProperty(BlockStateProperties.LEVEL_FLOWING)) {
 			Survive.getInstance().getLogger().warn(BLOCK_TEMPERATURE_DATA, "Loading block temperature data $s from JSON: This block does not have the level property, please set this to false", blockID);
 			usesLevelPropertyIn = false;
 		}
@@ -150,7 +150,7 @@ public class BlockTemperatureJsonHolder implements JsonHolder {
 
 	}
 
-	public ResourceLocation getItemID() {
+	public Identifier getItemID() {
 		return itemID;
 	}
 

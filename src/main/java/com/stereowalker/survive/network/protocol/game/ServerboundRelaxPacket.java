@@ -8,7 +8,7 @@ import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ServerboundRelaxPacket extends ServerboundUnionPacket {
@@ -37,9 +37,9 @@ public class ServerboundRelaxPacket extends ServerboundUnionPacket {
 		return true;
 	}
 	
-	public static ResourceLocation id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_relax");
+	public static Identifier id = VersionHelper.toLoc(Survive.MOD_ID, "serverbound_relax");
 	@Override
-	public ResourceLocation id() {
+	public Identifier id() {
 		return id;
 	}
 }

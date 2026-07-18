@@ -18,6 +18,7 @@ import com.stereowalker.survive.needs.TemperatureUtil;
 import com.stereowalker.unionlib.util.VersionHelper.VanillaComponents;
 
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -30,12 +31,12 @@ import net.minecraft.world.item.ItemStack;
 public abstract class LivingEntityMixin extends EntityMixin {
 
 	@Shadow public abstract ItemStack getItemBySlot(EquipmentSlot pSlot);
-	@Shadow public boolean hurt(DamageSource pSource, float pAmount) {return false;}
+	@Shadow public boolean hurtServer(ServerLevel level, DamageSource pSource, float pAmount) {return false;}
 	@Shadow public ItemStack getUseItem() {return null;}
 
-	@Redirect(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-	public boolean aiStep_hurt_redirect(LivingEntity living, DamageSource pSource, float pAmount) {
-		float amount = pAmount;
+	@Redirect(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurtServer(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
+	public boolean aiStep_hurt_redirect(LivingEntity living, ServerLevel level, DamageSource pSource, float pAmount) {
+		float amount = pAmount; //TODO: Please check if we're explicitly doing freeze damage first
 
 		if ((LivingEntity)(Object)this instanceof Player player && !Survive.TEMPERATURE_CONFIG.useLegacyTemperatureSystem && Survive.TEMPERATURE_CONFIG.enabled) {
 			double maxCold1 = TemperatureUtil.firstCold((Player)(Object)this);
@@ -53,7 +54,7 @@ public abstract class LivingEntityMixin extends EntityMixin {
 			}
 		}
 
-		return living.hurt(this.damageSources().freeze(), amount);
+		return living.hurtServer(level, this.damageSources().freeze(), amount);
 	}
 
 	@Redirect(method = "aiStep", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/LivingEntity;isInPowderSnow:Z"))
@@ -77,8 +78,8 @@ public abstract class LivingEntityMixin extends EntityMixin {
 
 	@Inject(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;tryAddFrost()V"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void aiStep_inject_2(CallbackInfo ci) {
-		if (!this.level().isClientSide && this.tickCount % 40 == 0 && this.isFullyRoasted() && this.canRoast()) {
-			int j = this.getType().is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES) ? 5 : 1;
+		if (!this.level().isClientSide() && this.tickCount % 40 == 0 && this.isFullyRoasted() && this.canRoast()) {
+			int j = this.is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES) ? 5 : 1;
 
 			float amount = (float)j;
 
@@ -98,11 +99,11 @@ public abstract class LivingEntityMixin extends EntityMixin {
 				}
 			}
 
-			this.hurt(SDamageSources.source(this.level().registryAccess(), SDamageTypes.ROAST), amount);
+			this.hurtServer((ServerLevel)this.level(), SDamageSources.source(this.level().registryAccess(), SDamageTypes.ROAST), amount);
 		}
 	}
 
-	@Inject(method = "completeUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;triggerItemUseEffects(Lnet/minecraft/world/item/ItemStack;I)V"))
+	@Inject(method = "completeUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;copy()Lnet/minecraft/world/item/ItemStack;"))
 	public void completeUsingItem_inject(CallbackInfo ci) {
 		if (!VanillaComponents.FOOD.hasData(getUseItem()) && this instanceof IRealisticEntity) {
 			((IRealisticEntity)this).drink(this.level(), getUseItem());
