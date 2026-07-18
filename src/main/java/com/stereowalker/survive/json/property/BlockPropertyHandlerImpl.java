@@ -11,7 +11,7 @@ import com.stereowalker.survive.api.IBlockPropertyHandler;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
-public abstract class BlockPropertyHandlerImpl<X extends Comparable<X>> implements IBlockPropertyHandler<X> {
+public abstract class BlockPropertyHandlerImpl<X extends Comparable<X>> implements IBlockPropertyHandler<X>, Cloneable {
 	public static void init() {
 		new BlockPropertyHandlerImpl<Boolean>("boolean") {
 			@Override
@@ -36,6 +36,16 @@ public abstract class BlockPropertyHandlerImpl<X extends Comparable<X>> implemen
 			@Override
 			public Boolean getValue(String value) {
 				return Boolean.parseBoolean(value.substring(0, value.length() - 1));
+			}
+			
+			@Override
+			public IBlockPropertyHandler<Boolean> copy() {
+				try {
+					return (IBlockPropertyHandler<Boolean>) clone();
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
+				return null;
 			}
 		};
 		new BlockPropertyHandlerImpl<Integer>("integer") {
@@ -65,6 +75,16 @@ public abstract class BlockPropertyHandlerImpl<X extends Comparable<X>> implemen
 			@Override
 			public Integer getValue(String value) {
 				return Integer.parseInt(value.substring(0, value.length() - 1));
+			}
+			
+			@Override
+			public IBlockPropertyHandler<Integer> copy() {
+				try {
+					return (IBlockPropertyHandler<Integer>) clone();
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
+				return null;
 			}
 		};
 		new EnumBlockPropertyHandlerImpl<>();
