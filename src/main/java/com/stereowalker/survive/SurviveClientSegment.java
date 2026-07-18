@@ -9,6 +9,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.stereowalker.survive.client.events.TooltipEvents;
 import com.stereowalker.survive.client.gui.screens.inventory.SaltBoxScreen;
 import com.stereowalker.survive.client.particle.HygieneParticle;
+import com.stereowalker.survive.client.renderer.blockentity.RealisticCampfireRenderer;
 import com.stereowalker.survive.core.TempDisplayMode;
 import com.stereowalker.survive.core.particles.SParticleTypes;
 import com.stereowalker.survive.hooks.ColdMenu;
@@ -23,6 +24,7 @@ import com.stereowalker.survive.world.item.alchemy.SPotions;
 import com.stereowalker.survive.world.item.component.SDataComponents;
 import com.stereowalker.survive.world.level.block.DryingCauldronBlock;
 import com.stereowalker.survive.world.level.block.DryingCauldronBlock.FluidToDry;
+import com.stereowalker.survive.world.level.block.entity.SBlockEntityType;
 import com.stereowalker.survive.world.level.block.PlatedTemperatureRegulatorBlock;
 import com.stereowalker.survive.world.level.block.SBlocks;
 import com.stereowalker.survive.world.level.material.SFluids;
@@ -54,6 +56,7 @@ import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -76,6 +79,11 @@ public class SurviveClientSegment extends ClientSegment {
 	@Override
 	public ResourceLocation getModIcon() {
 		return VersionHelper.toLoc(Survive.MOD_ID, "textures/icon.png");
+	}
+	
+	@Override
+	public void onModStartup() {
+		BlockEntityRenderers.register(SBlockEntityType.REALISIC_CAMPFIRE, RealisticCampfireRenderer::new);
 	}
 
 	@Override
