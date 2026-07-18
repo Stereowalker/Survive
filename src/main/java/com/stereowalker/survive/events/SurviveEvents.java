@@ -17,6 +17,7 @@ import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.FoodUtils;
 import com.stereowalker.survive.Survive;
+import com.stereowalker.survive.FoodUtils.State;
 import com.stereowalker.survive.api.IBlockPropertyHandler;
 import com.stereowalker.survive.api.IBlockPropertyHandler.PropertyPair;
 import com.stereowalker.survive.api.world.level.block.TemperatureEmitter;
@@ -27,8 +28,10 @@ import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempMode;
 import com.stereowalker.survive.json.BiomeJsonHolder;
 import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
+import com.stereowalker.survive.json.ConsummableJsonHolder;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.survive.json.FluidJsonHolder;
+import com.stereowalker.survive.needs.CustomFoodData;
 import com.stereowalker.survive.needs.IRealisticEntity;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.TemperatureUtil;
@@ -46,6 +49,7 @@ import com.stereowalker.unionlib.util.LoaderHelper;
 import com.stereowalker.unionlib.util.ModHelper;
 import com.stereowalker.unionlib.util.RegistryHelper;
 import com.stereowalker.unionlib.util.VersionHelper;
+import com.stereowalker.unionlib.util.VersionHelper.VanillaComponents;
 import com.stereowalker.unionlib.util.math.UnionMathHelper;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
@@ -55,14 +59,19 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.food.FoodProperties.PossibleEffect;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
@@ -625,5 +634,41 @@ public class SurviveEvents {
 			} else return 0;
 		});
 		System.out.println("Done Resistering Temperature Queries");
+	}
+	
+	public static void eat(LivingEntity user, ItemStack stack) {
+		if (user instanceof IRealisticEntity ire) {
+			if (VanillaComponents.FOOD.hasData(stack) && user instanceof Player player && player.getFoodData() instanceof CustomFoodData custom) {
+				FoodProperties foodproperties = VanillaComponents.FOOD.getData(stack);
+				for (PossibleEffect effect : foodproperties.effects()) {
+					if (effect.effect().getEffect() == MobEffects.HUNGER || custom.IsSpoiled() == State.Spoiled) {
+						custom.consumeUnclean();
+						break;
+					}
+				}
+			}
+			ire.staminaData().eat(stack.getItem(), stack, user);
+			ire.waterData().drink(stack.getItem(), stack, user);
+			ire.getRealFoodData().markAsSpoiled(stack, user);
+		}
+	}
+	
+	public static void eatNutrition(LivingEntity user, ItemStack stack) {
+		if (Survive.CONFIG.nutrition_enabled && user instanceof IRealisticEntity ire) {
+			float protein = 1;
+			float carbs = 1;
+			float fats = 1;
+			if (DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(stack.getItem()))) {
+				ConsummableJsonHolder data = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(stack.getItem()));
+				protein = data.getProteinRatio();
+				carbs = data.getCarbohydrateRatio();
+				fats = data.getFatRatio();
+			}
+			FoodProperties food = VanillaComponents.FOOD.getData(stack);
+			float total = protein+carbs+fats;
+			ire.nutritionData().carbs().add(food.nutrition()*Mth.ceil((carbs/total)*100));
+			ire.nutritionData().protein().add(food.nutrition()*Mth.ceil((protein/total)*100));
+			ire.nutritionData().fat().add(food.nutrition()*Mth.ceil((fats/total)*100));
+		}
 	}
 }

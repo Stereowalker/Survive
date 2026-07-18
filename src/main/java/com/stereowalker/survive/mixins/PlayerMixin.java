@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.stereowalker.survive.FoodUtils.State;
 import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.core.SurviveEntityStats;
+import com.stereowalker.survive.events.SurviveEvents;
 import com.stereowalker.survive.json.ConsummableJsonHolder;
 import com.stereowalker.survive.needs.CustomFoodData;
 import com.stereowalker.survive.needs.HygieneData;
@@ -22,23 +23,17 @@ import com.stereowalker.survive.needs.StaminaData;
 import com.stereowalker.survive.needs.TemperatureData;
 import com.stereowalker.survive.needs.WaterData;
 import com.stereowalker.survive.needs.WellbeingData;
-import com.stereowalker.survive.world.DataMaps;
 import com.stereowalker.survive.world.entity.ai.attributes.SAttributes;
-import com.stereowalker.unionlib.util.RegistryHelper;
-import com.stereowalker.unionlib.util.VersionHelper.VanillaComponents;
 
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.food.FoodProperties.PossibleEffect;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
@@ -66,18 +61,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 	
 	@Inject(method = "eat", at = @At("HEAD"))
 	public void eatInject(Level pLevel, ItemStack pFood, FoodProperties pFoodProperties, CallbackInfoReturnable<ItemStack> cir) {
-		if (VanillaComponents.FOOD.hasData(pFood) && foodData instanceof CustomFoodData custom) {
-			FoodProperties foodproperties = VanillaComponents.FOOD.getData(pFood);
-			for (PossibleEffect effect : foodproperties.effects()) {
-				if (effect.effect().getEffect() == MobEffects.HUNGER || custom.IsSpoiled() == State.Spoiled) {
-					custom.consumeUnclean();
-					break;
-				}
-			}
-		}
-		this.staminaData().eat(pFood.getItem(), pFood, this);
-		this.waterData().drink(pFood.getItem(), pFood, this);
-		this.getRealFoodData().markAsSpoiled(pFood, this);
+		SurviveEvents.eat(this, pFood);
 	}
 
 	@Inject(method = "tick", at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/world/entity/player/Player;updateIsUnderwater()Z"))
@@ -132,22 +116,7 @@ public abstract class PlayerMixin extends LivingEntity implements IRealisticEnti
 
 	@Inject(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;eat(Lnet/minecraft/world/food/FoodProperties;)V"))
 	public void addNutrients(Level arg0, ItemStack p_213357_2_, FoodProperties pFoodProperties, CallbackInfoReturnable<ItemStack> cir) {
-		if (Survive.CONFIG.nutrition_enabled) {
-			float protein = 1;
-			float carbs = 1;
-			float fats = 1;
-			if (DataMaps.Server.consummableItem.containsKey(RegistryHelper.items().getKey(p_213357_2_.getItem()))) {
-				ConsummableJsonHolder data = DataMaps.Server.consummableItem.get(RegistryHelper.items().getKey(p_213357_2_.getItem()));
-				protein = data.getProteinRatio();
-				carbs = data.getCarbohydrateRatio();
-				fats = data.getFatRatio();
-			}
-			FoodProperties food = VanillaComponents.FOOD.getData(p_213357_2_);
-			float total = protein+carbs+fats;
-			this.nutritionData.carbs().add(food.nutrition()*Mth.ceil((carbs/total)*100));
-			this.nutritionData.protein().add(food.nutrition()*Mth.ceil((protein/total)*100));
-			this.nutritionData.fat().add(food.nutrition()*Mth.ceil((fats/total)*100));
-		}
+		SurviveEvents.eatNutrition(this, p_213357_2_);
 	}
 	
 	@Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
