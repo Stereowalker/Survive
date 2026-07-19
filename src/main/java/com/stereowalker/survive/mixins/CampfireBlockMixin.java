@@ -23,10 +23,10 @@ public abstract class CampfireBlockMixin extends BaseEntityBlock implements Simp
 	protected CampfireBlockMixin(Properties p_49224_) {
 		super(p_49224_);
 	}
-
-	@Inject(method = "onRemove", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getBlockEntity(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/entity/BlockEntity;"))
+//TODO 26.2 undo purified cauldrons pls
+//	@Inject(method = "onRemove", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getBlockEntity(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/entity/BlockEntity;"))
 	public void onUnpurifyWater(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving, CallbackInfo info) {
-		if (!pLevel.isClientSide && ServerConfig.purifiedCauldronRevert) {
+		if (!pLevel.isClientSide() && ServerConfig.purifiedCauldronRevert) {
 			if (pLevel.getBlockState(pPos.above()).getBlock() == SBlocks.PURIFIED_WATER_CAULDRON) {
 				BlockState old = pLevel.getBlockState(pPos.above());
 				pLevel.setBlockAndUpdate(pPos.above(), Blocks.WATER_CAULDRON.defaultBlockState().setValue(LayeredCauldronBlock.LEVEL, old.getValue(LayeredCauldronBlock.LEVEL)));
