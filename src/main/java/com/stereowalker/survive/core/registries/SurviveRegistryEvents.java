@@ -4,7 +4,7 @@ import com.stereowalker.survive.world.item.crafting.conditions.ModuleEnabledCond
 import com.stereowalker.survive.world.level.storage.loot.predicates.SLootItemConditions;
 import com.stereowalker.unionlib.util.VersionHelper;
 
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;

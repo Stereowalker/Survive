@@ -8,7 +8,7 @@ package com.stereowalker.survive.world.spellcraft;
 //import com.stereowalker.survive.Survive;
 //import com.stereowalker.survive.world.effect.SMobEffects;
 //
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 //import net.minecraftforge.registries.DeferredRegister;
 
 public class SSpells {
@@ -21,7 +21,7 @@ public class SSpells {
 //		return spell;
 //	}
 
-	public static void registerAll(IEventBus eventBus) {
+	public static void registerAll(BusGroup eventBus) {
 //		SPELL_REGISTRY.register(eventBus);
 	}
 }

@@ -11,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
-@EventBusSubscriber
 public class NutritionData extends SurviveData {
 	public class Nutrient {
 		private MutableInt level = new MutableInt(0);

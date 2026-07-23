@@ -10,7 +10,7 @@ import com.stereowalker.unionlib.util.VersionHelper;
 import net.minecraft.client.multiplayer.ClientLevel;
 //import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Tuple;
+//import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 
 public class SItemProperties {
