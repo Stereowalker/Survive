@@ -52,6 +52,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.Hud;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.ContainerScreen;
@@ -62,6 +63,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BiomeTags;
@@ -231,7 +233,7 @@ public class SurviveClientSegment extends ClientSegment {
 		});
 		collector.register("thirst_level", Order.END, (gui,renderer,width,height)->{
 			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
-			if (Survive.THIRST_CONFIG.enabled && !isMounted && !gui.minecraft.options.hideGui && gui.minecraft.gameMode.canHurtPlayer())
+			if (Survive.THIRST_CONFIG.enabled && !isMounted && !gui.isHidden() && gui.minecraft.gameMode.canHurtPlayer())
 			{
 //				gui.setupOverlayRenderState(true, false);
 				int left = width / 2 + 91;
@@ -242,7 +244,7 @@ public class SurviveClientSegment extends ClientSegment {
 		});
 		collector.register("stamina_level", Order.END, (gui,renderer,width,height)->{
 			boolean isMounted = gui.minecraft.player.getVehicle() instanceof LivingEntity;
-			if (Survive.STAMINA_CONFIG.enabled && !isMounted && !gui.minecraft.options.hideGui && gui.minecraft.gameMode.canHurtPlayer())
+			if (Survive.STAMINA_CONFIG.enabled && !isMounted && !gui.isHidden() && gui.minecraft.gameMode.canHurtPlayer())
 			{
 //				gui.setupOverlayRenderState(true, false);
 				int left = width / 2 + 91;
@@ -272,7 +274,7 @@ public class SurviveClientSegment extends ClientSegment {
 			renderHeatStroke(gui, renderer);
 		});
 		collector.register("temperature", Order.END, (gui,renderer,width,height)->{
-			if (!gui.minecraft.options.hideGui && Survive.TEMPERATURE_CONFIG.enabled && !Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
+			if (!gui.isHidden() && Survive.TEMPERATURE_CONFIG.enabled && !Survive.TEMPERATURE_CONFIG.tempDisplayMode.equals(TempDisplayMode.HOTBAR)) {
 				//				gui.setupOverlayRenderState(true, false);
 //				RenderSystem.enableBlend();
 //				RenderSystem.defaultBlendFunc();
@@ -288,9 +290,9 @@ public class SurviveClientSegment extends ClientSegment {
 				int x = ScreenHelper.getXOffset(position, gui.minecraft) + Survive.CONFIG.nut_xLoc;
 				int y = ScreenHelper.getYOffset(position, gui.minecraft) + Survive.CONFIG.nut_yLoc;
 				if (Survive.CONFIG.show_raw_nut_vals) {
-					renderer.drawString("Carbs = "+real.nutritionData().carbs().level(), x, y, ChatFormatting.GRAY.getColor(), false);
-					renderer.drawString("Protein = "+real.nutritionData().protein().level(), x, y + 10, ChatFormatting.GRAY.getColor(), false);
-					renderer.drawString("Fats = "+real.nutritionData().fat().level(), x, y + 20, ChatFormatting.GRAY.getColor(), false);
+					renderer.drawString("Carbs = "+real.nutritionData().carbs().level(), x, y, TextColor.fromLegacyFormat(ChatFormatting.GRAY).getValue(), false);
+					renderer.drawString("Protein = "+real.nutritionData().protein().level(), x, y + 10, TextColor.fromLegacyFormat(ChatFormatting.GRAY).getValue(), false);
+					renderer.drawString("Fats = "+real.nutritionData().fat().level(), x, y + 20, TextColor.fromLegacyFormat(ChatFormatting.GRAY).getValue(), false);
 				}
 				else {
 					//Carbs
@@ -311,7 +313,7 @@ public class SurviveClientSegment extends ClientSegment {
 	}
 
 	@SuppressWarnings("resource")
-	public static void renderTemperature(Gui gui, ScreenOffset position, Player playerentity, GuiRenderer renderer, boolean forgeOverlay) {
+	public static void renderTemperature(Hud gui, ScreenOffset position, Player playerentity, GuiRenderer renderer, boolean forgeOverlay) {
 		int x = ScreenHelper.getXOffset(position, gui.minecraft) + Survive.TEMPERATURE_CONFIG.tempXLoc;
 		int y = ScreenHelper.getYOffset(position, gui.minecraft) + Survive.TEMPERATURE_CONFIG.tempYLoc;
 //		Minecraft.getInstance().getProfiler().push("temperature");
@@ -350,11 +352,11 @@ public class SurviveClientSegment extends ClientSegment {
 					s = ((IRealisticEntity)playerentity).temperatureData().getFahrenheit()+" °F";
 				}
 				if (displayTemp >= 1) {
-					renderer.drawString(s, x, y, ChatFormatting.GOLD.getColor(), false);
+					renderer.drawString(s, x, y, TextColor.fromLegacyFormat(ChatFormatting.GOLD).getValue(), false);
 				} else if (displayTemp <= -1) {
-					renderer.drawString(s, x, y, ChatFormatting.BLUE.getColor(), false);
+					renderer.drawString(s, x, y, TextColor.fromLegacyFormat(ChatFormatting.BLUE).getValue(), false);
 				} else {
-					renderer.drawString(s, x, y, ChatFormatting.GRAY.getColor(), false);
+					renderer.drawString(s, x, y, TextColor.fromLegacyFormat(ChatFormatting.GRAY).getValue(), false);
 				}
 			}
 		}
@@ -368,7 +370,7 @@ public class SurviveClientSegment extends ClientSegment {
 	}
 
 
-	public static void renderHeatStroke(Gui gui, GuiRenderer renderer)
+	public static void renderHeatStroke(Hud gui, GuiRenderer renderer)
 	{
 		if (((IRoastedEntity)gui.minecraft.player).getTicksRoasted() > 0) {
 			gui.extractTextureOverlay(renderer.guiGraphics(), Survive.getInstance().location("textures/misc/burning_overlay.png"), ((IRoastedEntity)gui.minecraft.player).getPercentRoasted());
@@ -376,7 +378,7 @@ public class SurviveClientSegment extends ClientSegment {
 	}
 
 	@SuppressWarnings("resource")
-	public static void renderTiredOverlay(Gui gui, GuiRenderer graphics) {
+	public static void renderTiredOverlay(Hud gui, GuiRenderer graphics) {
 //		Minecraft.getInstance().getProfiler().push("tired");
 		int amplifier = Minecraft.getInstance().player.getEffect(SMobEffects.TIREDNESS.holder()).getAmplifier() + 1;
 		amplifier/=(Survive.CONFIG.tiredTimeStacks/5);
@@ -385,7 +387,7 @@ public class SurviveClientSegment extends ClientSegment {
 //		Minecraft.getInstance().getProfiler().pop();
 	}
 
-	public static void renderThirst(Gui gui, GuiRenderer graphics, int j1, int k1, boolean forgeOverlay) {
+	public static void renderThirst(Hud gui, GuiRenderer graphics, int j1, int k1, boolean forgeOverlay) {
 		Player player = (Player)gui.minecraft.getCameraEntity();
 		IRealisticEntity realisticPlayer = (IRealisticEntity)player;
 		int waterL = (int) realisticPlayer.waterData().getWaterLevel();
@@ -416,7 +418,7 @@ public class SurviveClientSegment extends ClientSegment {
 //		gui.minecraft.getProfiler().pop();
 	}
 
-	public static void renderEnergyBars(Gui gui, GuiRenderer graphics, MutableInt moveUp, int j1, int k1, boolean forgeOverlay) {
+	public static void renderEnergyBars(Hud gui, GuiRenderer graphics, MutableInt moveUp, int j1, int k1, boolean forgeOverlay) {
 		Random rand = new Random();
 		Player player = (Player)gui.minecraft.getCameraEntity();
 		IRealisticEntity real = (IRealisticEntity)player;

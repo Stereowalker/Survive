@@ -5,12 +5,12 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.Maps;
+import com.mojang.datafixers.util.Pair;
 import com.stereowalker.survive.world.temperature.TemperatureModifier.ContributingFactor;
 import com.stereowalker.unionlib.util.VersionHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
@@ -21,9 +21,9 @@ import net.minecraft.world.level.Level;
  */
 @FunctionalInterface
 public interface TemperatureQuery {
-	public static Map<Identifier,Tuple<TemperatureQuery, ContributingFactor>> queries = Maps.newHashMap();
+	public static Map<Identifier,Pair<TemperatureQuery, ContributingFactor>> queries = Maps.newHashMap();
 	public static void registerQuery(Identifier id, ContributingFactor factor, TemperatureQuery query) {
-		queries.put(id, new Tuple<>(query, factor));
+		queries.put(id, new Pair<>(query, factor));
 	}
 	public static void registerQuery(String id, ContributingFactor factor, TemperatureQuery query) {
 		registerQuery(VersionHelper.toLoc(id), factor, query);

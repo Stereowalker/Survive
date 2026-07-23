@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.PriorityQueue;
 
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.apache.commons.lang3.tuple.Triple;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
@@ -27,7 +26,6 @@ import com.stereowalker.survive.config.ServerConfig;
 import com.stereowalker.survive.core.SurviveEntityStats;
 import com.stereowalker.survive.core.TempMode;
 import com.stereowalker.survive.json.BiomeJsonHolder;
-import com.stereowalker.survive.json.BlockTemperatureJsonHolder;
 import com.stereowalker.survive.json.ConsummableJsonHolder;
 import com.stereowalker.survive.json.EntityTemperatureJsonHolder;
 import com.stereowalker.survive.json.FluidJsonHolder;
@@ -61,7 +59,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -173,9 +170,9 @@ public class SurviveEvents {
 		}
 		if (living != null && living instanceof ServerPlayer player) {
 			if (player.isAlive()) {
-				for (Entry<Identifier, Tuple<TemperatureQuery, ContributingFactor>> entry : TemperatureQuery.queries.entrySet()) {
-					double queryValue = entry.getValue().getA().run(player, ((IRealisticEntity)player).temperatureData().getTemperatureLevel(), player.level(), player.blockPosition(), true);
-					TemperatureData.setTemperatureModifier(player, entry.getKey(), queryValue, entry.getValue().getB());
+				for (Entry<Identifier, Pair<TemperatureQuery, ContributingFactor>> entry : TemperatureQuery.queries.entrySet()) {
+					double queryValue = entry.getValue().getFirst().run(player, ((IRealisticEntity)player).temperatureData().getTemperatureLevel(), player.level(), player.blockPosition(), true);
+					TemperatureData.setTemperatureModifier(player, entry.getKey(), queryValue, entry.getValue().getSecond());
 				}
 			}
 		}

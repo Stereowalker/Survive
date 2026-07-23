@@ -22,8 +22,8 @@ import net.minecraft.world.phys.BlockHitResult;
 
 @Mixin(BucketItem.class)
 public class BucketItemMixin {
-	@Inject(method = "use", at = @At(value = "INVOKE_ASSIGN", ordinal = 0, target = "Lnet/minecraft/world/item/ItemUtils;createFilledResult(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void turnBottle(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir, ItemStack itemstack, BlockHitResult blockhitresult, BlockPos blockpos, Direction direction, BlockPos blockpos1, BlockState blockstate1, BucketPickup bucketpickup, ItemStack itemstack3, ItemStack itemstack2) {
-		SDataComponents.BIOME_SOURCE_D.setData(itemstack2, player.level().getBiome(blockpos).unwrapKey().get().identifier());
+	@Inject(method = "use", at = @At(value = "INVOKE_ASSIGN", ordinal = 1, target = "Lnet/minecraft/world/item/ItemUtils;createFilledResult(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/item/ItemStack;"), locals = LocalCapture.CAPTURE_FAILHARD)
+	public void turnBottle(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir, ItemStack itemStack, BlockHitResult hitResult, BlockPos pos, Direction direction, BlockPos directionOffsetPos, BlockState clicked, BlockPos placePos, BlockState blockState, BucketPickup bucketPickupBlock, ItemStack taken, ItemStack result) {
+		SDataComponents.BIOME_SOURCE_D.setData(result, player.level().getBiome(pos).unwrapKey().get().identifier());
 	}
 }

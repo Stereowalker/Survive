@@ -122,7 +122,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.inventory.ChestMenu;
@@ -398,7 +398,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 	
 	@Override
 	public void modifyEntity(EntityModifier modifier) {
-		modifier.addAttributeToEntity(EntityType.PLAYER, () -> SAttributes.COLD_RESISTANCE.holder(), () -> SAttributes.HEAT_RESISTANCE.holder(), () -> SAttributes.MAX_STAMINA.holder());
+		modifier.addAttributeToEntity(EntityTypes.PLAYER, () -> SAttributes.COLD_RESISTANCE.holder(), () -> SAttributes.HEAT_RESISTANCE.holder(), () -> SAttributes.MAX_STAMINA.holder());
 		modifier.defineRevisedSynchedData(Entity.class, EntityData.DATA_TICKS_ROASTED, 0);
 	}
 	
