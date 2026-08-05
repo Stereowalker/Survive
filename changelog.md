@@ -1,1 +1,6 @@
-- Fix log spam when blocks change
+- Made massive performance improvements to block temperature calculaions
+- Moved a few things to inserts
+- Fix crash with drying cauldron when no campfire is under it
+- Fix realistic campfire not rendering food
+- Put sugar water bottle in creative tab
+- Fix IBlockPropertyHandler generating wrong block properties
