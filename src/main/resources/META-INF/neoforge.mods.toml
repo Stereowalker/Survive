@@ -18,25 +18,23 @@ config="${mod_id}.mixins.json"
 file="META-INF/accesstransformer.cfg"
 [[dependencies.${mod_id}]] #optional
     modId="neoforge" #mandatory
-    mandatory=true #mandatory
     versionRange="[21.0.0-beta,)" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.${mod_id}]]
     modId="minecraft"
-    mandatory=true
     versionRange="[${minecraft_version_min},${minecraft_version_max})"
     ordering="NONE"
     side="BOTH"
 [[dependencies.${mod_id}]]
     modId="unionlib"
-    mandatory=true
+    type="required"
     versionRange="[${unionlib_version_min},${unionlib_version_max})"
     ordering="BEFORE"
     side="BOTH"
 [[dependencies.${mod_id}]]
     modId="sereneseasons"
-    mandatory=false
+    type="optional"
     versionRange="[1.18.2-7.0.0.13,)"
     ordering="NONE"
     side="BOTH"
