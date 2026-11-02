@@ -6,22 +6,25 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import com.stereowalker.survive.world.item.component.SDataComponents;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.level.block.entity.BrewingStandBlockEntity;
 
-@Mixin(PotionBrewing.class)
+@Mixin(BrewingStandBlockEntity.class)
 public class PotionBrewingMixin {
 
-	@Redirect(method = "mix", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/item/alchemy/PotionContents;createItemStack(Lnet/minecraft/world/item/Item;Lnet/minecraft/core/Holder;)Lnet/minecraft/world/item/ItemStack;"))
-	private ItemStack preserveComponents(Item pItem, Holder<Potion> pPotion, ItemStack pPotion2, ItemStack pPotionItem) {
-		ItemStack stack = PotionContents.createItemStack(pPotionItem.getItem(), pPotion);
-		if (SDataComponents.DRINKS_LEFT_D.hasData(stack))
-			SDataComponents.DRINKS_LEFT_D.setData(stack, SDataComponents.DRINKS_LEFT_D.getData(pPotionItem));
-		return stack;
+	@Redirect(method = "doBrew", at = @At(value = "INVOKE", ordinal = 1, target = "net/minecraft/core/NonNullList.set(ILjava/lang/Object;)Ljava/lang/Object;"))
+	private static Object preserveComponents(NonNullList<ItemStack> items, int index, Object object, ServerLevel level, BlockPos pos, BrewingStandBlockEntity entity) {
+		ItemStack stack = (ItemStack)object;
+		if (SDataComponents.DRINKS_LEFT_D.hasData((ItemStack)items.get(index)))
+			SDataComponents.DRINKS_LEFT_D.setData(stack, SDataComponents.DRINKS_LEFT_D.getData((ItemStack)items.get(index)));
+		return items.set(index, stack);
 	}
 
 }

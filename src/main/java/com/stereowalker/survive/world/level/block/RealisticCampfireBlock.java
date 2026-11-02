@@ -10,6 +10,7 @@ import com.stereowalker.survive.world.level.block.entity.SBlockEntityType;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.server.level.ServerLevel;
@@ -89,7 +90,7 @@ public class RealisticCampfireBlock extends CampfireBlock {
 
                 return InteractionResult.CONSUME;
             }
-            if (level.fuelValues().isFuel(pStack)) {
+            if (pStack.has(DataComponents.COOKING_FUEL)) {
             	if (!level.isClientSide() && campfireblockentity.placeFuel(player, itemInHand)) {
             		player.awardStat(Stats.INTERACT_WITH_CAMPFIRE);
                     return InteractionResult.SUCCESS;

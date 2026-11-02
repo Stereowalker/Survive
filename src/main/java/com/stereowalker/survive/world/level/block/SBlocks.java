@@ -22,7 +22,7 @@ public class SBlocks {
 	@RegistryObject("purified_water")
 	public static final Block PURIFIED_WATER = new LiquidBlock(SFluids.PURIFIED_WATER, VersionHelper.blockPropertyWithId("survive:purified_water").mapColor(MapColor.WATER).noCollision().strength(100.0F).noLootTable()
             .replaceable()
-            .pushReaction(PushReaction.DESTROY)
+            .pushReaction(PushReaction.POPPED)
             .liquid()
             .sound(SoundType.EMPTY));
 	@RegistryObject("purified_water_cauldron")

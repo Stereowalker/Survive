@@ -127,7 +127,7 @@ public class CanteenItem extends PotionItem {
 		ItemStack itemstack = pContext.getItemInHand();
 		PotionContents potioncontents = itemstack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
 		BlockState blockstate = level.getBlockState(blockpos);
-		if (pContext.getClickedFace() != Direction.DOWN && blockstate.is(BlockTags.CONVERTABLE_TO_MUD) && potioncontents.is(Potions.WATER)) {
+		if (pContext.getClickedFace() != Direction.DOWN && blockstate.is(BlockTags.CONVERTIBLE_TO_MUD) && potioncontents.is(Potions.WATER)) {
 			level.playSound(null, blockpos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 1.0F, 1.0F);
 			if (SDataComponents.DRINKS_LEFT_D.getData(itemstack) <= 1) {
 				player.setItemInHand(pContext.getHand(), ItemUtils.createFilledResult(itemstack, player, new ItemStack(SItems.CANTEEN)));

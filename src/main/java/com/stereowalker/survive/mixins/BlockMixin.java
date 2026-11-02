@@ -10,6 +10,8 @@ import com.stereowalker.survive.Survive;
 import com.stereowalker.survive.needs.IRealisticEntity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -27,8 +29,8 @@ public abstract class BlockMixin extends BlockBehaviour implements ItemLike {
 		super(properties);
 	}
 
-	@Redirect(method = "playerDestroy", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;causeFoodExhaustion(F)V"))
-	public void exhaustWhenBreakingBlock(Player player, float value, Level worldIn, Player player2, BlockPos pos, BlockState state, @Nullable BlockEntity te, ItemStack stack) {
+	@Redirect(method = "playerDestroy", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;causeFoodExhaustion(F)V"))
+	public void exhaustWhenBreakingBlock(ServerPlayer player, float value, ServerLevel level, ServerPlayer player2, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack destroyedWith) {
 			//TODO: Fix THIS
 //			if (ForgeHooks.canHarvestBlock(state, player2, worldIn, pos)) {
 //			} else {

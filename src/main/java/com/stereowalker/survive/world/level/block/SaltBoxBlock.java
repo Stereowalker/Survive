@@ -33,14 +33,14 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class SaltBoxBlock extends BaseEntityBlock {
-    public static final MapCodec<SaltBoxBlock> CODEC = simpleCodec(SaltBoxBlock::new);
+//    public static final MapCodec<SaltBoxBlock> CODEC = simpleCodec(SaltBoxBlock::new);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
 
-    @Override
-    public MapCodec<SaltBoxBlock> codec() {
-        return CODEC;
-    }
+//    @Override
+//    public MapCodec<SaltBoxBlock> codec() {
+//        return CODEC;
+//    }
 
     public SaltBoxBlock(BlockBehaviour.Properties properties) {
         super(properties);

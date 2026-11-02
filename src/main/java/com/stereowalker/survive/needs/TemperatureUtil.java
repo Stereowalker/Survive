@@ -12,7 +12,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
-import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
+import net.minecraft.world.level.levelgen.synth.Noise;
+import net.minecraft.world.level.levelgen.synth.SimplexNoise;
 
 public class TemperatureUtil {
 	public static double firstHeat(Player player) {
@@ -41,14 +42,14 @@ public class TemperatureUtil {
 
 
 
-	private static final PerlinSimplexNoise TEMPERATURE_NOISE = new PerlinSimplexNoise(new WorldgenRandom(new LegacyRandomSource(1234L)), ImmutableList.of(0));
+	private static final Noise TEMPERATURE_NOISE = new SimplexNoise(new WorldgenRandom(new LegacyRandomSource(1234L)), true);
 	   
 	/**
 	 * Gets the current temperature at the given location, based off of the default for this biome, the elevation of the
 	 * position, and {@linkplain #Biome#TEMPERATURE_NOISE} some random perlin noise. Although this is a heavily modified version to account for altitude
 	 */
 	public static float getTemperature(Holder<Biome> biome, BlockPos pos) {
-		float f = (float)(TEMPERATURE_NOISE.getValue((double)((float)pos.getX() / 8.0F), (double)((float)pos.getZ() / 8.0F), false) * 4.0D);
+		float f = (float)(TEMPERATURE_NOISE.get((double)((float)pos.getX() / 8.0F), (double)((float)pos.getZ() / 8.0F)) * 8.0D);
 		float modifier = 1.0f;
 		float t = biome.value().getBaseTemperature();
 		if (biome.unwrapKey().isPresent() && DataMaps.Server.biome.containsKey(biome.unwrapKey().get().identifier())) {

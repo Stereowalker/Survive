@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.component.SwingAnimation;
 
 public class ClientboundDrinkSoundPacket extends ClientboundUnionPacket {
 	private BlockPos pos;
@@ -34,7 +35,7 @@ public class ClientboundDrinkSoundPacket extends ClientboundUnionPacket {
 	@Override
 	public boolean runOnClient(Player sender) {
 		sender.level().playLocalSound(this.pos.getX(), this.pos.getY(), this.pos.getZ(), SoundEvents.GENERIC_DRINK.value(), SoundSource.PLAYERS, 0.5F, sender.level().getRandom().nextFloat() * 0.1F + 0.9F, false);
-		sender.swing(InteractionHand.MAIN_HAND);
+		sender.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
 		return true;
 	}
 

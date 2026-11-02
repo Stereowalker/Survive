@@ -25,7 +25,7 @@ public abstract class LocalPlayerMixin extends AbstractClientPlayer implements I
 		super(pClientLevel, pGameProfile);
 	}
 
-	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;sendPosition()V"))
+	@Inject(method = "sendChanges", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;sendPosition()V"))
 	public void tickInject(CallbackInfo ci) {
 		if (this.tickCount%290 == 288) {
 			if (this.level().getDifficulty() != Difficulty.PEACEFUL) {

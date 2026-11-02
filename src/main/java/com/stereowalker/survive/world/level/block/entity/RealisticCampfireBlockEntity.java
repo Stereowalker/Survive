@@ -31,6 +31,7 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CookingFuel;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -45,6 +46,12 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ResolvableInt;
+import net.minecraft.world.phys.Vec3;
 
 public class RealisticCampfireBlockEntity extends BlockEntity implements Clearable {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -278,7 +285,7 @@ public class RealisticCampfireBlockEntity extends BlockEntity implements Clearab
 
 
     public boolean placeFuel(@Nullable LivingEntity pEntity, ItemStack pFood) {
-        int fuelAdded = pEntity.level().fuelValues().burnDuration(pFood);
+        int fuelAdded = ResolvableInt.getFromItem(pFood, DataComponents.COOKING_FUEL, CookingFuel::burnTime, this.getLootContext((ServerLevel)level, pFood), 0);
         if (pFood.getItem() != Items.LAVA_BUCKET && this.fuelTime + fuelAdded <= 3000) {
         	this.fuelTime += fuelAdded;
         	pFood.shrink(1);
@@ -288,5 +295,21 @@ public class RealisticCampfireBlockEntity extends BlockEntity implements Clearab
         }
 
         return false;
+    }
+    public int fuel(ItemStack pFood) {
+    	return ResolvableInt.getFromItem(pFood, DataComponents.COOKING_FUEL, CookingFuel::burnTime, this.getLootContext((ServerLevel)level, pFood), 0);
+    }
+    //TODO 26.3 probably remove and replace this
+    protected LootContext getLootContext(ServerLevel level, ItemStack queriedStack) {
+        return new LootContext.Builder(
+                new LootParams.Builder(level)
+                    .withParameter(LootContextParams.BLOCK_STATE, this.getBlockState())
+                    .withParameter(LootContextParams.BLOCK_ENTITY, this)
+                    .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(this.getBlockPos()))
+//                    .withParameter(LootContextParams.CONTAINER, this)
+                    .withOptionalParameter(net.neoforged.neoforge.common.loot.NeoForgeLootContextParams.QUERIED_STACK, queriedStack.isEmpty() ? null : queriedStack)
+                    .create(LootContextParamSets.CONTAINER_PROCESS)
+            )
+            .create(Optional.empty());
     }
 }

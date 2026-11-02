@@ -87,7 +87,7 @@ import com.stereowalker.survive.world.seasons.Seasons;
 import com.stereowalker.survive.world.spellcraft.SSpells;
 import com.stereowalker.survive.world.temperature.conditions.TemperatureChangeConditions;
 import com.stereowalker.unionlib.api.collectors.ArmorCollector;
-import com.stereowalker.unionlib.api.collectors.BrewingRecipeCollector;
+//import com.stereowalker.unionlib.api.collectors.BrewingRecipeCollector;
 import com.stereowalker.unionlib.api.collectors.CommandCollector;
 import com.stereowalker.unionlib.api.collectors.ConfigCollector;
 import com.stereowalker.unionlib.api.collectors.EntityModifier;
@@ -118,6 +118,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.effect.MobEffects;
@@ -140,7 +141,7 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProviders;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -243,19 +244,19 @@ public class Survive extends MinecraftMod implements PacketHolder {
 		BlockPropertyHandlerImpl.init();
 	}
 	
-	@Override
-	public void setupBrewingRecipes(BrewingRecipeCollector collector) {
-		collector.addMix(Potions.AWKWARD, SItems.ICE_CUBE, SPotions.COLD_RESISTANCE);
-		collector.addMix(SPotions.COLD_RESISTANCE, Items.REDSTONE, SPotions.LONG_COLD_RESISTANCE);
-		collector.addMix(SPotions.COLD_RESISTANCE, Items.GLOWSTONE_DUST, SPotions.STRONG_COLD_RESISTANCE);
-		
-		collector.addMix(Potions.AWKWARD, SItems.MAGMA_PASTE, SPotions.HEAT_RESISTANCE);
-		collector.addMix(SPotions.HEAT_RESISTANCE, Items.REDSTONE, SPotions.LONG_HEAT_RESISTANCE);
-		collector.addMix(SPotions.HEAT_RESISTANCE, Items.GLOWSTONE_DUST, SPotions.STRONG_HEAT_RESISTANCE);
-		
-		collector.builder().addContainer(SItems.FILLED_CANTEEN);
-		collector.builder().addContainer(SItems.FILLED_NETHERITE_CANTEEN);
-	}
+//	@Override
+//	public void setupBrewingRecipes(BrewingRecipeCollector collector) {
+//		collector.addMix(Potions.AWKWARD, SItems.ICE_CUBE, SPotions.COLD_RESISTANCE);
+//		collector.addMix(SPotions.COLD_RESISTANCE, Items.REDSTONE, SPotions.LONG_COLD_RESISTANCE);
+//		collector.addMix(SPotions.COLD_RESISTANCE, Items.GLOWSTONE_DUST, SPotions.STRONG_COLD_RESISTANCE);
+//		
+//		collector.addMix(Potions.AWKWARD, SItems.MAGMA_PASTE, SPotions.HEAT_RESISTANCE);
+//		collector.addMix(SPotions.HEAT_RESISTANCE, Items.REDSTONE, SPotions.LONG_HEAT_RESISTANCE);
+//		collector.addMix(SPotions.HEAT_RESISTANCE, Items.GLOWSTONE_DUST, SPotions.STRONG_HEAT_RESISTANCE);
+//		
+//		collector.builder().addContainer(SItems.FILLED_CANTEEN);
+//		collector.builder().addContainer(SItems.FILLED_NETHERITE_CANTEEN);
+//	}
 	
 	@Override
 	public void setupPacks(PackCollector collector) {
@@ -361,7 +362,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 			
 			BiFunction<String, Integer, LootPoolEntryContainer.Builder<?>> getInjectEntry = (name, weight) -> {
 				ResourceKey<LootTable> table = ResourceKey.create(Registries.LOOT_TABLE, Survive.getInstance().location("inject/" + name));
-				return NestedLootTable.lootTableReference(table).setWeight(weight);
+				return NestedLootTable.lootTableReference(insert.holder().getOrThrow(table)).setWeight(weight);
 			};
 			
 			LOOT_MODIFIERS.forEach((pair) -> {
@@ -370,7 +371,7 @@ public class Survive extends MinecraftMod implements PacketHolder {
 						Survive.getInstance().debug("Injecting \""+file+"\" in "+pair.getKey());
 						LoaderHelper.addPoolToLootTable(insert.table().get(), LootPool.lootPool()
 								.add(getInjectEntry.apply(file, 1))
-								.setBonusRolls(UniformGenerator.between(0.0F, 1.0F))
+								.setBonusRolls(ContextFloatProviders.between(0.0F, 1.0F))
 								.name("survive_inject").build());
 					});
 				}

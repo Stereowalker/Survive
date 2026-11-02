@@ -19,6 +19,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -106,7 +107,7 @@ public class ServerboundInteractWithWaterPacket extends ServerboundUnionPacket {
 							waterStats.drink((int) waterAmount, (float) hydrationAmount, stacks, WaterData.applyThirst(sender, addThirst));
 						}
 						sender.level().playSound(sender, pos, SoundEvents.GENERIC_DRINK.value(), SoundSource.PLAYERS, 0.5F, sender.level().getRandom().nextFloat() * 0.1F + 0.9F);
-						sender.swing(InteractionHand.MAIN_HAND);
+						sender.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
 						new ClientboundDrinkSoundPacket(pos).send(sender);
 					}
 				}
