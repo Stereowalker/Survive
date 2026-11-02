@@ -1,7 +1,7 @@
 java.toolchain.languageVersion = JavaLanguageVersion.of(_java_version.toInteger())
 def resolvedCompiler = javaToolchains.compilerFor(java.toolchain).get()
 def targetMeta = resolvedCompiler.metadata
-layout.buildDirectory = file("build_${_minecraft_version}_${_loader}")
+layout.buildDirectory = file("build/${_minecraft_version}_${_loader}")
 apply from: "${_loader}.gradle".toLowerCase()
 
 println('Gradle Java: ' + System.getProperty('java.vm.version') + ' (' + System.getProperty('java.vendor') + ')' + ' (' + System.getProperty('java.version') + ')' + ' (' + System.getProperty('java.home') + ')')
